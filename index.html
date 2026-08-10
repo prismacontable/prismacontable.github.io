@@ -190,48 +190,134 @@ footer{border-top:1px solid var(--border);padding:40px 0 28px;}
           <div class="trust-item"><div class="trust-dot"></div>100% virtual · Todo Perú</div>
         </div>
       </div>
+      <!-- HERO VISUAL — Dashboard Contable -->
       <div class="hero-visual">
-        <div class="cpc-badge">
-          <div class="cpc-icon">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M9 12l2 2 4-4" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="9" stroke="#fff" stroke-width="2"/></svg>
-          </div>
-          <div>
-            <h4>PRISMA Innovación Contable S.A.C.</h4>
-            <p>Contador Público Colegiado (CPC) · Virtual · Todo Perú</p>
-          </div>
-        </div>
-        <div class="expertise-tags">
-          <span class="etag">Contabilidad</span>
-          <span class="etag">Tributación</span>
-          <span class="etag">Finanzas</span>
-          <span class="etag">Laboral</span>
-          <span class="etag">SUNAT · SUNAFIL</span>
-          <span class="etag">Libros Electrónicos</span>
-          <span class="etag">Facturación Electrónica</span>
-          <span class="etag">Planillas</span>
-          <span class="etag">Estados Financieros</span>
-        </div>
-        <div class="stat-row">
-          <div class="stat-card c1">
-            <div class="stat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.85.5 3.58 1.36 5.07L2 22l5.07-1.33A9.93 9.93 0 0 0 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2z" fill="rgba(107,96,240,0.3)" stroke="#6B60F0" stroke-width="1.5"/></svg></div>
-            <div class="num">3</div><div class="lbl">Servicios especializados</div>
-          </div>
-          <div class="stat-card c2">
-            <div class="stat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" fill="rgba(15,196,180,0.2)" stroke="#0FC4B4" stroke-width="1.5"/></svg></div>
-            <div class="num">100%</div><div class="lbl">Virtual y sin papeleos</div>
-          </div>
-          <div class="stat-card c3">
-            <div class="stat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" fill="rgba(245,165,36,0.15)" stroke="#F5A524" stroke-width="1.5"/><path d="M12 7v5l3 3" stroke="#F5A524" stroke-width="2" stroke-linecap="round"/></svg></div>
-            <div class="num">&lt;24h</div><div class="lbl">Tiempo de respuesta</div>
-          </div>
-          <div class="stat-card c4">
-            <div class="stat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="3" fill="rgba(74,219,138,0.15)" stroke="#4ADB8A" stroke-width="1.5"/><path d="M8 12l3 3 5-5" stroke="#4ADB8A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-            <div class="num">Precio</div><div class="lbl">Fijo antes de empezar</div>
-          </div>
-        </div>
+        <svg viewBox="0 0 480 380" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;border-radius:20px;">
+          <defs>
+            <linearGradient id="bgGrad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#0F1018"/>
+              <stop offset="100%" stop-color="#161822"/>
+            </linearGradient>
+            <linearGradient id="barGrad1" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#6B60F0"/>
+              <stop offset="100%" stop-color="#4A40D0"/>
+            </linearGradient>
+            <linearGradient id="barGrad2" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#0FC4B4"/>
+              <stop offset="100%" stop-color="#0A9E90"/>
+            </linearGradient>
+            <linearGradient id="lineGrad" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="#6B60F0"/>
+              <stop offset="100%" stop-color="#0FC4B4"/>
+            </linearGradient>
+            <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#6B60F0" stop-opacity="0.3"/>
+              <stop offset="100%" stop-color="#6B60F0" stop-opacity="0"/>
+            </linearGradient>
+            <filter id="glow">
+              <feGaussianBlur stdDeviation="3" result="blur"/>
+              <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+            </filter>
+          </defs>
+
+          <!-- Fondo principal -->
+          <rect width="480" height="380" fill="url(#bgGrad)" rx="20"/>
+          <rect width="480" height="380" fill="rgba(107,96,240,0.04)" rx="20"/>
+
+          <!-- ── TARJETA SUPERIOR — Resumen financiero ── -->
+          <rect x="16" y="16" width="448" height="72" rx="12" fill="#1A1C2A" stroke="#222436" stroke-width="1"/>
+          <!-- Ícono -->
+          <rect x="28" y="26" width="50" height="50" rx="10" fill="rgba(107,96,240,0.15)"/>
+          <text x="53" y="57" text-anchor="middle" font-size="22">📊</text>
+          <!-- Texto -->
+          <text x="90" y="44" font-family="Inter,sans-serif" font-size="11" fill="#7A7E99">ESTADO FINANCIERO</text>
+          <text x="90" y="62" font-family="Inter,sans-serif" font-size="16" font-weight="700" fill="#EDEEF5">Contabilidad al día</text>
+          <!-- Badge -->
+          <rect x="340" y="32" width="108" height="28" rx="14" fill="rgba(31,174,92,0.15)" stroke="rgba(31,174,92,0.3)" stroke-width="1"/>
+          <circle cx="358" cy="46" r="4" fill="#1FAE5C"/>
+          <text x="368" y="50" font-family="Inter,sans-serif" font-size="11" font-weight="600" fill="#4ADB8A">✓ Sin multas</text>
+
+          <!-- ── GRÁFICO DE LÍNEA — Evolución ── -->
+          <rect x="16" y="100" width="290" height="148" rx="12" fill="#1A1C2A" stroke="#222436" stroke-width="1"/>
+          <text x="30" y="120" font-family="Inter,sans-serif" font-size="10" fill="#7A7E99">DECLARACIONES MENSUALES</text>
+          <text x="30" y="136" font-family="Inter,sans-serif" font-size="14" font-weight="700" fill="#EDEEF5">Cumplimiento 100%</text>
+
+          <!-- Líneas de cuadrícula -->
+          <line x1="30" y1="225" x2="290" y2="225" stroke="#222436" stroke-width="0.5"/>
+          <line x1="30" y1="205" x2="290" y2="205" stroke="#222436" stroke-width="0.5"/>
+          <line x1="30" y1="185" x2="290" y2="185" stroke="#222436" stroke-width="0.5"/>
+          <line x1="30" y1="165" x2="290" y2="165" stroke="#222436" stroke-width="0.5"/>
+
+          <!-- Área bajo la línea -->
+          <path d="M 40 215 C 75 208 110 195 145 188 S 215 175 250 168 S 270 160 285 155 L 285 225 L 40 225 Z"
+                fill="url(#areaGrad)"/>
+          <!-- Línea principal -->
+          <path d="M 40 215 C 75 208 110 195 145 188 S 215 175 250 168 S 270 160 285 155"
+                fill="none" stroke="url(#lineGrad)" stroke-width="2.5" stroke-linecap="round"/>
+          <!-- Puntos -->
+          <circle cx="40" cy="215" r="4" fill="#6B60F0" filter="url(#glow)"/>
+          <circle cx="105" cy="195" r="4" fill="#7B72F5"/>
+          <circle cx="170" cy="182" r="4" fill="#8A82F6"/>
+          <circle cx="235" cy="170" r="4" fill="#9B92F2"/>
+          <circle cx="285" cy="155" r="5" fill="#0FC4B4" filter="url(#glow)"/>
+          <!-- Tooltip en el último punto -->
+          <rect x="252" y="135" width="60" height="22" rx="6" fill="#0FC4B4"/>
+          <text x="282" y="150" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" font-weight="700" fill="#fff">✓ Al día</text>
+          <polygon points="275,157 282,164 289,157" fill="#0FC4B4"/>
+
+          <!-- Meses -->
+          <text x="40" y="238" font-family="Inter,sans-serif" font-size="9" fill="#7A7E99" text-anchor="middle">Ene</text>
+          <text x="105" y="238" font-family="Inter,sans-serif" font-size="9" fill="#7A7E99" text-anchor="middle">Mar</text>
+          <text x="170" y="238" font-family="Inter,sans-serif" font-size="9" fill="#7A7E99" text-anchor="middle">May</text>
+          <text x="235" y="238" font-family="Inter,sans-serif" font-size="9" fill="#7A7E99" text-anchor="middle">Jul</text>
+          <text x="285" y="238" font-family="Inter,sans-serif" font-size="9" fill="#0FC4B4" text-anchor="middle" font-weight="600">Hoy</text>
+
+          <!-- ── TARJETAS PEQUEÑAS DERECHA ── -->
+          <!-- Tarjeta: Gradualidad -->
+          <rect x="318" y="100" width="146" height="68" rx="12" fill="#1A1C2A" stroke="#222436" stroke-width="1"/>
+          <rect x="330" y="112" width="32" height="32" rx="8" fill="rgba(107,96,240,0.15)"/>
+          <text x="346" y="132" text-anchor="middle" font-size="16">⚖️</text>
+          <text x="370" y="120" font-family="Inter,sans-serif" font-size="9" fill="#7A7E99">GRADUALIDAD</text>
+          <text x="370" y="136" font-family="Inter,sans-serif" font-size="18" font-weight="800" fill="#6B60F0">95%</text>
+          <text x="370" y="150" font-family="Inter,sans-serif" font-size="9" fill="#7A7E99">de rebaja</text>
+
+          <!-- Tarjeta: Multa mínima -->
+          <rect x="318" y="180" width="146" height="68" rx="12" fill="#1A1C2A" stroke="#222436" stroke-width="1"/>
+          <rect x="330" y="192" width="32" height="32" rx="8" fill="rgba(245,165,36,0.15)"/>
+          <text x="346" y="212" text-anchor="middle" font-size="16">💰</text>
+          <text x="370" y="200" font-family="Inter,sans-serif" font-size="9" fill="#7A7E99">MULTA MÍNIMA</text>
+          <text x="370" y="216" font-family="Inter,sans-serif" font-size="18" font-weight="800" fill="#F5A524">S/27</text>
+          <text x="370" y="230" font-family="Inter,sans-serif" font-size="9" fill="#7A7E99">con gradualidad</text>
+
+          <!-- ── BARRAS — Servicios ── -->
+          <rect x="16" y="260" width="448" height="104" rx="12" fill="#1A1C2A" stroke="#222436" stroke-width="1"/>
+          <text x="30" y="280" font-family="Inter,sans-serif" font-size="10" fill="#7A7E99">SERVICIOS CONTABLES</text>
+
+          <!-- Barra 1: Reconstrucción -->
+          <text x="30" y="300" font-family="Inter,sans-serif" font-size="10" fill="#EDEEF5">Reconstrucción contable</text>
+          <rect x="190" y="290" width="240" height="10" rx="5" fill="#222436"/>
+          <rect x="190" y="290" width="216" height="10" rx="5" fill="url(#barGrad1)"/>
+          <text x="436" y="300" font-family="Inter,sans-serif" font-size="9" fill="#6B60F0" font-weight="600">90%</text>
+
+          <!-- Barra 2: Declaraciones -->
+          <text x="30" y="322" font-family="Inter,sans-serif" font-size="10" fill="#EDEEF5">Declaraciones SUNAT</text>
+          <rect x="190" y="312" width="240" height="10" rx="5" fill="#222436"/>
+          <rect x="190" y="312" width="228" height="10" rx="5" fill="url(#barGrad2)"/>
+          <text x="436" y="322" font-family="Inter,sans-serif" font-size="9" fill="#0FC4B4" font-weight="600">95%</text>
+
+          <!-- Barra 3: Laboral -->
+          <text x="30" y="344" font-family="Inter,sans-serif" font-size="10" fill="#EDEEF5">Asesoría laboral</text>
+          <rect x="190" y="334" width="240" height="10" rx="5" fill="#222436"/>
+          <rect x="190" y="334" width="192" height="10" rx="5" fill="url(#barGrad1)" opacity="0.7"/>
+          <text x="436" y="344" font-family="Inter,sans-serif" font-size="9" fill="#9B92F2" font-weight="600">80%</text>
+
+          <!-- Sello virtual -->
+          <rect x="348" y="262" width="110" height="22" rx="11" fill="rgba(31,174,92,0.12)" stroke="rgba(31,174,92,0.25)" stroke-width="1"/>
+          <circle cx="361" cy="273" r="3.5" fill="#1FAE5C"/>
+          <text x="370" y="277" font-family="Inter,sans-serif" font-size="9" font-weight="600" fill="#4ADB8A">Virtual · Todo Perú</text>
+        </svg>
       </div>
-    </div>
-  </div>
+</div>
 </section>
 
 <!-- SERVICIOS -->
