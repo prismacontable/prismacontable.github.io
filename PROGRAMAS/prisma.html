@@ -1058,18 +1058,23 @@ function calc(p,q){
     // trabajados, igual que el sueldo de planilla
     // si la ficha no tiene monto mensual, se respeta el importe tecleado:
     // asi los periodos guardados antes de este cambio siguen dando lo mismo
-    const im=(+p.sue>0)?r2((+p.sue||0)/CFG.DM*(+m.d||0)):r2(+m.hon||0);
+    // "Dias" es lo que la persona realmente vino a trabajar -asi lo llena
+    // cualquiera que capture la planilla, y asi dice el rotulo de la boleta,
+    // "DIAS LAB."-, es decir que YA viene sin los dias de falta. El honorario
+    // se calcula sobre el total de dias que le correspondian en el periodo
+    // (los trabajados mas los faltados, topado al tamaño del periodo) para no
+    // descontar la falta aqui tambien: se descuenta una sola vez, aparte, en
+    // faltaImp -igual que la tardanza-. Antes se usaba solo "m.d", lo que
+    // restaba la falta dos veces (una porque "Dias" ya viene neteado, otra en
+    // faltaImp) y perjudicaba a la persona.
+    const dPagoRh=Math.min((+m.d||0)+(+m.f||0),TOPE_DIAS(q));
+    const im=(+p.sue>0)?r2((+p.sue||0)/CFG.DM*dPagoRh):r2(+m.hon||0);
     const vh=(+p.sue||0)/CFG.DM/CFG.JOR;
     const {he25,he35}=he2535_(m,vh);
     const com=+m.com||0,bon=+m.bon||0,tar=+m.tar||0,ade=+m.ade||0,pre=+m.pre||0;
     const fer=r2((+p.sue||0)/CFG.DM*(+m.fer||0)*CFG.FER);
     const faltaImp=r2((+p.sue||0)/CFG.DM*(+m.f||0));
     const ing=r2(im+bon+com+he25+he35+fer);
-    // La inasistencia se descuenta como concepto aparte (no reduciendo "Dias"):
-    // asi la boleta muestra el honorario/sueldo base tal cual corresponde por
-    // los dias tecleados, y aparte, detallado, cuanto se descuenta por faltas
-    // -igual que la tardanza-, en vez de dejarlo escondido dentro de un
-    // numero de dias ya reducido.
     const base=r2(ing-tar-faltaImp);               // base de renta de 4ta
     // La dieta de directorio puede tener su propio minimo para retener: por
     // defecto retiene desde el primer sol (CFG.MIN4D=0). Se cambia en Cuentas.
@@ -1082,15 +1087,25 @@ function calc(p,q){
       faltaImp,
       base4:base,onp:0,ap:0,pr:0,apc:0,r5:0,ret4,tar,ade,pre,des,neto:r2(ing-des)};
   }
-  const d=+m.d||0,vd=+m.v||0,fd=+m.fer||0,dmd=+m.dm||0;
+  const d=+m.d||0,vd=+m.v||0,fd=+m.fer||0,dmd=+m.dm||0,fFalt=+m.f||0;
   const jornal=p.sue/CFG.DM;
-  const sue=r2(jornal*d),vac=r2(jornal*vd),vh=jornal/CFG.JOR;
+  // "Dias" es lo que la persona realmente vino a trabajar -asi lo llena quien
+  // captura la planilla, y asi dice el rotulo de la boleta, "DIAS LAB."-, es
+  // decir que YA viene sin los dias de falta. El sueldo (y la asignacion
+  // familiar, un poco mas abajo) se calculan sobre el total de dias que le
+  // correspondian en el periodo -los trabajados mas los faltados, topado al
+  // tamaño del periodo- para no descontar la falta aqui tambien: se descuenta
+  // una sola vez, aparte, en faltaImp. Antes se usaba solo "d", lo que restaba
+  // la falta dos veces (una porque "Dias" ya viene neteado de la falta, otra
+  // en faltaImp) y le pagaba de menos a la persona.
+  const dPago=Math.min(d+fFalt,TOPE_DIAS(q));
+  const sue=r2(jornal*dPago),vac=r2(jornal*vd),vh=jornal/CFG.JOR;
   // Asignacion familiar: monto fijo (10% RMV) si la ficha lo marca, prorrateado
-  // por los dias del periodo igual que el sueldo -si hay una falta, se
-  // descuenta la parte proporcional igual que a la remuneracion basica-. Es
+  // por los dias del periodo igual que el sueldo -la falta se descuenta aparte,
+  // en faltaImp, igual que a la remuneracion basica, en vez de aqui-. Es
   // remuneracion computable: afecta AFP/ONP/EsSalud y entra a la base de
   // vacaciones/CTS/gratificacion (ver benefCalc/liquidacion_).
-  const af=p.asigFam?r2(asigFamMonto()/CFG.DM*d):0;
+  const af=p.asigFam?r2(asigFamMonto()/CFG.DM*dPago):0;
   /* Descanso medico. Los primeros 20 dias de incapacidad los paga el empleador
      y a partir del dia 21 el subsidio es de cargo de EsSalud. En ambos casos el
      importe SI esta afecto a ONP y AFP (4ta D.T. de la Ley 28991 y art. 30 del
@@ -1117,13 +1132,13 @@ function calc(p,q){
   // La inasistencia descuenta el equivalente de un dia tanto del sueldo como
   // de la asignacion familiar -esta ultima se ve afectada por la asistencia
   // igual que el sueldo-, sumados en un solo importe (una fila en la boleta).
-  const faltaImp=r2(jornal*(+m.f||0)+(p.asigFam?asigFamMonto()/CFG.DM*(+m.f||0):0));
+  const faltaImp=r2(jornal*fFalt+(p.asigFam?asigFamMonto()/CFG.DM*fFalt:0));
   const ing=r2(sue+af+vac+vtr+dm+he25+he35+com+bon+fer+noAfecto);
-  // La inasistencia se descuenta como concepto aparte (no reduciendo "Dias"):
-  // el sueldo base se calcula con los dias tal como estan tecleados -"sin
-  // descontar"- y el descuento por faltas sale detallado en su propia linea,
-  // igual que la tardanza, tanto en la base de aportes/renta como en el
-  // neto a pagar.
+  // sue/af ya se calcularon sobre dPago (dias trabajados + faltados, sin
+  // descontar la falta -ver arriba-), y faltaImp la descuenta aca, una sola
+  // vez, en la base de aportes/renta y en el neto a pagar -igual que la
+  // tardanza-. Asi la boleta muestra la remuneracion completa que corresponde
+  // al periodo y, aparte y detallado, cuanto se descuenta por faltar.
   const base=r2(sue+af+vac+vtr+dm+he25+he35+com+fer-tar-faltaImp);   // afecta a AFP/ONP
   const baseSal=r2(base-dm);                              // EsSalud: sin el subsidio
   const t=tasas(p.afp);
@@ -1134,7 +1149,7 @@ function calc(p,q){
   // la AFP cobra su comision directo del fondo una vez al año, no via boleta.
   const apc=(p.comAfp==='FLUJO')?r2(base*flujoAfp(p.afp)):0;
   const des=r2(onp+ap+pr+apc+tar+ade+pre+r5+faltaImp);
-  return {rh:false,dias:d,f:+m.f||0,vd,fd,dmd,sue,af,vac,dm,fer,he25,he35,com,bon,hon:0,ing,base,baseSal,
+  return {rh:false,dias:d,f:fFalt,vd,fd,dmd,sue,af,vac,dm,fer,he25,he35,com,bon,hon:0,ing,base,baseSal,
     gra,bge,cts,liq,vtr,noAfecto,
     faltaImp,
     onp,ap,pr,apc,r5,ret4:0,tar,ade,pre,des,neto:r2(ing-des)};
