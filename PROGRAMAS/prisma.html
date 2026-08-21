@@ -981,6 +981,29 @@ html[data-hoja="horizontal"] .corte{display:none}
 </div>
 </main>
 <script>
+/* Hallazgo de auditoria: no habia ningun logging centralizado de errores -ni
+   un solo console.error/window.onerror en toda la pagina; cada funcion
+   manejaba sus propios errores por su cuenta (try/catch local + alert, o en
+   silencio). Sin acceso al codigo de quien usa la herramienta, hoy no hay
+   forma de saber si algo revento salvo que la persona lo note y avise. Esto
+   NO agrega telemetria externa (no hay a donde mandarla desde un Apps
+   Script/HTML estatico sin infraestructura nueva) pero deja un punto unico
+   donde cualquier error no atrapado en algun otro lado queda registrado -en
+   la consola del navegador (F12), y en un arreglo en memoria (ULTIMOS_ERRORES)
+   por si hace falta revisarlo durante una sesion- en vez de desaparecer sin
+   dejar rastro. Es el primer paso hacia el logging estructurado que la
+   migracion a Node.js deberia tener desde el dia uno. */
+const ULTIMOS_ERRORES=[];
+window.addEventListener('error',function(ev){
+  try{ULTIMOS_ERRORES.push({t:new Date().toISOString(),msg:String(ev.message||ev.error||''),
+    origen:(ev.filename||'')+':'+(ev.lineno||'')});
+    if(ULTIMOS_ERRORES.length>50)ULTIMOS_ERRORES.shift();
+    console.error('[PRISMA] error no atrapado:',ev.error||ev.message);}catch(e){}});
+window.addEventListener('unhandledrejection',function(ev){
+  try{ULTIMOS_ERRORES.push({t:new Date().toISOString(),msg:'promesa rechazada: '+String(ev.reason&&ev.reason.message||ev.reason||'')});
+    if(ULTIMOS_ERRORES.length>50)ULTIMOS_ERRORES.shift();
+    console.error('[PRISMA] promesa rechazada sin atrapar:',ev.reason);}catch(e){}});
+
 /* CONFIG */
 const CFG={RMV:1130,UIT:5500,DM:30,JOR:8,T_ONP:.13,PRIMA:.0137,APO:.10,
   T4:.08,MIN4:1500,MIN4D:0,HE25:.25,HE35:.35,TOPE:2,T_ES:.09,VL:5.8333,VAC_DIAS:15,FER:2,
@@ -1261,8 +1284,18 @@ function decAHorasMin_(d){
    la misma cantidad de horas se repartio en varios dias: el umbral de horas
    al 25% es POR DIA, no por quincena, asi que dos casos con el mismo total
    pueden tener un importe distinto segun como se distribuyeron los dias.
-   Ahora cada dia se registra aparte (m.heD, un arreglo de {f,h25,h35}) con
-   las horas al 25% y al 35% ya definidas por quien captura, sin derivar nada.
+   Cada dia se registra aparte (m.heD, un arreglo de {f,h}).
+   (pedido: "que solo sea necesario colocar el total de horas extras y ya lo
+   separas segun cantidad por los dos tramos"): quien captura pone solo el
+   TOTAL de horas de ese dia (x.h); heDTotales reparte sola cuanto va al 25%
+   y cuanto al 35% aplicando el umbral (CFG.TOPE, 2 horas) a esa fila -ya no
+   hay que calcular el reparto a mano. Las filas cargadas ANTES de este
+   cambio (que ya traian el 25%/35% separado a mano, en x.h25/x.h35 y sin
+   x.h) se respetan tal cual, para no recalcular distinto un importe ya
+   declarado -esa fila pasa al reparto automatico recien cuando se edita.
+   La edicion vive en la pestaña Incidencias (ver abrirHE, llamado desde
+   rIncCtrl); en 1Q/2Q/Mensual la celda de Horas extra quedo de solo lectura
+   (ver heBtnCell), mismo criterio que ya se aplico con Faltas/Tardanzas.
    m.he se mantiene sincronizado como total informativo (horas), porque varias
    partes de la pantalla (resumenes, el promedio para gratificacion/CTS de
    periodos ya guardados en disco que no tienen heD todavia) siguen leyendo
@@ -1270,7 +1303,13 @@ function decAHorasMin_(d){
    anterior (total + umbral) para no cambiarle el importe a lo ya cerrado. */
 function heDTotales(heD){
   const t={h25:0,h35:0};
-  (heD||[]).forEach(x=>{t.h25+=(+x.h25||0);t.h35+=(+x.h35||0);});
+  (heD||[]).forEach(x=>{
+    if(x.h!=null){
+      const h=Math.max(0,+x.h||0);
+      t.h25+=Math.min(h,CFG.TOPE);t.h35+=Math.max(0,h-CFG.TOPE);
+    }else{
+      t.h25+=(+x.h25||0);t.h35+=(+x.h35||0);
+    }});
   t.h25=r2(t.h25);t.h35=r2(t.h35);t.tot=r2(t.h25+t.h35);
   return t;}
 function heDSync(mov){
@@ -1299,18 +1338,16 @@ function heHorasPeriodo_(dni){
   const he=r2((+a.he||0)+(+b.he||0));
   return {h25:Math.min(he,CFG.TOPE*2),h35:Math.max(0,he-CFG.TOPE*2)};
 }
-// celda de la grilla: boton que abre el detalle por fecha, en vez del input
-// de un solo total que habia antes
+// celda de la grilla: SOLO LECTURA. La edicion de horas extra (por fecha, con
+// reparto automatico 25%/35%) se mudo a la pestaña Incidencias, para no
+// duplicar la misma accion en dos lugares -mismo criterio ya aplicado con
+// Faltas/Tardanzas, ver incBtnCell.
 function heBtnCell(dni,q,mov){
   // mov.he siempre esta al dia (viene del archivo cargado o lo sincroniza
-  // heDSync tras cada edicion): se muestra directo, sin recalcular desde
-  // heD, para que un periodo viejo sin fechas cargadas se siga viendo bien.
-  const n=(mov.heD||[]).length,tot=+mov.he||0;
-  return '<td class="ctr"><button type="button" onclick="abrirHE(\''+dni+'\','+q+')" '+
-    'title="Horas extra por fecha (25% / 35%)'+(n?' · '+n+' fecha(s) cargada(s)':'')+'" '+
-    'style="width:45px;padding:2px 0;border:1px solid var(--border2);border-radius:6px;'+
-    'background:var(--surface);color:var(--ink2);cursor:pointer;font:inherit;font-variant-numeric:tabular-nums">'+
-    (tot>0?dec2hm(tot):'+')+'</button></td>';}
+  // heDSync tras cada edicion en Incidencias): se muestra directo.
+  const tot=+mov.he||0;
+  return '<td class="ctr" title="Horas extra de este periodo -se edita en la pestaña Incidencias" '+
+    'style="color:var(--ink2);font-variant-numeric:tabular-nums">'+(tot>0?dec2hm(tot):'')+'</td>';}
 
 /* ================== INASISTENCIAS POR FECHA (punto 3) ==================
    Antes falta (m.f, un numero de dias) y tardanza (m.tar, un monto en soles)
@@ -1426,9 +1463,8 @@ function limpiarFila(dni,q){
   const p=P.find(x=>x.dni===dni);
   if(!confirm('Poner en cero los movimientos de '+(p?p.nom:dni)+' en la '+(q===1?'1ra':'2da')+' quincena?'))return;
   if(M[dni])M[dni]['q'+q]=blq(q);R();}
-function limpiarHonorarios(){
-  if(!confirm('Se pondran en cero los importes de todos los recibos por honorarios. Continuar?'))return;
-  rhs().forEach(p=>{[1,2].forEach(q=>{const m=mv(p.dni,q);m.hon=0;m.ade=0;m.pre=0;m.sus='NO';});});R();}
+// (limpiarHonorarios se elimino aqui, confirmada como codigo muerto por la
+// auditoria: ningun boton la llamaba.)
 function limpiarHE(){
   if(!confirm('Se pondran en cero las horas extras de ambas quincenas. Continuar?'))return;
   Object.keys(M).forEach(d=>{[1,2].forEach(q=>{if(M[d]&&M[d]['q'+q]){M[d]['q'+q].he=0;M[d]['q'+q].heD=[];}});});R();}
@@ -1517,6 +1553,7 @@ function rPersonal(){
 }
 /* QUINCENA */
 function rQna(q){
+  asegurarLiqAuto_();
   let t={ing:0,base:0,ap:0,pr:0,apc:0,onp:0,tar:0,ade:0,pre:0,r4:0,r5:0,neto:0,he:0,he25:0,he35:0,
          falta:0,sue:0,bon:0,com:0,vac:0,vv:0,fer:0,gra:0,bge:0,cts:0,liq:0,vtr:0,dm:0};
   const num=(dni,c,v,w)=>'<td class="num"><input data-f="'+c+'"'+(w?' class="'+w+'"':'')+' type="number" min="0" step=".01" value="'+v+'" onchange="setM(\''+dni+'\','+q+',\''+c+'\',this.value)"></td>';
@@ -1741,7 +1778,10 @@ async function pedirBeneficios(forzar){
   if(!haySesionSegura()){BEN.clave='';return BEN;}
   BEN.cargando=true;
   const{a,m}=per();
-  const r=await callBackend_('beneficios',{anio:a,mes:m,
+  // ruc: agregado por hallazgo de auditoria -el backend ahora exige un RUC
+  // autorizado en esta accion, igual que en generate/generate4ta/concar/
+  // plan_get/plan_set (antes no se mandaba y el backend tampoco lo pedia).
+  const r=await callBackend_('beneficios',{anio:a,mes:m,ruc:CFG.RUC,
     trabajadores:pla().map(p=>({dni:p.dni,nom:p.nom,sue:p.sue,ing:p.ing,ces:p.ces,
       reg:p.reg,mot:p.mot,fvto:p.fvto,ultVac:p.ultVac,
       // asignacion familiar mensual (0 si no le corresponde): se manda ya
@@ -1867,6 +1907,14 @@ function rBeneficios(){
     '<span class="chip '+(HIST_INFO.leidos>0?'ok':'warn')+'"><span class="dot"></span>'+
       (HIST_INFO.leidos>0?('Promedios sobre '+HIST_INFO.leidos+' mes(es) leídos')
                          :'Sin historial: la base es solo el sueldo')+'</span>'+
+    // Hallazgo de auditoria: antes, si un mes del historial no se podia leer
+    // (archivo danado, permiso, carpeta movida), quedaba afuera del promedio
+    // en silencio -sin ningun aviso- y eso podia bajar de forma invisible el
+    // calculo de comisiones/bonos/horas extra regulares para gratificacion/CTS.
+    // Ahora se avisa cuales meses fallaron, para que quien procesa la
+    // planilla decida si hace falta revisarlos.
+    (HIST_INFO.fallidos&&HIST_INFO.fallidos.length?
+      '<span class="chip warn" title="Estos periodos no se pudieron leer de la carpeta -no cuentan en el promedio de arriba. Puede ser normal si aun no existen (empresa nueva), o si el archivo esta dañado/movido."><span class="dot"></span>No se pudo leer: '+HIST_INFO.fallidos.join(', ')+'</span>':'')+
     '<span style="font-size:10.5px;color:var(--ink2)">'+
      (vista==='devengue'?'Se devenga por los días que la persona estuvo en planilla este mes: si ingreso o ceso a mitad de mes, sale proporcional.'
      :vista==='grati'?'Cruza ingreso y cese contra el semestre '+S.ini+'-'+S.fin+'. Meses completos mas dias sueltos. Se paga '+FECHAS_PAGO.grati
@@ -1932,17 +1980,37 @@ function diasEnTramo(p,desde,hasta){
    semestre, y el promedio se obtiene dividiendo lo acumulado entre seis.
    Los meses anteriores se leen de los archivos ya guardados en la carpeta; si
    no hay historial, la base es el sueldo, como antes. */
-let HIST={},HIST_INFO={meses:[],leidos:0};
+let HIST={},HIST_INFO={meses:[],leidos:0,fallidos:[]};
 async function cargarHistorial(n){
-  HIST={};HIST_INFO={meses:[],leidos:0};
+  HIST={};HIST_INFO={meses:[],leidos:0,fallidos:[]};
   if(!ROOT)return 0;
   const{a,m}=per();let A=a,Mn=m;
   for(let i=0;i<(n||6);i++){
     Mn--;if(Mn===0){Mn=12;A--;}
     const pp=periodoStr(A,Mn);
     HIST_INFO.meses.push(pp);
-    try{const d=await leerMes(A,Mn);
-      if(d){HIST[pp]={P:d.P||[],M:d.M||{}};HIST_INFO.leidos++;}}catch(e){}}
+    try{
+      const d=await leerMes(A,Mn);
+      if(d){
+        // Indice por DNI armado UNA sola vez aqui (no en cada persona en cada
+        // render): antes promedioVariables hacia un (h.P||[]).find(...) lineal
+        // por cada trabajador y por cada uno de los 6 periodos -O(6*N^2) para
+        // una planilla de N personas-. Hallazgo de auditoria (rendimiento);
+        // el resultado (los importes) es identico, solo cambia como se busca.
+        const porDni={};(d.P||[]).forEach(x=>{if(x&&x.dni)porDni[x.dni]=x;});
+        HIST[pp]={P:d.P||[],M:d.M||{},porDni};
+        HIST_INFO.leidos++;
+      }
+    }catch(e){
+      // Hallazgo de auditoria: antes este catch quedaba vacio -un mes
+      // historico ilegible se saltaba en silencio, sin ningun aviso, y podia
+      // bajar de forma invisible el promedio de comisiones/bonos/horas extra
+      // (y por lo tanto la gratificacion/CTS) de quien procesa la planilla.
+      // Ahora se registra cual mes fallo para poder avisarlo en pantalla
+      // (ver el chip de "Promedios sobre N mes(es)" en rBeneficios).
+      HIST_INFO.fallidos.push(pp);
+    }
+  }
   return HIST_INFO.leidos;}
 
 /* importe de los conceptos variables de un bloque, con el sueldo de ese mes */
@@ -1965,7 +2033,11 @@ function promedioVariables(p,periodos){
   const acum={com:0,bon:0,he:0},meses={com:0,bon:0,he:0};
   (periodos||[]).forEach(pp=>{
     const h=HIST[pp];if(!h)return;
-    const ficha=(h.P||[]).find(x=>x.dni===p.dni),mv_=h.M?h.M[p.dni]:null;
+    // h.porDni: indice por DNI armado una sola vez en cargarHistorial (ver
+    // ahi el comentario del hallazgo de rendimiento). Si un HIST[pp] viniera
+    // de antes de este cambio (no deberia, se reconstruye siempre en cada
+    // cargarHistorial) se cae de vuelta al find() lineal, sin romper nada.
+    const ficha=h.porDni?h.porDni[p.dni]:(h.P||[]).find(x=>x.dni===p.dni),mv_=h.M?h.M[p.dni]:null;
     if(!mv_)return;
     const sue=ficha?(+ficha.sue||0):(+p.sue||0);
     const A=variablesBloque(mv_.q1||{},sue),B=variablesBloque(mv_.q2||{},sue);
@@ -1979,12 +2051,9 @@ function promedioVariables(p,periodos){
   out.periodos=(periodos||[]).filter(x=>HIST[x]);
   return out;}
 
-// Remuneracion computable: sueldo basico + asignacion familiar (si le
-// corresponde) + promedio de los conceptos variables regulares del semestre.
-function baseBS(p,a,m,periodos){
-  const pr=promedioVariables(p,periodos||periodosPrevios(a||per().a,m||per().m,6));
-  const af=p.asigFam?asigFamMonto():0;
-  return r2((+p.sue||0)+af+pr.total);}
+// (baseBS se elimino aqui, confirmada como codigo muerto por la auditoria:
+// duplicaba exactamente lo que benefCalc ya calcula inline mas abajo, sin
+// que nada la llamara.)
 
 /* --- devengue del mes ------------------------------------------------------
    Se queda en la pantalla porque alimenta la provision contable y se recalcula
@@ -2023,8 +2092,8 @@ const MOTIVOS={
   JUBILACION:{nom:'Jubilación'},FALLECIMIENTO:{nom:'Fallecimiento'},
   ARBITRARIO:{nom:'Despido arbitrario (contrato indefinido)'},
   ARBITRARIO_PF:{nom:'Despido arbitrario (contrato a plazo fijo)'}};
-function setVacUlt(dni,v){const p=P.find(x=>x.dni===dni);if(!p)return;
-  p.ultVac=String(v||'').trim();R();}
+// (setVacUlt se elimino aqui, confirmada como codigo muerto por la auditoria:
+// p.ultVac ahora se escribe via vacHistSync_, que si esta conectada.)
 function semestreDe(m){return m<=6?{ini:1,fin:6,pago:7,nom:'Fiestas Patrias'}
                                   :{ini:7,fin:12,pago:12,nom:'2do semestre'};}
 
@@ -2041,17 +2110,14 @@ function semestreDe(m){return m<=6?{ini:1,fin:6,pago:7,nom:'Fiestas Patrias'}
    una liquidacion si la persona cesa antes de completar el periodo -eso es
    una regla de negocio que hay que confirmar contigo antes de automatizarla-;
    por ahora el historial queda visible para que quien liquide lo revise a mano. */
-function vacHistBtn_(p){
-  const n=(Array.isArray(p.vacHist)?p.vacHist:[]).length;
-  return '<button type="button" onclick="abrirVacHist('+p.id+')" title="Historial de vacaciones (gozadas y adelantadas)'+
-    (n?' · '+n+' registro(s)':'')+'" style="padding:2px 8px;border:1px solid var(--border2);border-radius:6px;'+
-    'background:var(--surface);color:var(--ink2);cursor:pointer;font:inherit">'+(n||'+')+'</button>';}
-function abrirVacHist(id){
-  const p=P.find(x=>x.id===id);if(!p)return;
-  p.vacHist=Array.isArray(p.vacHist)?p.vacHist:[];
-  const bk=document.getElementById('modalBk');
-  bk.dataset.vhId=id;bk.classList.add('on');
-  rVacHistModal();}
+// (vacHistBtn_/abrirVacHist/rVacHistModal/addVacHistFila/setVacHistFila/
+// delVacHistFila -el boton y modal de "Historial de vacaciones" independiente-
+// se eliminaron aqui, confirmados como codigo muerto por la auditoria: nada
+// llamaba a vacHistBtn_ para emitir el boton en pantalla, asi que el resto del
+// cluster tampoco era alcanzable desde la UI real. El equivalente funcional ya
+// vive en la pestaña Incidencias (ver rIncCtrl/setIncFila mas abajo), que si
+// esta conectada. vacHistSync_ SI sigue viva -la usa Incidencias- y se
+// mantiene tal cual.)
 function vacHistSync_(p){
   p.vacHist=Array.isArray(p.vacHist)?p.vacHist:[];
   // Vendida no es descanso fisico -la persona sigue trabajando ese dia-, asi
@@ -2062,45 +2128,6 @@ function vacHistSync_(p){
     const ult=descansos.slice().sort((a,b)=>a.f<b.f?-1:(a.f>b.f?1:0)).pop();
     p.ultVac=ult.f;}
   R();}
-function rVacHistModal(){
-  const bk=document.getElementById('modalBk');
-  const id=+bk.dataset.vhId;
-  const p=P.find(x=>x.id===id);if(!p)return;
-  p.vacHist=Array.isArray(p.vacHist)?p.vacHist:[];
-  document.getElementById('mkTit').textContent='Historial de vacaciones · '+p.nom;
-  const filas=p.vacHist.map((x,i)=>{
-    const esAdel=x.tipo==='ADELANTADA';
-    return '<tr><td><input type="date" value="'+(x.f||'')+'" onchange="setVacHistFila('+id+','+i+',\'f\',this.value)"></td>'+
-    '<td class="ctr"><select onchange="setVacHistFila('+id+','+i+',\'tipo\',this.value)">'+
-      '<option value="GOZADA"'+(esAdel?'':' selected')+'>Gozada</option>'+
-      '<option value="ADELANTADA"'+(esAdel?' selected':'')+'>Adelantada</option></select></td>'+
-    '<td class="num"><input type="number" min="0" step="1" class="w45" value="'+(x.dias||0)+'" title="Dias tomados" onchange="setVacHistFila('+id+','+i+',\'dias\',this.value)"></td>'+
-    '<td><input type="text" placeholder="Nota (opcional)" value="'+escAttr_(x.nota||'')+'" style="width:180px" onchange="setVacHistFila('+id+','+i+',\'nota\',this.value)"></td>'+
-    '<td class="ctr"><button type="button" class="bd" style="padding:2px 7px" onclick="delVacHistFila('+id+','+i+')">X</button></td></tr>';}).join('');
-  document.getElementById('mkBody').innerHTML=
-    '<p style="font-size:11.5px;color:var(--ink3);margin-bottom:10px">Un registro por cada vez que la persona salio de vacaciones. "Gozada" es un descanso de un periodo ya ganado; "Adelantada" es un descanso tomado antes de cumplir el año -util para llevar la cuenta si hay que descontarlo despues-. La fecha mas reciente actualiza el "Último descanso gozado" que usa el calculo de aniversario.</p>'+
-    '<table><thead><tr><th class="left">Fecha</th><th>Tipo</th><th>Días</th><th class="left">Nota</th><th></th></tr></thead><tbody>'+
-    (filas||'<tr><td colspan="5" style="text-align:center;color:var(--ink3);padding:10px">Sin registros.</td></tr>')+
-    '</tbody></table>'+
-    '<div style="margin-top:10px"><button type="button" class="bp" onclick="addVacHistFila('+id+')">+ Agregar registro</button></div>';
-  document.getElementById('modalBk').classList.add('on');}
-function addVacHistFila(id){
-  const p=P.find(x=>x.id===id);if(!p)return;
-  p.vacHist=Array.isArray(p.vacHist)?p.vacHist:[];
-  p.vacHist.push({f:new Date().toISOString().slice(0,10),tipo:'GOZADA',dias:regDe(p).vac,nota:''});
-  vacHistSync_(p);rVacHistModal();}
-function setVacHistFila(id,i,campo,v){
-  const p=P.find(x=>x.id===id);if(!p||!p.vacHist||!p.vacHist[i])return;
-  const x=p.vacHist[i];
-  if(campo==='f')x.f=String(v||'').trim();
-  else if(campo==='tipo')x.tipo=(v==='ADELANTADA')?'ADELANTADA':'GOZADA';
-  else if(campo==='dias')x.dias=Math.max(0,Math.round(+v||0));
-  else if(campo==='nota')x.nota=String(v||'').trim();
-  vacHistSync_(p);rVacHistModal();}
-function delVacHistFila(id,i){
-  const p=P.find(x=>x.id===id);if(!p||!p.vacHist)return;
-  p.vacHist.splice(i,1);vacHistSync_(p);rVacHistModal();}
-
 // (vacacionesPendientes esta definida una sola vez, mas arriba: antes estaba
 // duplicada aqui con una linea sin uso; la version de abajo ganaba en
 // silencio porque en JS la ultima declaracion de una funcion es la que queda.)
@@ -2169,15 +2196,18 @@ function rIncCtrl(){
       cellNum('goz',vacDiasEnPeriodo_(p,ICQ,'GOZADA'),'Dias de vacaciones gozadas en este periodo -se aplican solos al Vac. dias de la quincena/mes',false)+
       cellNum('adel',vacDiasEnPeriodo_(p,ICQ,'ADELANTADA'),'Dias de vacaciones adelantadas en este periodo -se aplican solos al Vac. dias de la quincena/mes',false)+
       cellNum('vend',vacDiasEnPeriodo_(p,ICQ,'VENDIDA'),'Dias de vacaciones vendidas en este periodo -se pagan igual que un dia de vacacion, pero la persona sigue trabajando: NO restan de Dias Laborados',false)+
+      '<td class="ctr"><button type="button" class="bd" style="padding:2px 9px" onclick="abrirHE(\''+p.dni+'\','+ICQ+')" title="Horas extra por fecha: coloca el total de horas de cada dia y el sistema separa solo cuanto va al 25% y al 35% (2 primeras horas del dia al 25%)">'+
+        ((+mov.he||0)>0?dec2hm(mov.he):'+')+'</button></td>'+
       '</tr>';}).join('');
   w.innerHTML='<div class="pb" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">'+
-    '<div style="font-size:11.5px;color:var(--ink2);max-width:520px">Escribe o pega una columna (copiada de Excel) para cargar varios trabajadores de una vez; el <b>+</b> abre el detalle por fecha exacta, que reubica sola la incidencia a la quincena que corresponda. Faltas, tardanzas y vacaciones son de este periodo -al escribirlas se aplican solas a la quincena o mes en pantalla.</div>'+
+    '<div style="font-size:11.5px;color:var(--ink2);max-width:520px">Escribe o pega una columna (copiada de Excel) para cargar varios trabajadores de una vez; el <b>+</b> abre el detalle por fecha exacta, que reubica sola la incidencia a la quincena que corresponda. Faltas, tardanzas y vacaciones son de este periodo -al escribirlas se aplican solas a la quincena o mes en pantalla. Horas extra: coloca el total por dia en el <b>+</b> de esa columna, el reparto 25%/35% sale solo.</div>'+
     selPer+'</div>'+
     '<table><thead><tr><th class="ctr">#</th><th class="left">DNI</th><th class="left">Nombre</th><th>Estado</th><th></th>'+
     '<th>Faltas</th><th>S/ Tardanzas</th><th title="Dias de vacaciones gozadas de este periodo; se aplican solos al Vac. dias de la quincena/mes">Vac. gozadas</th>'+
     '<th title="Dias de vacaciones adelantadas de este periodo; se aplican solos al Vac. dias de la quincena/mes">Vac. adelantadas</th>'+
-    '<th title="Dias de vacaciones vendidas (D.S. 012-92-TR): se pagan aparte, sin restar Dias Laborados -la persona sigue trabajando ese dia">Vac. vendidas</th></tr></thead><tbody>'+
-    (trs||'<tr><td colspan="10" style="text-align:center;padding:20px;color:var(--ink3)">No hay personal registrado.</td></tr>')+
+    '<th title="Dias de vacaciones vendidas (D.S. 012-92-TR): se pagan aparte, sin restar Dias Laborados -la persona sigue trabajando ese dia">Vac. vendidas</th>'+
+    '<th title="Horas extra de este periodo: coloca el total de horas de cada dia (no separes 25%/35% a mano, el sistema lo hace solo con el umbral de 2 horas por dia)">H. Extras</th></tr></thead><tbody>'+
+    (trs||'<tr><td colspan="11" style="text-align:center;padding:20px;color:var(--ink3)">No hay personal registrado.</td></tr>')+
     '</tbody></table>';}
 
 /* ================== REPORTERIA: vacaciones, inasistencias y tardanzas ==================
@@ -2668,8 +2698,21 @@ function liqHTML(p,tag,cls){
      L.vac.ganadas,0):'')+
    fila('2004','VACACIONES TRUNCAS',
      'Fracción desde '+L.vac.desde+' · '+L.vac.meses+' meses '+(L.vac.dias%30)+' días',
+     // OJO: el importe de vacaciones truncas (codigo PLAME 0114) SI se
+     // calcula correcto y proporcional al regimen laboral (30 dias/año en
+     // General, 15 en MYPE Pequeña/Micro -ver liquidacion_ en el backend,
+     // que ya pondera por R.vac). El bug reportado estaba aqui, en el TEXTO
+     // de esta explicacion: usaba "tu remuneracion / 30" como tarifa diaria
+     // SIEMPRE, sin importar el regimen -esa tarifa es la de un regimen
+     // General de 30 dias; en MYPE (15 dias) el importe real es la mitad, y
+     // el texto mostraba "X dias x tarifa" sin que esa cuenta cuadrara con
+     // el importe real de la fila (ej. real S/31.25 pero el texto sugeria
+     // 15 x S/50 = S/750). Ahora la tarifa mostrada sale de dividir el
+     // importe real entre los dias, asi el texto SIEMPRE cuadra con lo que
+     // se paga, sea cual sea el regimen.
      'Es la parte proporcional de tus vacaciones por el tiempo trabajado desde tu último descanso (o tu ingreso, '+
-     'si nunca gozaste), a razón de S/ '+f(r2(L.base/30))+' por día: '+L.vac.dias+' día(s) × S/ '+f(r2(L.base/30))+
+     'si nunca gozaste), segun tu régimen laboral ('+regBoleta(p)+'), a razón de S/ '+f(r2(L.vac.dias?L.vac.monto/L.vac.dias:0))+
+     ' por día: '+L.vac.dias+' día(s) × S/ '+f(r2(L.vac.dias?L.vac.monto/L.vac.dias:0))+
      ' = S/ '+f(L.vac.monto)+'.',
      L.vac.monto,pagado.vtr)+
    (L.ind.aplica||pagado.liq>0?fila('2005',
@@ -3096,35 +3139,40 @@ function rHEModal(){
   if(!dni)return;
   const p=P.find(x=>x.dni===dni);if(!p)return;
   const mov=mv(dni,q);mov.heD=Array.isArray(mov.heD)?mov.heD:[];
-  document.getElementById('mkTit').textContent='Horas extra · '+p.nom+' · '+(q===2?'2da':'1ra')+' quincena';
-  const filas=mov.heD.map((x,i)=>
-    '<tr><td><input type="date" value="'+(x.f||'')+'" onchange="setHEFila(\''+dni+'\','+q+','+i+',\'f\',this.value)"'+(BLOQ?' disabled':'')+'></td>'+
-    '<td class="num"><input type="text" inputmode="numeric" class="w45" placeholder="0:00" value="'+dec2hm(x.h25||0)+'" title="Formato hh:mm" onchange="setHEFila(\''+dni+'\','+q+','+i+',\'h25\',this.value)"'+(BLOQ?' disabled':'')+'></td>'+
-    '<td class="num"><input type="text" inputmode="numeric" class="w45" placeholder="0:00" value="'+dec2hm(x.h35||0)+'" title="Formato hh:mm" onchange="setHEFila(\''+dni+'\','+q+','+i+',\'h35\',this.value)"'+(BLOQ?' disabled':'')+'></td>'+
-    '<td class="ctr"><button type="button" class="bd" style="padding:2px 7px" onclick="delHEFila(\''+dni+'\','+q+','+i+')"'+(BLOQ?' disabled':'')+'>X</button></td></tr>').join('');
+  document.getElementById('mkTit').textContent='Horas extra · '+p.nom+' · '+(esMensual()?'mes completo':(q===2?'2da':'1ra')+' quincena');
+  const filas=mov.heD.map((x,i)=>{
+    // fila nueva: x.h ya es el total del dia. Fila vieja (de antes de este
+    // cambio, con el 25%/35% cargado a mano y sin x.h): se muestra la suma
+    // como punto de partida; si se toca, pasa a reparto automatico (ver
+    // heDTotales).
+    const horasVal=x.h!=null?x.h:((+x.h25||0)+(+x.h35||0));
+    return '<tr><td><input type="date" value="'+(x.f||'')+'" onchange="setHEFila(\''+dni+'\','+q+','+i+',\'f\',this.value)"'+(BLOQ?' disabled':'')+'></td>'+
+    '<td class="num"><input type="text" inputmode="numeric" class="w45" placeholder="0:00" value="'+dec2hm(horasVal)+'" title="Formato hh:mm — total de horas extra trabajadas ese dia (el reparto 25%/35% sale solo)" onchange="setHEFila(\''+dni+'\','+q+','+i+',\'h\',this.value)"'+(BLOQ?' disabled':'')+'></td>'+
+    '<td class="ctr"><button type="button" class="bd" style="padding:2px 7px" onclick="delHEFila(\''+dni+'\','+q+','+i+')"'+(BLOQ?' disabled':'')+'>X</button></td></tr>';}).join('');
   const t=heDTotales(mov.heD);
   const legado=(!mov.heD.length&&(+mov.he||0)>0)?
     '<p style="font-size:11.5px;color:var(--amber, #B45309);margin-bottom:10px">Este periodo tiene un total heredado de '+dec2hm(mov.he)+
     ' h cargado antes de este cambio, sin detalle por fecha. El calculo de la 5ta sigue usando ese total (con el umbral general), pero no se muestra abajo. Agrega las fechas para reemplazarlo por el detalle exacto.</p>':'';
   document.getElementById('mkBody').innerHTML=
-    '<p style="font-size:11.5px;color:var(--ink3);margin-bottom:10px">Una fila por dia trabajado con sobretiempo. Las horas al 25% y al 35% se cargan tal como corresponden ese dia -no se derivan de un total de la quincena, porque el umbral de 2 horas es por dia-.</p>'+
+    '<p style="font-size:11.5px;color:var(--ink3);margin-bottom:10px">Una fila por dia trabajado con sobretiempo: coloca solo el TOTAL de horas extra de ese dia -el sistema separa solo cuanto va al 25% y cuanto al 35%, segun el umbral legal (las primeras '+CFG.TOPE+' horas del dia al 25%, el resto al 35%). No hace falta separarlo a mano.'+
+    (esMensual()?'':' Si la fecha cae en la otra quincena, la fila NO se mueve sola -a diferencia de Incidencias- asi que cargala en la quincena correcta.')+'</p>'+
     legado+
-    '<table><thead><tr><th class="left">Fecha</th><th>25%</th><th>35%</th><th></th></tr></thead><tbody>'+
-    (filas||'<tr><td colspan="4" style="text-align:center;color:var(--ink3);padding:10px">Sin fechas cargadas.</td></tr>')+
+    '<table><thead><tr><th class="left">Fecha</th><th>Horas extra</th><th></th></tr></thead><tbody>'+
+    (filas||'<tr><td colspan="3" style="text-align:center;color:var(--ink3);padding:10px">Sin fechas cargadas.</td></tr>')+
     '</tbody></table>'+
     '<div style="margin-top:10px">'+(BLOQ?'':'<button type="button" class="bp" onclick="addHEFila(\''+dni+'\','+q+')">+ Agregar fecha</button>')+'</div>'+
     '<div style="margin-top:12px;font-size:12.5px;color:var(--ink2)"><b>Total: '+(t.tot>0?dec2hm(t.tot)+' h':'--')+
-    '</b> &middot; '+dec2hm(t.h25)+' al 25% &middot; '+dec2hm(t.h35)+' al 35%</div>';
+    '</b> &middot; '+dec2hm(t.h25)+' al 25% (calculado) &middot; '+dec2hm(t.h35)+' al 35% (calculado)</div>';
   document.getElementById('modalBk').classList.add('on');}
 function addHEFila(dni,q){
   if(BLOQ)return;
   const mov=mv(dni,q);mov.heD=Array.isArray(mov.heD)?mov.heD:[];
-  mov.heD.push({f:new Date().toISOString().slice(0,10),h25:0,h35:0});
+  mov.heD.push({f:new Date().toISOString().slice(0,10),h:0});
   heDSync(mov);rHEModal();R();}
 function setHEFila(dni,q,i,campo,v){
   const mov=mv(dni,q);if(!mov.heD||!mov.heD[i])return;
   if(campo==='f')mov.heD[i].f=String(v||'').trim();
-  else mov.heD[i][campo]=Math.max(0,hm2dec(String(v).replace('-','')));
+  else mov.heD[i].h=Math.max(0,hm2dec(String(v).replace('-','')));
   heDSync(mov);rHEModal();R();}
 function delHEFila(dni,q,i){
   if(BLOQ)return;
@@ -3558,6 +3606,45 @@ async function pasarLiquidacion(dni,silencioso){
   if(!silencioso)toast('Liquidación de '+p.nom+' cargada en la '+(q===1?'1ra':'2da')+' quincena','ok');
   return true;}
 function esCesado(p){return !!(p&&fecha(p.ces));}
+/* Auto-jalado de la liquidacion en la grilla de 1Q/2Q/Mensual: antes, la
+   unica forma de que vacaciones truncas (vtr), CTS, gratificacion (gra), su
+   bonificacion (bge) y la indemnizacion (liq) aparecieran en la fila de un
+   cesado era que alguien tocara el boton "-> Planilla" (pasarLiquidacion), o
+   el aviso que sale UNA sola vez -al momento de registrar la fecha de cese en
+   setP()-. Si esa alerta se cerraba sin aceptar, o el cese ya venia cargado
+   de antes (ej. se abre un periodo nuevo y la persona sigue apareciendo como
+   cesada de un periodo previo), la fila se quedaba en blanco y habia que
+   acordarse de pasarla a mano. Pedido: que Vacaciones Truncas jale solo,
+   igual que el resto de la liquidacion (CTS/Gratificacion/Bonificacion),
+   sin necesidad de click ni de confirmacion.
+   autoLiqCese_ reusa EXACTAMENTE la misma asignacion que pasarLiquidacion
+   (los 5 importes salen del mismo calculo del servidor, L=liqDe(p)), pero de
+   forma silenciosa y solo si la fila esta realmente vacia (mismo criterio
+   "hay" que ya usaba pasarLiquidacion): si la persona ya tiene algo cargado
+   -sea por el auto-llenado o porque alguien lo edito a mano-, no se vuelve a
+   tocar, para no pisar una correccion manual. */
+function autoLiqCese_(p){
+  if(BLOQ||!esCesado(p))return;
+  const L=liqDe(p);
+  if(!L)return;
+  const q=quincenaCese_(p),b=mv(p.dni,q);
+  const hay=r2((+b.gra||0)+(+b.bge||0)+(+b.cts||0)+(+b.vtr||0))>0;
+  if(hay)return;
+  b.vtr=L.vac.monto;b.cts=L.cts.monto;b.gra=L.grati.monto;b.bge=L.grati.bonif;
+  if(L.ind&&L.ind.monto>0)b.liq=L.ind.monto;}
+/* Se llama al inicio de rQna/rMensualEd (antes de armar las filas), asi
+   cualquier cesado sin liquidacion cargada la recibe en la misma pasada de
+   render, sin que la persona tenga que hacer nada. Si los beneficios del
+   servidor todavia no llegaron (benListo()===false) se piden -pedirBeneficios
+   ya se encarga de no duplicar el pedido si uno esta en curso (BEN.cargando)
+   y de disparar R() cuando responda, lo que vuelve a llamar esta funcion con
+   los datos ya disponibles-. */
+function asegurarLiqAuto_(){
+  if(BLOQ)return;
+  const cs=cesados();
+  if(!cs.length)return;
+  if(!benListo()){if(haySesionSegura())pedirBeneficios();return;}
+  cs.forEach(p=>autoLiqCese_(p));}
 
 /* --- vista --- */
 function rCuentas(){
@@ -3731,6 +3818,7 @@ function pintarModo(){
 
 /* ---- Consolidado mensual EDITABLE (solo en modalidad mensualizada) ---- */
 function rMensualEd(){
+  asegurarLiqAuto_();
   let t={ing:0,base:0,es:0,vl:0,n:0,pag:0,ap:0,pr:0,apc:0,onp:0,r4:0,r5:0,bon:0,com:0,sue:0,vacProv:0,
          vac:0,vv:0,vtr:0,fer:0,dm:0,he:0,he25:0,he35:0,falta:0,tar:0,ade:0,pre:0,gra:0,bge:0,cts:0,liq:0};
   const inp=(dni,c,val,w)=>'<td class="num"><input data-f="'+c+'" class="'+(w||'')+'" type="number" min="0" step=".01" value="'+val+'" onchange="setM(\''+dni+'\',2,\''+c+'\',this.value)"></td>';
@@ -4368,7 +4456,6 @@ cargarDemo();
    ============================================================== */
 const BACKEND_URL='https://script.google.com/macros/s/AKfycbwXu91LLbascEiH0mumBGr6YX01z7HS8iX-tJzNxxQpXvQGdhWMsXGhNnf_TUd3bGss/exec';
 const FRONTEND_VERSION=6;
-const _ORIGEN_='PRISMA-2026-DOZXJ20V69';
 var sessionUsuario=null,sessionPassword=null,heartbeatInterval=null;
 const SESION={rucs:[],tasas:null,tasasOrigen:'archivo'};
 
@@ -4581,6 +4668,20 @@ function partirNombre(nom){
 // depender del orden de lectura del script)
 function requiereCuspp(p){return String(p.afp||'').indexOf('AFP')===0;}
 function sinCuspp(p){return requiereCuspp(p)&&!String(p.cus||'').trim();}
+/* Tipo de documento para PLAME 5ta/AFPnet, adivinado por la cantidad de
+   digitos del numero (pedido: "considerar tipo 01-DNI a los que tienen 8
+   digitos y 04-CE a los de 9 digitos"). 11 digitos sigue siendo RUC (06),
+   como ya se hacia. Pasaporte (07) y Otros (00) NO se pueden adivinar por
+   longitud -no tienen un numero de digitos fijo-, asi que quedan como
+   opciones manuales en la tabla de 5ta (el select ya las trae, ver
+   renderTrab): si a alguien no le queda bien el DNI/CE automatico, se le
+   cambia el tipo ahi mismo antes de descargar. */
+function tipoDocAuto_(dni){
+  const n=String(dni||'').replace(/\D/g,'').length;
+  if(n===11)return '06'; // RUC
+  if(n===8)return '01';  // DNI
+  if(n===9)return '04';  // Carné de Extranjería
+  return '00';}          // longitud atipica: Otros, se ajusta a mano (07-Pasaporte si corresponde)
 function enviarA5ta(){
   const cod=PLAN.plame;
   const excluidosCuspp=[];
@@ -4606,9 +4707,15 @@ function enviarA5ta(){
     // el archivo terminaba con minutos que no correspondian, ej. "3.5" en vez
     // de horas=3, minutos=30).
     const {h25,h35}=heHorasPeriodo_(p.dni),hm=decAHorasMin_(r2(h25+h35));
-    trab.push({__ref:ref,tipoDoc:String(p.dni).length===11?'06':'01',dni:p.dni,cuspp:p.cus||'',
+    // Jubilado que sigue en planilla: ya no aporta a AFP/ONP (ver AFPS mas
+    // arriba), pero el AFPnet SI debe declararlo -no aportando-, marcado con
+    // la letra "O" (Otro/exceptuado) en su columna de Excepcion Aportar
+    // (columna K del archivo). generarAfpNet_ (backend) usa justamente esta
+    // excepcion para incluirlo aunque no tenga el concepto obligatorio 0608.
+    trab.push({__ref:ref,tipoDoc:tipoDocAuto_(p.dni),dni:p.dni,cuspp:p.cus||'',
       horas:horas||'',minutos:'',he1:hm.h||'',he2:hm.m||'',netoReal:r2(m.neto-m.q1.neto),
-      apellidoPaterno:nb.ap,apellidoMaterno:nb.am,nombres:nb.no});
+      apellidoPaterno:nb.ap,apellidoMaterno:nb.am,nombres:nb.no,
+      excepcion:(p.afp==='JUBILADO'?'O':'')});
     const add=(c,v)=>{if(c&&r2(v)>0)conc.push({__ref:ref,codigo:c,monto:r2(v)});};
     add(cod.basica,m.q1.sue+m.q2.sue);
     add(cod.vacaciones,m.q1.vac+m.q2.vac);
@@ -4806,12 +4913,11 @@ const CATALOGO_CONCEPTOS = [
   { codigo:'0607', label:'Descuento ONP / SNP', tipo:'descuento' },
 ];
 function catalogLookup(codigo){ return CATALOGO_CONCEPTOS.find(c => c.codigo === String(codigo||'').trim()); }
-function fmtNum(n){
-  if(n === '' || n === null || n === undefined) return '';
-  const num = typeof n === 'number' ? n : parseFloat(n);
-  if(isNaN(num)) return '';
-  return parseFloat(num.toFixed(2)).toString();
-}
+// (fmtNum se elimino aqui, confirmada como codigo muerto por la auditoria:
+// nada la llamaba, y ademas todavia tenia el bug de recortar ceros de cola
+// -ej. "5.10" quedaba en "5.1"- que el backend ya corrigio hace tiempo en
+// fmtNum_/fmtNum2_. Se dejo sin usar para no reintroducir ese bug si alguien
+// la "reactivaba" sin ver este comentario.)
 function isBlank(v){ return v === '' || v === null || v === undefined; }
 
 // NOTA: buildJorLine, buildRemLines, y la detección/interpretación de las
@@ -5072,7 +5178,8 @@ function renderValidation(){
 /* =======================================================================
    PREVIEW + DESCARGAS
    ======================================================================= */
-function workerWithConceptos(w){ return { ...w, conceptos: conceptosDe(w.id) }; }
+// (workerWithConceptos se elimino aqui, confirmada como codigo muerto por la
+// auditoria: generarEnBackend arma el payload a mano, sin usarla.)
 
 /* La conexion con el backend protegido y la sesion viven en el shell. */
 var lastGenerated = { jorLines: [], remLines: [] };
@@ -5090,7 +5197,11 @@ async function generarEnBackend(){
   };
   const resp = await callBackend_('generate', payload);
   if(!resp.ok){
-    if(resp.error === 'unauthorized' || resp.error === 'disabled' || resp.error === 'version_desactualizada' || resp.error === 'dispositivo_no_autorizado' || resp.error === 'dispositivo_requerido'){
+    // Se usa la constante ERR_SESION (declarada en el shell) en vez de repetir
+    // el arreglo literal -hallazgo de auditoria: 3 sitios lo repetian a mano,
+    // con riesgo de que un futuro codigo de error de sesion se agregue a
+    // ERR_SESION y estos sitios se queden desactualizados en silencio.
+    if(ERR_SESION.indexOf(resp.error)>=0){
       requireLogin_(resp.message);
     }
     return { error: resp.message || 'No se pudo generar el archivo.' };
@@ -5191,9 +5302,11 @@ function descargarPlantilla(){
 document.getElementById('p5-btnDownloadTemplate').addEventListener('click', descargarPlantilla);
 
 async function importRowsFromSheet(allRows){
-  const resp = await callBackend_('parse_import', { allRows });
+  // ruc: mismo agregado que en pedirBeneficios -el backend ahora exige un RUC
+  // autorizado tambien en esta accion.
+  const resp = await callBackend_('parse_import', { allRows, ruc:CFG.RUC });
   if(!resp.ok){
-    if(resp.error === 'unauthorized' || resp.error === 'disabled' || resp.error === 'version_desactualizada' || resp.error === 'dispositivo_no_autorizado' || resp.error === 'dispositivo_requerido'){
+    if(ERR_SESION.indexOf(resp.error)>=0){
       requireLogin_(resp.message);
     }
     return { agregados: 0, columnasDetectadas: [], afpResidualesOmitidos: 0, error: resp.message };
@@ -5322,7 +5435,7 @@ document.getElementById('p5-btnDownloadAFP').addEventListener('click', async () 
   if(result.error){ alert(result.error); return; }
   const filas = result.afpNetRows || [];
   if(filas.length === 0){
-    alert('No hay trabajadores afiliados a AFP (con concepto 0608) para incluir en el archivo. Si alguien debería aparecer, revisa que tenga el concepto 0608 (Aporte Obligatorio AFP).');
+    alert('No hay trabajadores para incluir en el archivo: se incluye a quien tenga el concepto 0608 (Aporte Obligatorio AFP) o una Excepción Aportar marcada (por ejemplo, jubilados con "O"). Revisa esos datos en la pestaña de 5ta.');
     return;
   }
   // AFPnet espera un Excel SIN encabezados (solo las filas de datos) — el
@@ -5344,18 +5457,11 @@ document.getElementById('p5-btnDownloadAFP').addEventListener('click', async () 
    nuevo. Esto es intencional — es lo que hace que revocar el acceso desde
    la hoja "Config" sea efectivo de inmediato, en vez de quedar en caché.
    ======================================================================= */
-function showLoginOverlay(message){
-  const overlay = document.getElementById('p5-loginOverlay');
-  const errorBox = document.getElementById('p5-loginError');
-  overlay.style.display = 'flex';
-  document.getElementById('p5-loginPassword').value = '';
-  const badge = document.getElementById('p5-sessionUserBadge');
-  if(badge) badge.textContent = '';
-  if(message){ errorBox.textContent = message; errorBox.style.display = 'block'; }
-  else { errorBox.style.display = 'none'; }
-  setTimeout(() => document.getElementById('p5-loginUsuario').focus(), 50);
-}
-function hideLoginOverlay(){ document.getElementById('p5-loginOverlay').style.display = 'none'; }
+// (showLoginOverlay/hideLoginOverlay se eliminaron aqui, confirmadas como
+// codigo muerto por la auditoria: son resto de cuando este modulo PLAME 5ta
+// era una webapp standalone con su propio login, antes de integrarse al
+// shell unico -mostrarLogin/ocultarLogin, que si esta conectado-. Ademas
+// referenciaban ids de DOM que ya ni existen en la pagina.)
 
 /* init */
 renderCatalogoDatalist();
@@ -5389,18 +5495,11 @@ window.P5={
    ======================================================================= */
 const TIPO_DOC_CATALOGO = { RUC:'06', DNI:'01', CE:'04', PASAPORTE:'07', OTROS:'00' };
 
-function fmtNum(n){
-  if(n === '' || n === null || n === undefined) return '';
-  const num = typeof n === 'number' ? n : parseFloat(n);
-  if(isNaN(num)) return '';
-  return parseFloat(num.toFixed(2)).toString();
-}
-function fmtFecha(isoDate){
-  if(!isoDate) return '';
-  const [y,m,d] = isoDate.split('-');
-  if(!y||!m||!d) return '';
-  return `${d}/${m}/${y}`;
-}
+// (fmtNum y fmtFecha se eliminaron aqui, confirmadas como codigo muerto por la
+// auditoria: resto de cuando el armado de lineas vivia en el frontend. fmtNum
+// ademas repetia el mismo bug de recorte de ceros de cola que su gemela de
+// P5, ya corregido en el backend -fmtNum_/fmtNum2_-; fmtFecha4_, en el
+// backend, es la version viva y real usada en la generacion del .4ta.)
 /* El armado de las lineas del .ps4 y del .4ta vive en el backend protegido.
    Aqui solo se muestra y se descarga lo que devuelve el servidor. */
 var ultimo4 = { ps4Lines: [], taLines: [] };
@@ -5421,7 +5520,7 @@ async function generar4taEnBackend(){
   };
   const resp = await callBackend_('generate4ta', payload);
   if(!resp.ok){
-    if(['unauthorized','disabled','version_desactualizada','dispositivo_no_autorizado','dispositivo_requerido'].indexOf(resp.error)>=0)
+    if(ERR_SESION.indexOf(resp.error)>=0)
       requireLogin_(resp.message);
     return { error: resp.message || 'No se pudo generar el archivo.' };
   }
