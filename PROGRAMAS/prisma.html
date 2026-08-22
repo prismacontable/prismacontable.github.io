@@ -66,6 +66,13 @@ table{width:100%;border-collapse:collapse;font-size:11.5px}
 th{background:var(--surface2);color:var(--ink2);padding:6px 6px;text-align:center;font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:.03em;white-space:nowrap}
 th.left{text-align:left}
 td{padding:3px 6px;border-bottom:1px solid var(--border);white-space:nowrap}
+/* Las tarjetas de Cuentas (grid auto-fit de ~300px) llevan etiquetas largas
+   ("Mínimo para retener 4ta en dietas", códigos PLAME, etc.): con el nowrap
+   de arriba, la tabla pedía más ancho del que tiene su columna y se
+   desbordaba encima de la tarjeta vecina. Aquí se permite que esa primera
+   columna (la etiqueta) haga salto de línea, para que la tabla vuelva a
+   caber en su tarjeta. */
+.acct-grid td:first-child{white-space:normal;line-height:1.35}
 tr:hover td{background:var(--hover)}
 tr.total td{background:var(--tot);font-weight:700;border-top:2px solid var(--indigo2)}
 tr.baja td{opacity:.42;font-style:italic}
@@ -4515,41 +4522,48 @@ function rCuentas(){
     '<th>Cta Gratif.</th><th class="left">Glosa gratificación</th>'+
     '<th>Cta CTS</th><th class="left">Glosa CTS</th>'+
     (col?'<th>Cta destino 9x</th>':'')+'<th></th></tr></thead><tbody>'+filas+'</tbody></table></div>'+
-   '<div class="pb" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;padding-top:12px">'+
-    '<div><p style="font-size:11.5px;font-weight:700;color:var(--tit);margin-bottom:6px">Cuentas de pasivo y gasto</p>'+
-     '<table><thead><tr><th class="left">Concepto</th><th>Cuenta</th></tr></thead><tbody>'+gen+'</tbody></table></div>'+
-    '<div><p style="font-size:11.5px;font-weight:700;color:var(--tit);margin-bottom:6px">Beneficios pagados con la planilla</p>'+
-     '<table><thead><tr><th class="left">Concepto</th><th>Cuenta</th></tr></thead><tbody>'+
-     Object.keys(PAGOS_LBL).map(k=>'<tr><td>'+PAGOS_LBL[k]+'</td><td class="ctr"><input value="'+
-      (PLAN.pagos[k]||'')+'" onchange="setPago(\''+k+'\',this.value)" style="width:86px;text-align:left"></td></tr>').join('')+
-     '</tbody></table><p style="font-size:10.5px;color:var(--ink2);margin-top:6px">Al pagar estos conceptos se cargan a su cuenta de provisión, no a gasto del mes.</p></div>'+
-    '<div><p style="font-size:11.5px;font-weight:700;color:var(--tit);margin-bottom:6px">Codigos PLAME (5ta)</p>'+
-     '<table><thead><tr><th class="left">Concepto</th><th>Código</th></tr></thead><tbody>'+
-     Object.keys(PLAME_LBL).map(k=>'<tr><td>'+PLAME_LBL[k]+'</td><td class="ctr"><input value="'+
-      (PLAN.plame[k]||'')+'" onchange="setPlame(\''+k+'\',this.value)" style="width:66px"></td></tr>').join('')+
-     '</tbody></table><p style="font-size:10.5px;color:var(--ink2);margin-top:6px">Un código vacio no se envia. Los marcados como obligatorio (0601, 0605, 0607) viajan siempre, con importe 0 si no hay dato.</p></div>'+
-    '<div><p style="font-size:11.5px;font-weight:700;color:var(--tit);margin-bottom:6px">Parametros del CONCAR</p>'+
-     '<table><tbody>'+
-      '<tr><td>Sub diario</td><td class="ctr"><input value="'+PLAN.concar.sub+'" onchange="setPlan(\'concar.sub\',this.value)" style="width:70px"></td></tr>'+
-      '<tr><td>Tipo de documento</td><td class="ctr"><input value="'+PLAN.concar.tdoc+'" onchange="setPlan(\'concar.tdoc\',this.value)" style="width:70px"></td></tr>'+
-      '<tr><td>Código de area</td><td class="ctr"><input value="'+PLAN.concar.area+'" onchange="setPlan(\'concar.area\',this.value)" style="width:70px"></td></tr>'+
-      '<tr><td>Medio de pago</td><td class="ctr"><input value="'+PLAN.concar.medio+'" onchange="setPlan(\'concar.medio\',this.value)" style="width:70px"></td></tr>'+
-      '<tr><td>Mínimo para retener 4ta en dietas<div style="font-size:9.5px;color:var(--ink3)">0 = retiene desde el primer sol</div></td>'+
-      '<td class="ctr"><input type="number" step="1" value="'+CFG.MIN4D+'" onchange="setMin4D(this.value)" style="width:80px"></td></tr>'+
-      '<tr><td>Feriado laborado<div style="font-size:9.5px;color:var(--ink3)">El día ya está pagado dentro del sueldo; esto es lo adicional</div></td>'+
-      '<td class="ctr"><select onchange="setFeriado(this.value)" style="width:230px">'+
-        '<option value="2"'+(CFG.FER===2?' selected':'')+'>2 jornales · sin descanso sustitutorio</option>'+
-        '<option value="1"'+(CFG.FER===1?' selected':'')+'>1 jornal · criterio de pago doble</option>'+
-        '<option value="0"'+(CFG.FER===0?' selected':'')+'>0 · se compensa con descanso</option>'+
-      '</select></td></tr>'+
-     '</tbody></table></div>'+
-    '<div><p style="font-size:11.5px;font-weight:700;color:var(--tit);margin-bottom:6px">Parametros del CONCAR (4ta — recibos por honorarios)</p>'+
-     '<table><tbody>'+
-      '<tr><td>Sub diario</td><td class="ctr"><input value="'+PLAN.concar4ta.sub+'" onchange="setPlan(\'concar4ta.sub\',this.value)" style="width:70px"></td></tr>'+
-      '<tr><td>Tipo de documento</td><td class="ctr"><input value="'+PLAN.concar4ta.tdoc+'" onchange="setPlan(\'concar4ta.tdoc\',this.value)" style="width:70px"></td></tr>'+
-      '<tr><td>Código de area</td><td class="ctr"><input value="'+PLAN.concar4ta.area+'" onchange="setPlan(\'concar4ta.area\',this.value)" style="width:70px"></td></tr>'+
-      '<tr><td>Medio de pago</td><td class="ctr"><input value="'+PLAN.concar4ta.medio+'" onchange="setPlan(\'concar4ta.medio\',this.value)" style="width:70px"></td></tr>'+
-     '</tbody></table><p style="font-size:10.5px;color:var(--ink2);margin-top:6px">Se exporta desde la pestaña PLAME 4ta, a partir de los recibos por honorarios ahí cargados. Usa la cuenta de <b>Gasto honorarios</b>, <b>Honorarios por pagar</b> y <b>Renta 4ta por pagar</b> de la tabla de arriba (Cuentas de pasivo y gasto) -son las mismas que ya usa la planilla, editables ahí.</p></div></div>';}
+   (function(){
+    const soloPrisma=esUsuarioPrisma_();
+    const tarjetasRestringidas=
+     '<div><p style="font-size:11.5px;font-weight:700;color:var(--tit);margin-bottom:6px">Codigos PLAME (5ta)</p>'+
+      '<table><thead><tr><th class="left">Concepto</th><th>Código</th></tr></thead><tbody>'+
+      Object.keys(PLAME_LBL).map(k=>'<tr><td>'+PLAME_LBL[k]+'</td><td class="ctr"><input value="'+
+       (PLAN.plame[k]||'')+'" onchange="setPlame(\''+k+'\',this.value)" style="width:66px"></td></tr>').join('')+
+      '</tbody></table><p style="font-size:10.5px;color:var(--ink2);margin-top:6px">Un código vacio no se envia. Los marcados como obligatorio (0601, 0605, 0607) viajan siempre, con importe 0 si no hay dato.</p></div>'+
+     '<div><p style="font-size:11.5px;font-weight:700;color:var(--tit);margin-bottom:6px">Parametros del CONCAR</p>'+
+      '<table><tbody>'+
+       '<tr><td>Sub diario</td><td class="ctr"><input value="'+PLAN.concar.sub+'" onchange="setPlan(\'concar.sub\',this.value)" style="width:70px"></td></tr>'+
+       '<tr><td>Tipo de documento</td><td class="ctr"><input value="'+PLAN.concar.tdoc+'" onchange="setPlan(\'concar.tdoc\',this.value)" style="width:70px"></td></tr>'+
+       '<tr><td>Código de area</td><td class="ctr"><input value="'+PLAN.concar.area+'" onchange="setPlan(\'concar.area\',this.value)" style="width:70px"></td></tr>'+
+       '<tr><td>Medio de pago</td><td class="ctr"><input value="'+PLAN.concar.medio+'" onchange="setPlan(\'concar.medio\',this.value)" style="width:70px"></td></tr>'+
+       '<tr><td>Mínimo para retener 4ta en dietas<div style="font-size:9.5px;color:var(--ink3)">0 = retiene desde el primer sol</div></td>'+
+       '<td class="ctr"><input type="number" step="1" value="'+CFG.MIN4D+'" onchange="setMin4D(this.value)" style="width:80px"></td></tr>'+
+       '<tr><td>Feriado laborado<div style="font-size:9.5px;color:var(--ink3)">El día ya está pagado dentro del sueldo; esto es lo adicional</div></td>'+
+       '<td class="ctr"><select onchange="setFeriado(this.value)" style="width:100%">'+
+         '<option value="2"'+(CFG.FER===2?' selected':'')+'>2 jornales · sin descanso sustitutorio</option>'+
+         '<option value="1"'+(CFG.FER===1?' selected':'')+'>1 jornal · criterio de pago doble</option>'+
+         '<option value="0"'+(CFG.FER===0?' selected':'')+'>0 · se compensa con descanso</option>'+
+       '</select></td></tr>'+
+      '</tbody></table></div>'+
+     '<div><p style="font-size:11.5px;font-weight:700;color:var(--tit);margin-bottom:6px">Parametros del CONCAR (4ta — recibos por honorarios)</p>'+
+      '<table><tbody>'+
+       '<tr><td>Sub diario</td><td class="ctr"><input value="'+PLAN.concar4ta.sub+'" onchange="setPlan(\'concar4ta.sub\',this.value)" style="width:70px"></td></tr>'+
+       '<tr><td>Tipo de documento</td><td class="ctr"><input value="'+PLAN.concar4ta.tdoc+'" onchange="setPlan(\'concar4ta.tdoc\',this.value)" style="width:70px"></td></tr>'+
+       '<tr><td>Código de area</td><td class="ctr"><input value="'+PLAN.concar4ta.area+'" onchange="setPlan(\'concar4ta.area\',this.value)" style="width:70px"></td></tr>'+
+       '<tr><td>Medio de pago</td><td class="ctr"><input value="'+PLAN.concar4ta.medio+'" onchange="setPlan(\'concar4ta.medio\',this.value)" style="width:70px"></td></tr>'+
+      '</tbody></table><p style="font-size:10.5px;color:var(--ink2);margin-top:6px">Se exporta desde la pestaña PLAME 4ta, a partir de los recibos por honorarios ahí cargados. Usa la cuenta de <b>Gasto honorarios</b>, <b>Honorarios por pagar</b> y <b>Renta 4ta por pagar</b> de la tabla de arriba (Cuentas de pasivo y gasto) -son las mismas que ya usa la planilla, editables ahí.</p></div>';
+    return '<div class="pb acct-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;padding-top:12px">'+
+     '<div><p style="font-size:11.5px;font-weight:700;color:var(--tit);margin-bottom:6px">Cuentas de pasivo y gasto</p>'+
+      '<table><thead><tr><th class="left">Concepto</th><th>Cuenta</th></tr></thead><tbody>'+gen+'</tbody></table></div>'+
+     '<div><p style="font-size:11.5px;font-weight:700;color:var(--tit);margin-bottom:6px">Beneficios pagados con la planilla</p>'+
+      '<table><thead><tr><th class="left">Concepto</th><th>Cuenta</th></tr></thead><tbody>'+
+      Object.keys(PAGOS_LBL).map(k=>'<tr><td>'+PAGOS_LBL[k]+'</td><td class="ctr"><input value="'+
+       (PLAN.pagos[k]||'')+'" onchange="setPago(\''+k+'\',this.value)" style="width:86px;text-align:left"></td></tr>').join('')+
+      '</tbody></table><p style="font-size:10.5px;color:var(--ink2);margin-top:6px">Al pagar estos conceptos se cargan a su cuenta de provisión, no a gasto del mes.</p></div>'+
+     (soloPrisma?tarjetasRestringidas:
+      '<div class="pb" style="grid-column:1/-1"><span class="chip inf"><span class="dot"></span>Los códigos PLAME y los parámetros del CONCAR los administra el titular de la cuenta; no se muestran aquí.</span></div>')+
+     '</div>';
+   })();}
 
 /* ================== MODALIDAD DE CALCULO (QUINCENAL / MENSUALIZADO) ==================
    Se guarda dentro del archivo del periodo, o sea cada mes (y cada cliente) puede tener
