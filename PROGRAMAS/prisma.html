@@ -123,6 +123,13 @@ select.pill-cesado{background:var(--red);color:#991B1B;border-color:#FCA5A5}
 .bol-t th{background:#E2E8F0;color:var(--ink);padding:5px 7px;border:1px solid var(--border2);font-size:10.5px}
 .bol-t td{padding:6px 8px;border:1px solid var(--border);white-space:normal}
 .bol-t td.n{text-align:right;font-variant-numeric:tabular-nums}
+/* Pedido del usuario: que el importe del NETO A PAGAR resalte mas en la
+   boleta impresa -antes salia con el mismo tamano que cualquier otra fila
+   de la tabla (10.5px), facil de pasar por alto. El monto en si (celda .n)
+   queda notablemente mas grande que la etiqueta, para que sea lo primero
+   que se lee. */
+.bol-t tr.bol-total td{font-size:13px}
+.bol-t tr.bol-total td.n{font-size:19px}
 .bol-sig{display:flex;justify-content:space-around;gap:36px;margin-top:260px;font-size:10.5px;text-align:center;padding-bottom:24px}
 .bol-sig div{border-top:1px solid var(--ink);padding-top:6px;width:230px;line-height:1.55}
 .hoja{margin-bottom:16px}
@@ -482,6 +489,10 @@ button.ico svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width
  .boleta.mini .bol-t td,.boleta.mini .bol-t th{padding:1px 4px}
  .boleta.mini .bol-sig{margin-top:76px;padding-bottom:6px}
  .boleta.mini .bol-logo{max-height:32px}
+ /* En la boleta compacta (2 por hoja) el NETO A PAGAR agrandado no debe
+    romper el layout -se agranda igual, pero proporcionalmente menos-. */
+ .boleta.mini .bol-t tr.bol-total td{font-size:9px}
+ .boleta.mini .bol-t tr.bol-total td.n{font-size:12px}
  .corte{margin:6px 0}
  .corte::after{background:#fff}
  body{background:#fff;color:#0F172A}
@@ -601,6 +612,8 @@ html[data-hoja="horizontal"] .corte{display:none}
   <div class="panel"><div class="ph"><h2>Personal</h2><div class="act">
     <button class="bt" onclick="addTrab()">+ Agregar persona</button>
     <button class="bp" onclick="traerPersonal({preguntar:true})">Traer del mes anterior</button>
+    <button class="bp" id="btnTRegBaja" onclick="descargarTRegBaja()" title="Genera el archivo de Carga Masiva de Bajas del T-Registro (SUNAT) para los cesados del periodo. Tu lo subes en el portal SOL -PRISMA no se conecta con SUNAT.">Descargar Baja T-Registro</button>
+    <button class="bp" id="btnTRegAlta" onclick="descargarTRegAlta()" title="Genera los 4 archivos de Carga Masiva de Altas del T-Registro (SUNAT) para los ingresos del periodo -Estructuras 4/5/11/17-. Completa antes los 'Datos SUNAT' de cada persona nueva (boton SUNAT en su fila). Tu subes los archivos en el portal SOL -PRISMA no se conecta con SUNAT.">Descargar Alta T-Registro</button>
     <button class="bd" onclick="limpiarPersonal()">Vaciar modulo</button></div></div>
     <div class="tw" id="wPers"></div></div>
 </div>
@@ -1144,37 +1157,45 @@ const mv=(dni,q)=>{if(!M[dni])M[dni]={q1:blq(1),q2:blq(2)};if(!M[dni]['q'+q])M[d
 const APORTE_AFP_=.10;
 const AFP_KEY_={'AFP INTEGRA':'INTEGRA','AFP PRIMA':'PRIMA','AFP PROFUTURO':'PROFUTURO','AFP HABITAT':'HABITAT'};
 const FLUJO_AFP_DEFAULT_={'AFP INTEGRA':.0155,'AFP PRIMA':.0160,'AFP PROFUTURO':.0169,'AFP HABITAT':.0147};
-const flujoAfp=a=>{
+// "cfg" es opcional en flujoAfp/tasas/asigFamMonto/aportesPlanilla_/
+// retencion4ta_ (agregado al cerrar la Fase 2 de ARCHITECTURE.md, ver el
+// comentario en calcQuincena_ mas abajo): si se omite, siguen leyendo el CFG
+// global exactamente igual que antes -CERO cambio de comportamiento para
+// cualquier llamador existente-; solo calcQuincena_ lo pasa explicito.
+const flujoAfp=(a,cfg)=>{
+  cfg=cfg||CFG;
   const k=AFP_KEY_[a];if(!k)return 0;
-  const v=CFG['AFP_'+k+'_FLUJO'];
+  const v=cfg['AFP_'+k+'_FLUJO'];
   return(v!=null&&isFinite(v))?v:(FLUJO_AFP_DEFAULT_[a]||0);};
-const tasas=a=>{
+const tasas=(a,cfg)=>{
+  cfg=cfg||CFG;
   const k=AFP_KEY_[a];if(!k)return{ap:0,pr:0};
-  const v=CFG['AFP_'+k+'_PR'];
-  return{ap:APORTE_AFP_,pr:(v!=null&&isFinite(v))?v:CFG.PRIMA};};
+  const v=cfg['AFP_'+k+'_PR'];
+  return{ap:APORTE_AFP_,pr:(v!=null&&isFinite(v))?v:cfg.PRIMA};};
 // Asignacion familiar: 10% de la RMV (D.S. 003-97-TR, D.S. 035-90-TR), fijo
 // sin importar el sueldo ni el numero de hijos -es un monto unico si tiene
 // uno o mas-. Se calcula sobre la RMV vigente, asi que sigue correcto si la
 // RMV cambia (no se guarda como numero suelto en CFG).
-const asigFamMonto=()=>r2(CFG.RMV*.10);
+const asigFamMonto=(cfg)=>r2((cfg||CFG).RMV*.10);
 /* REORGANIZACION (candidatos 4/5 de la auditoria "que mover al backend
    protegido", ver ARCHITECTURE.md): estas dos piezas de calc() -aportes de
    AFP/ONP y retencion de 4ta- ya estaban protegidas del lado del servidor
    desde el candidato 3 (viven dentro de calcQuincena_ en
    core/payroll-engine.js y en su copia de prisma_backend.gs). Aqui se
    separan en sus propias funciones -mismo nombre y misma formula que esas
-   copias, solo que estas leen CFG directo (como el resto de calc()) en vez
-   de recibir "cfg" por parametro-, sin cambiar ningun numero. */
-const aportesPlanilla_=(base,p)=>{
-  const onp=p.afp==='ONP'?r2(base*CFG.T_ONP):0;
-  const t=tasas(p.afp);
+   copias-. */
+const aportesPlanilla_=(base,p,cfg)=>{
+  cfg=cfg||CFG;
+  const onp=p.afp==='ONP'?r2(base*cfg.T_ONP):0;
+  const t=tasas(p.afp,cfg);
   const ap=r2(base*t.ap),pr=r2(base*t.pr);
-  const apc=(p.comAfp==='FLUJO')?r2(base*flujoAfp(p.afp)):0;
+  const apc=(p.comAfp==='FLUJO')?r2(base*flujoAfp(p.afp,cfg)):0;
   return{onp,ap,pr,apc};};
-const retencion4ta_=(base,susp,dieta)=>{
-  const min4=dieta?(+CFG.MIN4D||0):CFG.MIN4;
+const retencion4ta_=(base,susp,dieta,cfg)=>{
+  cfg=cfg||CFG;
+  const min4=dieta?(+cfg.MIN4D||0):cfg.MIN4;
   const afecto=susp?0:(base>min4?base:0);
-  const ret4=r2(afecto*CFG.T4);
+  const ret4=r2(afecto*cfg.T4);
   return{afecto,ret4};};
 /* CANDIDATO 5 (misma auditoria): CUSPP obligatorio. Identico a
    aportaAfpObligatorio_/excluidoPorCuspp_ en prisma_backend.gs -que es quien
@@ -1185,8 +1206,27 @@ const retencion4ta_=(base,susp,dieta)=>{
    distinto (misma logica, ahora con el mismo nombre en los 2 archivos). */
 const aportaAfpObligatorio_=conceptosW=>(conceptosW||[]).some(c=>String(c.codigo||'').trim()==='0608');
 const excluidoPorCuspp_=(w,conceptosW)=>aportaAfpObligatorio_(conceptosW)&&!String(w.cuspp||'').trim();
-function calc(p,q){
-  const m=mv(p.dni,q),rh=es4ta(p),dieta=p.tipo==='DIETA';
+/* FASE 2 (ARCHITECTURE.md): calc(p,q) es el motor de la boleta -el calculo
+   que de verdad paga a cada trabajador cada quincena-, y hasta esta ronda
+   vivia como una unica funcion que ademas leia "q"/mv(p.dni,q)/CFG global
+   directo -el mismo formato "identico pero con parametros explicitos" que
+   calcularBeneficios_/generarArchivos_ ya tenian del lado del servidor desde
+   antes-. Se separa aqui en calcQuincena_(p,m,topeDias,cfg) -copia EXACTA de
+   la formula, "m" en vez de mv(p.dni,q), "topeDias" en vez de TOPE_DIAS(q),
+   "cfg" en vez de CFG global- para que sea, forma y formula, la MISMA
+   funcion que calcQuincena_ en core/payroll-engine.js (que ya era una copia
+   extraida de este mismo calc(), candidato 3) — con esto, prisma.html ya
+   tiene una unica fuente de verdad interna para esta formula, en vez de que
+   calc() y "la version que se compara contra /core en las pruebas" fueran
+   dos copias separadas. calc(p,q) queda como un envoltorio de 3 lineas que
+   arma los parametros y llama aqui: NINGUN cambio de formula ni de
+   comportamiento, solo de que tan explicitos son los parametros -ver
+   test_smoke2.js para la prueba de que calc(p,q) sigue dando exactamente
+   los mismos numeros que antes de este cambio, caso por caso-.
+   core/payroll-engine.js sigue siendo una copia manual aparte (Apps
+   Script/HTML sin build step no tienen require()); eso no cambia con esto. */
+function calcQuincena_(p,m,topeDias,cfg){
+  const rh=es4ta(p),dieta=p.tipo==='DIETA';
   if(rh){
     // Mismos campos que un trabajador de planilla: estan a prueba y se les
     // descuenta igual, solo que el pago sale por recibo. El honorario se
@@ -1205,12 +1245,12 @@ function calc(p,q){
     // faltaImp -igual que la tardanza-. Antes se usaba solo "m.d", lo que
     // restaba la falta dos veces (una porque "Dias" ya viene neteado, otra en
     // faltaImp) y perjudicaba a la persona.
-    const dPagoRh=Math.min((+m.d||0)+(+m.f||0),TOPE_DIAS(q));
-    const im=(+p.sue>0)?r2((+p.sue||0)/CFG.DM*dPagoRh):r2(+m.hon||0);
-    const vh=(+p.sue||0)/CFG.DM/CFG.JOR;
-    const {he25,he35}=he2535_(m,vh);
+    const dPagoRh=Math.min((+m.d||0)+(+m.f||0),topeDias);
+    const im=(+p.sue>0)?r2((+p.sue||0)/cfg.DM*dPagoRh):r2(+m.hon||0);
+    const vh=(+p.sue||0)/cfg.DM/cfg.JOR;
+    const {he25,he35}=he2535_(m,vh,cfg);
     const com=+m.com||0,bon=+m.bon||0,tar=+m.tar||0,ade=+m.ade||0,pre=+m.pre||0;
-    const fer=r2((+p.sue||0)/CFG.DM*(+m.fer||0)*CFG.FER);
+    const fer=r2((+p.sue||0)/cfg.DM*(+m.fer||0)*cfg.FER);
     // faltaHoras (el resto de dia -ej. 0.5 dia- que no entra al conteo entero
     // de faltas, ver el mismo comentario en la rama de planilla mas abajo):
     // antes NO se descontaba aqui, a diferencia de la rama de planilla, asi
@@ -1218,12 +1258,12 @@ function calc(p,q){
     // de mas. Se reusa "vh" (tarifa por hora, ya calculada arriba para horas
     // extra), que da 0 igual que el resto de esta rama cuando no hay sueldo
     // mensual de referencia (honorario 100% manual).
-    const faltaImp=r2((+p.sue||0)/CFG.DM*(+m.f||0)+vh*(+m.faltaHoras||0));
+    const faltaImp=r2((+p.sue||0)/cfg.DM*(+m.f||0)+vh*(+m.faltaHoras||0));
     const ing=r2(im+bon+com+he25+he35+fer);
     const base=r2(ing-tar-faltaImp);               // base de renta de 4ta
     // La dieta de directorio puede tener su propio minimo para retener: por
-    // defecto retiene desde el primer sol (CFG.MIN4D=0). Se cambia en Cuentas.
-    const{ret4}=retencion4ta_(base,m.sus==='SI',dieta);
+    // defecto retiene desde el primer sol (cfg.MIN4D=0). Se cambia en Cuentas.
+    const{ret4}=retencion4ta_(base,m.sus==='SI',dieta,cfg);
     const des=r2(ret4+tar+ade+pre+faltaImp);
     return {rh:true,dieta,dias:+m.d||0,f:+m.f||0,vd:0,fd:+m.fer||0,sue:0,af:0,vac:0,fer,he25,he35,com,bon,hon:im,ing,base:0,
       gra:0,bge:0,cts:0,liq:0,vtr:0,dmd:0,dm:0,baseSal:0,noAfecto:0,
@@ -1231,7 +1271,7 @@ function calc(p,q){
       base4:base,onp:0,ap:0,pr:0,apc:0,r5:0,ret4,tar,ade,pre,des,neto:r2(ing-des)};
   }
   const d=+m.d||0,vd=+m.v||0,vvd=+m.vv||0,fd=+m.fer||0,dmd=+m.dm||0,fFalt=+m.f||0,faltaHoras=+m.faltaHoras||0;
-  const jornal=p.sue/CFG.DM;
+  const jornal=p.sue/cfg.DM;
   // "Dias" es lo que la persona realmente vino a trabajar -asi lo llena quien
   // captura la planilla, y asi dice el rotulo de la boleta, "DIAS LAB."-, es
   // decir que YA viene sin los dias de falta. El sueldo (y la asignacion
@@ -1241,7 +1281,7 @@ function calc(p,q){
   // una sola vez, aparte, en faltaImp. Antes se usaba solo "d", lo que restaba
   // la falta dos veces (una porque "Dias" ya viene neteado de la falta, otra
   // en faltaImp) y le pagaba de menos a la persona.
-  const dPago=Math.min(d+fFalt,TOPE_DIAS(q));
+  const dPago=Math.min(d+fFalt,topeDias);
   // Asignacion familiar prorrateada al dia: se usa tanto para los dias
   // trabajados (af, abajo) como para los dias de vacacion gozada (vac) -es
   // remuneracion computable, asi que el dia de vacacion se paga igual que un
@@ -1249,8 +1289,8 @@ function calc(p,q){
   // hacia asi en gratificacion/CTS/liquidacion (benefCalc, gratificacion_,
   // cts_, liquidacion_, todas suman "af" a la base); solo faltaba aqui, en
   // el pago de vacaciones gozadas del dia a dia.
-  const jornalAf=p.asigFam?asigFamMonto()/CFG.DM:0;
-  const sue=r2(jornal*dPago),vac=r2((jornal+jornalAf)*vd),vh=jornal/CFG.JOR;
+  const jornalAf=p.asigFam?asigFamMonto(cfg)/cfg.DM:0;
+  const sue=r2(jornal*dPago),vac=r2((jornal+jornalAf)*vd),vh=jornal/cfg.JOR;
   // Vacaciones VENDIDAS (D.S. 012-92-TR: hasta 15 dias del periodo vacacional
   // se pueden vender en vez de descansarlos). Se paga igual que un dia de
   // vacacion gozada -mismo jornal, con asignacion familiar si corresponde-,
@@ -1263,7 +1303,7 @@ function calc(p,q){
   // en faltaImp, igual que a la remuneracion basica, en vez de aqui-. Es
   // remuneracion computable: afecta AFP/ONP/EsSalud y entra a la base de
   // vacaciones/CTS/gratificacion (ver benefCalc/liquidacion_).
-  const af=p.asigFam?r2(asigFamMonto()/CFG.DM*dPago):0;
+  const af=p.asigFam?r2(asigFamMonto(cfg)/cfg.DM*dPago):0;
   /* Descanso medico. Los primeros 20 dias de incapacidad los paga el empleador
      y a partir del dia 21 el subsidio es de cargo de EsSalud. En ambos casos el
      importe SI esta afecto a ONP y AFP (4ta D.T. de la Ley 28991 y art. 30 del
@@ -1276,8 +1316,8 @@ function calc(p,q){
   // feriado laborado paga 50 (ya incluidos) + 100 = 150.
   // Si el descanso se compensa con otro dia, no corresponde sobretasa: se pone
   // el factor en 0 en la pestaña Cuentas, o simplemente no se cargan esos dias.
-  const fer=r2(jornal*fd*CFG.FER);
-  const {he25,he35}=he2535_(m,vh);
+  const fer=r2(jornal*fd*cfg.FER);
+  const {he25,he35}=he2535_(m,vh,cfg);
   const com=+m.com||0,bon=+m.bon||0,tar=+m.tar||0,ade=+m.ade||0,pre=+m.pre||0,r5=+m.r5||0;
   // Pagos que no afectan aportes: gratificacion (Ley 30334, con su bonificacion
   // del 9%), CTS y liquidacion. Se pagan con la planilla pero no entran a la
@@ -1294,8 +1334,8 @@ function calc(p,q){
   // Faltas/Dias sean enteros, asi que el dia entero ya esta en fFalt/mov.f
   // (ver incDTotales) y lo que sobra (0.5, en horas: 0.5*jornada) se
   // descuenta aparte, por hora, sin tocar ningun conteo de dias.
-  const faltaImp=r2(jornal*fFalt+(p.asigFam?asigFamMonto()/CFG.DM*fFalt:0)+
-    (jornal/CFG.JOR)*faltaHoras+(p.asigFam?(asigFamMonto()/CFG.DM/CFG.JOR)*faltaHoras:0));
+  const faltaImp=r2(jornal*fFalt+(p.asigFam?asigFamMonto(cfg)/cfg.DM*fFalt:0)+
+    (jornal/cfg.JOR)*faltaHoras+(p.asigFam?(asigFamMonto(cfg)/cfg.DM/cfg.JOR)*faltaHoras:0));
   const ing=r2(sue+af+vac+vv+vtr+dm+he25+he35+com+bon+fer+noAfecto);
   // sue/af ya se calcularon sobre dPago (dias trabajados + faltados, sin
   // descontar la falta -ver arriba-), y faltaImp la descuenta aca, una sola
@@ -1304,13 +1344,14 @@ function calc(p,q){
   // al periodo y, aparte y detallado, cuanto se descuenta por faltar.
   const base=r2(sue+af+vac+vv+vtr+dm+he25+he35+com+fer-tar-faltaImp);   // afecta a AFP/ONP
   const baseSal=r2(base-dm);                              // EsSalud: sin el subsidio
-  const{onp,ap,pr,apc}=aportesPlanilla_(base,p);
+  const{onp,ap,pr,apc}=aportesPlanilla_(base,p,cfg);
   const des=r2(onp+ap+pr+apc+tar+ade+pre+r5+faltaImp);
   return {rh:false,dias:d,f:fFalt,vd,vvd,fd,dmd,sue,af,vac,vv,dm,fer,he25,he35,com,bon,hon:0,ing,base,baseSal,
     gra,bge,cts,liq,vtr,noAfecto,
     faltaImp,
     onp,ap,pr,apc,r5,ret4:0,tar,ade,pre,des,neto:r2(ing-des)};
 }
+function calc(p,q){return calcQuincena_(p,mv(p.dni,q),TOPE_DIAS(q),CFG);}
 function mes(p){
   const a=calc(p,1),b=calc(p,2);
   const dias=a.dias+b.dias,base=r2(a.base+b.base);
@@ -1599,12 +1640,13 @@ function decAHorasMin_(d){
    periodos ya guardados en disco que no tienen heD todavia) siguen leyendo
    ese campo. Si un periodo viejo no tiene heD, se sigue usando la formula
    anterior (total + umbral) para no cambiarle el importe a lo ya cerrado. */
-function heDTotales(heD){
+function heDTotales(heD,cfg){
+  cfg=cfg||CFG;
   const t={h25:0,h35:0};
   (heD||[]).forEach(x=>{
     if(x.h!=null){
       const h=Math.max(0,+x.h||0);
-      t.h25+=Math.min(h,CFG.TOPE);t.h35+=Math.max(0,h-CFG.TOPE);
+      t.h25+=Math.min(h,cfg.TOPE);t.h35+=Math.max(0,h-cfg.TOPE);
     }else{
       t.h25+=(+x.h25||0);t.h35+=(+x.h35||0);
     }});
@@ -1617,13 +1659,14 @@ function heDSync(mov){
 // he25/he35 en soles, a partir de vh (valor hora). Usa heD si hay fechas
 // cargadas; si no, cae a la formula anterior (total m.he + umbral CFG.TOPE)
 // para no recalcular distinto lo que ya se guardo antes de este cambio.
-function he2535_(m,vh){
+function he2535_(m,vh,cfg){
+  cfg=cfg||CFG;
   if(Array.isArray(m.heD)&&m.heD.length){
-    const t=heDTotales(m.heD);
-    return {he25:r2(vh*(1+CFG.HE25)*t.h25),he35:r2(vh*(1+CFG.HE35)*t.h35)};
+    const t=heDTotales(m.heD,cfg);
+    return {he25:r2(vh*(1+cfg.HE25)*t.h25),he35:r2(vh*(1+cfg.HE35)*t.h35)};
   }
   const h=+m.he||0;
-  return {he25:r2(vh*(1+CFG.HE25)*Math.min(h,CFG.TOPE)),he35:r2(vh*(1+CFG.HE35)*Math.max(0,h-CFG.TOPE))};
+  return {he25:r2(vh*(1+cfg.HE25)*Math.min(h,cfg.TOPE)),he35:r2(vh*(1+cfg.HE35)*Math.max(0,h-cfg.TOPE))};
 }
 // horas (no soles) al 25%/35% de todo el periodo -las dos quincenas juntas-.
 // Se usa para el importe en soles del sobretiempo (he2535_) y, sumadas
@@ -1660,7 +1703,8 @@ function heBtnCell(dni,q,mov){
    Al igual que con las horas extra, un periodo guardado antes de este
    cambio no tiene incD: se le respeta su f/tar cargado tal cual hasta que
    alguien abra el detalle y empiece a registrar fechas. */
-function incDTotales(incD){
+function incDTotales(incD,cfg){
+  cfg=cfg||CFG;
   const t={faltas:0,faltasDias:0,faltaHoras:0,tardMonto:0,diasVac:0,diasVendidas:0};
   let faltasDias=0;
   (incD||[]).forEach(x=>{
@@ -1683,7 +1727,7 @@ function incDTotales(incD){
   // descuenta por hora en vez de por dia (mismo importe final, sin tocar
   // ningun conteo de dias enteros).
   t.faltas=Math.floor(faltasDias+1e-9);
-  t.faltaHoras=r2((faltasDias-t.faltas)*CFG.JOR);
+  t.faltaHoras=r2((faltasDias-t.faltas)*cfg.JOR);
   t.faltasDias=faltasDias;
   t.tardMonto=r2(t.tardMonto);
   return t;}
@@ -1849,7 +1893,9 @@ function rPersonal(){
        '<div style="margin-top:3px"><input type="date" value="'+(p.fvto||'')+'" onchange="setFinContrato(\''+p.dni+'\',this.value)" style="width:130px" title="Vencimiento del contrato"></div>':'')+
      '<div style="margin-top:3px"><button type="button" class="bd" style="padding:2px 7px;font-size:10px" onclick="pasarLiquidacion(\''+p.dni+'\')" title="Calcula la liquidacion (Beneficios) y la copia a la quincena del cese, donde puedes editar los importes">&rarr; Planilla</button></div>'
      :'<span style="color:var(--ink3);font-size:10px">no aplica</span>')+'</td>'+
-   '<td class="ctr"><button class="bd" style="padding:2px 7px" onclick="delTrab('+p.id+')">X</button></td></tr>').join('');
+   '<td class="ctr">'+(p.tipo==='PLANILLA'?
+     '<button type="button" class="bd" style="padding:2px 7px;font-size:10px;margin-right:3px" onclick="abrirTRegAlta(\''+p.dni+'\')" title="Datos para el Alta T-Registro (SUNAT): fecha de nacimiento, ocupacion, tipo de contrato, etc. Solo hace falta completarlos si esta persona ingreso este periodo.">SUNAT</button>':'')+
+     '<button class="bd" style="padding:2px 7px" onclick="delTrab('+p.id+')">X</button></td></tr>').join('');
   document.getElementById('wPers').innerHTML='<table><thead><tr>'+
    '<th>#</th><th class="left">DNI / RUC</th><th class="left">Apellidos y Nombres</th><th class="left">Cargo</th>'+
    '<th class="left">CUSPP</th><th>Centro Costo</th><th>Tipo</th><th title="Régimen laboral: define vacaciones, gratificación y CTS">Rég. Laboral</th><th>Régimen Pens.</th>'+
@@ -3159,6 +3205,248 @@ function tipoBoleta(){const t=document.getElementById('bolTipo');return t?t.valu
 /* Solo se liquida a quien tenga fecha de cese: sin cese no hay calculo ni
    impresion posible. */
 function cesados(){return P.filter(p=>p.tipo==='PLANILLA'&&fecha(p.ces));}
+/* ================== BAJA MASIVA AL T-REGISTRO (SUNAT) ==================
+   Pedido del usuario: SUNAT no publica ninguna API para el T-Registro (a
+   diferencia del SIRE de Compras/Ventas, verificado antes de construir
+   esto) -solo existe el portal SOL con "Carga Masiva" manual-, asi que
+   PRISMA no puede conectarse ni traer/enviar datos en vivo. Lo que SI puede
+   es generar el archivo de texto que esa carga masiva espera (Estructura 11
+   "Periodos"), para los trabajadores cesados en el periodo actual, y que el
+   usuario lo suba el mismo en el portal en vez de escribir cada baja a
+   mano. Ver armarTRegBaja_ (backend) para el detalle del formato exacto y
+   las advertencias conocidas -en particular, este archivo no se verifico
+   contra un caso real hecho a mano en el T-Registro, se recomienda validar
+   el primero contra el validador PVS de SUNAT antes de una baja real. */
+function cesadosDelPeriodo_(){
+  const {a,m}=per();
+  return cesados().filter(p=>{
+    const f=fecha(p.ces);
+    return f && f.getFullYear()===a && (f.getMonth()+1)===m;});
+}
+function fechaDDMMAAAA_(iso){
+  const s=String(iso||'').trim();
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(s))return '';
+  const p=s.split('-');
+  return p[2]+'/'+p[1]+'/'+p[0];
+}
+// downloadFile ya existe con este mismo nombre, pero como dos copias locales
+// (una dentro del IIFE de P5, otra dentro del IIFE de P4 -ninguna visible
+// desde aca afuera): se repite la misma logica de descarga de texto plano
+// (igual patron que los .jor/.rem/.ps4/.4ta) en este ambito, sin depender de
+// ninguna de esas dos copias.
+function downloadFileTReg_(filename, lines){
+  const blob=new Blob([lines.join('\r\n')+(lines.length?'\r\n':'')],{type:'text/plain;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download=filename;
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+async function descargarTRegBaja(){
+  if(!/^\d{11}$/.test(CFG.RUC)){alert('Ingresa el RUC del empleador (11 dígitos) antes de descargar.');return;}
+  if(!haySesion()){requireLogin_();return;}
+  const lista=cesadosDelPeriodo_();
+  if(!lista.length){alert('No hay trabajadores cesados en el periodo actual (revisa año/mes arriba y la fecha de cese en Personal).');return;}
+  const btn=document.getElementById('btnTRegBaja'),orig=btn?btn.textContent:'';
+  if(btn){btn.disabled=true;btn.textContent='Generando...';}
+  const {a,m}=per();
+  const resp=await callBackend_('treg_baja',{
+    ruc:CFG.RUC,periodo:''+a+String(m).padStart(2,'0'),
+    cesados:lista.map(p=>({tipoDoc:tipoDocAuto_(p.dni),nroDoc:p.dni,
+      fechaCese:fechaDDMMAAAA_(p.ces),motivo:p.mot||'RENUNCIA'}))});
+  if(btn){btn.disabled=false;btn.textContent=orig;}
+  if(!resp.ok){
+    if(ERR_SESION.indexOf(resp.error)>=0)requireLogin_(resp.message);
+    else alert(resp.message||'No se pudo generar el archivo.');
+    return;}
+  downloadFileTReg_(resp.archivo||('RP_'+CFG.RUC+'.per'),resp.lineas||[]);
+  if(resp.advertencia)toast('Baja T-Registro generada: '+resp.lineas.length+' baja(s). '+resp.advertencia,'err');
+  else toast('Baja T-Registro generada: '+resp.lineas.length+' baja(s). Súbelo tú mismo desde el portal SUNAT (Carga Masiva del T-Registro).','ok');
+}
+
+/* ================== ALTA MASIVA AL T-REGISTRO (SUNAT) ==================
+   Investigado antes de construir esto (a diferencia de la Baja, que solo
+   necesita la Estructura 11 "Periodos"): un Alta de Trabajador exige mandar
+   juntas las Estructuras 4 (Datos Personales), 5 (Datos del Trabajador), 11
+   (Periodo, con fecha de inicio) y 17 (Establecimiento) -si falta alguna,
+   SUNAT rechaza el envio completo (error EPR1.28)-. Ver armarTRegAlta_
+   (backend) para el detalle exacto de cada estructura.
+   Varias tablas de codigos que SUNAT usa aqui (Tipo de pago, Convenio doble
+   tributacion, Regimen Laboral, Situacion especial, Ocupacion) no se
+   pudieron confirmar completas en la documentacion publica -por eso esos
+   campos son de texto libre, con una nota junto a cada uno indicando en que
+   tabla del Anexo 2 "Tablas Parametricas" de SUNAT buscar el codigo, en vez
+   de un <select> con valores que podrian estar incompletos o mal-. Los que
+   SI se pudieron confirmar completos (Situacion Educativa) o casi completos
+   (Tipo de contrato, Categoria ocupacional, Regimen Laboral -estos tres con
+   huecos conocidos, marcados en el propio texto de la opcion) se muestran
+   como <select> para evitar errores de tipeo. */
+// Tabla 9 (Situacion Educativa) — confirmada completa.
+const TREG_SIT_EDU=[['01','Sin educacion formal'],['02','Educ. especial incompleta'],['03','Educ. especial completa'],
+ ['04','Primaria incompleta'],['05','Primaria completa'],['06','Secundaria incompleta'],['07','Secundaria completa'],
+ ['08','Tecnica incompleta'],['09','Tecnica completa'],['10','Superior no univ. incompleta'],['11','Superior no univ. completa'],
+ ['12','Universitaria incompleta'],['13','Universitaria completa'],['14','Bachiller'],['15','Titulado'],
+ ['16','Maestria incompleta'],['17','Maestria completa'],['18','Grado de maestria'],
+ ['19','Doctorado incompleto'],['20','Doctorado completo'],['21','Grado de doctor']];
+// Tabla 12 (Tipo de contrato) — SUNAT no publico los codigos 15-17, tratar como huecos reales.
+const TREG_TIPO_CONTRATO=[['01','Plazo indeterminado - D.Leg. 728'],['02','A tiempo parcial'],['03','Inicio/incremento de actividad'],
+ ['04','Necesidades del mercado'],['05','Reconversion empresarial'],['06','Ocasional'],['07','Suplencia'],['08','Emergencia'],
+ ['09','Obra determinada / servicio especifico'],['10','Intermitente'],['11','Temporada'],['12','Exportacion no tradicional'],
+ ['13','Trabajador extranjero'],['14','CAS - D.Leg. 1057'],['18','A domicilio'],['19','Futbolista profesional'],
+ ['20','Agrario - Ley 27360'],['21','Migrante andino'],['99','Otros']];
+// Tabla 24 (Categoria ocupacional) — sin huecos detectados, pero no se pudo confirmar contra el Anexo 2 real.
+const TREG_CAT_OCUP=[['01','Ejecutivo'],['02','Obrero'],['03','Empleado'],['11','Funcionario'],['12','Profesional'],['13','Tecnico'],['14','Auxiliar']];
+// Tabla 33 (Regimen Laboral) — huecos conocidos en 07/09/10/12/13.
+const TREG_REG_LABORAL=[['01','Privado General - D.Leg. 728'],['02','Publico General - D.Leg. 276'],['03','Profesorado - Ley 24029'],
+ ['04','Magisterio - Ley 29062'],['05','Docentes universitarios'],['06','Profesionales de la salud'],['08','SERUM'],
+ ['11','Servicio Diplomatico'],['14','Gerentes Publicos - D.Leg. 1024'],['15','CAS - D.Leg. 1057'],
+ ['16','Microempresa - D.Leg. 1086'],['17','Pequena empresa - D.Leg. 1086'],['18','Agrario - Ley 27360'],
+ ['19','Exportacion no tradicional'],['20','Mineros'],['21','Construccion civil']];
+// Sugerencia inicial de Regimen Laboral (Tabla 33) a partir del regimen de
+// beneficios que ya usa PRISMA (p.reg) — mismo criterio legal, editable.
+const TREG_REG_LABORAL_SUGERIDO={GENERAL:'01',PEQUENA:'17',MICRO:'16'};
+
+function tregOf_(p){return p.treg||(p.treg={});}
+function setTReg(dni,campo,valor){const p=P.find(x=>x.dni===dni);if(!p)return;
+  const t=tregOf_(p);
+  t[campo]=(campo==='discapacidad'||campo==='sctrPension'||campo==='regimenAtipico'||campo==='jornadaMaxima'||
+    campo==='horarioNocturno'||campo==='sindicalizado'||campo==='rentas5taExoneradas')?!!valor:valor;
+  rTRegAltaModal();}
+/* Separacion sugerida (no autoritativa) del nombre completo en apellido
+   paterno/materno/nombres -orden habitual en Peru-. Se usa solo para
+   pre-llenar el modal la primera vez; el usuario la corrige si no aplica
+   (nombres compuestos, un solo apellido, etc). */
+function sugerirNombreTReg_(nom){
+  const partes=String(nom||'').trim().split(/\s+/).filter(Boolean);
+  return {apPaterno:partes[0]||'',apMaterno:partes[1]||'',nombres:partes.slice(2).join(' ')};
+}
+function abrirTRegAlta(dni){
+  const p=P.find(x=>x.dni===dni);if(!p)return;
+  const t=tregOf_(p);
+  if(!t.apPaterno&&!t.apMaterno&&!t.nombres){
+    const sug=sugerirNombreTReg_(p.nom);
+    t.apPaterno=sug.apPaterno;t.apMaterno=sug.apMaterno;t.nombres=sug.nombres;
+  }
+  const bk=document.getElementById('modalBk');
+  bk.dataset.tregDni=dni;
+  bk.classList.add('on');
+  rTRegAltaModal();
+}
+function campoTReg_(dni,label,input,hint){
+  return '<div class="bk-row" style="grid-template-columns:1fr"><div>'+
+    '<div class="bk-f">'+label+'</div>'+input+
+    (hint?'<div class="bk-n" style="white-space:normal">'+hint+'</div>':'')+'</div></div>';
+}
+function selTReg_(dni,campo,valor,opciones,blanco){
+  return '<select onchange="setTReg(\''+dni+'\',\''+campo+'\',this.value)" style="width:100%">'+
+    (blanco!==false?'<option value=""'+(!valor?' selected':'')+'>-- selecciona --</option>':'')+
+    opciones.map(function(o){return '<option value="'+o[0]+'"'+(valor===o[0]?' selected':'')+'>'+o[0]+' - '+o[1]+'</option>';}).join('')+
+    '</select>';
+}
+function txtTReg_(dni,campo,valor,ph,width){
+  return '<input type="text" value="'+escAttr_(valor||'')+'" placeholder="'+(ph||'')+'" style="width:'+(width||'100%')+'" onchange="setTReg(\''+dni+'\',\''+campo+'\',this.value)">';
+}
+function chkTReg_(dni,campo,valor,texto){
+  return '<label style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:400"><input type="checkbox" '+(valor?'checked':'')+' onchange="setTReg(\''+dni+'\',\''+campo+'\',this.checked)">'+texto+'</label>';
+}
+function rTRegAltaModal(){
+  const bk=document.getElementById('modalBk');
+  const dni=bk.dataset.tregDni;if(!dni)return;
+  const p=P.find(x=>x.dni===dni);if(!p)return;
+  const t=tregOf_(p);
+  if(!t.regimenLaboral)t.regimenLaboral=TREG_REG_LABORAL_SUGERIDO[p.reg||'MICRO']||'';
+  if(t.tipoPago===undefined)t.tipoPago='2';
+  if(t.periodicidadRemuneracion===undefined)t.periodicidadRemuneracion=esMensual()?'1':'2';
+  document.getElementById('mkTit').textContent='Datos Alta T-Registro (SUNAT) · '+p.nom;
+  document.getElementById('mkBody').innerHTML=
+    '<p style="font-size:11.5px;color:var(--ink3);margin-bottom:10px">Solo hace falta completar esto para quien ingreso este periodo y todavia no fue declarado en el T-Registro. La fecha de ingreso (Estructura 11) se toma de "F. Ingreso" en Personal; lo de aqui abajo es lo que faltaba (Estructuras 4/5/17). Los campos marcados "sin confirmar" son tablas de SUNAT que no se pudieron verificar completas -revisa el codigo en el Anexo 2 "Tablas Parametricas" del T-Registro antes de declarar.</p>'+
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">'+
+    campoTReg_(dni,'Apellido paterno',txtTReg_(dni,'apPaterno',t.apPaterno))+
+    campoTReg_(dni,'Apellido materno',txtTReg_(dni,'apMaterno',t.apMaterno))+
+    '</div>'+
+    campoTReg_(dni,'Nombres',txtTReg_(dni,'nombres',t.nombres))+
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">'+
+    campoTReg_(dni,'Fecha de nacimiento',
+      '<input type="date" value="'+(t.fechaNacimiento||'')+'" style="width:100%" onchange="setTReg(\''+dni+'\',\'fechaNacimiento\',this.value)">')+
+    campoTReg_(dni,'Sexo',txtTReg_(dni,'sexo',t.sexo,'codigo SUNAT'),'Codigo de 1 caracter, sin confirmar -verifica en el Anexo 2.')+
+    '</div>'+
+    campoTReg_(dni,'Nacionalidad',txtTReg_(dni,'nacionalidad',t.nacionalidad,'solo si es extranjero'),'Solo obligatorio si el documento no es DNI.')+
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">'+
+    campoTReg_(dni,'Regimen Laboral (Tabla 33)',selTReg_(dni,'regimenLaboral',t.regimenLaboral,TREG_REG_LABORAL),'Sugerido desde el Regimen de Personal ('+(REG[p.reg||'MICRO']||{}).nom+'), edita si no corresponde. Huecos conocidos: 07/09/10/12/13.')+
+    campoTReg_(dni,'Situacion Educativa (Tabla 9)',selTReg_(dni,'situacionEducativa',t.situacionEducativa,TREG_SIT_EDU))+
+    '</div>'+
+    campoTReg_(dni,'Ocupacion',txtTReg_(dni,'ocupacion',t.ocupacion,'codigo CIUO'),'Codigo de la Tabla 10 (sector publico) o 30 (sector privado) del Anexo 2 -sin confirmar aqui, son tablas muy extensas.')+
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">'+
+    campoTReg_(dni,'Tipo de contrato (Tabla 12)',selTReg_(dni,'tipoContrato',t.tipoContrato,TREG_TIPO_CONTRATO))+
+    campoTReg_(dni,'Categoria ocupacional (Tabla 24)',selTReg_(dni,'categoriaOcupacional',t.categoriaOcupacional,TREG_CAT_OCUP))+
+    '</div>'+
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">'+
+    campoTReg_(dni,'Tipo de pago (Tabla 16)',txtTReg_(dni,'tipoPago',t.tipoPago),'2 = Deposito en cuenta (confirmado). Otros codigos sin confirmar.')+
+    campoTReg_(dni,'Codigo de establecimiento',txtTReg_(dni,'codEstablecimiento',t.codEstablecimiento,'4 digitos'),'Obligatorio. Revisa "Establecimientos anexos" en SUNAT Operaciones en Linea.')+
+    '</div>'+
+    campoTReg_(dni,'Situacion especial (Tabla 35)',txtTReg_(dni,'situacionEspecial',t.situacionEspecial,'vacio = ninguna'),'Solo si aplica (p.ej. trabajador de direccion/confianza). Codigos sin confirmar.')+
+    campoTReg_(dni,'Convenio doble tributacion (Tabla 25)',txtTReg_(dni,'convenioDobleTrib',t.convenioDobleTrib,'vacio si no aplica'),'Solo para convenios vigentes con Peru. Codigos sin confirmar.')+
+    campoTReg_(dni,'RUC (solo CAS)',txtTReg_(dni,'rucCas',t.rucCas),'Solo si el tipo de contrato es CAS (D.Leg. 1057).')+
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 14px;margin-top:4px">'+
+    chkTReg_(dni,'discapacidad',t.discapacidad,'Discapacidad')+
+    chkTReg_(dni,'sindicalizado',t.sindicalizado,'Sindicalizado')+
+    chkTReg_(dni,'sctrPension',t.sctrPension,'SCTR Pension')+
+    chkTReg_(dni,'regimenAtipico',t.regimenAtipico,'Regimen atipico/acumulativo')+
+    chkTReg_(dni,'jornadaMaxima',t.jornadaMaxima,'Sujeto a jornada maxima')+
+    chkTReg_(dni,'horarioNocturno',t.horarioNocturno,'Horario nocturno')+
+    chkTReg_(dni,'rentas5taExoneradas',t.rentas5taExoneradas,'Rentas 5ta exoneradas')+
+    '</div>'+
+    '<p style="font-size:10.5px;color:var(--ink3);margin-top:10px">CUSPP, la remuneracion inicial y la periodicidad se toman de lo ya cargado en Personal (CUSPP, Sueldo, y si la planilla esta en modo Mensual/Quincenal); no hace falta repetirlos aqui.</p>';
+  document.getElementById('modalBk').classList.add('on');
+}
+/* Quien ingreso dentro del periodo (año/mes) que esta en pantalla. Mismo
+   patron que cesadosDelPeriodo_, con "F. Ingreso" en vez de "F. Cese". */
+function altasDelPeriodo_(){
+  const {a,m}=per();
+  return P.filter(p=>{
+    if(p.tipo!=='PLANILLA')return false;
+    const f=fecha(p.ing);
+    return f&&f.getFullYear()===a&&(f.getMonth()+1)===m;});
+}
+async function descargarTRegAlta(){
+  if(!/^\d{11}$/.test(CFG.RUC)){alert('Ingresa el RUC del empleador (11 dígitos) antes de descargar.');return;}
+  if(!haySesion()){requireLogin_();return;}
+  const lista=altasDelPeriodo_();
+  if(!lista.length){alert('No hay trabajadores nuevos en el periodo actual (revisa año/mes arriba y la fecha de ingreso en Personal).');return;}
+  const sinEstablecimiento=lista.filter(p=>!String(tregOf_(p).codEstablecimiento||'').trim());
+  if(sinEstablecimiento.length&&!confirm(sinEstablecimiento.length+' persona(s) no tienen "Codigo de establecimiento" cargado (boton SUNAT en su fila) y van a quedar fuera del archivo. ¿Continuar igual?'))return;
+  const btn=document.getElementById('btnTRegAlta'),orig=btn?btn.textContent:'';
+  if(btn){btn.disabled=true;btn.textContent='Generando...';}
+  const {a,m}=per();
+  const periodicidad=esMensual()?'1':'2';
+  const resp=await callBackend_('treg_alta',{
+    ruc:CFG.RUC,periodo:''+a+String(m).padStart(2,'0'),
+    altas:lista.map(p=>{const t=tregOf_(p);
+      return {tipoDoc:tipoDocAuto_(p.dni),nroDoc:p.dni,fechaInicio:fechaDDMMAAAA_(p.ing),
+        codEstablecimiento:t.codEstablecimiento||'',
+        fechaNacimiento:fechaDDMMAAAA_(t.fechaNacimiento||''),
+        apPaterno:t.apPaterno||'',apMaterno:t.apMaterno||'',nombres:t.nombres||'',
+        sexo:t.sexo||'',nacionalidad:t.nacionalidad||'',
+        regimenLaboral:t.regimenLaboral||TREG_REG_LABORAL_SUGERIDO[p.reg||'MICRO']||'',
+        situacionEducativa:t.situacionEducativa||'',ocupacion:t.ocupacion||'',
+        discapacidad:!!t.discapacidad,cuspp:p.cus||'',sctrPension:!!t.sctrPension,
+        tipoContrato:t.tipoContrato||'',regimenAtipico:!!t.regimenAtipico,jornadaMaxima:!!t.jornadaMaxima,
+        horarioNocturno:!!t.horarioNocturno,sindicalizado:!!t.sindicalizado,
+        periodicidadRemuneracion:t.periodicidadRemuneracion||periodicidad,montoRemuneracion:p.sue||0,
+        rentas5taExoneradas:!!t.rentas5taExoneradas,situacionEspecial:t.situacionEspecial||'',
+        tipoPago:t.tipoPago||'2',categoriaOcupacional:t.categoriaOcupacional||'',
+        convenioDobleTrib:t.convenioDobleTrib||'',rucCas:t.rucCas||''};})});
+  if(btn){btn.disabled=false;btn.textContent=orig;}
+  if(!resp.ok){
+    if(ERR_SESION.indexOf(resp.error)>=0)requireLogin_(resp.message);
+    else alert(resp.message||'No se pudo generar el archivo.');
+    return;}
+  const est=resp.estructuras||{};
+  ['e4','e5','e11','e17'].forEach(k=>{if(est[k])downloadFileTReg_(est[k].archivo,est[k].lineas||[]);});
+  toast('Alta T-Registro generada: '+(est.e11?est.e11.lineas.length:0)+' alta(s), 4 archivos descargados (Estructuras 4/5/11/17). '+
+    (resp.advertencia||'Valida el primer envio con el validador PVS de SUNAT antes de declarar.'),'err');
+}
+
 function rBoletaSel(){
   const s=document.getElementById('bolSel'),prev=s.value,liq=tipoBoleta()==='liq';
   const lista=liq?cesados():act();
@@ -3262,7 +3550,7 @@ function boletaHTML(p,q,tag,cls){
    filas+
    '<tr style="background:#EFF4FF;font-weight:700"><td colspan="2">TOTAL INGRESOS</td><td class="n">'+f(tI)+'</td>'+
    '<td colspan="2">TOTALES</td><td class="n">'+f(tD)+'</td><td class="n">'+f(tA)+'</td></tr>'+
-   '<tr style="background:#1F3864;color:#fff;font-weight:700"><td colspan="2">NETO A PAGAR S/</td>'+
+   '<tr class="bol-total" style="background:#1F3864;color:#fff;font-weight:700"><td colspan="2">NETO A PAGAR S/</td>'+
    '<td class="n">'+f(r2(tI-tD))+'</td><td colspan="4"></td></tr></table>'+
    '<div class="bol-sig">'+
      '<div>LA EMPRESA<br><span style="font-size:8.5px;color:#64748B">'+CFG.EMP+'</span></div>'+
@@ -3549,11 +3837,23 @@ async function expConcar(){
   const btn=document.getElementById('btnConcar');
   const orig=btn?btn.textContent:'';
   if(btn){btn.disabled=true;btn.textContent='Generando...';}
+  // Candidato 7b (ver BUSINESS-RULES.md): mismo movimiento crudo por
+  // trabajador que ya manda enviarA5ta() para PLAME 5ta, para que el
+  // backend pueda recalcular el neto de cada uno (revisarRecalculoPlanilla_,
+  // sin tocarla) antes de exportar el CONCAR de planilla -no se usa para
+  // armar el asiento en si (eso lo sigue haciendo lineasAsiento(), sin
+  // cambios), solo para la verificacion no bloqueante.
+  const trabajadoresRecalculo=pla().map(p=>{const mp=mes(p);
+    return{dni:p.dni,netoReal:r2(mp.neto-mp.q1.neto),sue:p.sue,afp:p.afp,comAfp:p.comAfp,
+      asigFam:!!p.asigFam,tipo:p.tipo,
+      m1:movPlanillaPayload_(mv(p.dni,1)),m2:movPlanillaPayload_(mv(p.dni,2))};});
   const resp=await callBackend_('concar',{
     asientos:{A1,A2,A3},
     fechaCierre:String(fecha.getDate()).padStart(2,'0')+'/'+mm+'/'+a,
     anio:a,mes:m,mesNombre:MES[m].toUpperCase(),
-    modoCC:PLAN.modoCC,concar:PLAN.concar,ruc:CFG.RUC,periodo:''+a+mm});
+    modoCC:PLAN.modoCC,concar:PLAN.concar,ruc:CFG.RUC,periodo:''+a+mm,
+    modo:(typeof MODO!=='undefined'?MODO:'QUINCENAL'),fer:CFG.FER,
+    trabajadores:trabajadoresRecalculo});
   if(btn){btn.disabled=false;btn.textContent=orig;}
   if(!resp.ok){
     if(ERR_SESION.indexOf(resp.error)>=0)requireLogin_(resp.message);
@@ -3571,6 +3871,10 @@ async function expConcar(){
   // cuando mas lo necesita para revisar la diferencia.
   if(resp.warning)toast('CONCAR generado: '+(rows.length-1)+' lineas. '+resp.warning,'err');
   else toast('CONCAR generado: '+(rows.length-1)+' lineas','ok');
+  // Candidato 7b: mismo patron que descargar4()/descargarConcar4ta() -no
+  // bloquea la descarga, solo avisa si el recalculo del servidor
+  // (revisarRecalculoPlanilla_) no coincide.
+  if(resp.warningRecalculo)toast(resp.warningRecalculo,'err');
 }
 /* NAV */
 function T(btn){
@@ -6514,15 +6818,26 @@ async function generarConcar4taEnBackend(){
     anio: dat.anio, mes: dat.mes, mesNombre: MES[mNum] || '',
     fechaCierre: fechaCierreObj ? (String(fechaCierreObj.getDate()).padStart(2,'0')+'/'+String(dat.mes).padStart(2,'0')+'/'+dat.anio) : '',
     concar: PLAN.concar4ta, ctas: { gHon: PLAN.ctas.gHon, pagoHon: PLAN.ctas.pagoHon, r4: PLAN.ctas.r4 },
+    // Candidato 7 (ver BUSINESS-RULES.md): mismo MIN4D que ya manda
+    // generar4taEnBackend, para que revisarRecalculo4ta_ no de un falso
+    // positivo con una dieta (minimo distinto del de un honorario comun).
+    min4d: CFG.MIN4D,
   };
   const resp = await callBackend_('concar4ta', payload);
   if(!resp.ok){
     if(ERR_SESION.indexOf(resp.error)>=0)
       requireLogin_(resp.message);
     ultimoConcar4ta = { filas: [], anchos: [], archivo: '', warning: '', error: resp.message || 'No se pudo generar el asiento.' };
+    advertenciaServidorConcar_ = ''; renderValidation();
     return ultimoConcar4ta;
   }
-  ultimoConcar4ta = { filas: resp.filas || [], anchos: resp.anchos || [], archivo: resp.archivo || '', warning: resp.warning || '' };
+  ultimoConcar4ta = { filas: resp.filas || [], anchos: resp.anchos || [], archivo: resp.archivo || '', warning: resp.warning || '', warningRecalculo: resp.warningRecalculo || '' };
+  // Candidato 7: misma idea que advertenciaServidor_ (candidato 6, mas
+  // arriba) pero para el asiento CONCAR -se guarda aparte porque ambas
+  // llamadas (generar4taEnBackend/generarConcar4taEnBackend) corren en
+  // paralelo (programarPreview4) y una no debe pisar la advertencia de la
+  // otra en "Validación".
+  advertenciaServidorConcar_ = resp.warningRecalculo || ''; renderValidation();
   return ultimoConcar4ta;
 }
 
@@ -6781,10 +7096,17 @@ function validate(){
 // que en el módulo P5 -guarda la ultima advertencia del backend al recalcular
 // la retencion de 4ta desde cero, informativa y no bloqueante-.
 var advertenciaServidor_ = '';
+// Candidato 7 (ver BUSINESS-RULES.md): misma idea que advertenciaServidor_
+// de arriba, pero para el recalculo del asiento CONCAR de 4ta -aparte,
+// porque generar4taEnBackend()/generarConcar4taEnBackend() corren en
+// paralelo y cada una guarda su propia advertencia sin pisar la otra.
+var advertenciaServidorConcar_ = '';
 function renderValidation(){
   const box = document.getElementById('p4-validationBody');
   const issues = validate();
   if(advertenciaServidor_) issues.push({type:'warn', msg: advertenciaServidor_});
+  if(advertenciaServidorConcar_ && advertenciaServidorConcar_ !== advertenciaServidor_)
+    issues.push({type:'warn', msg: advertenciaServidorConcar_});
   if(proveedores.length===0 && recibos.length===0){
     box.innerHTML = '<div class="validation-ok">✓ Aún no hay datos para validar</div>';
     return;
@@ -7110,6 +7432,9 @@ async function descargarConcar4ta(){
   XLSX.writeFile(wb, r.archivo || (String(dat.anio)+String(dat.mes)+'_4TA_CONCAR.xlsx'));
   if(r.warning) toast('CONCAR 4ta generado: '+(rows.length-3)+' lineas. '+r.warning, 'err');
   else toast('CONCAR 4ta generado: '+(rows.length-3)+' lineas', 'ok');
+  // Candidato 7: mismo patron que descargar4() -no bloquea la descarga, solo
+  // avisa si el recalculo del servidor (revisarRecalculo4ta_) no coincide.
+  if(r.warningRecalculo) toast(r.warningRecalculo, 'err');
 }
 document.getElementById('p4-btnDownloadConcar').addEventListener('click', descargarConcar4ta);
 
