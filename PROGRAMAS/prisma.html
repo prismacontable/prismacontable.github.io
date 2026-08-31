@@ -3079,7 +3079,7 @@ function setFinContrato(dni,v){const p=P.find(x=>x.dni===dni);if(!p)return;
 function lineasAsiento(){
   const {m,a}=per(),fecha=new Date(a,m,0),ct=PLAN.ctas;
   const cc={};PLAN.ccs.forEach(k=>{cc[k.cod]={rem:0,bon:0,com:0,es:0,vac:0,tar:0,gra:0,cts:0,falta:0};});
-  const afp={};let onp=0,r5=0,adePre=0;const q1=[],q2=[];
+  const afp={};let onp=0,r5=0;const q1=[],q2=[],adePreW=[];
   pla().forEach(p=>{const mm=mes(p),c=cc[p.cc];if(!c)return;
     // Las vacaciones (gozadas o truncas), la CTS, la gratificacion y su
     // bonificacion NO son gasto del mes: ya se devengaron en su provision. Al
@@ -3092,7 +3092,17 @@ function lineasAsiento(){
     // se acredita aparte para que el asiento siga cuadrando (mismo tratamiento
     // que la tardanza, justo abajo).
     c.falta+=(mm.faltaImp||0);
-    adePre+=r2(mm.q1.ade+mm.q2.ade+mm.q1.pre+mm.q2.pre);
+    // Pedido del usuario (TECNIMAX, agosto 2026): la linea de 141201
+    // "ADELANTOS Y PRESTAMOS" salia como un solo total sin poder saber a que
+    // trabajador correspondia -antes se acumulaba en una sola variable
+    // (adePre) para una unica linea agregada-. Ahora se guarda por
+    // trabajador (igual que ya se hace con el AFP por pagar via
+    // AFP_ANEXO_ y con "ADELANTO DE REM"/"SUELDOS" mas abajo, via q1/q2) y
+    // cada uno sale en su propia linea con anx:p.dni, para que el CONCAR
+    // importe la cuenta 141201 con su auxiliar por trabajador. Ver
+    // BUSINESS-RULES.md seccion 30.
+    const adePreVal=r2(mm.q1.ade+mm.q2.ade+mm.q1.pre+mm.q2.pre);
+    if(adePreVal!==0)adePreW.push({dni:p.dni,v:adePreVal});
     c.es+=mm.es;c.vac+=mm.vacProv;onp+=mm.onp;r5+=mm.r5;
     // Devengue del mes de gratificacion (+ su bonificacion del 9%) y CTS,
     // igual que ya se hacia con vacaciones (mm.vacProv): esto es lo que
@@ -3121,7 +3131,15 @@ function lineasAsiento(){
   if(r5>0)A1.push({cta:ct.r5,dh:'H',imp:r2(r5),g:'RENTA 5TA CATEGORIA'});
   CS.forEach(k=>{const v=cc[k.cod];if(v.tar>0)A1.push({cta:k.rem,cc:k.cod,dh:'H',imp:r2(v.tar),g:'DESCUENTO TARDANZAS'});});
   CS.forEach(k=>{const v=cc[k.cod];if(v.falta>0)A1.push({cta:k.rem,cc:k.cod,dh:'H',imp:r2(v.falta),g:'DESCUENTO INASISTENCIAS'});});
-  if(adePre>0)A1.push({cta:ct.ant,dh:'H',imp:r2(adePre),g:'ADELANTOS Y PRESTAMOS'});
+  // Antes: una sola linea agregada (cta:ct.ant, sin anexo) con la suma de
+  // adelantos/prestamos de TODOS los trabajadores -no se podia saber a
+  // quien correspondia cada importe. Ahora, una linea por trabajador con
+  // anx:dni (mismo tratamiento que "ADELANTO DE REM"/"SUELDOS" un poco mas
+  // abajo). Igual que ahi, un valor negativo (nunca deberia darse en la
+  // practica, pero por si se teclea un ajuste negativo) se trata como
+  // debe por su valor absoluto, en vez de un haber negativo.
+  adePreW.forEach(x=>A1.push(x.v<0?{cta:ct.ant,anx:x.dni,dh:'D',imp:r2(-x.v),g:'ADELANTOS Y PRESTAMOS (ajuste negativo)'}
+                                   :{cta:ct.ant,anx:x.dni,dh:'H',imp:r2(x.v),g:'ADELANTOS Y PRESTAMOS'}));
   // gratificacion, CTS y liquidacion se pagan con la planilla pero no son gasto
   // del mes: cancelan la provision que ya se registro, por eso van al debe
   let pg={grati:0,cts:0,liq:0,vac:0};
