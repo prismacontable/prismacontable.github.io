@@ -130,6 +130,14 @@ select.pill-cesado{background:var(--red);color:#991B1B;border-color:#FCA5A5}
    que se lee. */
 .bol-t tr.bol-total td{font-size:13px}
 .bol-t tr.bol-total td.n{font-size:19px}
+/* Bug reportado: en la boleta impresa/exportada y en modo oscuro de la app,
+   una regla mas abajo (".boleta,.boleta td,.boleta th{color:#0F172A}" al
+   imprimir, y su equivalente en [data-tema="dark"]) pisaba el color:#fff
+   que la fila NETO A PAGAR pone en el <tr> -texto oscuro sobre su fondo
+   azul oscuro (#1F3864), practicamente invisible. Esta regla es mas
+   especifica que esas dos (".boleta .bol-total td" gana por tener una
+   clase mas), asi que fija el blanco sin importar en que modo se vea. */
+.boleta .bol-total td{color:#fff}
 .bol-sig{display:flex;justify-content:space-around;gap:36px;margin-top:260px;font-size:10.5px;text-align:center;padding-bottom:24px}
 .bol-sig div{border-top:1px solid var(--ink);padding-top:6px;width:230px;line-height:1.55}
 .hoja{margin-bottom:16px}
@@ -403,6 +411,12 @@ body.bloqueado header,body.bloqueado nav,body.bloqueado main,body.bloqueado #bar
 /* las boletas se imprimen: siempre fondo claro */
 [data-tema="dark"] .boleta{background:#fff;color:#0F172A;border-color:#94A3B8}
 [data-tema="dark"] .boleta td,[data-tema="dark"] .boleta th{border-color:#CBD5E1;color:#0F172A}
+/* La regla ".boleta .bol-total td{color:#fff}" de mas arriba tiene la misma
+   especificidad que la de justo encima (dos clases + elemento) -en un
+   empate gana la que aparece despues en la hoja de estilos, que seria esta
+   de aqui y volveria a poner el NETO A PAGAR en oscuro. Se repite aca, ya
+   dentro del bloque [data-tema="dark"], para no depender del orden. */
+[data-tema="dark"] .boleta .bol-total td{color:#fff}
 [data-tema="dark"] .boleta tr:hover td{background:transparent}
 [data-tema="dark"] .bol-t th{background:#E2E8F0}
 [data-tema="dark"] .bol-h{color:#fff}
@@ -5563,6 +5577,20 @@ async function avisarVacaciones(){
   if(ven.length)toast(ven.length+' con vacaciones vencidas: '+ven.slice(0,3).map(nom).join(', ')+(ven.length>3?'...':''),'err');
   else if(pron.length)toast(pron.length+' con vacaciones por vencer: '+pron.slice(0,3).map(nom).join(', ')+(pron.length>3?'...':''));}
 function pintarBarra(){
+  // Pedido del usuario (caso real: entro una falta, actualizo el navegador
+  // sin guardar -normal, desaparece de pantalla-, el borrador local queda
+  // parqueado con esa falta vieja, y sin darse cuenta clickea "Recuperar" o
+  // simplemente sigue tecleando encima; al guardar terminan las DOS faltas
+  // juntas en el archivo, duplicadas). En vez de quitar el borrador -la
+  // unica red de seguridad si el navegador se cierra antes de Guardar-, se
+  // apaga solo en cuanto el usuario retoma el trabajo en pantalla: si ya
+  // hay cambios sin guardar (hayCambios(), lo mismo que ya usa el aviso de
+  // "cambios sin guardar" en la barra) mientras todavia hay un borrador
+  // viejo sin resolver, ese borrador dejo de ser relevante -el usuario ya
+  // decidio seguir con lo que tiene en pantalla, no con lo parqueado- y se
+  // descarta el aviso para que no quede ahi, tentando a un "Recuperar" que
+  // pisaria/duplicaria lo que se acaba de escribir.
+  if(EST.draft&&hayCambios())EST.draft=null;
   const pp=periodoStr();
   const g=document.getElementById('lblGuardar');if(g)g.textContent='Guardar '+pp;
   const s=document.getElementById('lblSync');if(s)s.textContent='Sincronizar '+pp;
