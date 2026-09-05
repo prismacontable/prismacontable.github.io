@@ -301,7 +301,7 @@ body.bloqueado header,body.bloqueado nav,body.bloqueado main,body.bloqueado #bar
   }#mod-p4 .val-list{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:6px;}#mod-p4 .val-item{
     display:flex; gap:9px; align-items:flex-start;
     font-size:13px; padding:9px 12px; border-radius:8px;
-  }#mod-p4 .val-item.error{background:var(--danger-tint); color:#FCA5A5;}#mod-p4 .val-item.warn{background:var(--amber-tint); color:#FCD34D;}#mod-p4 .val-item .dot{margin-top:5px; width:6px; height:6px; border-radius:50%; flex-shrink:0;}#mod-p4 .val-item.error .dot{background:var(--danger);}#mod-p4 .val-item.warn .dot{background:var(--amber);}
+  }#mod-p4 .val-item.error{background:var(--danger-tint); color:var(--danger);}#mod-p4 .val-item.warn{background:var(--amber-tint); color:var(--amber);}#mod-p4 .val-item .dot{margin-top:5px; width:6px; height:6px; border-radius:50%; flex-shrink:0;}#mod-p4 .val-item.error .dot{background:var(--danger);}#mod-p4 .val-item.warn .dot{background:var(--amber);}
 
   /* ---------- preview ---------- */#mod-p4 .preview-grid{display:grid; grid-template-columns:1fr 1fr; gap:16px;}#mod-p4 .preview-col h3{font-size:13px; margin-bottom:8px; display:flex; align-items:center; gap:8px; color:var(--slate);}#mod-p4 .preview-col h3 .badge{
     font-family:'JetBrains Mono',monospace; font-size:11.5px; font-weight:500;
@@ -374,7 +374,7 @@ body.bloqueado header,body.bloqueado nav,body.bloqueado main,body.bloqueado #bar
   }#mod-p5 .tag-tipo.ingreso{background:var(--teal-tint); color:var(--teal);}#mod-p5 .tag-tipo.descuento{background:var(--amber-tint); color:var(--amber);}#mod-p5 .validation-ok{
     display:flex; align-items:center; gap:8px; color:var(--teal); font-weight:600; font-size:13.5px;
     background:var(--teal-tint); padding:10px 14px; border-radius:8px;
-  }#mod-p5 .val-list{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:6px;}#mod-p5 .val-item{ display:flex; gap:9px; align-items:flex-start; font-size:13px; padding:9px 12px; border-radius:8px; }#mod-p5 .val-item.error{background:var(--danger-tint); color:#FCA5A5;}#mod-p5 .val-item.warn{background:var(--amber-tint); color:#FCD34D;}#mod-p5 .val-item .dot{margin-top:5px; width:6px; height:6px; border-radius:50%; flex-shrink:0;}#mod-p5 .val-item.error .dot{background:var(--danger);}#mod-p5 .val-item.warn .dot{background:var(--amber);}#mod-p5 .preview-grid{display:grid; grid-template-columns:1fr 1fr; gap:16px;}#mod-p5 .preview-col h3{font-size:13px; margin-bottom:8px; display:flex; align-items:center; gap:8px; color:var(--slate);}#mod-p5 .preview-col h3 .badge{
+  }#mod-p5 .val-list{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:6px;}#mod-p5 .val-item{ display:flex; gap:9px; align-items:flex-start; font-size:13px; padding:9px 12px; border-radius:8px; }#mod-p5 .val-item.error{background:var(--danger-tint); color:var(--danger);}#mod-p5 .val-item.warn{background:var(--amber-tint); color:var(--amber);}#mod-p5 .val-item .dot{margin-top:5px; width:6px; height:6px; border-radius:50%; flex-shrink:0;}#mod-p5 .val-item.error .dot{background:var(--danger);}#mod-p5 .val-item.warn .dot{background:var(--amber);}#mod-p5 .preview-grid{display:grid; grid-template-columns:1fr 1fr; gap:16px;}#mod-p5 .preview-col h3{font-size:13px; margin-bottom:8px; display:flex; align-items:center; gap:8px; color:var(--slate);}#mod-p5 .preview-col h3 .badge{
     font-family:'JetBrains Mono',monospace; font-size:11.5px; font-weight:500;
     background:var(--indigo-tint); color:var(--indigo-dark); padding:2px 8px; border-radius:6px;
   }#mod-p5 pre.filebox{
@@ -602,6 +602,8 @@ html[data-hoja="horizontal"] .corte{display:none}
   <span class="sep"></span>
   <button class="bp ico" onclick="enviarA5ta()"><svg viewBox="0 0 24 24"><path d="M7 3h10v18H7z"/><path d="M10 8h4M10 12h4M10 16h2"/></svg><span>Enviar a PLAME 5ta</span></button>
   <button class="bp ico" onclick="enviarA4ta()"><svg viewBox="0 0 24 24"><path d="M4 5h16v14H4z"/><path d="M4 10h16M9 10v9"/></svg><span>Enviar a PLAME 4ta</span></button>
+  <button class="bp ico" id="btnDescargarTodo" onclick="descargarTodoCierre()" title="Descarga en un solo paso: Excel de la planilla Mensual, .jor y .rem de PLAME 5ta, AFPnet y el CONCAR de planilla. No incluye PLAME 4ta (honorarios) ni T-Registro Alta/Baja -esos se descargan aparte. Pide sesion iniciada y el RUC del empleador -mismos requisitos que cada boton individual.">
+    <svg viewBox="0 0 24 24"><path d="M12 3v13"/><path d="M7 11l5 5 5-5"/><path d="M4 20h16"/></svg><span>Descargar todo el cierre</span></button>
   <button class="bo2 ico" onclick="expVistaExcel()"><svg viewBox="0 0 24 24"><path d="M4 3h16v18H4z"/><path d="M9 8l6 8M15 8l-6 8"/></svg><span>Excel de esta vista</span></button>
   <button class="bo2 ico" onclick="expJSON()"><svg viewBox="0 0 24 24"><path d="M12 3v12"/><path d="M8 11l4 4 4-4"/><path d="M4 20h16"/></svg><span>Exportar copia JSON</span></button>
   <button class="bo2 ico" onclick="document.getElementById('impFile').click()"><svg viewBox="0 0 24 24"><path d="M12 15V3"/><path d="M8 7l4-4 4 4"/><path d="M4 20h16"/></svg><span>Importar JSON</span></button>
@@ -912,6 +914,8 @@ html[data-hoja="horizontal"] .corte{display:none}
               <th style="width:140px">Nombres</th>
               <th style="width:100px">Domiciliado</th>
               <th style="width:110px">Doble conv.</th>
+              <th style="width:110px" title="Va en la columna Código de Centro de Costo del CONCAR, en la línea de gasto (Gasto honorarios). Déjalo vacío si no aplica.">C. Costo (CONCAR)</th>
+              <th style="width:120px" title="Cuenta contable de gasto para ESTE proveedor en el CONCAR. Vacío = usa la cuenta general 'Gasto honorarios (4ta)' configurada en la pestaña Cuentas.">Cta. Gasto (CONCAR)</th>
               <th class="col-narrow"></th>
             </tr>
           </thead>
@@ -3860,11 +3864,17 @@ function hayXLSX(){
    mandan las lineas del asiento y se recibe la hoja lista para descargar.
    Asi el formato de exportacion, que es parte del metodo de trabajo, no viaja
    dentro del HTML. */
+// Devuelve true/false segun si de verdad se descargo el archivo -antes no
+// devolvia nada (nadie lo necesitaba: el boton "Exportar a CONCAR" no le
+// pedia el resultado). Se agrega para que descargarTodoCierre() (mas abajo)
+// pueda saber si este paso salio bien sin duplicar toda esta logica -ningun
+// llamador existente se ve afectado, porque ninguno usaba el valor de
+// retorno.
 async function expConcar(){
-  if(!hayXLSX())return;
-  if(!haySesion()){requireLogin_();return;}
+  if(!hayXLSX())return false;
+  if(!haySesion()){requireLogin_();return false;}
   const{A1,A2,A3,fecha}=lineasAsiento();
-  if(!A1.length&&!A2.length&&!A3.length){alert('No hay movimientos que exportar en este periodo.');return;}
+  if(!A1.length&&!A2.length&&!A3.length){alert('No hay movimientos que exportar en este periodo.');return false;}
   const{m,a}=per(),mm=String(m).padStart(2,'0');
   const btn=document.getElementById('btnConcar');
   const orig=btn?btn.textContent:'';
@@ -3890,9 +3900,9 @@ async function expConcar(){
   if(!resp.ok){
     if(ERR_SESION.indexOf(resp.error)>=0)requireLogin_(resp.message);
     else alert(resp.message||'No se pudo generar el archivo.');
-    return;}
+    return false;}
   const rows=resp.filas||[];
-  if(rows.length<2){alert('El servidor no devolvio movimientos.');return;}
+  if(rows.length<2){alert('El servidor no devolvio movimientos.');return false;}
   const ws=XLSX.utils.aoa_to_sheet(rows);
   ws['!cols']=(resp.anchos||[]).map(w=>({wch:w}));
   const wb=XLSX.utils.book_new();
@@ -3907,6 +3917,7 @@ async function expConcar(){
   // bloquea la descarga, solo avisa si el recalculo del servidor
   // (revisarRecalculoPlanilla_) no coincide.
   if(resp.warningRecalculo)toast(resp.warningRecalculo,'err');
+  return true;
 }
 /* NAV */
 function T(btn){
@@ -5480,16 +5491,16 @@ function tablaAFilas(tabla){
     filas.push(cuerpo(tr));});
   tabla.querySelectorAll('tfoot tr').forEach(tr=>filas.push(cuerpo(tr)));
   return filas;}
-function expVistaExcel(){
-  if(!hayXLSX())return;
-  const p=panelActivo();
-  if(!p||['p-p4','p-p5'].indexOf(p.id)>=0){alert('Esta vista no tiene una tabla para exportar.');return;}
+// Extraido de expVistaExcel() (sin cambio de logica) para poder armar el
+// Excel de una pestaña puntual (ej. Mensual) sin depender de cual esta
+// activa en pantalla -lo usa descargarTodoCierre() mas abajo, ademas del
+// boton "Excel de esta vista".
+function construirWbDeVista_(panelId,base){
+  const p=document.getElementById(panelId);
+  if(!p)return null;
   const tablas=p.querySelectorAll('table');
-  if(!tablas.length){alert('Esta vista no tiene una tabla para exportar.');return;}
+  if(!tablas.length)return null;
   const wb=XLSX.utils.book_new();
-  const nombres={'p-personal':'Personal','p-q1':'1ra Quincena','p-q2':'2da Quincena',
-    'p-mensual':'Mensual','p-beneficios':'Beneficios','p-cuentas':'Cuentas','p-asientos':'Asientos'};
-  const base=nombres[p.id]||'Vista';
   Array.prototype.forEach.call(tablas,(t,i)=>{
     const filas=tablaAFilas(t);
     if(filas.length<2)return;
@@ -5497,7 +5508,16 @@ function expVistaExcel(){
     ws['!cols']=(filas[0]||[]).map(h=>({wch:Math.max(10,Math.min(34,String(h).length+4))}));
     ws['!freeze']={xSplit:1,ySplit:1};
     XLSX.utils.book_append_sheet(wb,ws,(base+(tablas.length>1?' '+(i+1):'')).slice(0,31));});
-  if(!wb.SheetNames.length){alert('No hay datos que exportar en esta vista.');return;}
+  return wb.SheetNames.length?wb:null;}
+function expVistaExcel(){
+  if(!hayXLSX())return;
+  const p=panelActivo();
+  if(!p||['p-p4','p-p5'].indexOf(p.id)>=0){alert('Esta vista no tiene una tabla para exportar.');return;}
+  const nombres={'p-personal':'Personal','p-q1':'1ra Quincena','p-q2':'2da Quincena',
+    'p-mensual':'Mensual','p-beneficios':'Beneficios','p-cuentas':'Cuentas','p-asientos':'Asientos'};
+  const base=nombres[p.id]||'Vista';
+  const wb=construirWbDeVista_(p.id,base);
+  if(!wb){alert('No hay datos que exportar en esta vista.');return;}
   const arch=periodoStr()+'_'+base.replace(/\s+/g,'_')+'_'+String(CFG.RUC||'').slice(0,11)+'.xlsx';
   XLSX.writeFile(wb,arch);
   toast('Excel generado: '+arch,'ok');}
@@ -5917,17 +5937,24 @@ function tipoDocAuto_(dni){
   if(n===8)return '01';  // DNI
   if(n===9)return '04';  // Carné de Extranjería
   return '00';}          // longitud atipica: Otros, se ajusta a mano (07-Pasaporte si corresponde)
-function enviarA5ta(){
+function enviarA5ta(silencioso){
+  // "silencioso" (usado por descargarTodoCierre(), ver BUSINESS-RULES.md
+  // seccion 35/36): reemplaza los alert() bloqueantes de esta funcion por
+  // toast() -mismo mensaje, sin detener el flujo de "un solo clic" esperando
+  // que alguien cierre un dialogo a mano. El boton "Enviar a PLAME 5ta" del
+  // toolbar sigue llamando a esta funcion sin argumento, con el alert() de
+  // siempre, sin cambios.
+  const avisar=(m,cls)=>{ if(silencioso) toast(m,cls||'ok'); else alert(m); };
   const cod=PLAN.plame;
   const excluidosCuspp=[];
   const gente=pla().filter(p=>{
     if(sinCuspp(p)){excluidosCuspp.push(p.nom+' ('+p.dni+')');return false;}
     return true;});
   if(!gente.length){
-    alert(excluidosCuspp.length
+    avisar(excluidosCuspp.length
       ?'No hay personal en planilla para enviar: se excluyeron '+excluidosCuspp.length+
         ' trabajador(es) por aportar a AFP y no tener CUSPP:\n\n'+excluidosCuspp.join('\n')
-      :'No hay personal en planilla para enviar.');
+      :'No hay personal en planilla para enviar.','err');
     return;}
   const trab=[],conc=[],sinCodigo=[];
   gente.forEach(p=>{
@@ -5960,7 +5987,17 @@ function enviarA5ta(){
       m1:movPlanillaPayload_(mv(p.dni,1)),m2:movPlanillaPayload_(mv(p.dni,2))});
     const add=(c,v)=>{if(c&&r2(v)>0)conc.push({__ref:ref,codigo:c,monto:r2(v)});};
     add(cod.basica,m.q1.sue+m.q2.sue);
-    add(cod.vacaciones,m.q1.vac+m.q2.vac);
+    // Vacaciones vendidas (D.S. 012-92-TR, campo "vv": el trabajador cede
+    // hasta 15 dias de su periodo vacacional, cobra por esos dias pero
+    // sigue trabajando -distinto de vacaciones TRUNCAS, cod.vacTruncas/
+    // 0114, que es el pago proporcional de vacaciones no ganadas, tipico al
+    // cesar-) no tenia ningun codigo PLAME asignado: no se declaraba ni en
+    // la 5ta ni entraba a la Base Afecta del AFPnet. Confirmado con el
+    // usuario (ver BUSINESS-RULES.md seccion 34): van bajo el mismo codigo
+    // 0118 "Remuneracion vacacional" que ya usan las vacaciones gozadas,
+    // sumadas juntas -para PLAME/AFPnet ambas son la misma remuneracion
+    // vacacional, solo cambia si el trabajador goza el descanso o no.
+    add(cod.vacaciones,m.q1.vac+m.q2.vac+(m.q1.vv||0)+(m.q2.vv||0));
     add(cod.vacTruncas,m.q1.vtr+m.q2.vtr);
     add(cod.comision,m.q1.com+m.q2.com);
     add(cod.bono,m.q1.bon+m.q2.bon);
@@ -6001,7 +6038,7 @@ function enviarA5ta(){
     obligatorios.forEach(c=>{
       if(c&&!conc.some(x=>x.__ref===ref&&x.codigo===c))conc.push({__ref:ref,codigo:c,monto:0});});
   });
-  if(!window.P5){alert('El modulo de 5ta no esta disponible.');return;}
+  if(!window.P5){avisar('El modulo de 5ta no esta disponible.','err');return;}
   const res=P5.cargar(trab,conc,datPeriodo());
   const b=document.querySelector('nav button[data-t="p5"]');if(b)T(b);
   let msg='Enviado a PLAME 5ta: '+res.trabajadores+' trabajadores y '+res.conceptos+' conceptos.';
@@ -6009,7 +6046,7 @@ function enviarA5ta(){
     ' trabajador(es) por aportar a AFP y no tener CUSPP (completa el dato en Personal y vuelve a enviar):\n'+excluidosCuspp.join('\n');
   const faltan=['r5','afpComision','onp'].filter(k=>!cod[k]);
   if(faltan.length)msg+='\n\nOJO: hay codigos obligatorios vacios en la pestaña Cuentas ('+faltan.join(', ')+'); esos conceptos no se enviaron.';
-  alert(msg);}
+  avisar(msg,(excluidosCuspp.length||faltan.length)?'err':'ok');}
 
 /* ---- cuadre cruzado planilla vs PLAME 5ta ---- */
 function cuadrar5ta(){
@@ -6728,6 +6765,27 @@ function completarCuspp(filas){
     if(!String(fila[1]==null?'':fila[1]).trim()){fila[1]=cus;puestos++;}
   });
   return {puestos:puestos,faltan:faltan};}
+// Extraido del boton de abajo (sin cambio de logica) para que
+// descargarTodoCierre() -mas adelante en este mismo IIFE- pueda reusarlo
+// sin duplicar el armado del Excel ni el aviso de CUSPP faltante. Devuelve
+// true/false segun si de verdad se descargo el archivo.
+function construirYDescargarAFP_(filas, dat){
+  if(filas.length === 0){
+    alert('No hay trabajadores para incluir en el archivo: se incluye a quien tenga el concepto 0608 (Aporte Obligatorio AFP) o una Excepción Aportar marcada (por ejemplo, jubilados con "O"). Revisa esos datos en la pestaña de 5ta.');
+    return false;
+  }
+  // AFPnet espera un Excel SIN encabezados (solo las filas de datos) — el
+  // sistema de AFPnet no valida encabezados, así que no se incluyen.
+  if(!hayXLSX())return false;
+  const rc = completarCuspp(filas);
+  if(rc.faltan.length && !confirm('Estos trabajadores no tienen CUSPP y la columna B saldra vacia:\n\n'+
+     rc.faltan.join(', ')+'\n\nDescargar igual?')) return false;
+  const ws = XLSX.utils.aoa_to_sheet(filas);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'AFP');
+  XLSX.writeFile(wb, `AFPNET_${dat.ruc}${dat.anio}${dat.mes}.xlsx`);
+  return true;
+}
 document.getElementById('p5-btnDownloadAFP').addEventListener('click', async () => {
   const dat = getDat();
   if(!/^\d{11}$/.test(dat.ruc)){ alert('Ingresa el RUC del empleador (11 dígitos) antes de descargar.'); return; }
@@ -6737,23 +6795,77 @@ document.getElementById('p5-btnDownloadAFP').addEventListener('click', async () 
   const result = await generarEnBackend();
   btn.disabled = false; btn.textContent = original;
   if(result.error){ alert(result.error); return; }
-  const filas = result.afpNetRows || [];
-  if(filas.length === 0){
-    alert('No hay trabajadores para incluir en el archivo: se incluye a quien tenga el concepto 0608 (Aporte Obligatorio AFP) o una Excepción Aportar marcada (por ejemplo, jubilados con "O"). Revisa esos datos en la pestaña de 5ta.');
-    return;
-  }
-  // AFPnet espera un Excel SIN encabezados (solo las filas de datos) — el
-  // sistema de AFPnet no valida encabezados, así que no se incluyen.
-  if(!hayXLSX())return;
-  const rc = completarCuspp(filas);
-  if(rc.faltan.length && !confirm('Estos trabajadores no tienen CUSPP y la columna B saldra vacia:\n\n'+
-     rc.faltan.join(', ')+'\n\nDescargar igual?')) return;
-  const ws = XLSX.utils.aoa_to_sheet(filas);
-  const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, 'AFP');
-  XLSX.writeFile(wb, `AFPNET_${dat.ruc}${dat.anio}${dat.mes}.xlsx`);
-  if(result.warningRecalculo) toast(result.warningRecalculo, 'err');
+  const ok = construirYDescargarAFP_(result.afpNetRows || [], dat);
+  if(ok && result.warningRecalculo) toast(result.warningRecalculo, 'err');
 });
+
+// ================== DESCARGAR TODO EL CIERRE (pedido del usuario) ==================
+// Un solo boton que baja, en una sola pasada, lo que se pide tipicamente al
+// cerrar un mes: el Excel de la vista Mensual, el .jor y el .rem de PLAME
+// 5ta, el AFPnet y el CONCAR de planilla. Los tres archivos de PLAME 5ta
+// salen de UNA sola llamada al backend (generarEnBackend(), reusada tal
+// cual) en vez de las 3 llamadas separadas que hacen los botones
+// individuales -mismo resultado, una consulta menos-. Vive dentro de este
+// IIFE porque necesita getDat()/generarEnBackend()/downloadFile()/
+// construirYDescargarAFP_(), que son privados del modulo P5; se expone en
+// window para que el boton del toolbar principal (fuera de este IIFE) lo
+// pueda llamar. expConcar()/enviarA5ta()/rMensual() ya son globales (viven
+// en el shell principal, fuera de cualquier IIFE) y se llaman tal cual.
+window.descargarTodoCierre = async function(){
+  const dat = getDat();
+  if(!/^\d{11}$/.test(dat.ruc)){ alert('Ingresa el RUC del empleador (11 dígitos) antes de descargar.'); return; }
+  if(sessionPassword === null){ requireLogin_(); return; }
+  if(!hayXLSX())return;
+  const btn = document.getElementById('btnDescargarTodo');
+  const original = btn ? btn.textContent : '';
+  if(btn){ btn.disabled = true; btn.textContent = 'Generando…'; }
+  const hechos = [], fallidos = [];
+  try {
+    // 1) Excel de la planilla Mensual -misma tabla que "Excel de esta
+    // vista" en la pestaña Mensual, sin tener que pararse ahi: se renderiza
+    // primero (R() solo dibuja la pestaña activa) y se arma el libro desde
+    // ese panel puntual con construirWbDeVista_ (definida junto a
+    // expVistaExcel(), en el shell principal).
+    try{
+      if(typeof window.rMensual==='function') window.rMensual();
+      const wbMen = (typeof window.construirWbDeVista_==='function') ? window.construirWbDeVista_('p-mensual','Mensual') : null;
+      if(wbMen){ XLSX.writeFile(wbMen, periodoStr()+'_Mensual_'+dat.ruc+'.xlsx'); hechos.push('Excel Mensual'); }
+      else fallidos.push('Excel Mensual (sin datos)');
+    }catch(e){ fallidos.push('Excel Mensual'); }
+
+    // 2) Refresca PLAME 5ta con los datos actuales de la planilla -mismo
+    // boton "Enviar a PLAME 5ta" del toolbar, en modo silencioso (toast en
+    // vez de alert()): un alert() bloqueante aca detendria el resto de la
+    // descarga (.jor/.rem/AFPnet/CONCAR) esperando que alguien lo cierre a
+    // mano, justo lo contrario de lo que pide este boton. Ver
+    // BUSINESS-RULES.md seccion 36.
+    if(typeof window.enviarA5ta==='function') window.enviarA5ta(true);
+
+    // 3) .jor + .rem + AFPnet: una sola llamada al backend para los tres.
+    const result = await generarEnBackend();
+    if(result.error){
+      fallidos.push('.jor/.rem/AFPnet ('+result.error+')');
+    } else {
+      downloadFile(buildFilename(dat,'jor'), result.jorLines); hechos.push('.jor');
+      downloadFile(buildFilename(dat,'rem'), result.remLines); hechos.push('.rem');
+      if(construirYDescargarAFP_(result.afpNetRows||[], dat)) hechos.push('AFPnet');
+      else fallidos.push('AFPnet');
+      if(result.warningRecalculo) toast(result.warningRecalculo,'err');
+    }
+
+    // 4) CONCAR de planilla -mismo boton "Exportar a CONCAR" del toolbar
+    // (global): ya muestra su propio toast/alert de exito o error, aca solo
+    // se registra en el resumen final segun lo que devuelva.
+    if(typeof window.expConcar==='function'){
+      const okConcar = await window.expConcar();
+      if(okConcar) hechos.push('CONCAR'); else fallidos.push('CONCAR');
+    }
+  } finally {
+    if(btn){ btn.disabled = false; btn.textContent = original; }
+  }
+  toast('Descarga del cierre: '+(hechos.length?hechos.join(', '):'nada')+
+    (fallidos.length?'. No se pudo: '+fallidos.join(', '):''), fallidos.length?'err':'ok');
+};
 
 /* =======================================================================
    PANTALLA DE ACCESO (login) — se muestra siempre al cargar la página.
@@ -6858,7 +6970,12 @@ async function generarConcar4taEnBackend(){
   const mNum = parseInt(dat.mes, 10) || 0;
   const fechaCierreObj = (dat.anio && mNum) ? new Date(+dat.anio, mNum, 0) : null;
   const payload = {
-    proveedores: proveedores.filter(p=>p.nroDoc).map(p => ({ id:p.id, nroDoc:p.nroDoc, nombre:p.nombre })),
+    // cc/ctaGasto (pedido del usuario, ver BUSINESS-RULES.md seccion 33):
+    // Centro de Costo y Cuenta Contable de gasto PROPIOS de este proveedor
+    // para el CONCAR -si vienen vacios, armarConcar4ta_ usa la cuenta
+    // general "Gasto honorarios (4ta)" (PLAN.ctas.gHon) y deja el Centro de
+    // Costo en blanco, igual que se comportaba antes de este cambio-.
+    proveedores: proveedores.filter(p=>p.nroDoc).map(p => ({ id:p.id, nroDoc:p.nroDoc, nombre:p.nombre, cc:p.cc||'', ctaGasto:p.ctaGasto||'' })),
     recibos: recibos.map(r => ({ provId:r.provId, nroRecibo:r.nroRecibo, rentaBruta:r.rentaBruta, retencion:r.retencion })),
     ruc: dat.ruc, periodo: String(dat.anio)+String(dat.mes),
     anio: dat.anio, mes: dat.mes, mesNombre: MES[mNum] || '',
@@ -6951,7 +7068,7 @@ function renderProv(){
   const tbody = document.getElementById('p4-bodyProv');
   tbody.innerHTML = '';
   if(proveedores.length === 0){
-    tbody.innerHTML = '<tr class="empty-row"><td colspan="9">Aún no hay proveedores. Agrega uno o importa un Excel.</td></tr>';
+    tbody.innerHTML = '<tr class="empty-row"><td colspan="11">Aún no hay proveedores. Agrega uno o importa un Excel.</td></tr>';
   } else {
     proveedores.forEach(p => {
       const tr = document.createElement('tr');
@@ -6984,6 +7101,8 @@ function renderProv(){
             <option value="1" ${String(p.dobleConvenio)==='1'?'selected':''}>Sí</option>
           </select>
         </td>
+        <td><input data-f="cc" value="${esc(p.cc||'')}" placeholder="opcional"></td>
+        <td><input data-f="ctaGasto" value="${esc(p.ctaGasto||'')}" placeholder="usa la general"></td>
         <td><button class="btn-ghost btn-sm" data-action="del">✕</button></td>
       `;
       tbody.appendChild(tr);
