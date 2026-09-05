@@ -6976,7 +6976,13 @@ async function generarConcar4taEnBackend(){
     // general "Gasto honorarios (4ta)" (PLAN.ctas.gHon) y deja el Centro de
     // Costo en blanco, igual que se comportaba antes de este cambio-.
     proveedores: proveedores.filter(p=>p.nroDoc).map(p => ({ id:p.id, nroDoc:p.nroDoc, nombre:p.nombre, cc:p.cc||'', ctaGasto:p.ctaGasto||'' })),
-    recibos: recibos.map(r => ({ provId:r.provId, nroRecibo:r.nroRecibo, rentaBruta:r.rentaBruta, retencion:r.retencion })),
+    // fechaEmision (pedido del usuario, ver BUSINESS-RULES.md sección 38):
+    // antes no se mandaba, así que armarConcar4ta_ no tenía forma de saber
+    // la fecha real de cada recibo y usaba el cierre del periodo para
+    // Fecha de Comprobante/Documento/Vencimiento en TODAS las líneas -mismo
+    // formato ISO (yyyy-mm-dd) que ya manda generar4taEnBackend arriba, el
+    // backend lo convierte con fmtFecha4_ igual que hace con el .ps4/.4ta-.
+    recibos: recibos.map(r => ({ provId:r.provId, nroRecibo:r.nroRecibo, rentaBruta:r.rentaBruta, retencion:r.retencion, fechaEmision:r.fechaEmision })),
     ruc: dat.ruc, periodo: String(dat.anio)+String(dat.mes),
     anio: dat.anio, mes: dat.mes, mesNombre: MES[mNum] || '',
     fechaCierre: fechaCierreObj ? (String(fechaCierreObj.getDate()).padStart(2,'0')+'/'+String(dat.mes).padStart(2,'0')+'/'+dat.anio) : '',
