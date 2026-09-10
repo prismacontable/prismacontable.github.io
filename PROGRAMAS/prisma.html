@@ -66,6 +66,10 @@ table{width:100%;border-collapse:collapse;font-size:11.5px}
 th{background:var(--surface2);color:var(--ink2);padding:6px 6px;text-align:center;font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:.03em;white-space:nowrap}
 th.left{text-align:left}
 td{padding:3px 6px;border-bottom:1px solid var(--border);white-space:nowrap}
+/* Fila de filtros por columna, dentro del <thead> de Personal/Q1/Q2/Mensual
+   (BUSINESS-RULES.md seccion 41). th.fcol no lleva mayusculas/negrita como
+   el resto de encabezados, para que se note que es un control, no un titulo. */
+th.fcol{background:var(--surface);padding:2px 4px;text-transform:none;letter-spacing:0;font-weight:400}
 /* Las tarjetas de Cuentas (grid auto-fit de ~300px) llevan etiquetas largas
    ("Mínimo para retener 4ta en dietas", códigos PLAME, etc.): con el nowrap
    de arriba, la tabla pedía más ancho del que tiene su columna y se
@@ -1914,13 +1918,28 @@ function rPersonal(){
    '<td class="ctr">'+(p.tipo==='PLANILLA'?
      '<button type="button" class="bd" style="padding:2px 7px;font-size:10px;margin-right:3px" onclick="abrirTRegAlta(\''+p.dni+'\')" title="Datos para el Alta T-Registro (SUNAT): fecha de nacimiento, ocupacion, tipo de contrato, etc. Solo hace falta completarlos si esta persona ingreso este periodo.">SUNAT</button>':'')+
      '<button class="bd" style="padding:2px 7px" onclick="delTrab('+p.id+')">X</button></td></tr>').join('');
+  const filaFiltroPers=cont=>'<tr>'+
+   '<th></th>'+
+   celdaFiltroTexto_(cont,'dni','DNI...')+
+   celdaFiltroTexto_(cont,'nom','Nombre...')+
+   celdaFiltroTexto_(cont,'car','Cargo...')+
+   celdaFiltroTexto_(cont,'cus','CUSPP...')+
+   celdaFiltroSelect_(cont,'cc',Object.entries(CCS).map(([k,v])=>[k,v]))+
+   celdaFiltroSelect_(cont,'tipo',TIPOS.map(x=>[x,x]))+
+   celdaFiltroSelect_(cont,'reg',Object.keys(REG).map(k=>[k,REG[k].nom]))+
+   celdaFiltroSelect_(cont,'afp',AFPS.map(a=>[a,a]))+
+   '<th></th><th></th><th></th><th></th>'+
+   celdaFiltroSelect_(cont,'est',[['ACTIVO','ACTIVO'],['CESADO','CESADO']])+
+   '<th></th><th></th></tr>';
   document.getElementById('wPers').innerHTML='<table><thead><tr>'+
    '<th>#</th><th class="left">DNI / RUC</th><th class="left">Apellidos y Nombres</th><th class="left">Cargo</th>'+
    '<th class="left">CUSPP</th><th>Centro Costo</th><th>Tipo</th><th title="Régimen laboral: define vacaciones, gratificación y CTS">Rég. Laboral</th><th>Régimen Pens.</th>'+
    '<th title="Solo para quien sigue en el esquema de comision por flujo (afiliados desde antes de feb-2013)">Comisión AFP</th>'+
    '<th title="Asignación familiar: S/ 102.50 (10% RMV) si tiene hijos">Asig. Familiar</th><th>Sueldo / Honor.</th>'+
    '<th>F. Ingreso</th><th>F. Cese</th><th>Estado</th>'+
-   '<th title="Solo para quien tiene fecha de cese: define la liquidacion (antes vivia en Beneficios)">Motivo de cese</th><th></th></tr></thead><tbody>'+
+   '<th title="Solo para quien tiene fecha de cese: define la liquidacion (antes vivia en Beneficios)">Motivo de cese</th><th></th></tr>'+
+   filaFiltroPers('wPers')+
+   '</thead><tbody>'+
    (rows||'<tr><td colspan="16" style="text-align:center;padding:20px;color:var(--ink3)">Sin personal registrado.</td></tr>')+'</tbody></table>';
 }
 /* QUINCENA */
@@ -1936,9 +1955,10 @@ function rQna(q){
     t.tar+=c.tar;t.ade+=c.ade;t.pre+=c.pre;t.r4+=c.ret4;t.r5+=c.r5;t.neto+=c.neto;t.he+=(+m.he||0);
     t.he25+=c.he25;t.he35+=c.he35;t.falta+=c.faltaImp;t.sue+=r2(c.sue+c.hon);t.bon+=c.bon;t.com+=c.com;
     t.vac+=c.vac;t.vv+=(c.vv||0);t.fer+=c.fer;t.gra+=c.gra;t.bge+=c.bge;t.cts+=c.cts;t.liq+=c.liq;t.vtr+=c.vtr;t.dm+=c.dm;
-    const cab='<td>'+escAttr_(p.nom)+'</td>'+
-      '<td class="ctr" style="font-size:10.5px;font-variant-numeric:tabular-nums">'+p.dni+'</td>'+
-      '<td class="ctr">'+btipo(p.tipo)+'</td><td class="ctr">'+bcc(p.cc)+'</td>'+
+    const cab='<td data-col="nom">'+escAttr_(p.nom)+'</td>'+
+      '<td class="ctr" data-col="dni" style="font-size:10.5px;font-variant-numeric:tabular-nums">'+p.dni+'</td>'+
+      '<td class="ctr" data-col="tipo" data-val="'+escAttr_((p.tipo||'').toLowerCase())+'">'+btipo(p.tipo)+'</td>'+
+      '<td class="ctr" data-col="cc">'+bcc(p.cc)+'</td>'+
       dia(p.dni,'d',m.d)+incBtnCell(p.dni,q,m,'f')+
       '<td class="num" title="Lo que no se paga por los días de falta">'+(c.faltaImp>0?'<span style="color:var(--red2)">-'+f(c.faltaImp)+'</span>':'')+'</td>';
     const feriado=dia(p.dni,'fer',m.fer||0)+
@@ -2004,7 +2024,15 @@ function rQna(q){
    '<th class="gt">Gratificación</th><th class="gt">Bonif. 9%</th><th class="gt">CTS</th><th class="gt">Otros</th>'+
    '<th class="gt">Total Ing.</th><th class="gt">Base Afecta</th>'+
    '<th class="gd">AFP/ONP</th><th class="gd">Prima</th><th class="gd" title="Comisión AFP - solo esquema Flujo">Comisión AFP</th><th class="gd">5ta / 4ta</th>'+
-   '<th class="gd">Tardanza</th><th class="gd">Adelanto</th><th class="gd">Préstamo</th></tr></thead><tbody>'+
+   '<th class="gd">Tardanza</th><th class="gd">Adelanto</th><th class="gd">Préstamo</th></tr>'+
+   '<tr>'+
+    celdaFiltroTexto_('wQ'+q,'nom','Nombre...')+
+    celdaFiltroTexto_('wQ'+q,'dni','Doc...')+
+    celdaFiltroSelect_('wQ'+q,'tipo',TIPOS.map(x=>[x,x]))+
+    celdaFiltroSelect_('wQ'+q,'cc',Object.entries(CCS).map(([k,v])=>[k,v]))+
+    '<th></th><th></th><th></th><th colspan="28"></th><th></th><th></th>'+
+   '</tr>'+
+   '</thead><tbody>'+
    (rows||'<tr><td colspan="37" style="text-align:center;padding:20px;color:var(--ink3)">Sin personal activo.</td></tr>')+
    '</tbody><tfoot><tr class="total"><td colspan="6"><b>TOTALES</b></td>'+
    '<td class="num"><b>'+(t.falta>0?'-'+f(t.falta):'')+'</b></td>'+
@@ -2058,7 +2086,7 @@ function rMensual(){
     t.sue+=r2(m.q1.sue+m.q2.sue+m.hon);t.vac+=m.vacProv;t.he+=hMes(p);t.falta+=m.faltaImp;
     t.he25+=r2(m.q1.he25+m.q2.he25);t.he35+=r2(m.q1.he35+m.q2.he35);
     return '<tr class="'+(m.q1.rh?'rh-row':'')+'">'+
-     '<td>'+escAttr_(p.nom)+'</td>'+'<td class="ctr" style="font-size:10.5px;font-variant-numeric:tabular-nums">'+p.dni+'</td>'+'<td class="ctr">'+btipo(p.tipo)+'</td><td class="ctr">'+bcc(p.cc)+'</td>'+
+     '<td data-col="nom">'+escAttr_(p.nom)+'</td>'+'<td class="ctr" data-col="dni" style="font-size:10.5px;font-variant-numeric:tabular-nums">'+p.dni+'</td>'+'<td class="ctr" data-col="tipo" data-val="'+escAttr_((p.tipo||'').toLowerCase())+'">'+btipo(p.tipo)+'</td><td class="ctr" data-col="cc">'+bcc(p.cc)+'</td>'+
      '<td class="ctr" style="font-size:10px">'+p.afp+'</td>'+
      '<td class="ctr" style="font-size:9.5px;letter-spacing:.2px">'+(p.cus||'--')+'</td>'+
      '<td class="ctr">'+(m.dias||'--')+'</td>'+
@@ -2085,6 +2113,13 @@ function rMensual(){
    '<th>Base Afecta</th><th>Base EsSalud</th><th>AFP/ONP</th><th>Prima</th>'+
    '<th>EsSalud</th><th>Ret. 4ta/5ta</th><th>Vida Ley</th><th>Prov. Vac.</th>'+
    '<th>Neto Q1</th><th>Neto Q2</th><th>Neto Mes</th><th class="gt">Neto a pagar</th>'+
+   '</tr><tr>'+
+    celdaFiltroTexto_('wMen','nom','Nombre...')+
+    celdaFiltroTexto_('wMen','dni','Doc...')+
+    celdaFiltroSelect_('wMen','tipo',TIPOS.map(x=>[x,x]))+
+    celdaFiltroSelect_('wMen','cc',Object.entries(CCS).map(([k,v])=>[k,v]))+
+    '<th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th>'+
+    '<th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th>'+
    '</tr></thead><tbody>'+(rows||'<tr><td colspan="27" style="text-align:center;padding:20px;color:var(--ink3)">Sin datos. Agrega personal o trae el del mes anterior.</td></tr>')+
    '</tbody><tfoot><tr class="total"><td colspan="7"><b>TOTALES</b></td>'+
    '<td class="num"><b>'+(t.falta>0?'-'+f(t.falta):'')+'</b></td>'+
@@ -3940,6 +3975,16 @@ function R(){
   else if(id==='beneficios')rBeneficios();
   else if(id==='renta5')rRenta5();
   else if(id==='reportes'){rIncCtrl();rReportes();}
+  // Reaplica el buscador de filas (ver "BUSCADOR DE FILAS" mas abajo, bug #2
+  // de BUSINESS-RULES.md seccion 40): cada rXxx() de arriba reconstruye el
+  // <tbody> entero con innerHTML, lo que borra el display:none que
+  // filtrarTablas() le habia puesto a las filas ocultas. Sin esta linea, el
+  // filtro se "perdia" (volvian a verse todas las filas) apenas se editaba
+  // un campo o se cambiaba de pestaña con un filtro activo. filtrarTablas()
+  // ya se define mas abajo en el archivo pero, al ser "function" (no
+  // "const"/"=>"), su binding queda disponible en todo el script sin
+  // importar el orden -llamarla aca arriba es seguro.
+  filtrarTablas();
 }
 
 /* ================== PEGADO DESDE EXCEL ==================
@@ -4086,23 +4131,106 @@ document.addEventListener('paste',pegarExcel,true);
    Filtra lo que se ve, no lo que se calcula: los totales siguen siendo los del
    periodo completo. Busca en cualquier columna de texto (nombre, cargo, CC,
    regimen, documento).
+
+   2 bugs reales encontrados y corregidos (pedido del usuario "se puede
+   agregar filtros en los cuadros?", ver BUSINESS-RULES.md seccion 40):
+
+   1) En la pestaña Personal, DNI y Nombre se renderizan como
+      <input value="..."> (rPersonal(), para poder editarlos ahi mismo), y
+      "tr.textContent" NO incluye el valor de un <input> -solo nodos de
+      texto reales-. El buscador, tal como estaba, jamas encontraba a nadie
+      buscando por nombre o documento en la pestaña que mas se usa para eso
+      -en Q1/Q2/Mensual si funcionaba, porque ahi nombre y DNI se pintan
+      como texto plano, de solo lectura-. Corregido: ahora tambien junta el
+      "value" de cada <input>/<select> de la fila (textoFilaBuscable_).
+
+   2) R() (se llama al cambiar de pestaña Y al editar cualquier campo) nunca
+      volvia a llamar filtrarTablas(): el filtro se perdia -reaparecian
+      todas las filas- apenas se editaba algo en la fila que se acababa de
+      encontrar, o al cambiar de pestaña con un filtro activo. Corregido:
+      filtrarTablas() se llama al final de R() (ver mas abajo), asi el
+      filtro se reaplica solo despues de cada re-render.
    ======================================================= */
 let FILTRO='';
 function setFiltro(v){FILTRO=String(v||'').trim().toLowerCase();filtrarTablas();}
 function panelActivo(){
   const t=document.querySelector('nav button.active');
   return t?document.getElementById('p-'+t.dataset.t):null;}
+function textoFilaBuscable_(tr){
+  let t=tr.textContent||'';
+  tr.querySelectorAll('input,select').forEach(el=>{t+=' '+(el.value||'');});
+  return t.toLowerCase();}
+
+/* ================== FILTROS POR COLUMNA (encabezado) ==================
+   Pedido del usuario ("pongas filtro en el encabezado de los cuadros para
+   filtrar", con captura de pantalla de la tabla Personal): a diferencia del
+   buscador de arriba (una sola caja, busca en toda la fila), esto pone un
+   control por columna dentro del <thead> de cada tabla -como el autofiltro
+   de Excel-, en Personal, Mensual, 1Q y 2Q (BUSINESS-RULES.md seccion 41).
+
+   Estado: FILTROS_COL[contenedor][columna] = valor en minuscula. Se guarda
+   por contenedor ('wPers'/'wQ1'/'wQ2'/'wMen') porque cada tabla tiene sus
+   propias columnas. Se combina con el buscador global (FILTRO) con Y logico:
+   una fila se oculta si falla el buscador global O cualquier filtro de
+   columna activo.
+
+   Persistencia visual: el <thead> se reconstruye entero en cada rXxx()
+   (innerHTML), asi que el valor tecleado en un filtro de columna se
+   perderia al re-renderizar (igual que el bug #2 del buscador global,
+   seccion 40) si no se releyera. Por eso celdaFiltroTexto_/celdaFiltroSelect_
+   siempre repintan el valor guardado en FILTROS_COL como value/selected: el
+   dato sobrevive al re-render aunque el input sea un nodo nuevo.
+   ======================================================================== */
+let FILTROS_COL={};
+const COLF_SELECT_KEYS_=new Set(['cc','tipo','reg','afp','est']);
+function setFiltroCol(el,cont){
+  const key=el.dataset.colf;
+  if(!FILTROS_COL[cont])FILTROS_COL[cont]={};
+  FILTROS_COL[cont][key]=String(el.value||'').trim().toLowerCase();
+  filtrarTablas();}
+function contenedorActivo_(){
+  const p=panelActivo();
+  if(!p)return null;
+  const w=p.querySelector('.tw');
+  return w?w.id:null;}
+function valorColumnaFila_(tr,key){
+  const el=tr.querySelector('[data-f="'+key+'"]');
+  if(el){
+    if(el.type==='checkbox')return el.checked?'si':'no';
+    return String(el.value!=null?el.value:'').toLowerCase();}
+  const el2=tr.querySelector('[data-col="'+key+'"]');
+  if(!el2)return '';
+  const dv=el2.getAttribute('data-val');
+  return String(dv!=null?dv:(el2.textContent||'')).toLowerCase();}
+function celdaFiltroTexto_(cont,key,ph){
+  const v=(FILTROS_COL[cont]&&FILTROS_COL[cont][key])||'';
+  return '<th class="fcol"><input data-colf="'+key+'" value="'+escAttr_(v)+'" placeholder="'+(ph||'Filtrar...')+'" oninput="setFiltroCol(this,\''+cont+'\')" style="width:100%;box-sizing:border-box;font-size:10px;font-weight:400;padding:2px 4px"></th>';}
+function celdaFiltroSelect_(cont,key,opciones){
+  const v=(FILTROS_COL[cont]&&FILTROS_COL[cont][key])||'';
+  return '<th class="fcol"><select data-colf="'+key+'" onchange="setFiltroCol(this,\''+cont+'\')" style="width:100%;box-sizing:border-box;font-size:9.5px;font-weight:400;padding:1px">'+
+    '<option value=""'+(!v?' selected':'')+'>Todos</option>'+
+    opciones.map(([val,lab])=>{const vv=String(val).toLowerCase();return '<option value="'+escAttr_(vv)+'"'+(v===vv?' selected':'')+'>'+lab+'</option>';}).join('')+
+    '</select></th>';}
+
 function filtrarTablas(){
   let ocultas=0,total=0;
-  [panelActivo()].forEach(p=>{
+  const p=panelActivo();
+  const cont=contenedorActivo_();
+  const colF=(cont&&FILTROS_COL[cont])||{};
+  const colKeys=Object.keys(colF).filter(k=>colF[k]);
+  [p].forEach(p=>{
     if(!p||['p-p4','p-p5'].indexOf(p.id)>=0)return;
     p.querySelectorAll('tbody tr').forEach(tr=>{
       total++;
-      const ok=!FILTRO||tr.textContent.toLowerCase().indexOf(FILTRO)>=0;
+      let ok=!FILTRO||textoFilaBuscable_(tr).indexOf(FILTRO)>=0;
+      if(ok)for(let i=0;i<colKeys.length;i++){
+        const k=colKeys[i],fv=colF[k],val=valorColumnaFila_(tr,k);
+        ok=COLF_SELECT_KEYS_.has(k)?(val===fv):(val.indexOf(fv)>=0);
+        if(!ok)break;}
       tr.style.display=ok?'':'none';
       if(!ok)ocultas++;});});
   const c=document.getElementById('filtroInfo');
-  if(c)c.textContent=(FILTRO&&total)?(ocultas+' fila(s) ocultas'):'';}
+  if(c)c.textContent=((FILTRO||colKeys.length)&&total)?(ocultas+' fila(s) ocultas'):'';}
 
 /* ================== PERIODO CERRADO ==================
    Marca el mes como declarado: deja todo en solo lectura para que nadie lo
@@ -5013,9 +5141,10 @@ function rMensualEd(){
     t.sue+=r2(m.q2.sue+m.hon);t.vacProv+=m.vacProv;t.he+=(+b.he||0);t.falta+=m.faltaImp;
     t.he25+=m.q2.he25;t.he35+=m.q2.he35;t.tar+=m.q2.tar;t.ade+=m.q2.ade;t.pre+=m.q2.pre;
     t.vac+=m.q2.vac;t.vv+=(m.q2.vv||0);t.vtr+=m.q2.vtr;t.fer+=m.q2.fer;t.dm+=m.q2.dm;t.gra+=m.q2.gra;t.bge+=m.q2.bge;t.cts+=m.q2.cts;t.liq+=m.q2.liq;
-    const cab='<td>'+escAttr_(p.nom)+'</td>'+
-      '<td class="ctr" style="font-size:10.5px;font-variant-numeric:tabular-nums">'+p.dni+'</td>'+
-      '<td class="ctr">'+btipo(p.tipo)+'</td><td class="ctr">'+bcc(p.cc)+'</td>'+
+    const cab='<td data-col="nom">'+escAttr_(p.nom)+'</td>'+
+      '<td class="ctr" data-col="dni" style="font-size:10.5px;font-variant-numeric:tabular-nums">'+p.dni+'</td>'+
+      '<td class="ctr" data-col="tipo" data-val="'+escAttr_((p.tipo||'').toLowerCase())+'">'+btipo(p.tipo)+'</td>'+
+      '<td class="ctr" data-col="cc">'+bcc(p.cc)+'</td>'+
       dia(p.dni,'d',b.d)+incBtnCell(p.dni,2,b,'f')+
       '<td class="num" title="Lo que no se paga por los días de falta">'+(m.faltaImp>0?'<span style="color:var(--red2)">-'+f(m.faltaImp)+'</span>':'')+'</td>';
     const feriado=dia(p.dni,'fer',b.fer||0)+'<td class="num">'+f(m.q2.fer)+'</td>';
@@ -5085,7 +5214,15 @@ function rMensualEd(){
    '<th class="gt">Gratificación</th><th class="gt">Bonif. 9%</th><th class="gt">CTS</th><th class="gt">Otros</th>'+
    '<th class="gt">Total Ing.</th><th class="gt">Base Afecta</th>'+
    '<th class="gd">Base EsSalud</th><th class="gd">AFP/ONP</th><th class="gd">Prima</th><th class="gd" title="Comisión AFP - solo esquema Flujo">Comisión AFP</th><th class="gd">EsSalud</th>'+
-   '<th class="gd">5ta / 4ta</th><th class="gd">Tardanza</th><th class="gd">Adelanto</th><th class="gd">Préstamo</th></tr></thead><tbody>'+
+   '<th class="gd">5ta / 4ta</th><th class="gd">Tardanza</th><th class="gd">Adelanto</th><th class="gd">Préstamo</th></tr>'+
+   '<tr>'+
+    celdaFiltroTexto_('wMen','nom','Nombre...')+
+    celdaFiltroTexto_('wMen','dni','Doc...')+
+    celdaFiltroSelect_('wMen','tipo',TIPOS.map(x=>[x,x]))+
+    celdaFiltroSelect_('wMen','cc',Object.entries(CCS).map(([k,v])=>[k,v]))+
+    '<th></th><th></th><th></th><th colspan="30"></th><th></th><th></th><th></th><th></th><th></th>'+
+   '</tr>'+
+   '</thead><tbody>'+
    (rows||'<tr><td colspan="42" style="text-align:center;padding:20px;color:var(--ink3)">Sin personal activo.</td></tr>')+
    '</tbody><tfoot><tr class="total"><td colspan="6"><b>TOTALES</b></td>'+
    '<td class="num"><b>'+(t.falta>0?'-'+f(t.falta):'')+'</b></td>'+
@@ -5825,14 +5962,44 @@ function getDeviceId_(){
     return id;
   }catch(err){return '';}}
 
+/* ================== IP / UBICACION DE QUIEN ABRE LA SESION ==================
+   Pedido del usuario ("quiero saber de donde lo estan abriendo la
+   direccion", BUSINESS-RULES.md seccion 42): Apps Script (el backend) no
+   recibe la IP de quien hace el pedido -Google no se la pasa a doPost()-,
+   asi que la averigua el propio navegador con un servicio externo gratuito
+   (ipapi.co, HTTPS, sin llave, ~1000 consultas/dia) y la manda junto con el
+   resto de los datos de cada pedido. Se pide una sola vez por carga de
+   pagina (IP_INFO_CACHE) y con un limite de 3s: si el servicio no responde
+   o esta bloqueado (firewall corporativo, adblock), no debe trabar el
+   login ni ningun otro pedido -sigue funcionando igual, solo que esa vez
+   sin IP/ubicacion.
+   Ojo: es la IP publica de salida a internet, no el GPS del equipo. Si la
+   persona usa VPN o esta detras del proxy de una oficina, lo que queda
+   registrado es la IP/ciudad de ese proxy o VPN, no la real de su casa.
+   ============================================================================ */
+let IP_INFO_CACHE=null;
+async function obtenerIpUbicacion_(){
+  if(IP_INFO_CACHE)return IP_INFO_CACHE;
+  try{
+    const ctrl=(typeof AbortController!=='undefined')?new AbortController():null;
+    const to=ctrl?setTimeout(()=>ctrl.abort(),3000):null;
+    const res=await fetch('https://ipapi.co/json/',ctrl?{signal:ctrl.signal}:{});
+    if(to)clearTimeout(to);
+    const d=await res.json();
+    IP_INFO_CACHE={ip:d&&d.ip?String(d.ip):'',
+      ubicacion:d?[d.city,d.region,d.country_name].filter(Boolean).join(', '):''};
+  }catch(err){IP_INFO_CACHE={ip:'',ubicacion:''};}
+  return IP_INFO_CACHE;}
+
 async function callBackend_(action,extra){
   if(!BACKEND_URL||BACKEND_URL.indexOf('PEGA_AQUI')!==-1)
     return {ok:false,error:'not_configured',message:'Esta herramienta aun no tiene configurada la URL del backend. Contacta al propietario.'};
   try{
+    const ipInfo=await obtenerIpUbicacion_();
     const res=await fetch(BACKEND_URL,{method:'POST',
       headers:{'Content-Type':'text/plain;charset=utf-8'},
       body:JSON.stringify(Object.assign({usuario:sessionUsuario,password:sessionPassword,
-        version:FRONTEND_VERSION,dispositivo:getDeviceId_(),action},extra))});
+        version:FRONTEND_VERSION,dispositivo:getDeviceId_(),ip:ipInfo.ip,ubicacion:ipInfo.ubicacion,action},extra))});
     return await res.json();
   }catch(err){return {ok:false,error:'network_error',message:'No se pudo conectar con el servidor. Verifica tu conexion a internet.'};}}
 
@@ -6342,7 +6509,17 @@ function wireTrabRow(){
   document.querySelectorAll('#p5-bodyTrab tr[data-id]').forEach(tr => {
     const id = tr.dataset.id;
     tr.querySelectorAll('[data-f]').forEach(el => {
-      el.addEventListener('input', () => updateTrabField(id, el.dataset.f, el.value));
+      // Bug de performance real (prueba de carga con 500 trabajadores, ver
+      // BUSINESS-RULES.md seccion 39): "dni" es el UNICO campo de esta tabla
+      // que dispara un re-render completo de OTRA tabla (renderConceptos(),
+      // que reconstruye el <select> de trabajador -500 <option>- para CADA
+      // fila de conceptos, potencialmente miles). Escucharlo tambien en
+      // "input" significaba reconstruir eso en CADA TECLA mientras se escribe
+      // un DNI -perceptible como una traba de segundos por tecla con cientos
+      // de trabajadores y miles de conceptos cargados-. El resto de campos
+      // (horas, cuspp, netoReal, etc.) solo dispara renderAll(), mucho mas
+      // barato, y se queda en "input" para seguir dando feedback en vivo.
+      if(el.dataset.f !== 'dni') el.addEventListener('input', () => updateTrabField(id, el.dataset.f, el.value));
       el.addEventListener('change', () => updateTrabField(id, el.dataset.f, el.value));
     });
     const delBtn = tr.querySelector('[data-action=del]');
@@ -6403,7 +6580,16 @@ function wireConceptoRow(){
   document.querySelectorAll('#p5-bodyConceptos tr[data-id]').forEach(tr => {
     const id = tr.dataset.id;
     tr.querySelectorAll('[data-f]').forEach(el => {
-      el.addEventListener('input', () => updateConceptoField(id, el.dataset.f, el.value));
+      // Mismo bug que wireTrabRow() (ver el comentario ahi y BUSINESS-RULES.md
+      // seccion 39): "codigo" y "workerId" son los dos campos de ESTA tabla
+      // que en updateConceptoField() disparan renderTrab()+renderConceptos()
+      // -reconstruye TODAS las filas de conceptos, cada una con el <select>
+      // completo de trabajadores adentro-. Escucharlos en "input" reconstruia
+      // eso en cada tecla al escribir un codigo (ej. 4 reconstrucciones
+      // completas solo por teclear "0608"). Se quedan solo en "change" (al
+      // salir del campo o elegir del datalist/select); el resto de campos
+      // (monto, tipoManual) solo dispara renderAll() y se queda en "input".
+      if(el.dataset.f !== 'codigo' && el.dataset.f !== 'workerId') el.addEventListener('input', () => updateConceptoField(id, el.dataset.f, el.value));
       el.addEventListener('change', () => updateConceptoField(id, el.dataset.f, el.value));
     });
     const delBtn = tr.querySelector('[data-action=del]');
