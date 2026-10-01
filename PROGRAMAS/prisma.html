@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PRISMA · Gestión de Planilla y PLAME</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.min.js"></script>
 <link rel="icon" type="image/png" href="data:image/png;base64,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">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -1928,7 +1928,7 @@ function rPersonal(){
    celdaFiltroSelect_(cont,'tipo',TIPOS.map(x=>[x,x]))+
    celdaFiltroSelect_(cont,'reg',Object.keys(REG).map(k=>[k,REG[k].nom]))+
    celdaFiltroSelect_(cont,'afp',AFPS.map(a=>[a,a]))+
-   '<th></th><th></th><th></th><th></th>'+
+   '<th></th><th></th><th></th><th></th><th></th>'+
    celdaFiltroSelect_(cont,'est',[['ACTIVO','ACTIVO'],['CESADO','CESADO']])+
    '<th></th><th></th></tr>';
   document.getElementById('wPers').innerHTML='<table><thead><tr>'+
@@ -2119,7 +2119,8 @@ function rMensual(){
     celdaFiltroSelect_('wMen','tipo',TIPOS.map(x=>[x,x]))+
     celdaFiltroSelect_('wMen','cc',Object.entries(CCS).map(([k,v])=>[k,v]))+
     '<th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th>'+
-    '<th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th>'+
+    '<th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th>'+
+    '<th></th><th></th><th></th>'+
    '</tr></thead><tbody>'+(rows||'<tr><td colspan="27" style="text-align:center;padding:20px;color:var(--ink3)">Sin datos. Agrega personal o trae el del mes anterior.</td></tr>')+
    '</tbody><tfoot><tr class="total"><td colspan="7"><b>TOTALES</b></td>'+
    '<td class="num"><b>'+(t.falta>0?'-'+f(t.falta):'')+'</b></td>'+
@@ -2157,8 +2158,22 @@ function haySesionSegura(){try{return haySesion();}catch(e){return false;}}
 
 function claveBeneficios(){
   const{a,m}=per();
-  return a+'-'+m+'|'+pla().map(p=>[p.dni,p.sue,p.ing,p.ces,p.reg,p.mot,p.fvto,p.ultVac,p.asigFam?1:0,p.promComManual||''].join(',')).join(';')
-    +'|'+HIST_INFO.leidos;}
+  // OJO (agregado esta sesion): afp/comAfp ahora SI cambian el resultado
+  // (el descuento de AFP/ONP sobre vacaciones en la liquidacion, ver
+  // aportes mas abajo), asi que entran a la clave para que editarlos
+  // invalide el cache. Tambien se agrega una huella de las FALTAS NO
+  // JUSTIFICADAS del periodo en pantalla (fecha+dias de cada una, en q1 y
+  // q2): como todavia no esta guardado en disco, es la unica forma de que
+  // marcar/editar una falta de este mismo mes en Incidencias dispare un
+  // recalculo de la liquidacion si el cese cae dentro de este periodo -el
+  // resto de meses (ya guardados) ya invalida via HIST_INFO.leidos.
+  const faltasFp_=mv=>((mv&&mv.incD)||[]).filter(x=>x.tipo==='FALTA'&&!x.justificada)
+    .map(x=>(x.f||'')+':'+(x.dias||1)).join(',');
+  return a+'-'+m+'|'+pla().map(p=>{
+    const mv_=M[p.dni];
+    return [p.dni,p.sue,p.ing,p.ces,p.reg,p.mot,p.fvto,p.ultVac,p.asigFam?1:0,p.promComManual||'',
+      p.afp||'',p.comAfp||'',faltasFp_(mv_&&mv_.q1),faltasFp_(mv_&&mv_.q2)].join(',');
+  }).join(';')+'|'+HIST_INFO.leidos;}
 
 /* Resumen de variables por mes: es lo que el servidor necesita para promediar */
 function historialVariables(){
@@ -2178,6 +2193,52 @@ function historialVariables(){
     if(v.com||v.bon||v.he){out[p.dni]=out[p.dni]||{};out[p.dni][pp]=v;}});
   return out;}
 
+// Dias de falta NO JUSTIFICADA de un trabajador dentro de un rango de fechas
+// (inclusive) -se usa para descontar el tramo de CTS/gratificacion trunca
+// en la liquidacion de beneficios (pedido del usuario: "no se considera la
+// resta de los dias no trabajados"; confirmado que SOLO cuenta la falta NO
+// justificada, sin umbral). Reusa la misma infraestructura de
+// periodosEnRango_/leerMes/HIST que ya usa el modulo de Incidencias
+// (calcularReporte, mas abajo) para reconstruir incD mes a mes, incluyendo
+// el periodo abierto en pantalla (que todavia no esta guardado en disco).
+async function faltasNoJustEnRango_(dni,desde,hasta){
+  if(!dni||!desde||!hasta||desde>hasta)return 0;
+  const desdeP=periodoStr(desde.getFullYear(),desde.getMonth()+1);
+  const hastaP=periodoStr(hasta.getFullYear(),hasta.getMonth()+1);
+  const periodos=periodosEnRango_(desdeP,hastaP);
+  const actualPP=periodoStr();
+  let total=0;
+  const suma=(incD)=>{
+    (incD||[]).forEach(x=>{
+      if(x.tipo!=='FALTA'||x.justificada)return;
+      const f=fecha(x.f);if(!f||f<desde||f>hasta)return;
+      total+=Math.max(0,+x.dias||1);});};
+  for(const per_ of periodos){
+    if(per_.pp===actualPP){
+      const mv_=M[dni];if(!mv_)continue;
+      suma(mv_.q1&&mv_.q1.incD);suma(mv_.q2&&mv_.q2.incD);
+    }else{
+      let d=null;
+      if(ROOT){try{d=await leerMes(per_.a,per_.m);}catch(e){}}
+      const mv_=d&&d.M?d.M[dni]:null;if(!mv_)continue;
+      suma(mv_.q1&&mv_.q1.incD);suma(mv_.q2&&mv_.q2.incD);
+    }
+  }
+  return r2(total);}
+// Espejo de ctsDesde/gDesde dentro de liquidacion_ en prisma_backend.gs: se
+// necesitan aca para saber que rango de fechas pedirle a
+// faltasNoJustEnRango_ ANTES de mandar la liquidacion a calcular -el
+// backend no tiene el detalle de incidencias por fecha, solo lo que el
+// frontend le manda ya sumado.
+function ctsDesdeLiq_(ces){
+  const a=ces.getFullYear(),m=ces.getMonth()+1;
+  if(m>=5&&m<=10)return new Date(a,4,1);
+  if(m>=11)return new Date(a,10,1);
+  return new Date(a-1,10,1);}
+function gratiDesdeLiq_(ces){
+  const a=ces.getFullYear(),m=ces.getMonth()+1,S=semestreDe(m);
+  return new Date(a,S.ini-1,1);}
+
 async function pedirBeneficios(forzar){
   const clave=claveBeneficios();
   if(!forzar&&BEN.clave===clave)return BEN;
@@ -2185,12 +2246,30 @@ async function pedirBeneficios(forzar){
   if(!haySesionSegura()){BEN.clave='';return BEN;}
   BEN.cargando=true;
   const{a,m}=per();
+  // Faltas no justificadas por tramo de CTS/gratificacion trunca, solo para
+  // quien tiene fecha de cese (liquidacion) -pedido del usuario. Se junta
+  // ANTES de armar el payload porque hace falta leer archivos de meses
+  // anteriores (async, ver faltasNoJustEnRango_), algo que el .map()
+  // sincrono de mas abajo no puede hacer.
+  const faltasLiq={};
+  for(const p of pla()){
+    if(!p.ces)continue;
+    const ces=fecha(p.ces);if(!ces)continue;
+    faltasLiq[p.dni]={
+      cts:await faltasNoJustEnRango_(p.dni,ctsDesdeLiq_(ces),ces),
+      grati:await faltasNoJustEnRango_(p.dni,gratiDesdeLiq_(ces),ces)};
+  }
   // ruc: agregado por hallazgo de auditoria -el backend ahora exige un RUC
   // autorizado en esta accion, igual que en generate/generate4ta/concar/
   // plan_get/plan_set (antes no se mandaba y el backend tampoco lo pedia).
   const r=await callBackend_('beneficios',{anio:a,mes:m,ruc:CFG.RUC,
     trabajadores:pla().map(p=>({dni:p.dni,nom:p.nom,sue:p.sue,ing:p.ing,ces:p.ces,
       reg:p.reg,mot:p.mot,fvto:p.fvto,ultVac:p.ultVac,
+      // afp/comAfp: agregado esta sesion -antes no viajaban, y la
+      // liquidacion no podia calcular el descuento de AFP/ONP sobre
+      // vacaciones (aviso del usuario) sin saber a que AFP (u ONP) aporta
+      // cada quien.
+      afp:p.afp,comAfp:p.comAfp,
       // asignacion familiar mensual (0 si no le corresponde): se manda ya
       // calculada -en vez del checkbox y la RMV- para que el backend no
       // tenga que conocer la tasa vigente, solo sumar lo que ya se decidio aca.
@@ -2198,6 +2277,10 @@ async function pedirBeneficios(forzar){
       // Promedio de comisiones a mano (pedido del usuario): vacio = sigue el
       // promedio automatico del historial, ver promedioVar_ en el backend.
       promComManual:p.promComManual||'',
+      // Dias de falta NO justificada dentro del tramo de CTS/gratificacion
+      // trunca (0 para quien no tiene cese) -ver faltasLiq, arriba.
+      faltasCts:faltasLiq[p.dni]?faltasLiq[p.dni].cts:0,
+      faltasGrati:faltasLiq[p.dni]?faltasLiq[p.dni].grati:0,
       // OJO (bug reportado por el usuario, esta sesion): vacHist -el
       // historial de vacaciones gozadas/adelantadas/vendidas- NUNCA se
       // mandaba al backend. diasConsumidosVac_() (agregada esta sesion en
@@ -3736,12 +3819,14 @@ function liqHTML(p,tag,cls){
    '<tr style="background:#EFF4FF;font-weight:700"><td>TOTAL REMUNERACIÓN COMPUTABLE</td><td class="num">'+f0(L.base)+'</td></tr></table>'+
    '<table class="bol-t" style="margin-top:6px"><tr><th colspan="2">CONCEPTO</th><th>CALCULADO</th><th>PAGADO EN PLANILLA</th></tr>'+
    fila('2001','COMPENSACION POR TIEMPO DE SERVICIOS',
-     'Desde '+L.cts.desde+' · '+L.cts.meses+' meses '+(L.cts.dias%30)+' días<br>'+
+     'Desde '+L.cts.desde+' · '+L.cts.meses+' meses '+(L.cts.dias%30)+' días'+
+     ((L.cts.faltasDesc||0)>0?' <span style="color:#B91C1C">(ya descontados '+L.cts.faltasDesc+' día(s) de falta no justificada)</span>':'')+'<br>'+
      (Rp.cts<=0?'Tu régimen laboral ('+regBoleta(p)+') no incluye CTS.':
        desgloseDivisor_(L.cts.base,divCts,L.cts.meses,L.cts.dias%30,L.cts.monto)),
      L.cts.monto,pagado.cts)+
    fila('2002','GRATIFICACION TRUNCA',
-     L.grati.sem+' desde '+L.grati.desde+' · '+L.grati.meses+' meses '+(L.grati.dias%30)+' días<br>'+
+     L.grati.sem+' desde '+L.grati.desde+' · '+L.grati.meses+' meses '+(L.grati.dias%30)+' días'+
+     ((L.grati.faltasDesc||0)>0?' <span style="color:#B91C1C">(ya descontados '+L.grati.faltasDesc+' día(s) de falta no justificada)</span>':'')+'<br>'+
      (Rp.grati<=0?'Tu régimen laboral ('+regBoleta(p)+') no incluye gratificación.':
        desgloseDivisor_(L.base,divGra,L.grati.meses,L.grati.dias%30,L.grati.monto)),
      L.grati.monto,pagado.gra)+
@@ -3777,12 +3862,31 @@ function liqHTML(p,tag,cls){
      L.ind.monto,pagado.liq):'')+
    '<tr style="background:#EFF4FF;font-weight:700"><td colspan="2">TOTAL LIQUIDACION</td>'+
    '<td class="num">'+f(L.total)+'</td><td class="num">'+f(totalPag)+'</td></tr></table>'+
-   '<div style="font-size:11px;font-weight:700;text-align:right;margin-top:4px">'+numALetras_(L.total)+'</div>'+
+   // OJO (agregado esta sesion, aviso del usuario: "se calcula pero no se
+   // muestra el descuento de AFP asi que difiere para saber cuanto se
+   // deberia pagar"). Solo las vacaciones (ganadas + truncas) estan afectas
+   // a AFP/ONP -CTS y gratificacion truncada no, por ley (Ley 30334)-, asi
+   // que el descuento sale como su propia tabla, con el mismo detalle
+   // (Aporte Obligatorio/Prima/Comision/ONP) que ya se ve en una boleta
+   // normal, y un NETO A PAGAR propio de este documento (distinto del "Neto
+   // a pagar" de la boleta regular del periodo, que es otra cosa).
+   (A=>A.total>0?
+     '<table class="bol-t" style="margin-top:6px"><tr><th colspan="2">DESCUENTO AFP/ONP SOBRE VACACIONES</th><th>IMPORTE</th></tr>'+
+     '<tr><td colspan="2" style="font-size:8.5px;color:#64748B">Base afecta: S/ '+f0(A.base)+' (vacaciones ganadas no gozadas + truncas, código 0114 — CTS y gratificación trunca no aportan)</td><td></td></tr>'+
+     (A.onp>0?'<tr><td colspan="2">ONP</td><td class="num">'+f(A.onp)+'</td></tr>':'')+
+     (A.ap>0?'<tr><td colspan="2">Aporte Obligatorio AFP</td><td class="num">'+f(A.ap)+'</td></tr>':'')+
+     (A.pr>0?'<tr><td colspan="2">Prima de Seguro AFP</td><td class="num">'+f(A.pr)+'</td></tr>':'')+
+     (A.apc>0?'<tr><td colspan="2">Comisión AFP</td><td class="num">'+f(A.apc)+'</td></tr>':'')+
+     '<tr style="font-weight:700"><td colspan="2">TOTAL DESCUENTO AFP/ONP</td><td class="num">'+f(A.total)+'</td></tr></table>':'')(L.aportes||{base:0,onp:0,ap:0,pr:0,apc:0,total:0})+
+   '<div class="bol-total" style="background:#1F3864;color:#fff;font-weight:700;padding:5px 8px;margin-top:4px;display:flex;justify-content:space-between">'+
+     '<span>NETO A PAGAR EN LA LIQUIDACION</span><span>S/ '+f(L.netoPagar!=null?L.netoPagar:L.total)+'</span></div>'+
+   '<div style="font-size:11px;font-weight:700;text-align:right;margin-top:4px">'+numALetras_(L.netoPagar!=null?L.netoPagar:L.total)+'</div>'+
    '<div style="font-size:9px;color:#334155;margin-top:6px;padding:6px 8px;background:#F8FAFC;border-left:3px solid #6D28D9">'+
-     '<b>En resumen:</b> por dejar de trabajar el '+L.ces+' se te paga S/ '+f(L.total)+', que junta lo que ya ganaste '+
+     '<b>En resumen:</b> por dejar de trabajar el '+L.ces+' se te paga S/ '+f(L.netoPagar!=null?L.netoPagar:L.total)+', que junta lo que ya ganaste '+
      'y todavia no se te habia pagado: tu CTS de este tramo, la parte de gratificación y su bonificación que alcanzaste '+
      'a generar'+((L.vac.diasPend||0)>0?', tus vacaciones ya ganadas y no gozadas':'')+' y la fracción de vacaciones del periodo '+
      'en curso'+(L.ind.aplica&&L.ind.monto>0?', mas la indemnización por el despido':'')+
+     ((L.aportes&&L.aportes.total>0)?' (S/ '+f(L.total)+' calculado, menos S/ '+f(L.aportes.total)+' de AFP/ONP sobre tus vacaciones)':'')+
      '. Cada fila de la tabla explica de donde sale su monto. Lo trabajado y no liquidado del último mes '+
      '(días, comisiones del periodo, etc.) se paga aparte, en tu boleta de pago regular de ese periodo.</div>'+
    // La alerta de "lo cargado en la planilla difiere de lo calculado" era una
@@ -3791,7 +3895,8 @@ function liqHTML(p,tag,cls){
    // el resumen antes de imprimir), pero ya no sale impresa en la liquidacion.
    '<div style="font-size:8.5px;color:#64748B;margin-top:6px">'+
      'La CTS y la gratificación trunca con su bonificación no estan afectas a aportes. '+
-     'Las vacaciones (ganadas y truncas) si son remuneración y se declaran como tal en el PLAME. '+
+     'Las vacaciones (ganadas y truncas) si son remuneración y se declaran como tal en el PLAME'+
+     ((L.aportes&&L.aportes.total>0)?', y su AFP/ONP ya esta descontado arriba del NETO A PAGAR.':'.')+' '+
      (L.ind.aplica?'La indemnización por despido arbitrario no esta afecta a aportes ni a renta de 5ta categoria.'
                   :'Esta causal de cese no genera indemnización.')+'</div>'+
    '<div class="bol-sig">'+
@@ -3899,6 +4004,36 @@ function hayXLSX(){
    mandan las lineas del asiento y se recibe la hoja lista para descargar.
    Asi el formato de exportacion, que es parte del metodo de trabajo, no viaja
    dentro del HTML. */
+// Pinta la hoja del Excel CONCAR con los mismos colores que ya se ven en
+// pantalla en rAsientos() (BUSINESS-RULES.md seccion 45): la cuenta contable
+// por prefijo de centro de costo (91 azul / 94 morado / 95 ambar, igual que
+// col() mas arriba), y el importe segun sea Debe (teal, igual que la clase
+// .debe) o Haber (morado, igual que la clase .haber). Las primeras 3 filas
+// que manda el backend son encabezado/metadata (CONCAR_HDR_CAMPO_/RESTR_/
+// TAM_), no llevan color; los datos empiezan en la fila indice 3. r[10]=cta
+// (columna K), r[13]=dh ("D"/"H", columna N), r[14]=imp (columna O) -mismo
+// layout que arma armarFilaConcar_() en el backend.
+function colorearConcarWs_(ws,rows){
+  const COL_CTA=10,COL_DH=13,COL_IMP=14,PRIMERA_FILA_DATOS=3;
+  const colorCC_=c=>{
+    c=String(c==null?'':c);
+    if(c[0]!=='9')return null;
+    if(c[1]==='1')return '1D4ED8';   // igual que --c91
+    if(c[1]==='4')return '7C3AED';   // igual que --c94
+    return 'B45309';};              // igual que --c95
+  rows.forEach((r,ri)=>{
+    if(ri<PRIMERA_FILA_DATOS)return;
+    const cCta=colorCC_(r[COL_CTA]);
+    if(cCta){
+      const addr=XLSX.utils.encode_cell({r:ri,c:COL_CTA});
+      if(ws[addr])ws[addr].s={font:{color:{rgb:cCta},bold:true}};}
+    const dh=r[COL_DH];
+    if(dh==='D'||dh==='H'){
+      const cImp=dh==='D'?'0F9488':'6D28D9';   // --tealtx / --habertx
+      const addr=XLSX.utils.encode_cell({r:ri,c:COL_IMP});
+      if(ws[addr])ws[addr].s={font:{color:{rgb:cImp},bold:true}};}
+  });
+}
 // Devuelve true/false segun si de verdad se descargo el archivo -antes no
 // devolvia nada (nadie lo necesitaba: el boton "Exportar a CONCAR" no le
 // pedia el resultado). Se agrega para que descargarTodoCierre() (mas abajo)
@@ -3940,6 +4075,7 @@ async function expConcar(){
   if(rows.length<2){alert('El servidor no devolvio movimientos.');return false;}
   const ws=XLSX.utils.aoa_to_sheet(rows);
   ws['!cols']=(resp.anchos||[]).map(w=>({wch:w}));
+  colorearConcarWs_(ws,rows);
   const wb=XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb,ws,'Hoja1');
   XLSX.writeFile(wb,resp.archivo||(a+mm+'_PLANILLA_CONCAR.xlsx'));
@@ -5602,9 +5738,87 @@ function aNumero(v,textual){
   if(/^-?\d{1,3}(,\d{3})*(\.\d+)?$/.test(s))return parseFloat(s.replace(/,/g,''));
   if(/^-?\d+(\.\d+)?$/.test(s))return parseFloat(s);
   return v;}
+// Traduce "rgb(r,g,b)"/"rgba(r,g,b,a)" (lo que devuelve getComputedStyle en
+// cualquier navegador real) a hex de 6 digitos para Excel. Si viene
+// transparente (alpha 0, el valor por defecto de background-color cuando
+// nadie lo pinta) o no matchea el formato, devuelve null -asi la celda se
+// deja sin relleno/color propio en vez de pintarse de negro o blanco por
+// error (BUSINESS-RULES.md seccion 45).
+function rgbToHex_(s){
+  if(!s)return null;
+  const m=/rgba?\(\s*([\d.]+)[,\s]+([\d.]+)[,\s]+([\d.]+)(?:[,\s]+([\d.]+))?\s*\)/i.exec(String(s));
+  if(!m)return null;
+  const a=m[4]===undefined?1:parseFloat(m[4]);
+  if(!(a>0))return null;
+  const h=n=>{const v=Math.max(0,Math.min(255,Math.round(parseFloat(n))));return v.toString(16).padStart(2,'0').toUpperCase();};
+  return h(m[1])+h(m[2])+h(m[3]);
+}
+// Lee el color/fondo/negrita que el navegador YA calculo (getComputedStyle)
+// para cada <td> del cuerpo de una tabla, para que "Excel de esta vista" y
+// Reportes salgan pintados igual que se ven en pantalla (chips de estado,
+// filas resaltadas de refrigerio/horas extra, Debe/Haber, etc.) sin tener que
+// duplicar a mano la logica de cada color -se lee lo que ya quedo resuelto en
+// pantalla, sea cual sea la regla CSS que lo puso ahi (BUSINESS-RULES.md
+// seccion 45). Respeta el mismo colspan y el mismo salteo de filas ocultas
+// que usa tablaAFilas(), para que el indice de columna de cada estilo caiga
+// exactamente sobre la misma celda del arreglo de valores que arma esa
+// funcion (fila 0 = encabezado, sin estilo propio; de ahi en mas, una fila
+// de este arreglo por cada fila de cuerpo/pie que tablaAFilas() incluyo).
+function estilosDeTabla_(tabla){
+  const win=tabla.ownerDocument&&tabla.ownerDocument.defaultView;
+  if(!win||!win.getComputedStyle)return [];
+  // Color/fondo de una celda "comun" (sin fila resaltada ni total), para no
+  // repetir en cada celda el mismo negro/blanco de siempre segun el tema:
+  // solo se aplica un estilo cuando de verdad se aparta de este valor base.
+  let refColor=null,refBg=null;
+  const filasBody=Array.prototype.filter.call(tabla.querySelectorAll('tbody tr'),tr=>tr.style.display!=='none');
+  for(let i=0;i<filasBody.length;i++){
+    const tr=filasBody[i];
+    if(tr.classList.contains('rh-row')||tr.classList.contains('total'))continue;
+    const td=tr.querySelector('td');
+    if(td){try{const cs=win.getComputedStyle(td);refColor=rgbToHex_(cs.color);refBg=rgbToHex_(cs.backgroundColor);}catch(e){}break;}
+  }
+  const estiloDeCelda=td=>{
+    try{
+      const cs=win.getComputedStyle(td);
+      const fg=rgbToHex_(cs.color),bg=rgbToHex_(cs.backgroundColor);
+      const peso=parseInt(cs.fontWeight,10)||400;
+      const s={};
+      if((fg&&fg!==refColor)||peso>=600){
+        s.font={};
+        if(fg&&fg!==refColor)s.font.color={rgb:fg};
+        if(peso>=600)s.font.bold=true;}
+      if(bg&&bg!==refBg)s.fill={patternType:'solid',fgColor:{rgb:bg}};
+      return Object.keys(s).length?s:null;
+    }catch(e){return null;}
+  };
+  const filaEstilo=tr=>{
+    const fila=[];
+    Array.prototype.forEach.call(tr.children,td=>{
+      const cs=+td.getAttribute('colspan')||1;
+      fila.push(estiloDeCelda(td));
+      for(let k=1;k<cs;k++)fila.push(null);});
+    return fila;};
+  const estilos=[];
+  filasBody.forEach(tr=>estilos.push(filaEstilo(tr)));
+  tabla.querySelectorAll('tfoot tr').forEach(tr=>estilos.push(filaEstilo(tr)));
+  return estilos;
+}
 function tablaAFilas(tabla){
   const filas=[];
-  const th1=tabla.querySelectorAll('thead tr');
+  let th1=Array.prototype.slice.call(tabla.querySelectorAll('thead tr'));
+  // La fila de filtros por columna (BUSINESS-RULES.md seccion 41) vive dentro
+  // del <thead> -es siempre la ultima fila, se reconoce porque trae algun
+  // control con data-colf-. No es un encabezado real: si se la deja entrar
+  // aca, sus <select> (Centro Costo/Tipo/Rég. Laboral/Régimen Pens./Estado)
+  // "contaminan" el encabezado exportado con el texto de TODAS sus <option>
+  // pegado uno detras de otro (bug real, encontrado al revisar el Excel
+  // exportado de Personal: la columna "Centro Costo" salia como
+  // "Todos91 Operaciones94 Administracion95 Ventas"). Se descarta antes de
+  // seguir, para que la deteccion de encabezado de mas abajo (pensada para
+  // como mucho 2 filas: titulo + subtitulo de grupo) siga viendo exactamente
+  // lo que veia antes de que existiera la fila de filtros.
+  if(th1.length&&th1[th1.length-1].querySelector('[data-colf]'))th1=th1.slice(0,-1);
   if(th1.length){
     const sup=Array.prototype.slice.call(th1[0].children);
     const sub=th1[1]?Array.prototype.slice.call(th1[1].children):[];
@@ -5644,6 +5858,15 @@ function construirWbDeVista_(panelId,base){
     const ws=XLSX.utils.aoa_to_sheet(filas);
     ws['!cols']=(filas[0]||[]).map(h=>({wch:Math.max(10,Math.min(34,String(h).length+4))}));
     ws['!freeze']={xSplit:1,ySplit:1};
+    // Pinta el cuerpo de la hoja igual que se ve en pantalla (BUSINESS-RULES.md
+    // seccion 45): fila 0 del arreglo "filas" es el encabezado (sin estilo propio
+    // aca), de la fila 1 en adelante corresponde 1 a 1 con "estilos".
+    const estilos=estilosDeTabla_(t);
+    estilos.forEach((filaEst,i2)=>{
+      filaEst.forEach((est,j)=>{
+        if(!est)return;
+        const addr=XLSX.utils.encode_cell({r:i2+1,c:j});
+        if(ws[addr])ws[addr].s=est;});});
     XLSX.utils.book_append_sheet(wb,ws,(base+(tablas.length>1?' '+(i+1):'')).slice(0,31));});
   return wb.SheetNames.length?wb:null;}
 function expVistaExcel(){
@@ -5823,7 +6046,16 @@ async function iniciarPersistencia(){
   R();}
 
 aplicarPlan();
-cargarDemo();
+// cargarDemo() (BUSINESS-RULES.md seccion 43) ya NO se llama aca. Se
+// disparaba sin condicion alguna en cada carga de pagina, antes de que
+// terminara de sincronizar la carpeta real -llenaba Personal con 16
+// trabajadores inventados (Rojas Vega, Mendoza Silva, etc.) que se
+// quedaban puestos si la sincronizacion tardaba, fallaba, o todavia no
+// se habia conectado ninguna carpeta en ese equipo. No habia ningun
+// boton que la llamara: era la unica vez que se usaba en todo el
+// archivo. La funcion y los datos (DEMO_P/DEMO_M/cargarDemo, mas abajo)
+// se dejan definidos por si algun dia hace falta una demo real conectada
+// a un boton explicito, pero ya no se ejecutan solos.
 
 /* ================== ACCESO PROTEGIDO (shell) ==================
    Mismo esquema que traia plame_5ta_protegido.html: usuario y contrasena se
@@ -7784,6 +8016,11 @@ async function descargarConcar4ta(){
   if(rows.length < 4){ alert('No hay recibos que exportar en este periodo.'); return; }
   const ws = XLSX.utils.aoa_to_sheet(rows);
   ws['!cols'] = (r.anchos || []).map(w => ({ wch: w }));
+  // Mismo layout de fila que arma armarFilaConcar_ (r[10]=cta/r[13]=dh/r[14]=imp,
+  // 3 filas de encabezado) que usa el CONCAR de planilla -colorearConcarWs_()
+  // (definida arriba, fuera de este IIFE) vale igual aca (BUSINESS-RULES.md
+  // seccion 45).
+  colorearConcarWs_(ws, rows);
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, 'Hoja1');
   XLSX.writeFile(wb, r.archivo || (String(dat.anio)+String(dat.mes)+'_4TA_CONCAR.xlsx'));
