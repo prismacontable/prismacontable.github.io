@@ -50,6 +50,16 @@ header{background:var(--indigo);color:#fff;padding:10px 18px;display:flex;align-
 .hdr-right select{background:#2A4A7F;color:#fff;border-color:#4A6FA5}
 .bp{background:var(--indigo2);color:#fff}.bt{background:var(--teal);color:#fff}
 .bo{background:transparent;border:1px solid #ffffff45;color:#fff}.bd{background:#B91C1C;color:#fff}
+/* Boton de alertas de vacaciones (pedido del usuario: el aviso emergente de
+   "N con vacaciones vencidas/por vencer" -avisarVacaciones(), ver mas abajo-
+   aparecia un momento como toast y se perdia; no habia forma de volver a
+   verlo sin cambiar de periodo. Este boton se queda siempre visible en el
+   encabezado con un contador, y abre el detalle completo cuando se quiera. */
+#btnVacAlert{position:relative}
+.badge-dot{position:absolute;top:-5px;right:-5px;min-width:16px;height:16px;padding:0 3px;
+  border-radius:9px;font-size:10px;font-weight:700;line-height:16px;text-align:center;
+  background:var(--red2);color:#fff;border:1.5px solid var(--indigo)}
+.badge-dot.warn{background:var(--amber2);color:#1F2937}
 nav{background:#16294D;display:flex;gap:2px;padding:0 18px;overflow-x:auto}
 nav button{background:transparent;color:#8FA3C4;border-radius:0;padding:9px 15px;font-size:12px;font-weight:600;border-bottom:3px solid transparent}
 .nav-sep{width:1px;height:18px;background:#ffffff22;margin:0 6px;align-self:center}
@@ -473,8 +483,8 @@ button.ico svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width
 .warn .dot{background:#D97706}
 .chip button{padding:1px 7px;font-size:10px;margin-left:4px}
 /* ---- MODAL HISTORIAL ---- */
-#modalBk{position:fixed;inset:0;background:#0F172ACC;display:none;align-items:center;justify-content:center;z-index:90;padding:20px}
-#modalBk.on{display:flex}
+#modalBk,#modalVac{position:fixed;inset:0;background:#0F172ACC;display:none;align-items:center;justify-content:center;z-index:90;padding:20px}
+#modalBk.on,#modalVac.on{display:flex}
 .mk{background:var(--surface);border-radius:8px;width:100%;max-width:760px;max-height:82vh;display:flex;flex-direction:column;overflow:hidden}
 .mk-h{background:var(--indigo);color:#fff;padding:10px 14px;display:flex;align-items:center;gap:10px}
 .mk-h h3{font-size:13px;font-weight:700}
@@ -491,7 +501,7 @@ button.ico svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width
 .toast{background:var(--indigo);color:#fff;font-size:12px;padding:8px 14px;border-radius:var(--r);box-shadow:0 6px 18px #0F172A40;animation:tin .2s}
 .toast.err{background:#B91C1C}.toast.ok{background:var(--teal)}
 @keyframes tin{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-@media print{header,nav,.ph,.nota,.bol-ctl,.chips,.kpis,#barDatos,#toastBox,#modalBk,#ctxPlame{display:none!important}
+@media print{header,nav,.ph,.nota,.bol-ctl,.chips,.kpis,#barDatos,#toastBox,#modalBk,#modalVac,#ctxPlame{display:none!important}
  main{padding:0;max-width:none}.panel{border:none;margin:0}
  .hoja{page-break-after:always;margin:0}
  .hoja:last-child{page-break-after:auto}
@@ -558,6 +568,10 @@ html[data-hoja="horizontal"] .corte{display:none}
   <div class="hdr-sub" id="hdrEmpresa"></div></div>
   <img id="logoEmp" alt="" class="hdr-logo hdr-logo-emp" style="display:none">
   <div class="hdr-right">
+    <button class="bo ico" id="btnVacAlert" onclick="toggleVacAlertas()" title="Trabajadores con vacaciones vencidas o por vencer">
+      <svg viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0-6 6v3.2c0 .9-.4 1.8-1 2.4L4 16h16l-1-1.4c-.6-.6-1-1.5-1-2.4V9a6 6 0 0 0-6-6z"/><path d="M9.5 19a2.5 2.5 0 0 0 5 0"/></svg>
+      <span>Vacaciones</span><span id="vacAlertBadge" class="badge-dot" style="display:none"></span>
+    </button>
     <span id="sesionBadge"></span>
     <label>Periodo</label>
     <select id="selMes" onchange="cambioPeriodo()">
@@ -624,6 +638,10 @@ html[data-hoja="horizontal"] .corte{display:none}
 <div id="ctxPlame" style="display:none"><span class="bd-lbl">PLAME</span><span class="bd-ruta">Periodo <b>--</b></span><button class="bp" onclick="enviarA5ta()">Traer 5ta de la planilla</button><button class="bp" onclick="enviarA4ta()">Traer 4ta de la planilla</button><button class="bo2" onclick="cuadrar5ta()">Cuadrar 5ta con la planilla</button><span class="bd-lbl" style="color:var(--ink3);font-weight:400;text-transform:none">Lo que traigas queda editable aqui; los archivos se descargan desde cada tarjeta.</span></div><div id="modalBk"><div class="mk">
   <div class="mk-h"><h3 id="mkTit">Historial</h3><button class="bo" onclick="cerrarBackups()">Cerrar</button></div>
   <div class="mk-b" id="mkBody"></div>
+</div></div>
+<div id="modalVac"><div class="mk">
+  <div class="mk-h"><h3>Vacaciones vencidas o por vencer</h3><button class="bo" onclick="cerrarVacAlertas()">Cerrar</button></div>
+  <div class="mk-b" id="vacAlertBody"></div>
 </div></div>
 <div id="toastBox"></div>
 <main>
@@ -5974,6 +5992,56 @@ async function avisarVacaciones(){
   const ven=v.filter(x=>x.v.nivel==='err'),pron=v.filter(x=>x.v.nivel==='warn');
   if(ven.length)toast(ven.length+' con vacaciones vencidas: '+ven.slice(0,3).map(nom).join(', ')+(ven.length>3?'...':''),'err');
   else if(pron.length)toast(pron.length+' con vacaciones por vencer: '+pron.slice(0,3).map(nom).join(', ')+(pron.length>3?'...':''));}
+/* Boton de alertas de vacaciones (pedido del usuario: "necesito un boton de
+   notificaciones o alertas para las vacaciones por que aparece cuando accedo
+   pero solo un momento y desaparece" -el toast de avisarVacaciones(), arriba,
+   se dispara una sola vez por periodo y se borra solo a los 3.8s, ver
+   toast()). Este boton vive siempre en el encabezado (no depende de
+   VAC_AVISADO ni de haber cambiado de periodo), muestra un contador propio y
+   abre un detalle completo que se queda en pantalla hasta que se cierre a
+   mano -mismos datos que el toast (vacDe()/vacacionesPendientes(), ya
+   calculados por el servidor via pedirBeneficios()), solo que accesibles en
+   cualquier momento en vez de perderse.
+   Se llama desde pintarBarra() (cada render) para que el contador este
+   siempre al dia; si el modal ya esta abierto, tambien se refresca su
+   contenido (por si benListo() recien se puso al dia). */
+function pintarVacAlertas(){
+  const btn=document.getElementById('btnVacAlert'),bd=document.getElementById('vacAlertBadge');
+  if(!btn||!bd)return;
+  if(!haySesionSegura()||!benListo()){bd.style.display='none';return;}
+  const v=vacacionesPendientes();
+  const ven=v.filter(x=>x.v.nivel==='err').length,pron=v.filter(x=>x.v.nivel==='warn').length;
+  const total=ven+pron;
+  if(total>0){
+    bd.textContent=total>99?'99+':String(total);
+    bd.className='badge-dot'+(ven>0?'':' warn');
+    bd.style.display='flex';
+  } else bd.style.display='none';
+  if(document.getElementById('modalVac').classList.contains('on'))renderVacAlertasModal_();
+}
+function renderVacAlertasModal_(){
+  const body=document.getElementById('vacAlertBody');if(!body)return;
+  if(!haySesionSegura()){body.innerHTML='<p style="color:var(--ink3);font-size:12px">Inicia sesión para calcular las vacaciones.</p>';return;}
+  if(!benListo()){body.innerHTML='<p style="color:var(--ink3);font-size:12px">Calculando beneficios en el servidor...</p>';return;}
+  const v=vacacionesPendientes();
+  const ven=v.filter(x=>x.v.nivel==='err'),pron=v.filter(x=>x.v.nivel==='warn');
+  if(!ven.length&&!pron.length){body.innerHTML='<p style="color:var(--ink3);font-size:12px">Nadie tiene vacaciones vencidas o por vencer en este periodo.</p>';return;}
+  const fila=x=>'<tr><td><b>'+escAttr_(x.p.nom)+'</b></td><td class="n">'+x.v.dias+'</td><td>'+(x.v.vence||'--')+'</td><td>'+escAttr_(x.v.estado)+'</td></tr>';
+  const tabla=(lista,tit,cls)=>!lista.length?'':
+    '<h4 style="font-size:12px;margin:'+(tit==='Vencidas'?'0':'14px')+' 0 6px;color:'+(cls==='err'?'#B91C1C':'#92400E')+'">'+tit+' ('+lista.length+')</h4>'+
+    '<table class="bol-t"><tr><th>Trabajador</th><th>Días pend.</th><th>Vence</th><th>Estado</th></tr>'+lista.map(fila).join('')+'</table>';
+  body.innerHTML=
+    '<div class="nota" style="margin-bottom:10px">Vacaciones ya ganadas (periodos completos desde el ingreso) que todavía no se registraron como gozadas o vendidas en la ficha de cada trabajador. "Vencidas" significa que pasó más de un año desde que se cumplió el aniversario sin tomar ese descanso.</div>'+
+    tabla(ven,'Vencidas','err')+tabla(pron,'Por vencer','warn');
+}
+function toggleVacAlertas(){
+  const m=document.getElementById('modalVac');
+  if(m.classList.contains('on')){cerrarVacAlertas();return;}
+  renderVacAlertasModal_();
+  m.classList.add('on');
+  if(!benListo()&&haySesionSegura())pedirBeneficios().then(()=>renderVacAlertasModal_());
+}
+function cerrarVacAlertas(){document.getElementById('modalVac').classList.remove('on');}
 function pintarBarra(){
   // Pedido del usuario (caso real: entro una falta, actualizo el navegador
   // sin guardar -normal, desaparece de pantalla-, el borrador local queda
@@ -6002,7 +6070,7 @@ function pintarBarra(){
   if(dr)dr.innerHTML=EST.draft?('<span class="chip warn"><span class="dot"></span>Borrador local '+fFecha(EST.draft.guardado)+
     '<button class="bo2" onclick="recuperarDraft()">Recuperar</button>'+
     '<button class="bo2" onclick="descartarDraft()">Descartar</button></span>'):'';
-  rotulos();avisarVacaciones();guardarDraft();}
+  rotulos();avisarVacaciones();pintarVacAlertas();guardarDraft();}
 
 /* --- ARRANQUE --- */
 /* memo por pasada de render: mes() y calc() se pedian hasta 8 veces por persona
