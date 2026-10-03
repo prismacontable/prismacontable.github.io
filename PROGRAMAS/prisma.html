@@ -60,6 +60,7 @@ header{background:var(--indigo);color:#fff;padding:10px 18px;display:flex;align-
   border-radius:9px;font-size:10px;font-weight:700;line-height:16px;text-align:center;
   background:var(--red2);color:#fff;border:1.5px solid var(--indigo)}
 .badge-dot.warn{background:var(--amber2);color:#1F2937}
+.badge-dot.inf{background:var(--indigo2);color:#fff}
 nav{background:#16294D;display:flex;gap:2px;padding:0 18px;overflow-x:auto}
 nav button{background:transparent;color:#8FA3C4;border-radius:0;padding:9px 15px;font-size:12px;font-weight:600;border-bottom:3px solid transparent}
 .nav-sep{width:1px;height:18px;background:#ffffff22;margin:0 6px;align-self:center}
@@ -3899,14 +3900,13 @@ function liqHTML(p,tag,cls){
    '<div class="bol-total" style="background:#1F3864;color:#fff;font-weight:700;padding:5px 8px;margin-top:4px;display:flex;justify-content:space-between">'+
      '<span>NETO A PAGAR EN LA LIQUIDACION</span><span>S/ '+f(L.netoPagar!=null?L.netoPagar:L.total)+'</span></div>'+
    '<div style="font-size:11px;font-weight:700;text-align:right;margin-top:4px">'+numALetras_(L.netoPagar!=null?L.netoPagar:L.total)+'</div>'+
-   '<div style="font-size:9px;color:#334155;margin-top:6px;padding:6px 8px;background:#F8FAFC;border-left:3px solid #6D28D9">'+
-     '<b>En resumen:</b> por dejar de trabajar el '+L.ces+' se te paga S/ '+f(L.netoPagar!=null?L.netoPagar:L.total)+', que junta lo que ya ganaste '+
-     'y todavia no se te habia pagado: tu CTS de este tramo, la parte de gratificación y su bonificación que alcanzaste '+
-     'a generar'+((L.vac.diasPend||0)>0?', tus vacaciones ya ganadas y no gozadas':'')+' y la fracción de vacaciones del periodo '+
-     'en curso'+(L.ind.aplica&&L.ind.monto>0?', mas la indemnización por el despido':'')+
-     ((L.aportes&&L.aportes.total>0)?' (S/ '+f(L.total)+' calculado, menos S/ '+f(L.aportes.total)+' de AFP/ONP sobre tus vacaciones)':'')+
-     '. Cada fila de la tabla explica de donde sale su monto. Lo trabajado y no liquidado del último mes '+
-     '(días, comisiones del periodo, etc.) se paga aparte, en tu boleta de pago regular de ese periodo.</div>'+
+   // El parrafo "En resumen" (prosa repitiendo en texto lo que la tabla de
+   // conceptos ya muestra fila por fila) se quito por pedido del usuario:
+   // con boleta doble (ORIGINAL+COPIA en una hoja) ese bloque se duplicaba y
+   // sumaba alto de sobra, empujando el corte de pagina a la mitad del
+   // documento ("la impresion sale partida"). La info no se pierde: cada
+   // concepto ya esta en su fila de la tabla y el NETO A PAGAR en letras
+   // queda justo arriba.
    // La alerta de "lo cargado en la planilla difiere de lo calculado" era una
    // nota de cuadre interna para quien liquida -no algo que el trabajador deba
    // ver en su documento-; sigue disponible como chequeo aparte (revisarLiq /
@@ -6004,17 +6004,35 @@ async function avisarVacaciones(){
    cualquier momento en vez de perderse.
    Se llama desde pintarBarra() (cada render) para que el contador este
    siempre al dia; si el modal ya esta abierto, tambien se refresca su
-   contenido (por si benListo() recien se puso al dia). */
+   contenido (por si benListo() recien se puso al dia).
+
+   OJO (ajustado esta sesion, caso real del usuario: alguien que cumplio el
+   aniversario en setiembre, en octubre todavia no se le dio su descanso, y
+   ni el toast ni el boton avisaban nada -"no sale como alerta que se le
+   debe dar"). El toast (avisarVacaciones) y el filtro original de este
+   boton solo contaban nivel 'err' (vencidas, mas de un año desde el
+   aniversario sin gozar) y 'warn' (vencen en <=60 dias) -el caso del
+   usuario, recien ganado y sin apuro legal todavia, cae en nivel 'ok' y
+   quedaba completamente invisible hasta ~11 meses despues, cuando por fin
+   entrara en la ventana de 60 dias. El usuario confirmo (al preguntarle)
+   que quiere verlo apenas se gana el periodo, no recien cerca del limite
+   legal -asi que el boton/badge/modal (a diferencia del toast, que se deja
+   igual a proposito: avisar de un pendiente sin apuro en CADA cambio de
+   periodo seria ruido, la mayoria de trabajadores activos pasa la mayor
+   parte del año con un periodo pendiente sin que eso sea un problema) ahora
+   cuentan TODOS los pendientes (vacacionesPendientes() ya los devuelve
+   todos, cualquier nivel), con una tercera categoria "Pendientes de gozar"
+   para el nivel 'ok', en azul/informativo en vez de rojo/ambar. */
 function pintarVacAlertas(){
   const btn=document.getElementById('btnVacAlert'),bd=document.getElementById('vacAlertBadge');
   if(!btn||!bd)return;
   if(!haySesionSegura()||!benListo()){bd.style.display='none';return;}
   const v=vacacionesPendientes();
   const ven=v.filter(x=>x.v.nivel==='err').length,pron=v.filter(x=>x.v.nivel==='warn').length;
-  const total=ven+pron;
+  const total=v.length;
   if(total>0){
     bd.textContent=total>99?'99+':String(total);
-    bd.className='badge-dot'+(ven>0?'':' warn');
+    bd.className='badge-dot'+(ven>0?'':(pron>0?' warn':' inf'));
     bd.style.display='flex';
   } else bd.style.display='none';
   if(document.getElementById('modalVac').classList.contains('on'))renderVacAlertasModal_();
@@ -6024,15 +6042,15 @@ function renderVacAlertasModal_(){
   if(!haySesionSegura()){body.innerHTML='<p style="color:var(--ink3);font-size:12px">Inicia sesión para calcular las vacaciones.</p>';return;}
   if(!benListo()){body.innerHTML='<p style="color:var(--ink3);font-size:12px">Calculando beneficios en el servidor...</p>';return;}
   const v=vacacionesPendientes();
-  const ven=v.filter(x=>x.v.nivel==='err'),pron=v.filter(x=>x.v.nivel==='warn');
-  if(!ven.length&&!pron.length){body.innerHTML='<p style="color:var(--ink3);font-size:12px">Nadie tiene vacaciones vencidas o por vencer en este periodo.</p>';return;}
+  const ven=v.filter(x=>x.v.nivel==='err'),pron=v.filter(x=>x.v.nivel==='warn'),ok=v.filter(x=>x.v.nivel!=='err'&&x.v.nivel!=='warn');
+  if(!v.length){body.innerHTML='<p style="color:var(--ink3);font-size:12px">Nadie tiene vacaciones pendientes en este periodo.</p>';return;}
   const fila=x=>'<tr><td><b>'+escAttr_(x.p.nom)+'</b></td><td class="n">'+x.v.dias+'</td><td>'+(x.v.vence||'--')+'</td><td>'+escAttr_(x.v.estado)+'</td></tr>';
-  const tabla=(lista,tit,cls)=>!lista.length?'':
-    '<h4 style="font-size:12px;margin:'+(tit==='Vencidas'?'0':'14px')+' 0 6px;color:'+(cls==='err'?'#B91C1C':'#92400E')+'">'+tit+' ('+lista.length+')</h4>'+
+  const tabla=(lista,tit,color,primero)=>!lista.length?'':
+    '<h4 style="font-size:12px;margin:'+(primero?'0':'14px')+' 0 6px;color:'+color+'">'+tit+' ('+lista.length+')</h4>'+
     '<table class="bol-t"><tr><th>Trabajador</th><th>Días pend.</th><th>Vence</th><th>Estado</th></tr>'+lista.map(fila).join('')+'</table>';
   body.innerHTML=
-    '<div class="nota" style="margin-bottom:10px">Vacaciones ya ganadas (periodos completos desde el ingreso) que todavía no se registraron como gozadas o vendidas en la ficha de cada trabajador. "Vencidas" significa que pasó más de un año desde que se cumplió el aniversario sin tomar ese descanso.</div>'+
-    tabla(ven,'Vencidas','err')+tabla(pron,'Por vencer','warn');
+    '<div class="nota" style="margin-bottom:10px">Vacaciones ya ganadas (periodos completos desde el ingreso) que todavía no se registraron como gozadas o vendidas en la ficha de cada trabajador. "Vencidas" significa que pasó más de un año desde que se cumplió el aniversario sin tomar ese descanso; "Por vencer", que quedan 60 días o menos para eso. "Pendientes de gozar" son periodos ya ganados, sin apuro legal todavía, para no perderlos de vista aunque falte tiempo.</div>'+
+    tabla(ven,'Vencidas','#B91C1C',true)+tabla(pron,'Por vencer','#92400E',!ven.length)+tabla(ok,'Pendientes de gozar','#1D4ED8',!ven.length&&!pron.length);
 }
 function toggleVacAlertas(){
   const m=document.getElementById('modalVac');
