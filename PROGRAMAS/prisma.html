@@ -81,6 +81,33 @@ td{padding:3px 6px;border-bottom:1px solid var(--border);white-space:nowrap}
    (BUSINESS-RULES.md seccion 41). th.fcol no lleva mayusculas/negrita como
    el resto de encabezados, para que se note que es un control, no un titulo. */
 th.fcol{background:var(--surface);padding:2px 4px;text-transform:none;letter-spacing:0;font-weight:400}
+/* Filtro estilo Excel (menu desplegable con casillas por valor + ordenar
+   A-Z/Z-A), pedido del usuario con una captura de Excel como referencia:
+   reemplaza las cajas de texto/desplegables simples que tenia antes la fila
+   de filtros (misma fila th.fcol, mismas 4 columnas filtrables por tabla -
+   Personal/1Q/2Q/Mensual-, ver FILTROS_EXCEL/ordenarFilasDOM_ en el script).
+   El boton va DENTRO de la celda fcol; el menu es un panel flotante que se
+   agrega a <body> al abrirse (position:fixed, para no quedar recortado por
+   el overflow-x:auto de .tw) y se destruye al cerrarse. */
+.ffbtn{display:flex;align-items:center;justify-content:space-between;gap:4px;width:100%;box-sizing:border-box;
+  background:var(--surface);border:1px solid var(--border2);border-radius:4px;padding:2px 5px;font-size:10px;
+  font-weight:400;color:var(--ink2);cursor:pointer;text-align:left}
+.ffbtn:hover{border-color:var(--indigo)}
+.ffbtn.activo{background:var(--indigo);color:#fff;border-color:var(--indigo)}
+.ffbtn svg{flex:none;width:11px;height:11px}
+#ffmenu{position:fixed;z-index:400;background:var(--surface);border:1px solid var(--border2);border-radius:8px;
+  box-shadow:0 8px 28px rgba(0,0,0,.22);width:230px;font-size:11.5px;padding:8px}
+#ffmenu .ffsort{display:flex;flex-direction:column;gap:2px;margin-bottom:6px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+#ffmenu .ffsort button{display:flex;align-items:center;gap:6px;background:none;border:0;padding:4px 2px;font-size:11px;
+  color:var(--ink);cursor:pointer;text-align:left;border-radius:4px}
+#ffmenu .ffsort button:hover{background:var(--surface2)}
+#ffmenu input[type="search"]{width:100%;box-sizing:border-box;margin-bottom:6px;font-size:11px;padding:4px 6px}
+#ffmenu .fflista{max-height:190px;overflow-y:auto;border:1px solid var(--border);border-radius:4px;padding:4px 2px;margin-bottom:6px}
+#ffmenu .fflista label{display:flex;align-items:center;gap:6px;padding:2px 4px;font-size:11px;cursor:pointer;border-radius:3px}
+#ffmenu .fflista label:hover{background:var(--surface2)}
+#ffmenu .fflista .ffvacio{color:var(--ink3);padding:4px;font-size:10.5px}
+#ffmenu .ffpie{display:flex;justify-content:space-between;align-items:center;gap:6px}
+#ffmenu .ffpie button{font-size:10.5px;padding:3px 8px}
 /* Las tarjetas de Cuentas (grid auto-fit de ~300px) llevan etiquetas largas
    ("Mínimo para retener 4ta en dietas", códigos PLAME, etc.): con el nowrap
    de arriba, la tabla pedía más ancho del que tiene su columna y se
@@ -439,7 +466,7 @@ body.bloqueado header,body.bloqueado nav,body.bloqueado main,body.bloqueado #bar
 [data-tema="dark"] .corte::after{background:var(--bg);color:var(--ink3)}
 /* ---- ERGONOMIA DE TABLAS ---- */
 .tw table td:first-child,.tw table thead tr:first-child th:first-child{position:sticky;left:0;z-index:2;background:var(--surface)}
-.tw table thead tr:first-child th:first-child{z-index:4;background:var(--indigo)}
+.tw table thead tr:first-child th:first-child{z-index:4;background:var(--indigo);color:#fff}
 /* La regla anterior aplicaba "th:first-child" a TODAS las filas del thead. Como
    el encabezado tiene 2 filas (la primera con "Nombre" en rowspan=2, la segunda
    ya arrancando en el primer concepto: "Sueldo"), ese segundo "Sueldo" tambien
@@ -484,8 +511,8 @@ button.ico svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width
 .warn .dot{background:#D97706}
 .chip button{padding:1px 7px;font-size:10px;margin-left:4px}
 /* ---- MODAL HISTORIAL ---- */
-#modalBk,#modalVac{position:fixed;inset:0;background:#0F172ACC;display:none;align-items:center;justify-content:center;z-index:90;padding:20px}
-#modalBk.on,#modalVac.on{display:flex}
+#modalBk,#modalVac,#modalAdmin{position:fixed;inset:0;background:#0F172ACC;display:none;align-items:center;justify-content:center;z-index:90;padding:20px}
+#modalBk.on,#modalVac.on,#modalAdmin.on{display:flex}
 .mk{background:var(--surface);border-radius:8px;width:100%;max-width:760px;max-height:82vh;display:flex;flex-direction:column;overflow:hidden}
 .mk-h{background:var(--indigo);color:#fff;padding:10px 14px;display:flex;align-items:center;gap:10px}
 .mk-h h3{font-size:13px;font-weight:700}
@@ -502,7 +529,7 @@ button.ico svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width
 .toast{background:var(--indigo);color:#fff;font-size:12px;padding:8px 14px;border-radius:var(--r);box-shadow:0 6px 18px #0F172A40;animation:tin .2s}
 .toast.err{background:#B91C1C}.toast.ok{background:var(--teal)}
 @keyframes tin{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-@media print{header,nav,.ph,.nota,.bol-ctl,.chips,.kpis,#barDatos,#toastBox,#modalBk,#modalVac,#ctxPlame{display:none!important}
+@media print{header,nav,.ph,.nota,.bol-ctl,.chips,.kpis,#barDatos,#toastBox,#modalBk,#modalVac,#modalAdmin,#ctxPlame,#ffmenu{display:none!important}
  main{padding:0;max-width:none}.panel{border:none;margin:0}
  .hoja{page-break-after:always;margin:0}
  .hoja:last-child{page-break-after:auto}
@@ -572,6 +599,10 @@ html[data-hoja="horizontal"] .corte{display:none}
     <button class="bo ico" id="btnVacAlert" onclick="toggleVacAlertas()" title="Trabajadores con vacaciones vencidas o por vencer">
       <svg viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0-6 6v3.2c0 .9-.4 1.8-1 2.4L4 16h16l-1-1.4c-.6-.6-1-1.5-1-2.4V9a6 6 0 0 0-6-6z"/><path d="M9.5 19a2.5 2.5 0 0 0 5 0"/></svg>
       <span>Vacaciones</span><span id="vacAlertBadge" class="badge-dot" style="display:none"></span>
+    </button>
+    <button class="bo ico" id="btnAdminAlert" onclick="toggleAdminAlertas()" title="Contratos a plazo fijo por vencer y fichas sin CUSPP">
+      <svg viewBox="0 0 24 24"><path d="M9 2h6a2 2 0 0 1 2 2v1h1a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h1V4a2 2 0 0 1 2-2z"/><path d="M9 4v2h6V4"/><path d="M12 11v4"/><path d="M12 17.5v.1"/></svg>
+      <span>Alertas</span><span id="adminAlertBadge" class="badge-dot" style="display:none"></span>
     </button>
     <span id="sesionBadge"></span>
     <label>Periodo</label>
@@ -644,6 +675,10 @@ html[data-hoja="horizontal"] .corte{display:none}
   <div class="mk-h"><h3>Vacaciones vencidas o por vencer</h3><button class="bo" onclick="cerrarVacAlertas()">Cerrar</button></div>
   <div class="mk-b" id="vacAlertBody"></div>
 </div></div>
+<div id="modalAdmin"><div class="mk">
+  <div class="mk-h"><h3>Contratos y fichas pendientes</h3><button class="bo" onclick="cerrarAdminAlertas()">Cerrar</button></div>
+  <div class="mk-b" id="adminAlertBody"></div>
+</div></div>
 <div id="toastBox"></div>
 <main>
 <div id="p-personal" class="tp" style="display:none">
@@ -672,6 +707,8 @@ html[data-hoja="horizontal"] .corte{display:none}
 </div>
 <div id="p-mensual" class="tp">
   <div class="kpis" id="kpis"></div>
+  <div class="panel" style="margin-bottom:14px"><div class="ph"><h2>Costo por centro de costo</h2></div>
+    <div class="mk-b" id="kpiCC" style="padding:10px 14px"></div></div>
   <div class="panel"><div class="ph"><h2>Consolidado mensual</h2><div class="act">
     <button class="bd" onclick="limpiarTodo()">Vaciar todo el periodo</button></div></div>
     <div class="tw" id="wMen"></div><div class="chips" id="sem"></div></div>
@@ -1169,7 +1206,10 @@ const DEMO_M={
 
 /* CALCULO */
 const r2=v=>Math.round((v+Number.EPSILON)*100)/100;
-const mv=(dni,q)=>{if(!M[dni])M[dni]={q1:blq(1),q2:blq(2)};if(!M[dni]['q'+q])M[dni]['q'+q]=blq(q);return M[dni]['q'+q]};
+const mv=(dni,q)=>{const p=P.find(x=>x.dni===dni);
+  if(!M[dni])M[dni]={q1:blq(1,p),q2:blq(2,p)};
+  if(!M[dni]['q'+q])M[dni]['q'+q]=blq(q,p);
+  return M[dni]['q'+q]};
 // Comision por flujo: porcentaje mensual sobre la remuneracion asegurable,
 // solo para quien todavia esta en el esquema de comision por flujo (afiliados
 // de antes de febrero de 2013 que no migraron a mixta). Desde esa fecha la
@@ -1217,7 +1257,7 @@ const tasas=(a,cfg)=>{
 // sin importar el sueldo ni el numero de hijos -es un monto unico si tiene
 // uno o mas-. Se calcula sobre la RMV vigente, asi que sigue correcto si la
 // RMV cambia (no se guarda como numero suelto en CFG).
-const asigFamMonto=(cfg)=>r2((cfg||CFG).RMV*.10);
+const asigFamMonto=(cfg)=>{const c=cfg||CFG,pr=per();return r2(tasaDe_(c,'RMV',pr.a,pr.m)*.10);};
 /* REORGANIZACION (candidatos 4/5 de la auditoria "que mover al backend
    protegido", ver ARCHITECTURE.md): estas dos piezas de calc() -aportes de
    AFP/ONP y retencion de 4ta- ya estaban protegidas del lado del servidor
@@ -1400,7 +1440,13 @@ function mes(p){
   const dm=r2(a.dm+b.dm),dmd=(a.dmd||0)+(b.dmd||0);
   let es=0,baseES=0,minAp=false;
   if(!a.rh&&dias>0){
-    const minimo=CFG.ES_MIN_PROPORCIONAL?r2(CFG.RMV*Math.min(CFG.DM,dias)/CFG.DM):CFG.RMV;
+    // La RMV que corresponde a ESTE periodo (per().a/per().m) -no siempre la
+    // de hoy-, para que reabrir un periodo ya guardado despues de que la RMV
+    // cambie siga mostrando lo que realmente aplicaba entonces. Ver
+    // tasaDe_()/CFG.__hist; sin historial cargado, se comporta igual que
+    // siempre (CFG.RMV de hoy).
+    const pr_=per(),rmvPeriodo=tasaDe_(CFG,'RMV',pr_.a,pr_.m);
+    const minimo=CFG.ES_MIN_PROPORCIONAL?r2(rmvPeriodo*Math.min(CFG.DM,dias)/CFG.DM):rmvPeriodo;
     baseES=r2(Math.max(baseSal,minimo));
     minAp=baseES>baseSal+.005;
     es=r2(baseES*CFG.T_ES);
@@ -1851,11 +1897,11 @@ function limpiarTodo(){if(!confirm('Se borrara TODO: personal y movimientos de l
 function limpiarPersonal(){if(!confirm('Se borrara todo el personal (y sus movimientos). Continuar?'))return;P=[];M={};R();}
 function limpiarQna(q){
   if(!confirm('Se pondran en cero todos los movimientos de la '+(q===1?'1ra':'2da')+' quincena. El personal se mantiene. Continuar?'))return;
-  Object.keys(M).forEach(d=>{if(M[d])M[d]['q'+q]=blq(q);});R();}
+  Object.keys(M).forEach(d=>{if(M[d]){const p=P.find(x=>x.dni===d);M[d]['q'+q]=blq(q,p);}});R();}
 function limpiarFila(dni,q){
   const p=P.find(x=>x.dni===dni);
   if(!confirm('Poner en cero los movimientos de '+(p?p.nom:dni)+' en la '+(q===1?'1ra':'2da')+' quincena?'))return;
-  if(M[dni])M[dni]['q'+q]=blq(q);R();}
+  if(M[dni])M[dni]['q'+q]=blq(q,p);R();}
 // (limpiarHonorarios se elimino aqui, confirmada como codigo muerto por la
 // auditoria: ningun boton la llamaba.)
 function limpiarHE(){
@@ -1863,6 +1909,98 @@ function limpiarHE(){
   Object.keys(M).forEach(d=>{[1,2].forEach(q=>{if(M[d]&&M[d]['q'+q]){M[d]['q'+q].he=0;M[d]['q'+q].heD=[];}});});R();}
 function cargarDemo(){P=JSON.parse(JSON.stringify(DEMO_P));M=JSON.parse(JSON.stringify(DEMO_M));R();}
 
+/* ================== RESUMEN GERENCIAL (ampliacion de los KPIs) ==================
+   Seguimiento a "que mas podemos agregar al sistema?" (ver BUSINESS-RULES.md
+   seccion 49): costo total de planilla y su variacion mes a mes, desglose por
+   centro de costo, altas/bajas del periodo y promedio de costo por persona.
+   "Costo total de planilla" usa EXACTAMENTE la misma definicion que ya usaba
+   el tile "Costo total planilla" de rKpis() (ingresos + EsSalud + Vida Ley,
+   SOLO de quienes son tipo PLANILLA -los honorarios por recibo tienen su
+   propio tile aparte, "Honorarios 4ta"-), para que el desglose por centro de
+   costo sume exactamente el mismo total que ese tile. */
+
+// Costo de un periodo (actual o historico) persona por persona, con las
+// mismas tasas vigentes HOY (cfg=CFG): asi la comparacion entre dos meses
+// aisla el cambio real de planilla (altas/bajas/sueldos/variables) en vez de
+// mezclarlo con un cambio de tasas (RMV/EsSalud/etc.) entre ambos meses.
+// "lista" y "mapM" pueden ser el P/M en pantalla (periodo actual) o los que
+// devuelve leerMes() de un periodo guardado (historico) -misma forma en los
+// dos casos: un arreglo de fichas y un objeto M indexado por dni.
+function costoPeriodoDe_(lista,mapM,modoHist,cfg){
+  cfg=cfg||CFG;
+  const tope=modoHist==='MENSUAL'?cfg.DM:15;
+  return (lista||[]).filter(p=>p.est!=='CESADO'&&p.tipo==='PLANILLA').map(p=>{
+    const mv_=(mapM&&mapM[p.dni])||{};
+    const a=calcQuincena_(p,mv_.q1||bl(),tope,cfg),b=calcQuincena_(p,mv_.q2||bl(),tope,cfg);
+    const ing=r2(a.ing+b.ing),dias=a.dias+b.dias;
+    let es=0,vl=0;
+    if(dias>0){
+      const baseSal=r2((a.baseSal||0)+(b.baseSal||0));
+      const minimo=cfg.ES_MIN_PROPORCIONAL?r2(cfg.RMV*Math.min(cfg.DM,dias)/cfg.DM):cfg.RMV;
+      es=r2(Math.max(baseSal,minimo)*cfg.T_ES);vl=cfg.VL;}
+    return {p,costo:r2(ing+es+vl)};});
+}
+const costoActualItems_=()=>costoPeriodoDe_(act(),M,MODO);
+const costoTotalActual_=()=>r2(costoActualItems_().reduce((s,x)=>s+x.costo,0));
+// Desglose por centro de costo del periodo actual, de mayor a menor costo.
+function desgloseCC_(){
+  const items=costoActualItems_(),total=costoTotalActual_();
+  const porCC={};
+  items.forEach(x=>{const cc=x.p.cc||'--';
+    (porCC[cc]=porCC[cc]||{cc,personas:0,costo:0}).personas++;
+    porCC[cc].costo=r2(porCC[cc].costo+x.costo);});
+  return Object.values(porCC).map(x=>({cc:x.cc,nombre:CCS[x.cc]||x.cc,personas:x.personas,costo:x.costo,
+    pct:total>0?r2(x.costo/total*100):0})).sort((a,b)=>b.costo-a.costo);
+}
+// Pinta la tabla de desglose por centro de costo dentro de la pestaña
+// Mensual (sincrono, siempre con los datos ya cargados en pantalla).
+function pintarDesgloseCC_(){
+  const cont=document.getElementById('kpiCC');if(!cont)return;
+  const filas=desgloseCC_();
+  if(!filas.length){cont.innerHTML='<p style="color:var(--ink3);font-size:11.5px;margin:0">Sin personal de planilla activo este periodo.</p>';return;}
+  cont.innerHTML='<table class="bol-t"><tr><th class="left">Centro de costo</th><th>Personas</th><th>Costo</th><th>% del total</th></tr>'+
+    filas.map(x=>'<tr><td>'+escAttr_(x.nombre)+'</td><td class="n">'+x.personas+'</td><td class="n">S/ '+f0(x.costo)+'</td><td class="n">'+x.pct+'%</td></tr>').join('')+
+    '</table>';
+}
+// Costo del mes ANTERIOR al que esta en pantalla, leyendo el archivo ya
+// guardado de ese periodo (misma infraestructura que ya usa traerPersonal()/
+// cargarHistorial() para leer meses pasados). Devuelve null si no hay carpeta
+// conectada o no se encontro/pudo leer el archivo de ese mes -no es un error,
+// simplemente no hay con que comparar todavia-.
+async function costoMesAnterior_(){
+  if(!ROOT)return null;
+  const{a,m}=per();let A=a,Mn=m-1;if(Mn===0){Mn=12;A--;}
+  let d=null;try{d=await leerMes(A,Mn);}catch(e){}
+  if(!d||!Array.isArray(d.P))return null;
+  return{periodo:periodoStr(A,Mn),costo:costoPeriodoDe_(d.P,d.M||{},d.modo||'QUINCENAL',CFG)
+    .reduce((s,x)=>s+x.costo,0)};
+}
+// Pinta la variacion vs el mes anterior dentro del tile de "Costo total
+// planilla" -se calcula aparte y aca (no en rKpis()) porque leer el archivo
+// del mes anterior es asincrono (leerMes), y rKpis() es sincrono (se llama
+// en cada R(), con cada tecla). Memorizado por periodo (VAR_MES_CACHE) para
+// no releer el archivo en cada render del mismo periodo.
+let VAR_MES_CACHE={pp:'',html:''};
+async function pintarVarMes_(){
+  const pp=periodoStr(),cont=document.getElementById('kpiVarMes');
+  if(!cont)return;
+  if(VAR_MES_CACHE.pp===pp){cont.innerHTML=VAR_MES_CACHE.html;return;}
+  if(!ROOT){cont.innerHTML='Conecta la carpeta de datos para comparar con el mes anterior.';return;}
+  cont.innerHTML='Comparando con el mes anterior...';
+  const ant=await costoMesAnterior_();
+  if(periodoStr()!==pp)return;              // el usuario ya cambio de periodo mientras se leia el archivo
+  let html;
+  if(!ant)html='Sin un archivo guardado del mes anterior para comparar.';
+  else{
+    const actual=costoTotalActual_(),dif=r2(actual-ant.costo);
+    const pct=ant.costo>0?r2(dif/ant.costo*100):(actual>0?100:0);
+    const sube=dif>0,sinCambio=Math.abs(dif)<.01;
+    html='vs '+ant.periodo+': '+(sinCambio?'sin cambio':(sube?'▲ ':'▼ ')+Math.abs(pct)+'%')+
+      ' <span style="color:var(--ink3)">(S/ '+f0(ant.costo)+')</span>';
+  }
+  VAR_MES_CACHE={pp,html};
+  if(document.getElementById('kpiVarMes'))document.getElementById('kpiVarMes').innerHTML=html;
+}
 /* KPIs Y VALIDACIONES (viven en la pestaña Mensual) */
 function rKpis(){
   const pl=pla(),rh=rhs();
@@ -1871,6 +2009,9 @@ function rKpis(){
     if(p.tipo==='PLANILLA'){tIng+=m.ing;tES+=m.es;tVL+=m.vl;tVac+=m.vacProv;
       tAFP+=m.ap+m.pr;tONP+=m.onp;}else{tHon+=m.hon;tR4+=m.ret4;}
     tQ1+=m.q1.neto;tQ2+=m.q2.neto;tN+=m.neto;});
+  const costoTot=r2(tIng+tES+tVL);
+  const promPersona=pl.length?r2(costoTot/pl.length):0;
+  const altas=altasDelPeriodo_().length,bajas=cesadosDelPeriodo_().length;
   const k=document.getElementById('kpis');
   if(k)k.innerHTML=
    '<div class="kpi ac"><div class="kl">Neto total del mes</div><div class="kv">S/ '+f0(tN)+'</div><div class="ks">Q1 '+f0(tQ1)+' · Q2 '+f0(tQ2)+'</div></div>'+
@@ -1879,13 +2020,17 @@ function rKpis(){
    '<div class="kpi"><div class="kl">AFP + ONP</div><div class="kv sm">S/ '+f0(tAFP+tONP)+'</div></div>'+
    '<div class="kpi"><div class="kl">Honorarios 4ta</div><div class="kv sm">S/ '+f0(tHon)+'</div><div class="ks">Retenido '+f0(tR4)+'</div></div>'+
    '<div class="kpi"><div class="kl">Provisión vacaciones</div><div class="kv sm">S/ '+f0(tVac)+'</div><div class="ks">4.1667% mensual</div></div>'+
-   '<div class="kpi"><div class="kl">Costo total planilla</div><div class="kv sm" style="color:var(--c95)">S/ '+f0(r2(tIng+tES+tVL))+'</div></div>'+
-   '<div class="kpi"><div class="kl">Personal activo</div><div class="kv sm">'+pl.length+' + '+rh.length+'</div><div class="ks">planilla + honorarios</div></div>';
+   '<div class="kpi"><div class="kl">Costo total planilla</div><div class="kv sm" style="color:var(--c95)">S/ '+f0(costoTot)+'</div><div class="ks" id="kpiVarMes">Comparando con el mes anterior...</div></div>'+
+   '<div class="kpi"><div class="kl">Personal activo</div><div class="kv sm">'+pl.length+' + '+rh.length+'</div><div class="ks">planilla + honorarios</div></div>'+
+   '<div class="kpi"><div class="kl">Altas / Bajas del periodo</div><div class="kv sm">'+altas+' / '+bajas+'</div><div class="ks">ingresos y ceses de planilla este mes</div></div>'+
+   '<div class="kpi"><div class="kl">Promedio costo x persona</div><div class="kv sm">S/ '+f0(promPersona)+'</div><div class="ks">costo total planilla / personal en planilla</div></div>';
+  pintarDesgloseCC_();
+  pintarVarMes_();
   const ck=[
    {l:'Q1 ingresos menos descuentos = neto',ok:act().every(p=>{const c=calc(p,1);return Math.abs(c.ing-c.des-c.neto)<.02})},
    {l:'Q2 ingresos menos descuentos = neto',ok:act().every(p=>{const c=calc(p,2);return Math.abs(c.ing-c.des-c.neto)<.02})},
    {l:'Sin netos negativos',ok:act().every(p=>mes(p).neto>=0)},
-   {l:'EsSalud nunca bajo el mínimo RMV',ok:pla().every(p=>{const m=mes(p);return m.dias===0||m.baseES>=CFG.RMV-.01||CFG.ES_MIN_PROPORCIONAL})},
+   {l:'EsSalud nunca bajo el mínimo RMV',ok:pla().every(p=>{const m=mes(p),pr_=per();return m.dias===0||m.baseES>=tasaDe_(CFG,'RMV',pr_.a,pr_.m)-.01||CFG.ES_MIN_PROPORCIONAL})},
    {l:'Asientos cuadrados',ok:asientoCuadra()},
    {l:'Centros de costo del personal existen en el plan',ok:ccHuerfanos().length===0},
    {l:'Sin documentos duplicados ni vacios',ok:dniOK()},
@@ -1903,9 +2048,9 @@ function rKpis(){
 /* PERSONAL */
 function rPersonal(){
   const rows=P.map(p=>'<tr class="'+(p.est==='CESADO'?'baja ':'')+(p.tipo==='RECIBO HONORARIOS'?'rh-row':'')+'">'+
+   '<td><input data-f="nom" class="txt" value="'+escAttr_(p.nom)+'" onchange="setP('+p.id+',\'nom\',this.value)"></td>'+
    '<td class="ctr">'+p.id+'</td>'+
    '<td><input data-f="dni" value="'+p.dni+'" onchange="setP('+p.id+',\'dni\',this.value)" style="width:88px;text-align:left"></td>'+
-   '<td><input data-f="nom" class="txt" value="'+escAttr_(p.nom)+'" onchange="setP('+p.id+',\'nom\',this.value)"></td>'+
    '<td><input data-f="car" value="'+escAttr_(p.car)+'" onchange="setP('+p.id+',\'car\',this.value)" style="width:130px;text-align:left"></td>'+
    '<td><input data-f="cus" value="'+(p.cus||'')+'" onchange="setP('+p.id+',\'cus\',this.value)" style="width:118px;text-align:left"'+(p.tipo!=='PLANILLA'?' disabled':'')+'></td>'+
    '<td class="ctr"><select data-f="cc" onchange="setP('+p.id+',\'cc\',this.value)">'+
@@ -1925,6 +2070,10 @@ function rPersonal(){
    '<td class="num"><input data-f="sue" class="w90" type="number" step="10" value="'+p.sue+'" onchange="setP('+p.id+',\'sue\',this.value)"></td>'+
    '<td class="ctr"><input data-f="ing" type="date" value="'+p.ing+'" onchange="setP('+p.id+',\'ing\',this.value)" style="width:120px"></td>'+
    '<td class="ctr"><input data-f="ces" type="date" value="'+p.ces+'" onchange="setP('+p.id+',\'ces\',this.value)" style="width:120px"></td>'+
+   '<td class="ctr"><select data-f="contrato" onchange="setP('+p.id+',\'contrato\',this.value)" style="font-size:10px" title="Para avisar con anticipacion cuando un contrato a plazo fijo esta por vencer (boton Alertas, arriba)">'+
+     '<option value="INDEFINIDO"'+(p.contrato!=='PLAZO_FIJO'?' selected':'')+'>Indefinido</option>'+
+     '<option value="PLAZO_FIJO"'+(p.contrato==='PLAZO_FIJO'?' selected':'')+'>Plazo fijo</option></select>'+
+     (p.contrato==='PLAZO_FIJO'?'<div style="margin-top:3px"><input data-f="vencContrato" type="date" value="'+(p.vencContrato||'')+'" onchange="setP('+p.id+',\'vencContrato\',this.value)" style="width:120px" title="Fecha de vencimiento del contrato"></div>':'')+'</td>'+
    '<td class="ctr"><select class="'+pillEst_(p.est)+'" data-f="est" onchange="setP('+p.id+',\'est\',this.value)">'+
      '<option'+(p.est==='ACTIVO'?' selected':'')+'>ACTIVO</option><option'+(p.est==='CESADO'?' selected':'')+'>CESADO</option></select></td>'+
    '<td class="ctr">'+((p.tipo==='PLANILLA'&&fecha(p.ces))?
@@ -1934,32 +2083,36 @@ function rPersonal(){
        '<div style="margin-top:3px"><input type="date" value="'+(p.fvto||'')+'" onchange="setFinContrato(\''+p.dni+'\',this.value)" style="width:130px" title="Vencimiento del contrato"></div>':'')+
      '<div style="margin-top:3px"><button type="button" class="bd" style="padding:2px 7px;font-size:10px" onclick="pasarLiquidacion(\''+p.dni+'\')" title="Calcula la liquidacion (Beneficios) y la copia a la quincena del cese, donde puedes editar los importes">&rarr; Planilla</button></div>'
      :'<span style="color:var(--ink3);font-size:10px">no aplica</span>')+'</td>'+
-   '<td class="ctr">'+(p.tipo==='PLANILLA'?
+   '<td class="ctr">'+
+     '<button type="button" class="bd" style="padding:2px 7px;font-size:10px;margin-right:3px" onclick="abrirPrestamo(\''+p.dni+'\')" title="Registrar o revisar un prestamo/adelanto con cronograma de cuotas">'+
+       (saldoPrestamo(p)>0?'Préstamo <b>S/ '+f0(saldoPrestamo(p))+'</b>':'Préstamo')+'</button>'+
+     (p.tipo==='PLANILLA'?
      '<button type="button" class="bd" style="padding:2px 7px;font-size:10px;margin-right:3px" onclick="abrirTRegAlta(\''+p.dni+'\')" title="Datos para el Alta T-Registro (SUNAT): fecha de nacimiento, ocupacion, tipo de contrato, etc. Solo hace falta completarlos si esta persona ingreso este periodo.">SUNAT</button>':'')+
      '<button class="bd" style="padding:2px 7px" onclick="delTrab('+p.id+')">X</button></td></tr>').join('');
   const filaFiltroPers=cont=>'<tr>'+
+   celdaFiltroExcel_(cont,'nom','Nombre')+
    '<th></th>'+
-   celdaFiltroTexto_(cont,'dni','DNI...')+
-   celdaFiltroTexto_(cont,'nom','Nombre...')+
-   celdaFiltroTexto_(cont,'car','Cargo...')+
-   celdaFiltroTexto_(cont,'cus','CUSPP...')+
-   celdaFiltroSelect_(cont,'cc',Object.entries(CCS).map(([k,v])=>[k,v]))+
-   celdaFiltroSelect_(cont,'tipo',TIPOS.map(x=>[x,x]))+
-   celdaFiltroSelect_(cont,'reg',Object.keys(REG).map(k=>[k,REG[k].nom]))+
-   celdaFiltroSelect_(cont,'afp',AFPS.map(a=>[a,a]))+
-   '<th></th><th></th><th></th><th></th><th></th>'+
-   celdaFiltroSelect_(cont,'est',[['ACTIVO','ACTIVO'],['CESADO','CESADO']])+
+   celdaFiltroExcel_(cont,'dni','DNI')+
+   celdaFiltroExcel_(cont,'car','Cargo')+
+   celdaFiltroExcel_(cont,'cus','CUSPP')+
+   celdaFiltroExcel_(cont,'cc','C. Costo')+
+   celdaFiltroExcel_(cont,'tipo','Tipo')+
+   celdaFiltroExcel_(cont,'reg','Rég. Lab.')+
+   celdaFiltroExcel_(cont,'afp','AFP')+
+   '<th></th><th></th><th></th><th></th><th></th><th></th>'+
+   celdaFiltroExcel_(cont,'est','Estado')+
    '<th></th><th></th></tr>';
   document.getElementById('wPers').innerHTML='<table><thead><tr>'+
-   '<th>#</th><th class="left">DNI / RUC</th><th class="left">Apellidos y Nombres</th><th class="left">Cargo</th>'+
+   '<th class="left">Apellidos y Nombres</th><th>#</th><th class="left">DNI / RUC</th><th class="left">Cargo</th>'+
    '<th class="left">CUSPP</th><th>Centro Costo</th><th>Tipo</th><th title="Régimen laboral: define vacaciones, gratificación y CTS">Rég. Laboral</th><th>Régimen Pens.</th>'+
    '<th title="Solo para quien sigue en el esquema de comision por flujo (afiliados desde antes de feb-2013)">Comisión AFP</th>'+
    '<th title="Asignación familiar: S/ 102.50 (10% RMV) si tiene hijos">Asig. Familiar</th><th>Sueldo / Honor.</th>'+
-   '<th>F. Ingreso</th><th>F. Cese</th><th>Estado</th>'+
+   '<th>F. Ingreso</th><th>F. Cese</th><th title="Si es a plazo fijo, con su fecha de vencimiento: avisa en el boton Alertas cuando se acerca">Contrato</th><th>Estado</th>'+
    '<th title="Solo para quien tiene fecha de cese: define la liquidacion (antes vivia en Beneficios)">Motivo de cese</th><th></th></tr>'+
    filaFiltroPers('wPers')+
    '</thead><tbody>'+
-   (rows||'<tr><td colspan="16" style="text-align:center;padding:20px;color:var(--ink3)">Sin personal registrado.</td></tr>')+'</tbody></table>';
+   (rows||'<tr><td colspan="17" style="text-align:center;padding:20px;color:var(--ink3)">Sin personal registrado.</td></tr>')+'</tbody></table>';
+  ordenarFilasDOM_('wPers');
 }
 /* QUINCENA */
 function rQna(q){
@@ -2045,10 +2198,10 @@ function rQna(q){
    '<th class="gd">AFP/ONP</th><th class="gd">Prima</th><th class="gd" title="Comisión AFP - solo esquema Flujo">Comisión AFP</th><th class="gd">5ta / 4ta</th>'+
    '<th class="gd">Tardanza</th><th class="gd">Adelanto</th><th class="gd">Préstamo</th></tr>'+
    '<tr>'+
-    celdaFiltroTexto_('wQ'+q,'nom','Nombre...')+
-    celdaFiltroTexto_('wQ'+q,'dni','Doc...')+
-    celdaFiltroSelect_('wQ'+q,'tipo',TIPOS.map(x=>[x,x]))+
-    celdaFiltroSelect_('wQ'+q,'cc',Object.entries(CCS).map(([k,v])=>[k,v]))+
+    celdaFiltroExcel_('wQ'+q,'nom','Nombre')+
+    celdaFiltroExcel_('wQ'+q,'dni','Documento')+
+    celdaFiltroExcel_('wQ'+q,'tipo','Tipo')+
+    celdaFiltroExcel_('wQ'+q,'cc','CC')+
     '<th></th><th></th><th></th><th colspan="28"></th><th></th><th></th>'+
    '</tr>'+
    '</thead><tbody>'+
@@ -2072,6 +2225,7 @@ function rQna(q){
    '<td class="num"><b>'+f(t.r4+t.r5)+'</b></td><td class="num"><b>'+f(t.tar)+'</b></td>'+
    '<td class="num"><b>'+f(t.ade)+'</b></td><td class="num"><b>'+f(t.pre)+'</b></td>'+
    '<td class="num"><b>'+f(t.neto)+'</b></td><td></td></tr></tfoot></table>';
+  ordenarFilasDOM_('wQ'+q);
   const neg=act().filter(p=>calc(p,q).neto<0).length;
   document.getElementById('sQ'+q).innerHTML=
    '<div class="chip inf"><span class="dot"></span>Neto Q'+q+': <b>S/ '+f0(t.neto)+'</b></div>'+
@@ -2133,10 +2287,10 @@ function rMensual(){
    '<th>EsSalud</th><th>Ret. 4ta/5ta</th><th>Vida Ley</th><th>Prov. Vac.</th>'+
    '<th>Neto Q1</th><th>Neto Q2</th><th>Neto Mes</th><th class="gt">Neto a pagar</th>'+
    '</tr><tr>'+
-    celdaFiltroTexto_('wMen','nom','Nombre...')+
-    celdaFiltroTexto_('wMen','dni','Doc...')+
-    celdaFiltroSelect_('wMen','tipo',TIPOS.map(x=>[x,x]))+
-    celdaFiltroSelect_('wMen','cc',Object.entries(CCS).map(([k,v])=>[k,v]))+
+    celdaFiltroExcel_('wMen','nom','Nombre')+
+    celdaFiltroExcel_('wMen','dni','Documento')+
+    celdaFiltroExcel_('wMen','tipo','Tipo')+
+    celdaFiltroExcel_('wMen','cc','CC')+
     '<th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th>'+
     '<th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th>'+
     '<th></th><th></th><th></th>'+
@@ -2156,8 +2310,9 @@ function rMensual(){
    '<td class="num"><b>'+f(t.n)+'</b></td>'+
    '<td class="num"><b style="color:var(--tit)">'+f(r2(t.n-t.q1))+'</b></td></tr></tfoot></table>'+
    '<div style="padding:8px 14px;font-size:10.5px;color:var(--ink2);background:var(--amber);border-top:1px solid var(--border)">'+
-   'Base EsSalud en ambar = se aplico el mínimo de la RMV S/ '+f0(CFG.RMV)+'. Ejemplo: remuneración de S/ 900 al mes, el EsSalud se calcula sobre 1,130 y no sobre 900. '+
+   'Base EsSalud en ambar = se aplico el mínimo de la RMV de este periodo (S/ '+f0(tasaDe_(CFG,'RMV',per().a,per().m))+'). Ejemplo: remuneración de S/ 900 al mes, el EsSalud se calcula sobre esa RMV y no sobre 900. '+
    'Las filas naranjas son recibos por honorarios: sin EsSalud, AFP ni beneficios.</div>';
+  ordenarFilasDOM_('wMen');
 }
 /* BENEFICIOS */
 
@@ -2330,6 +2485,32 @@ const vacDe=p=>BEN.vac[p.dni]||null;
 const liqDe=p=>BEN.liq[p.dni]||null;
 function vacacionesPendientes(){
   return pla().map(p=>({p,v:vacDe(p)})).filter(x=>x.v&&x.v.pendiente);}
+
+/* ================== ALERTAS ADMINISTRATIVAS (boton "Alertas") ==================
+   Pedido del usuario como seguimiento a "que mas podemos agregar al sistema?":
+   avisar de contratos a plazo fijo por vencer y de fichas de PLANILLA sin CUSPP
+   cargado -ver BUSINESS-RULES.md seccion 48-. A diferencia de las vacaciones
+   (que dependen del calculo del servidor via pedirBeneficios()), estas dos son
+   puramente derivadas de P -ya cargado en el navegador-, por eso no dependen de
+   benListo()/haySesionSegura() y se pueden calcular siempre, sin esperar nada. */
+
+// Dias de anticipacion para avisar un contrato a plazo fijo por vencer
+// (confirmado con el usuario: 30 dias). "dias" sale negativo si el contrato
+// ya vencio -se muestra igual, como "vencido", no se oculta-.
+const DIAS_AVISO_CONTRATO=30;
+function contratosPorVencer(){
+  const hoy=fecha(new Date().toISOString().slice(0,10));
+  return P.filter(p=>p.tipo==='PLANILLA'&&p.est==='ACTIVO'&&p.contrato==='PLAZO_FIJO'&&fecha(p.vencContrato))
+    .map(p=>({p,dias:Math.round((fecha(p.vencContrato)-hoy)/86400000)}))
+    .filter(x=>x.dias<=DIAS_AVISO_CONTRATO)
+    .sort((a,b)=>a.dias-b.dias);
+}
+// Fichas de PLANILLA activas sin CUSPP -lo necesita AFPnet para declarar el
+// aporte de AFP-. No aplica a RECIBO HONORARIOS (no tiene AFP) ni a CESADO
+// (ya no se va a declarar).
+function fichasIncompletas(){
+  return P.filter(p=>p.tipo==='PLANILLA'&&p.est==='ACTIVO'&&!String(p.cus||'').trim());
+}
 
 function tipBase(prom,p){
   if(!prom)return 'Sueldo '+f(p.sue||0);
@@ -3707,8 +3888,10 @@ function boletaHTML(p,q,tag,cls){
    '<b>'+CFG.EMP+'</b> · RUC '+CFG.RUC+'<br>'+CFG.DOM+'<br>'+
    '<b>Periodo:</b> '+MES[mm]+' '+a+' — '+lab+' &nbsp;|&nbsp; <b>Régimen:</b> '+regBoleta(p)+'</div>'+
    '<table class="bol-t"><tr><th style="width:88px">DNI / RUC</th><th>APELLIDOS Y NOMBRES</th>'+
-   '<th style="width:110px">CARGO</th><th style="width:88px">F. INGRESO</th><th style="width:96px">C. COSTO</th></tr>'+
-   '<tr><td>'+p.dni+'</td><td><b>'+escAttr_(p.nom)+'</b></td><td>'+escAttr_(p.car)+'</td><td>'+(p.ing||'')+'</td><td>'+(CCS[p.cc]||p.cc||'--')+'</td></tr></table>'+
+   '<th style="width:110px">CARGO</th><th style="width:88px">F. INGRESO</th><th style="width:88px">F. CESE</th>'+
+   '<th style="width:96px">C. COSTO</th></tr>'+
+   '<tr><td>'+p.dni+'</td><td><b>'+escAttr_(p.nom)+'</b></td><td>'+escAttr_(p.car)+'</td><td>'+(p.ing||'')+'</td>'+
+   '<td>'+(p.ces||'--')+'</td><td>'+(CCS[p.cc]||p.cc||'--')+'</td></tr></table>'+
    '<table class="bol-t" style="margin-top:5px"><tr><th>DIAS LAB. PRINCIPALES</th>'+
    '<th title="Feriados oficiales que cayeron dentro de este periodo -solo informativo, no indica si se trabajaron">FERIADOS DEL PERIODO (INFO)</th>'+
    '<th>FERIADOS TRABAJADOS</th><th>FALTAS</th><th>IMPORTE FALTAS</th></tr>'+
@@ -3925,10 +4108,48 @@ function liqHTML(p,tag,cls){
    '<div style="margin-top:6px;font-size:8.5px;color:#64748B;text-align:center">'+
      'Declaro haber recibido el integro de mis beneficios sociales por el periodo laborado, '+
      'sin tener reclamo posterior que formular.</div></div>';}
+// Constancia de trabajo: documento aparte y mas simple que el certificado de
+// trabajo -solo datos (nombre, DNI, cargo, fechas, tiempo de servicios), sin
+// evaluacion de desempeño ni mencion del motivo del cese (eso es lo que
+// corresponde a una "constancia", a diferencia de un "certificado")-. Pedido
+// del usuario: que se genere SIEMPRE junto con la liquidacion, no por
+// separado, asi que se arma aca y hojaLiq() la agrega como pagina aparte.
+function constanciaHTML(p){
+  if(!p||!p.ing)return '';
+  const ing=fecha(p.ing);
+  if(!ing)return '';
+  const ces=fecha(p.ces),hoy=new Date();
+  const MESES_LARGO_=['enero','febrero','marzo','abril','mayo','junio','julio',
+    'agosto','setiembre','octubre','noviembre','diciembre'];
+  const larga_=d=>d?(d.getDate()+' de '+MESES_LARGO_[d.getMonth()]+' de '+d.getFullYear()):'';
+  const dTen=diasEnTramo(p,ing,ces||hoy),
+    anTen=Math.floor(dTen/360),mTen=Math.floor((dTen%360)/30),dTenD=(dTen%360)%30;
+  return '<div class="boleta">'+
+   '<div class="bol-h">CONSTANCIA DE TRABAJO</div>'+
+   '<div class="bol-emp">'+(LOGO_EMP?'<img class="bol-logo" src="'+LOGO_EMP+'" alt="">':'')+
+   '<b>'+CFG.EMP+'</b> · RUC '+CFG.RUC+'<br>'+CFG.DOM+'</div>'+
+   '<div style="margin-top:18px;font-size:11.5px;line-height:1.75;text-align:justify">'+
+     'El que suscribe, en representación de <b>'+CFG.EMP+'</b>, identificada con RUC N° '+CFG.RUC+', '+
+     'hace constar que el(la) señor(a) <b>'+escAttr_(p.nom)+'</b>, identificado(a) con DNI N° '+p.dni+', '+
+     (ces?'trabajó':'labora')+' en esta empresa desde el '+larga_(ing)+
+     (ces?' hasta el '+larga_(ces):' hasta la fecha')+', desempeñando el cargo de '+
+     '<b>'+escAttr_(p.car||'-')+'</b>, acumulando un tiempo de servicios de '+
+     anTen+' año(s), '+mTen+' mes(es) y '+dTenD+' día(s).</div>'+
+   '<div style="margin-top:12px;font-size:11.5px">'+
+     'Se expide la presente constancia a solicitud del interesado, para los fines que estime conveniente.</div>'+
+   '<div style="margin-top:26px;text-align:right;font-size:10.5px;color:#64748B">'+
+     'Emitido el '+larga_(hoy)+'.</div>'+
+   '<div style="margin-top:70px;display:flex;justify-content:center;font-size:10.5px;text-align:center;padding-bottom:24px">'+
+     '<div style="border-top:1px solid var(--ink);padding-top:6px;width:240px;line-height:1.55">LA EMPRESA'+
+       '<br><span style="font-size:8.5px;color:#64748B">'+CFG.EMP+'</span></div>'+
+   '</div></div>';}
+function constanciaHoja(p){
+  const c=constanciaHTML(p);
+  return c?'<div class="hoja">'+c+'</div>':'';}
 function hojaLiq(p){
-  if(!esDoble())return '<div class="hoja">'+liqHTML(p,'')+'</div>';
+  if(!esDoble())return '<div class="hoja">'+liqHTML(p,'')+'</div>'+constanciaHoja(p);
   return '<div class="hoja">'+liqHTML(p,'ORIGINAL','mini')+
-    '<hr class="corte">'+liqHTML(p,'COPIA','mini')+'</div>';}
+    '<hr class="corte">'+liqHTML(p,'COPIA','mini')+'</div>'+constanciaHoja(p);}
 /* Con muchos conceptos, original y copia dejan de entrar en una hoja. Se avisa
    y se ofrece pasar a una boleta por hoja en vez de dejar que el navegador la
    parta en dos paginas. */
@@ -4117,6 +4338,11 @@ function T(btn){
   R();
 }
 function R(){
+  // Cierra el menu de filtro estilo Excel si estaba abierto: cualquier rXxx()
+  // de abajo reconstruye su tabla entera con innerHTML, asi que el boton que
+  // abrio el menu puede dejar de existir (nodo nuevo) -mejor cerrarlo que
+  // dejarlo apuntando a un boton fantasma.
+  if(typeof cerrarMenuFiltro==='function')cerrarMenuFiltro();
   const t=document.querySelector('nav button.active');
   const id=t?t.dataset.t:'mensual';
   rKpis();
@@ -4315,33 +4541,43 @@ function textoFilaBuscable_(tr){
   tr.querySelectorAll('input,select').forEach(el=>{t+=' '+(el.value||'');});
   return t.toLowerCase();}
 
-/* ================== FILTROS POR COLUMNA (encabezado) ==================
-   Pedido del usuario ("pongas filtro en el encabezado de los cuadros para
-   filtrar", con captura de pantalla de la tabla Personal): a diferencia del
-   buscador de arriba (una sola caja, busca en toda la fila), esto pone un
-   control por columna dentro del <thead> de cada tabla -como el autofiltro
-   de Excel-, en Personal, Mensual, 1Q y 2Q (BUSINESS-RULES.md seccion 41).
+/* ================== FILTROS POR COLUMNA, ESTILO EXCEL (encabezado) =======
+   Pedido original del usuario ("pongas filtro en el encabezado de los
+   cuadros para filtrar", con captura de la tabla Personal) y, despues, pedido
+   explicito de que el control se pareciera al autofiltro real de Excel
+   (captura de pantalla de Excel: menu desplegable con casillas por cada
+   valor, buscador dentro del menu, "Seleccionar todo" y Ordenar A-Z/Z-A) -
+   ver BUSINESS-RULES.md seccion 46. Reemplaza la primera version (cajas de
+   texto/select simples). Vive en Personal, Mensual (ambas vistas, resumen y
+   editable) y 1Q/2Q, siempre en las mismas columnas de antes (las que ya
+   eran filtrables: dni/nom/car/cus/cc/tipo/reg/afp/est en Personal; nom/dni/
+   tipo/cc en 1Q/2Q/Mensual).
 
-   Estado: FILTROS_COL[contenedor][columna] = valor en minuscula. Se guarda
-   por contenedor ('wPers'/'wQ1'/'wQ2'/'wMen') porque cada tabla tiene sus
-   propias columnas. Se combina con el buscador global (FILTRO) con Y logico:
-   una fila se oculta si falla el buscador global O cualquier filtro de
-   columna activo.
+   Estado:
+   - FILTROS_EXCEL[contenedor][columna] = Set de valores (en minuscula)
+     SELECCIONADOS para esa columna. Si la columna no tiene entrada, no hay
+     filtro activo ahi (equivale a "todos marcados" -nunca se guarda un Set
+     congelado con "todos los valores de hoy", para que una fila nueva con un
+     valor que todavia no existia en la lista no quede oculta por error).
+   - ORDEN_COL[contenedor] = {key,dir:'asc'|'desc'} o ausente = sin orden (se
+     queda en el orden en que vienen las filas, igual que siempre).
+   - MENU_FILTRO = {cont,key,draft:Set,busq} del menu actualmente abierto (uno
+     solo a la vez), o null.
+   Ambos objetos de estado son `let` de nivel superior -sobreviven al
+   re-render de cada rXxx() (innerHTML), igual que FILTRO (buscador global)-,
+   asi que un filtro/orden activo se mantiene al cambiar de pestaña y volver,
+   o al editar cualquier celda (lo que dispara R()).
 
-   Persistencia visual: el <thead> se reconstruye entero en cada rXxx()
-   (innerHTML), asi que el valor tecleado en un filtro de columna se
-   perderia al re-renderizar (igual que el bug #2 del buscador global,
-   seccion 40) si no se releyera. Por eso celdaFiltroTexto_/celdaFiltroSelect_
-   siempre repintan el valor guardado en FILTROS_COL como value/selected: el
-   dato sobrevive al re-render aunque el input sea un nodo nuevo.
+   Se combina con el buscador global (FILTRO) con Y logico: una fila se
+   oculta si falla el buscador global O cualquier filtro de columna activo.
+   El orden es independiente de los filtros: reordena los <tr> del <tbody>
+   (ordenarFilasDOM_), y como ocultar una fila es solo su display:none, ese
+   estado viaja con el nodo al moverlo -no hace falta re-aplicar el filtro
+   despues de ordenar-.
    ======================================================================== */
-let FILTROS_COL={};
-const COLF_SELECT_KEYS_=new Set(['cc','tipo','reg','afp','est']);
-function setFiltroCol(el,cont){
-  const key=el.dataset.colf;
-  if(!FILTROS_COL[cont])FILTROS_COL[cont]={};
-  FILTROS_COL[cont][key]=String(el.value||'').trim().toLowerCase();
-  filtrarTablas();}
+let FILTROS_EXCEL={};
+let ORDEN_COL={};
+let MENU_FILTRO=null;
 function contenedorActivo_(){
   const p=panelActivo();
   if(!p)return null;
@@ -4356,35 +4592,178 @@ function valorColumnaFila_(tr,key){
   if(!el2)return '';
   const dv=el2.getAttribute('data-val');
   return String(dv!=null?dv:(el2.textContent||'')).toLowerCase();}
-function celdaFiltroTexto_(cont,key,ph){
-  const v=(FILTROS_COL[cont]&&FILTROS_COL[cont][key])||'';
-  return '<th class="fcol"><input data-colf="'+key+'" value="'+escAttr_(v)+'" placeholder="'+(ph||'Filtrar...')+'" oninput="setFiltroCol(this,\''+cont+'\')" style="width:100%;box-sizing:border-box;font-size:10px;font-weight:400;padding:2px 4px"></th>';}
-function celdaFiltroSelect_(cont,key,opciones){
-  const v=(FILTROS_COL[cont]&&FILTROS_COL[cont][key])||'';
-  return '<th class="fcol"><select data-colf="'+key+'" onchange="setFiltroCol(this,\''+cont+'\')" style="width:100%;box-sizing:border-box;font-size:9.5px;font-weight:400;padding:1px">'+
-    '<option value=""'+(!v?' selected':'')+'>Todos</option>'+
-    opciones.map(([val,lab])=>{const vv=String(val).toLowerCase();return '<option value="'+escAttr_(vv)+'"'+(v===vv?' selected':'')+'>'+lab+'</option>';}).join('')+
-    '</select></th>';}
+// Igual que valorColumnaFila_ pero sin pasar a minuscula -para mostrar en la
+// lista de casillas del menu- y usando el TEXTO visible de un <select> (p.ej.
+// "Régimen General MYPE Micro", no el value interno "micro").
+function etiquetaColumnaFila_(tr,key){
+  const el=tr.querySelector('[data-f="'+key+'"]');
+  if(el){
+    if(el.type==='checkbox')return el.checked?'Sí':'No';
+    if(el.tagName==='SELECT')return el.selectedIndex>=0?el.options[el.selectedIndex].text:String(el.value||'');
+    return String(el.value!=null?el.value:'');}
+  const el2=tr.querySelector('[data-col="'+key+'"]');
+  return el2?String(el2.textContent||'').trim():'';}
+function valoresUnicosColumna_(cont,key){
+  const raiz=document.getElementById(cont);
+  if(!raiz)return [];
+  const vistos=new Map();
+  raiz.querySelectorAll('tbody tr').forEach(tr=>{
+    const val=valorColumnaFila_(tr,key);
+    if(!vistos.has(val))vistos.set(val,etiquetaColumnaFila_(tr,key)||'(en blanco)');});
+  return Array.from(vistos.entries()).map(([val,label])=>({val,label}))
+    .sort((a,b)=>a.label.localeCompare(b.label,'es',{numeric:true,sensitivity:'base'}));}
+function filtroColActivo_(cont,key){return !!(FILTROS_EXCEL[cont]&&FILTROS_EXCEL[cont][key]);}
+// El boton que reemplaza la caja de texto/select de antes: icono de embudo +
+// la etiqueta de la columna. Se resalta cuando esa columna tiene un filtro
+// activo o es la columna por la que esta ordenada la tabla.
+function celdaFiltroExcel_(cont,key,etiqueta){
+  const activo=filtroColActivo_(cont,key)||(ORDEN_COL[cont]&&ORDEN_COL[cont].key===key);
+  return '<th class="fcol"><button type="button" class="ffbtn'+(activo?' activo':'')+'" onclick="toggleMenuFiltro(event,\''+cont+'\',\''+key+'\',\''+escAttr_(etiqueta)+'\')">'+
+    '<span>'+etiqueta+'</span>'+
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 5h16l-6 8v6l-4-2v-4z"/></svg>'+
+    '</button></th>';}
 
 function filtrarTablas(){
   let ocultas=0,total=0;
   const p=panelActivo();
   const cont=contenedorActivo_();
-  const colF=(cont&&FILTROS_COL[cont])||{};
-  const colKeys=Object.keys(colF).filter(k=>colF[k]);
+  const colF=(cont&&FILTROS_EXCEL[cont])||{};
+  const colKeys=Object.keys(colF);
   [p].forEach(p=>{
     if(!p||['p-p4','p-p5'].indexOf(p.id)>=0)return;
     p.querySelectorAll('tbody tr').forEach(tr=>{
       total++;
       let ok=!FILTRO||textoFilaBuscable_(tr).indexOf(FILTRO)>=0;
       if(ok)for(let i=0;i<colKeys.length;i++){
-        const k=colKeys[i],fv=colF[k],val=valorColumnaFila_(tr,k);
-        ok=COLF_SELECT_KEYS_.has(k)?(val===fv):(val.indexOf(fv)>=0);
-        if(!ok)break;}
+        const k=colKeys[i],sel=colF[k],val=valorColumnaFila_(tr,k);
+        if(!sel.has(val)){ok=false;break;}}
       tr.style.display=ok?'':'none';
       if(!ok)ocultas++;});});
   const c=document.getElementById('filtroInfo');
   if(c)c.textContent=((FILTRO||colKeys.length)&&total)?(ocultas+' fila(s) ocultas'):'';}
+
+/* ---- Orden por columna (clic en "Ordenar de A a Z"/"Z a A" dentro del menu) ----
+   Reordena los <tr> ya pintados -no toca P/M ni ningun otro dato-, asi que
+   exportar/imprimir/guardar siguen usando el orden real de los datos; esto es
+   puramente visual, como el autofiltro de Excel (que tampoco reordena la
+   base de datos de origen, solo la vista). */
+function ordenarFilasDOM_(cont){
+  const orden=ORDEN_COL[cont];
+  if(!orden)return;
+  const raiz=document.getElementById(cont);
+  const tbody=raiz&&raiz.querySelector('tbody');
+  if(!tbody)return;
+  const filas=Array.from(tbody.querySelectorAll('tr'));
+  if(filas.length<2)return;
+  filas.sort((trA,trB)=>{
+    const a=valorColumnaFila_(trA,orden.key),b=valorColumnaFila_(trB,orden.key);
+    const esNum=a!==''&&b!==''&&/^-?\d+(\.\d+)?$/.test(a)&&/^-?\d+(\.\d+)?$/.test(b);
+    const c=esNum?(parseFloat(a)-parseFloat(b)):a.localeCompare(b,'es',{numeric:true,sensitivity:'base'});
+    return orden.dir==='desc'?-c:c;});
+  filas.forEach(tr=>tbody.appendChild(tr));}
+// Vuelve a pintar SOLO la tabla indicada (no toda la pantalla como R()): se
+// usa despues de Aceptar/Borrar/Ordenar en el menu de filtro, para que el
+// boton de esa columna quede marcado como "activo" al toque -celdaFiltroExcel_
+// decide esa clase al construir el <th>, asi que sin un repintado la marca
+// visual se quedaba vieja hasta el proximo cambio en otra celda-, sin pagar
+// el costo de recalcular KPIs/otras pestañas que no cambiaron.
+function rerenderTabla_(cont){
+  if(cont==='wPers')rPersonal();
+  else if(cont==='wQ1')rQna(1);
+  else if(cont==='wQ2')rQna(2);
+  else if(cont==='wMen'&&typeof window.rMensual==='function')window.rMensual();
+  filtrarTablas();}
+function ordenarPorColumna_(dir){
+  if(!MENU_FILTRO)return;
+  const cont=MENU_FILTRO.cont;
+  ORDEN_COL[cont]={key:MENU_FILTRO.key,dir};
+  cerrarMenuFiltro();
+  rerenderTabla_(cont);}
+
+/* ---- Menu flotante (panel con casillas) ----
+   Se agrega una sola instancia a <body> al abrirse (no vive dentro de la
+   tabla: si viviera ahi, el proximo innerHTML de la tabla -por ejemplo al
+   tipear en otra celda- lo borraria a medio usar). Se cierra solo: al hacer
+   clic afuera, al aceptar/cancelar, o si CUALQUIER tabla se vuelve a pintar
+   (R() lo cierra de entrada, ver mas abajo) para nunca quedar apuntando a un
+   boton que ya no existe. */
+function toggleMenuFiltro(ev,cont,key,etiqueta){
+  ev.stopPropagation();
+  const yaAbierto=MENU_FILTRO&&MENU_FILTRO.cont===cont&&MENU_FILTRO.key===key;
+  cerrarMenuFiltro();
+  if(yaAbierto)return;
+  const vals=valoresUnicosColumna_(cont,key);
+  const actual=FILTROS_EXCEL[cont]&&FILTROS_EXCEL[cont][key];
+  const draft=actual?new Set(actual):new Set(vals.map(v=>v.val));
+  MENU_FILTRO={cont,key,etiqueta,draft,busq:'',ancla:ev.currentTarget};
+  pintarMenuFiltro_();}
+function cerrarMenuFiltro(){
+  MENU_FILTRO=null;
+  const m=document.getElementById('ffmenu');
+  if(m)m.remove();
+  document.removeEventListener('mousedown',cerrarMenuFiltroExterno_,true);}
+function cerrarMenuFiltroExterno_(ev){
+  const m=document.getElementById('ffmenu');
+  if(m&&!m.contains(ev.target))cerrarMenuFiltro();}
+function pintarMenuFiltro_(){
+  let m=document.getElementById('ffmenu');
+  if(!m){m=document.createElement('div');m.id='ffmenu';document.body.appendChild(m);
+    document.addEventListener('mousedown',cerrarMenuFiltroExterno_,true);}
+  const {cont,key,draft,busq,ancla}=MENU_FILTRO;
+  const vals=valoresUnicosColumna_(cont,key).filter(v=>!busq||v.label.toLowerCase().indexOf(busq)>=0);
+  const visibles=vals.map(v=>v.val);
+  const todosVisMarcados=visibles.length>0&&visibles.every(v=>draft.has(v));
+  m.innerHTML=
+   '<div class="ffsort">'+
+     '<button type="button" onclick="ordenarPorColumna_(\'asc\')">&#8593; Ordenar de A a Z</button>'+
+     '<button type="button" onclick="ordenarPorColumna_(\'desc\')">&#8595; Ordenar de Z a A</button>'+
+   '</div>'+
+   '<input type="search" placeholder="Buscar..." value="'+escAttr_(busq)+'" oninput="buscarEnMenuFiltro_(this.value)">'+
+   '<div class="fflista">'+
+    '<label><input type="checkbox" '+(todosVisMarcados?'checked':'')+' onchange="toggleTodosMenuFiltro_(this.checked)"><b>(Seleccionar todo)</b></label>'+
+    (vals.length?vals.map(v=>'<label><input type="checkbox" data-val="'+escAttr_(v.val)+'" '+(draft.has(v.val)?'checked':'')+' onchange="toggleValorMenuFiltro_(\''+escAttr_(v.val)+'\',this.checked)">'+escAttr_(v.label)+'</label>').join('')
+      :'<div class="ffvacio">Sin coincidencias.</div>')+
+   '</div>'+
+   '<div class="ffpie">'+
+     '<button type="button" class="bd" onclick="borrarMenuFiltro_()">Borrar filtro</button>'+
+     '<span><button type="button" class="bd" onclick="cerrarMenuFiltro()">Cancelar</button> '+
+     '<button type="button" class="bp" onclick="aceptarMenuFiltro_()">Aceptar</button></span>'+
+   '</div>';
+  const r=ancla.getBoundingClientRect(),mw=230,vh=window.innerHeight,vw=window.innerWidth;
+  let top=r.bottom+4,left=r.left;
+  if(left+mw>vw-8)left=Math.max(8,vw-mw-8);
+  m.style.left=left+'px';
+  m.style.top=(top+360>vh?Math.max(8,r.top-364):top)+'px';}
+function buscarEnMenuFiltro_(v){
+  if(!MENU_FILTRO)return;
+  MENU_FILTRO.busq=String(v||'').trim().toLowerCase();
+  pintarMenuFiltro_();
+  const c=document.querySelector('#ffmenu input[type="search"]');
+  if(c){c.focus();c.setSelectionRange(c.value.length,c.value.length);}}
+function toggleValorMenuFiltro_(val,marcado){
+  if(!MENU_FILTRO)return;
+  if(marcado)MENU_FILTRO.draft.add(val);else MENU_FILTRO.draft.delete(val);}
+function toggleTodosMenuFiltro_(marcado){
+  if(!MENU_FILTRO)return;
+  const {cont,key,busq}=MENU_FILTRO;
+  valoresUnicosColumna_(cont,key).filter(v=>!busq||v.label.toLowerCase().indexOf(busq)>=0)
+    .forEach(v=>{if(marcado)MENU_FILTRO.draft.add(v.val);else MENU_FILTRO.draft.delete(v.val);});
+  pintarMenuFiltro_();}
+function aceptarMenuFiltro_(){
+  if(!MENU_FILTRO)return;
+  const {cont,key,draft}=MENU_FILTRO;
+  const vals=valoresUnicosColumna_(cont,key);
+  const todos=vals.length>0&&draft.size===vals.length;
+  if(!FILTROS_EXCEL[cont])FILTROS_EXCEL[cont]={};
+  if(todos)delete FILTROS_EXCEL[cont][key];else FILTROS_EXCEL[cont][key]=new Set(draft);
+  cerrarMenuFiltro();
+  rerenderTabla_(cont);}
+function borrarMenuFiltro_(){
+  if(!MENU_FILTRO)return;
+  const {cont,key}=MENU_FILTRO;
+  if(FILTROS_EXCEL[cont])delete FILTROS_EXCEL[cont][key];
+  cerrarMenuFiltro();
+  rerenderTabla_(cont);}
 
 /* ================== PERIODO CERRADO ==================
    Marca el mes como declarado: deja todo en solo lectura para que nadie lo
@@ -4971,8 +5350,9 @@ async function pasarLiquidacion(dni,silencioso){
   // por el usuario con boleta de ejemplo.
   b.vtr=r2(L.vac.monto+(L.vac.ganadas||0));b.cts=L.cts.monto;b.gra=L.grati.monto;b.bge=L.grati.bonif;
   if(L.ind&&L.ind.monto>0)b.liq=L.ind.monto;
+  descontarPrestamoEnCese_(p,b);
   R();
-  if(!silencioso)toast('Liquidación de '+p.nom+' cargada en la '+(q===1?'1ra':'2da')+' quincena','ok');
+  if(!silencioso)toast('Liquidación de '+p.nom+' cargada en la '+(q===1?'1ra':'2da')+' quincena'+(saldoPrestamo(p)>0?' (incluye descuento de saldo de préstamo: S/ '+f0(saldoPrestamo(p))+')':''),'ok');
   return true;}
 /* Pedido del usuario: "cuando se cambia datos no se esta transmitiendo, no se
    logra actualizar toda la informacion, si muevo el sueldo y ya estaba
@@ -5003,8 +5383,9 @@ async function actualizarLiquidacion(dni){
   const q=quincenaCese_(p),b=mv(p.dni,q);
   b.vtr=r2(L.vac.monto+(L.vac.ganadas||0));b.cts=L.cts.monto;b.gra=L.grati.monto;b.bge=L.grati.bonif;
   if(L.ind&&L.ind.monto>0)b.liq=L.ind.monto;
+  descontarPrestamoEnCese_(p,b);
   R();
-  toast('Liquidación de '+p.nom+' actualizada','ok');
+  toast('Liquidación de '+p.nom+' actualizada'+(saldoPrestamo(p)>0?' (incluye descuento de saldo de préstamo: S/ '+f0(saldoPrestamo(p))+')':''),'ok');
   return true;}
 async function actualizarLiquidacionesTodas(){
   if(BLOQ){alert('El periodo esta cerrado. Reabrelo para modificarlo.');return false;}
@@ -5018,6 +5399,7 @@ async function actualizarLiquidacionesTodas(){
     const q=quincenaCese_(p),b=mv(p.dni,q);
     b.vtr=r2(L.vac.monto+(L.vac.ganadas||0));b.cts=L.cts.monto;b.gra=L.grati.monto;b.bge=L.grati.bonif;
     if(L.ind&&L.ind.monto>0)b.liq=L.ind.monto;
+    descontarPrestamoEnCese_(p,b);
     n++;});
   R();
   toast('Liquidación recalculada y actualizada para '+n+' persona(s)','ok');
@@ -5061,7 +5443,8 @@ function autoLiqCese_(p){
   if(hay)return;
   // Ver comentario identico en pasarLiquidacion: vtr = truncas + ganadas.
   b.vtr=r2(L.vac.monto+(L.vac.ganadas||0));b.cts=L.cts.monto;b.gra=L.grati.monto;b.bge=L.grati.bonif;
-  if(L.ind&&L.ind.monto>0)b.liq=L.ind.monto;}
+  if(L.ind&&L.ind.monto>0)b.liq=L.ind.monto;
+  descontarPrestamoEnCese_(p,b);}
 /* Se llama al inicio de rQna/rMensualEd (antes de armar las filas), asi
    cualquier cesado sin liquidacion cargada la recibe en la misma pasada de
    render, sin que la persona tenga que hacer nada. Si los beneficios del
@@ -5200,7 +5583,134 @@ function rCuentas(){
    queda en cero, por eso los asientos y el CONCAR salen con un solo pago. */
 let MODO='QUINCENAL';
 const esMensual=()=>MODO==='MENSUAL';
-function blq(q){const b=bl();if(esMensual())b.d=(+q===2?CFG.DM:0);return b;}
+// Rango de fechas CALENDARIO (reales, no el criterio "mes de 30 dias" que usa
+// diasEnTramo() para tramos de beneficios de varios meses) de la quincena/mes
+// que se esta viendo en pantalla, segun la modalidad vigente: en QUINCENAL,
+// q=1 es 1-15 y q=2 es 16-fin de mes; en MENSUAL todo el mes cae en q=2 (q=1
+// no se usa -ver comentario de MODO arriba-, por eso no tiene rango propio).
+function limitesPeriodoQna_(a,m,q){
+  const mm=String(m).padStart(2,'0'),ultimo=String(new Date(a,m,0).getDate()).padStart(2,'0');
+  if(esMensual())return (+q===2)?{desde:a+'-'+mm+'-01',hasta:a+'-'+mm+'-'+ultimo}:null;
+  return (+q===1)?{desde:a+'-'+mm+'-01',hasta:a+'-'+mm+'-15'}:{desde:a+'-'+mm+'-16',hasta:a+'-'+mm+'-'+ultimo};
+}
+// Dias calendario reales que el trabajador coincide con ese rango (ingreso y/o
+// cese acotan el tramo si caen adentro). A diferencia de diasEnTramo() (que
+// cuenta meses de 30 dias para CTS/gratificacion/vacaciones), una quincena son
+// dias reales del calendario, asi que el dia exacto de ingreso/cese cuenta tal
+// cual cae, sin convertirlo a la convencion de 30.
+function diasCalendarioEnRango_(lim,p){
+  if(!lim)return 0;
+  let ini=fecha(lim.desde),fin=fecha(lim.hasta);
+  if(!ini||!fin)return 0;
+  const ing=fecha(p&&p.ing),ces=fecha(p&&p.ces);
+  if(ing&&ing>ini)ini=ing;
+  if(ces&&ces<fin)fin=ces;
+  if(ini>fin)return 0;
+  return Math.round((fin-ini)/86400000)+1;
+}
+/* ================== PRESTAMOS/ADELANTOS CON CRONOGRAMA ==================
+   Pedido del usuario como seguimiento a "que mas podemos agregar al
+   sistema?" (ver BUSINESS-RULES.md seccion 50). Reusa el mismo campo "pre"
+   de siempre (DESCUENTO PRESTAMO, ya existia por quincena) -no agrega un
+   campo nuevo de dinero-, solo le pone encima un cronograma: cuanto se debe
+   en total, cuanto es la cuota, y con que frecuencia, para que "pre" se
+   auto-complete solo en vez de tener que acordarse del monto cada quincena.
+   El usuario aclaro, al confirmar el alcance, que a veces se descuenta cada
+   quincena (dos veces al mes), a veces una sola vez al mes, y a veces un
+   importe DISTINTO al de la cuota por alguna consideracion puntual -por eso
+   el saldo pendiente NUNCA se calcula restando "cuota x cuotas pagadas": se
+   calcula sumando lo que REALMENTE se aplico cada mes (prest.aplicado, un
+   registro por periodo "AAAA-MM", que se sobreescribe cada vez que se
+   guarda ese mismo periodo -nunca se duplica ni queda desincronizado si se
+   corrige el importe y se vuelve a guardar-), asi que editar "pre" a
+   mano para un mes puntual SIEMPRE queda reflejado correctamente en el
+   saldo, sin ningun paso aparte. */
+// Saldo pendiente de un prestamo: monto original menos la suma de lo
+// efectivamente aplicado en cada periodo ya guardado (ver guardar() mas
+// abajo, donde se completa prest.aplicado). Sin prestamo activo, da 0.
+function saldoPrestamo(p){
+  const pr=p&&p.prest;if(!pr||!(+pr.monto>0))return 0;
+  const aplicado=Object.values(pr.aplicado||{}).reduce((s,v)=>s+(+v||0),0);
+  return Math.max(0,r2((+pr.monto||0)-aplicado));
+}
+// En que quincena(s) corresponde el descuento de este prestamo, segun su
+// frecuencia. En modalidad MENSUAL solo existe un bloque real (el "q2" hace
+// de mes completo, ver MODO mas arriba), asi que ahi la frecuencia no tiene
+// nada que elegir: siempre es ese unico bloque.
+function prestamoAplicaEnQuincena_(prest,q){
+  if(esMensual())return +q===2;
+  return (prest&&prest.frec)!=='M'||+q===2;   // 'Q' (o sin definir): ambas quincenas; 'M': solo la 2da
+}
+// Se llama al GUARDAR un periodo (nunca al solo navegar entre pestañas o
+// cambiar de mes sin guardar -asi un vistazo no "gasta" saldo por
+// accidente-). Registra, para cada prestamo activo, cuanto se aplico
+// REALMENTE este periodo (lo que haya en el campo "pre" de la(s) quincena(s)
+// que correspondan segun la frecuencia -el mismo campo de siempre, editable
+// a mano-), sobreescribiendo la entrada de ESTE periodo si ya existia (volver
+// a guardar el mismo mes corregido nunca duplica ni desincroniza el saldo).
+function aplicarAbonoPrestamos_(A,Mn){
+  const pp=periodoStr(A,Mn);
+  P.forEach(p=>{
+    if(!p.prest||!(+p.prest.monto>0))return;
+    const mv_=M[p.dni];if(!mv_)return;
+    let total=0;
+    if(prestamoAplicaEnQuincena_(p.prest,1))total+=(+((mv_.q1||{}).pre)||0);
+    if(prestamoAplicaEnQuincena_(p.prest,2))total+=(+((mv_.q2||{}).pre)||0);
+    p.prest.aplicado=p.prest.aplicado||{};
+    p.prest.aplicado[pp]=r2(total);
+  });
+}
+// "p" (la ficha del trabajador) es opcional: sin ella (o sin fecha de
+// ingreso) blq() se comporta exactamente como antes -el bloque completo-,
+// para no romper ningun uso existente. Con "p", si su fecha de ingreso y/o
+// cese cae DENTRO de esta quincena/mes (nuevo ingreso a mitad de periodo, o
+// alguien que cesa antes de que termine), el default de "dias trabajados" ya
+// no asume el bloque completo: se ajusta a los dias reales que coinciden con
+// su relacion laboral. Caso real reportado por el usuario: alguien que
+// ingreso el 7 de octubre salia por defecto con 15 dias (toda la quincena,
+// como si hubiera entrado el dia 1) en vez de los 9 dias que realmente
+// trabajo (7 al 15). Solo AJUSTA EL DEFAULT de un movimiento recien creado
+// -nunca pisa un valor que el contador ya haya guardado o corregido a mano,
+// porque blq() solo se llama para llenar un bloque que todavia no existe o
+// que se esta reseteando explicitamente (limpiarQna/limpiarFila)-. El mismo
+// criterio ("solo default de un bloque nuevo, nunca pisa lo ya guardado")
+// se usa ahora tambien para auto-completar la cuota del prestamo, si tiene uno.
+function blq(q,p){
+  const b=bl();
+  b.d=esMensual()?(+q===2?CFG.DM:0):15;
+  if(p&&p.ing){
+    const per_=per(),lim=limitesPeriodoQna_(per_.a,per_.m,q);
+    if(lim){
+      const dReal=diasCalendarioEnRango_(lim,p);
+      if(dReal<b.d)b.d=Math.max(0,dReal);
+    }
+  }
+  if(p&&p.prest&&+p.prest.monto>0&&prestamoAplicaEnQuincena_(p.prest,q)){
+    const saldo=saldoPrestamo(p);
+    if(saldo>0)b.pre=Math.min(+p.prest.cuota||0,saldo);
+  }
+  return b;
+}
+/* Prestamo al cese: pedido confirmado por el usuario al definir el alcance
+   de este feature (ver BUSINESS-RULES.md seccion 50) -"Descontar el saldo
+   restante en la liquidacion"-. Si la persona cesa con un prestamo sin
+   terminar de pagar, ya no tiene sentido esperar la cuota normal (no habra
+   mas planillas futuras para seguir cobrandola): se descuenta el saldo
+   COMPLETO de una sola vez, reusando el mismo campo "pre" de siempre, en la
+   misma quincena donde cae el resto de la liquidacion (vtr/cts/gra/bge/liq).
+   Al reusar "pre", aplicarAbonoPrestamos_ lo registra como aplicado al
+   GUARDAR el periodo, igual que cualquier otro descuento de prestamo -sin
+   necesidad de un campo o flujo aparte-, y sigue siendo editable a mano si
+   el contador necesita corregirlo (ej. ya se le habia descontado una parte
+   antes por otro medio). Se llama SIEMPRE junto con el resto de la
+   liquidacion (pasarLiquidacion/actualizarLiquidacion(es)/autoLiqCese_),
+   asi que hereda exactamente el mismo guard "hay algo ya cargado, no
+   pisar" que ya usan esas 4 funciones. */
+function descontarPrestamoEnCese_(p,b){
+  if(!p||!p.prest||!(+p.prest.monto>0))return;
+  const saldo=saldoPrestamo(p);
+  if(saldo>0)b.pre=saldo;
+}
 function hayMovQ1(){return Object.keys(M).some(d=>{const x=M[d]&&M[d].q1;
   return x&&((+x.d||0)||(+x.f||0)||(+x.v||0)||(+x.vv||0)||(+x.he||0)||(+x.bon||0)||(+x.com||0)||
              (+x.tar||0)||(+x.ade||0)||(+x.pre||0)||(+x.r5||0)||(+x.hon||0));});}
@@ -5370,10 +5880,10 @@ function rMensualEd(){
    '<th class="gd">Base EsSalud</th><th class="gd">AFP/ONP</th><th class="gd">Prima</th><th class="gd" title="Comisión AFP - solo esquema Flujo">Comisión AFP</th><th class="gd">EsSalud</th>'+
    '<th class="gd">5ta / 4ta</th><th class="gd">Tardanza</th><th class="gd">Adelanto</th><th class="gd">Préstamo</th></tr>'+
    '<tr>'+
-    celdaFiltroTexto_('wMen','nom','Nombre...')+
-    celdaFiltroTexto_('wMen','dni','Doc...')+
-    celdaFiltroSelect_('wMen','tipo',TIPOS.map(x=>[x,x]))+
-    celdaFiltroSelect_('wMen','cc',Object.entries(CCS).map(([k,v])=>[k,v]))+
+    celdaFiltroExcel_('wMen','nom','Nombre')+
+    celdaFiltroExcel_('wMen','dni','Documento')+
+    celdaFiltroExcel_('wMen','tipo','Tipo')+
+    celdaFiltroExcel_('wMen','cc','CC')+
     '<th></th><th></th><th></th><th colspan="30"></th><th></th><th></th><th></th><th></th><th></th>'+
    '</tr>'+
    '</thead><tbody>'+
@@ -5401,8 +5911,9 @@ function rMensualEd(){
    '<td class="num"><b style="color:var(--tit)">'+f(t.pag)+'</b></td><td></td><td></td></tr></tfoot></table>'+
    '<div style="padding:8px 14px;font-size:10.5px;color:var(--ink2);background:var(--amber);border-top:1px solid var(--border)">'+
    'Modalidad <b>mensualizada</b>: un solo pago al cierre del mes, las quincenas estan bloqueadas y los campos ambar se editan aqui. '+
-   'Días del mes = '+CFG.DM+'. Base EsSalud en ambar = se aplico el mínimo de la RMV S/ '+f0(CFG.RMV)+'. '+
-   'El bono de productividad, la gratificación con su bonificación, la CTS y la liquidación se pagan pero no entran a la base de aportes.</div>';}
+   'Días del mes = '+CFG.DM+'. Base EsSalud en ambar = se aplico el mínimo de la RMV de este periodo (S/ '+f0(tasaDe_(CFG,'RMV',per().a,per().m))+'). '+
+   'El bono de productividad, la gratificación con su bonificación, la CTS y la liquidación se pagan pero no entran a la base de aportes.</div>';
+  ordenarFilasDOM_('wMen');}
 /* despacho: la pestaña Mensual cambia de render segun la modalidad */
 const rMensual_base=window.rMensual;
 window.rMensual=function(){if(esMensual())rMensualEd();else rMensual_base();};
@@ -5560,6 +6071,7 @@ async function guardar(a,m){
       await purgar(bd);
     }
     anotar();
+    aplicarAbonoPrestamos_(A,Mn);
     const data=paquete(A,Mn);
     const fh=await dir.getFileHandle(nom,{create:true});
     const w=await fh.createWritable();await w.write(JSON.stringify(data,null,1));await w.close();
@@ -5643,6 +6155,71 @@ async function abrirBackups(){
      '<div class="bk-n">'+x.n+'</div></div>'+
      '<button class="bk-act" onclick="restaurarBk(\''+x.n+'\','+(x.act?'true':'false')+')">Restaurar</button></div>';}).join('')+bit;}
 function cerrarBackups(){document.getElementById('modalBk').classList.remove('on');}
+/* ================== MODAL DE PRESTAMOS (ver blq()/saldoPrestamo() mas
+   arriba, y BUSINESS-RULES.md seccion 50) ==================
+   Reusa el modal generico (#modalBk/#mkTit/#mkBody, el mismo de Historial y
+   de Datos SUNAT) en vez de agregar uno nuevo -se cierra con el mismo boton
+   "Cerrar" de siempre (cerrarBackups()). Tambien reusa campoTReg_() para el
+   layout de cada campo (esa funcion es generica: solo arma label+input+nota,
+   no tiene nada especifico de T-Registro a pesar del nombre) pero NO
+   txtTReg_()/selTReg_(), que si estan atados a setTReg(); aqui los inputs se
+   escriben directo, con su propio onchange="setPrestamo(...)". */
+function abrirPrestamo(dni){
+  const p=P.find(x=>x.dni===dni);if(!p)return;
+  const bk=document.getElementById('modalBk');
+  bk.dataset.prestDni=dni;
+  bk.classList.add('on');
+  rPrestamoModal();
+}
+function setPrestamo(dni,campo,valor){
+  const p=P.find(x=>x.dni===dni);if(!p)return;
+  p.prest=p.prest||{monto:0,cuota:0,frec:'Q',aplicado:{}};
+  if(campo==='monto'){
+    const nuevo=Math.max(0,+valor||0);
+    if(nuevo!==p.prest.monto&&Object.keys(p.prest.aplicado||{}).length&&
+       !confirm('Cambiar el monto reinicia el historial de abonos de este préstamo (el saldo se vuelve a calcular desde cero). ¿Continuar?')){
+      rPrestamoModal();return;}
+    if(nuevo!==p.prest.monto)p.prest.aplicado={};
+    p.prest.monto=nuevo;
+  }else if(campo==='cuota')p.prest.cuota=Math.max(0,+valor||0);
+  else if(campo==='frec')p.prest.frec=(valor==='M')?'M':'Q';
+  rPrestamoModal();
+  R();   // para que el boton de la fila de Personal refleje el saldo/estado nuevo de inmediato
+}
+function quitarPrestamo(dni){
+  const p=P.find(x=>x.dni===dni);if(!p)return;
+  if(!confirm('¿Quitar el seguimiento de préstamo de '+p.nom+'? Esto NO borra los descuentos "Préstamo" ya guardados en cada quincena -solo deja de llevar el cronograma/saldo automatico.'))return;
+  p.prest=null;
+  rPrestamoModal();
+  R();
+}
+function rPrestamoModal(){
+  const bk=document.getElementById('modalBk');
+  const dni=bk.dataset.prestDni;if(!dni)return;
+  const p=P.find(x=>x.dni===dni);if(!p)return;
+  const pr=p.prest||{monto:0,cuota:0,frec:'Q',aplicado:{}};
+  const saldo=saldoPrestamo(p);
+  const hist=Object.keys(pr.aplicado||{}).sort();
+  document.getElementById('mkTit').textContent='Préstamo · '+p.nom;
+  document.getElementById('mkBody').innerHTML=
+    '<p style="font-size:11.5px;color:var(--ink3);margin-bottom:10px">Usa el mismo campo "Préstamo" de siempre en cada quincena (antes había que acordarse del importe cada vez) -esto solo le agrega un cronograma encima: registra el monto y la cuota, y el sistema la va completando sola en la quincena que corresponda. Siempre queda editable a mano si ese mes toca un importe distinto, o si ese mes no corresponde descontar nada.</p>'+
+    '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">'+
+    campoTReg_(dni,'Monto del préstamo',
+      '<input type="number" min="0" step="10" value="'+(pr.monto||0)+'" style="width:100%" onchange="setPrestamo(\''+dni+'\',\'monto\',this.value)">')+
+    campoTReg_(dni,'Cuota',
+      '<input type="number" min="0" step="10" value="'+(pr.cuota||0)+'" style="width:100%" onchange="setPrestamo(\''+dni+'\',\'cuota\',this.value)">')+
+    campoTReg_(dni,'Frecuencia',
+      '<select style="width:100%" onchange="setPrestamo(\''+dni+'\',\'frec\',this.value)">'+
+        '<option value="Q"'+(pr.frec!=='M'?' selected':'')+'>Cada quincena</option>'+
+        '<option value="M"'+(pr.frec==='M'?' selected':'')+'>Una vez al mes (2da quincena)</option>'+
+      '</select>')+
+    '</div>'+
+    '<div style="font-size:20px;font-weight:700;margin:14px 0 10px;color:'+(saldo>0?'var(--red2)':'var(--teal2)')+'">Saldo pendiente: S/ '+f0(saldo)+'</div>'+
+    (hist.length?('<table class="bol-t"><tr><th>Periodo guardado</th><th>Aplicado</th></tr>'+
+      hist.map(pp=>'<tr><td>'+pp+'</td><td class="n">S/ '+f0(pr.aplicado[pp])+'</td></tr>').join('')+'</table>'):
+      '<p style="color:var(--ink3);font-size:11.5px">Todavía no se guardó ningún periodo con este préstamo activo -el saldo se actualiza al Guardar, no mientras editas en pantalla-.</p>')+
+    (((+pr.monto)>0)?'<div style="margin-top:14px"><button type="button" class="bd" onclick="quitarPrestamo(\''+dni+'\')">Quitar seguimiento de préstamo</button></div>':'');
+}
 async function restaurarBk(nom,esActual){
   if(!confirm('Cargar en pantalla la versión:\n'+nom+'\n\nLos datos actuales se reemplazan. El archivo del mes NO cambia hasta que pulses Guardar.'))return;
   try{
@@ -5667,7 +6244,7 @@ async function cambioPeriodo(){
         const r=await traerPersonal({preguntar:true,silencioso:true,
           msg:'Todavia no hay datos guardados para '+nuevo+'.\n\nTraer el personal activo de {p} con los movimientos en cero?'});
         if(r==='nofuente'&&P.length&&confirm('No hay datos guardados para '+nuevo+' ni en meses anteriores.\n\nMantener el personal en pantalla con los movimientos en cero?')){
-          M={};P.forEach(p=>{M[p.dni]={q1:blq(1),q2:blq(2)};});
+          M={};P.forEach(p=>{M[p.dni]={q1:blq(1,p),q2:blq(2,p)};});
           EST.huellaBase=huella();EST.huella=null;
         }
       }
@@ -5955,7 +6532,7 @@ async function traerPersonal(opt){
   if(src.d.plan){PLAN=normPlan(src.d.plan);aplicarPlan();}
   if(src.d.empresa&&src.d.empresa.ruc){CFG.RUC=src.d.empresa.ruc;CFG.EMP=src.d.empresa.nombre||CFG.EMP;
     if(src.d.empresa.domicilio)CFG.DOM=src.d.empresa.domicilio;pintarEmpresa();}
-  P=vivos;P.forEach(p=>{p.dni=saneaDni_(p.dni);});M={};P.forEach(p=>{M[p.dni]={q1:blq(1),q2:blq(2)};});BLOQ=false;LOG=[];
+  P=vivos;P.forEach(p=>{p.dni=saneaDni_(p.dni);});M={};P.forEach(p=>{M[p.dni]={q1:blq(1,p),q2:blq(2,p)};});BLOQ=false;LOG=[];
   EST.huellaBase=huella();EST.huella=null;EST.guardado=null;EST.archivo=null;
   toast('Personal traido de '+pp+': '+vivos.length+' activos'+(ces?' · '+ces+' cesados omitidos':''),'ok');
   R();return true;}
@@ -6060,6 +6637,49 @@ function toggleVacAlertas(){
   if(!benListo()&&haySesionSegura())pedirBeneficios().then(()=>renderVacAlertasModal_());
 }
 function cerrarVacAlertas(){document.getElementById('modalVac').classList.remove('on');}
+/* Boton "Alertas" (contratos a plazo fijo por vencer + fichas de PLANILLA sin
+   CUSPP, ver BUSINESS-RULES.md seccion 48). Mismo patron que el boton de
+   Vacaciones de arriba (badge siempre visible en el encabezado + modal que se
+   queda en pantalla hasta cerrarlo a mano), pero sin depender del calculo de
+   beneficios del servidor -ambas listas salen directo de P, ya en el
+   navegador-, asi que se puede pintar siempre, incluso sin sesion iniciada. */
+function pintarAdminAlertas(){
+  const btn=document.getElementById('btnAdminAlert'),bd=document.getElementById('adminAlertBadge');
+  if(!btn||!bd)return;
+  const c=contratosPorVencer(),fi=fichasIncompletas();
+  const total=c.length+fi.length;
+  if(total>0){
+    const vencidos=c.filter(x=>x.dias<0).length;
+    bd.textContent=total>99?'99+':String(total);
+    bd.className='badge-dot'+(vencidos>0?'':' warn');
+    bd.style.display='flex';
+  } else bd.style.display='none';
+  if(document.getElementById('modalAdmin').classList.contains('on'))renderAdminAlertasModal_();
+}
+function renderAdminAlertasModal_(){
+  const body=document.getElementById('adminAlertBody');if(!body)return;
+  const c=contratosPorVencer(),fi=fichasIncompletas();
+  if(!c.length&&!fi.length){body.innerHTML='<p style="color:var(--ink3);font-size:12px">Nada pendiente: ningún contrato a plazo fijo por vencer y nadie sin CUSPP.</p>';return;}
+  const filaC=x=>'<tr><td><b>'+escAttr_(x.p.nom)+'</b></td><td>'+(x.p.vencContrato||'--')+'</td>'+
+    '<td class="n">'+(x.dias<0?'<span style="color:#B91C1C">vencido hace '+(-x.dias)+' día(s)</span>':x.dias+' día(s)')+'</td></tr>';
+  const tablaC=!c.length?'':
+    '<h4 style="font-size:12px;margin:0 0 6px;color:#92400E">Contratos a plazo fijo por vencer ('+c.length+')</h4>'+
+    '<table class="bol-t"><tr><th>Trabajador</th><th>Vence</th><th>Faltan</th></tr>'+c.map(filaC).join('')+'</table>';
+  const filaF=x=>'<tr><td><b>'+escAttr_(x.nom)+'</b></td><td>'+escAttr_(x.car||'')+'</td></tr>';
+  const tablaF=!fi.length?'':
+    '<h4 style="font-size:12px;margin:'+(c.length?'14px':'0')+' 0 6px;color:#92400E">Fichas sin CUSPP ('+fi.length+')</h4>'+
+    '<table class="bol-t"><tr><th>Trabajador</th><th>Cargo</th></tr>'+fi.map(filaF).join('')+'</table>';
+  body.innerHTML=
+    '<div class="nota" style="margin-bottom:10px">Contratos a plazo fijo que vencen en los próximos '+DIAS_AVISO_CONTRATO+' días (o que ya vencieron sin registrar el cese), y fichas de PLANILLA activas sin CUSPP cargado -lo necesita AFPnet para declarar el aporte de AFP-. El tipo de contrato y su vencimiento se cargan en Personal, columna "Contrato".</div>'+
+    tablaC+tablaF;
+}
+function toggleAdminAlertas(){
+  const m=document.getElementById('modalAdmin');
+  if(m.classList.contains('on')){cerrarAdminAlertas();return;}
+  renderAdminAlertasModal_();
+  m.classList.add('on');
+}
+function cerrarAdminAlertas(){document.getElementById('modalAdmin').classList.remove('on');}
 function pintarBarra(){
   // Pedido del usuario (caso real: entro una falta, actualizo el navegador
   // sin guardar -normal, desaparece de pantalla-, el borrador local queda
@@ -6088,7 +6708,7 @@ function pintarBarra(){
   if(dr)dr.innerHTML=EST.draft?('<span class="chip warn"><span class="dot"></span>Borrador local '+fFecha(EST.draft.guardado)+
     '<button class="bo2" onclick="recuperarDraft()">Recuperar</button>'+
     '<button class="bo2" onclick="descartarDraft()">Descartar</button></span>'):'';
-  rotulos();avisarVacaciones();pintarVacAlertas();guardarDraft();}
+  rotulos();avisarVacaciones();pintarVacAlertas();pintarAdminAlertas();guardarDraft();}
 
 /* --- ARRANQUE --- */
 /* memo por pasada de render: mes() y calc() se pedian hasta 8 veces por persona
@@ -6182,6 +6802,26 @@ function aplicarTasas(t,origen){
     const v=Number(t[k]);
     if(!isFinite(v)||v<0)return;
     CFG[k]=v;n++;});
+  // Historial por fecha (seccion "Vigente desde" de la hoja Tasas, pedido del
+  // usuario al ver subir la RMV): t.__hist, si el backend lo manda, trae
+  // {Clave:[{desde,valor},...]} ya ordenado -ver getTasas_()/tasasDesdeFilas_
+  // en prisma_backend.gs-. Se guarda en CFG.__hist (mismo filtro TASAS_OK,
+  // para no aceptar claves arbitrarias) y lo usa tasaDe_() mas abajo para
+  // resolver la tasa que corresponde a un periodo especifico, no siempre la
+  // de hoy. Si no viene (backend viejo, o nadie cargo historial todavia),
+  // CFG.__hist queda vacio y tasaDe_() se comporta exactamente como antes:
+  // devuelve el valor plano de siempre.
+  if(t.__hist&&typeof t.__hist==='object'){
+    CFG.__hist=CFG.__hist||{};
+    Object.keys(t.__hist).forEach(k=>{
+      if(!TASAS_OK[k])return;
+      const h=t.__hist[k];
+      if(!Array.isArray(h))return;
+      const limpio=h.filter(x=>x&&isFinite(+x.valor)).map(x=>({desde:String(x.desde||''),valor:+x.valor}));
+      if(limpio.length)CFG.__hist[k]=limpio;
+    });
+    n++;
+  }
   if(!n)return false;
   SESION.tasas=t;SESION.tasasOrigen=origen||'servidor';
   try{localStorage.setItem('planilla_tasas',JSON.stringify({t:t,f:new Date().toISOString()}));}catch(e){}
@@ -6190,6 +6830,25 @@ function tasasEnCache(){
   try{const c=JSON.parse(localStorage.getItem('planilla_tasas'));
     if(c&&c.t&&aplicarTasas(c.t,'cache '+fFecha(c.f)))return true;}catch(e){}
   return false;}
+// Dada una Clave con historial por fecha (CFG.__hist[clave], ver
+// aplicarTasas()), devuelve la tasa que corresponde al periodo (anio,mes)
+// indicado -la que regia el dia 1 de ese mes- en vez de siempre la de hoy.
+// Pedido del usuario: al reabrir un periodo ya guardado despues de que la
+// RMV (u otra tasa) cambio, que la pantalla siga mostrando lo que realmente
+// correspondia a ESE periodo, no lo de hoy.
+// Si esa clave no tiene historial cargado (lo normal: la mayoria de tasas
+// solo tienen un valor, y asi fue siempre hasta ahora), simplemente devuelve
+// cfg[clave] -el comportamiento de toda la vida, sin este cambio no se
+// rompe nada-.
+function tasaDe_(cfg,clave,anio,mes){
+  cfg=cfg||CFG;
+  const hist=cfg.__hist&&cfg.__hist[clave];
+  if(!hist||!hist.length)return cfg[clave];
+  const corte=anio+'-'+String(mes).padStart(2,'0')+'-01';
+  let v=hist[0].valor;
+  for(let i=0;i<hist.length;i++){
+    if(hist[i].desde===''||hist[i].desde<=corte)v=hist[i].valor;else break;}
+  return v;}
 
 /* ================== CATALOGO DE FERIADOS (punto 2) ==================
    Antes no habia tabla fecha->feriado: CFG.FER solo era el multiplicador
