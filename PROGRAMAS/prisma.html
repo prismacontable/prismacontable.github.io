@@ -5462,6 +5462,7 @@ function asegurarLiqAuto_(){
 /* --- vista --- */
 function rCuentas(){
   const col=PLAN.modoCC==='COLUMNA';
+  const prCtas=per(),rmvPeriodoCtas=tasaDe_(CFG,'RMV',prCtas.a,prCtas.m);
   const inp=(v,h,w)=>'<input value="'+(v||'')+'" onchange="'+h+'" style="width:'+(w||78)+'px;text-align:left">';
   const filas=PLAN.ccs.map((c,i)=>'<tr>'+
    '<td class="ctr">'+inp(c.cod,'setCC('+i+",'cod',this.value)",44)+'</td>'+
@@ -5498,10 +5499,14 @@ function rCuentas(){
       '<button class="bo2" onclick="cargarPlanServidor()" title="Trae el plan oficial de la empresa">Traer del servidor</button>'+
       '<span>Plan de cuentas: <b>'+((typeof PLAN_SRV!=='undefined'&&PLAN_SRV.origen)||'archivo')+'</b>'+
       ((typeof PLAN_SRV!=='undefined'&&PLAN_SRV.fecha)?(' · '+fFecha(PLAN_SRV.fecha)):'')+'</span></div>'+
-    '<div style="flex-basis:100%;font-size:10.5px;color:var(--ink2)">Tasas y topes: <b>'+
+    '<div style="flex-basis:100%;font-size:10.5px;color:var(--ink2)">Tasas y topes de HOY (servidor): <b>'+
       ((typeof SESION!=='undefined'&&SESION.tasasOrigen)||'archivo')+'</b> &middot; RMV S/ '+f0(CFG.RMV)+
       ' &middot; UIT S/ '+f0(CFG.UIT)+' &middot; EsSalud '+(CFG.T_ES*100).toFixed(0)+'% &middot; 4ta '+
       (CFG.T4*100).toFixed(0)+'% sobre S/ '+f0(CFG.MIN4)+'</div>'+
+    '<div style="flex-basis:100%;font-size:10.5px;color:var(--ink2)">RMV usada para calcular el periodo seleccionado ('+
+      MES[prCtas.m]+' '+prCtas.a+'): <b style="color:var(--tit)">S/ '+f0(rmvPeriodoCtas)+'</b>'+
+      (Math.abs(rmvPeriodoCtas-CFG.RMV)>0.001?' &middot; <span style="color:var(--amber2)">distinta a la de hoy (S/ '+
+        f0(CFG.RMV)+') porque este periodo quedo antes del cambio de RMV</span>':'')+'</div>'+
     (raizEsOtraEmpresa()?'<div style="flex-basis:100%"><span class="chip err"><span class="dot"></span>'+
       'La carpeta conectada es '+ROOT.name+' y estas en el RUC '+CFG.RUC+': no se puede guardar. '+
       'Conecta la carpeta raiz o vuelve a ese RUC.</span></div>':'')+
