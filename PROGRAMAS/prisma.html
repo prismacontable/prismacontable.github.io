@@ -77,30 +77,32 @@ table{width:100%;border-collapse:collapse;font-size:11.5px}
 th{background:var(--surface2);color:var(--ink2);padding:6px 6px;text-align:center;font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:.03em;white-space:nowrap}
 th.left{text-align:left}
 td{padding:3px 6px;border-bottom:1px solid var(--border);white-space:nowrap}
-/* Fila de filtros por columna, dentro del <thead> de Personal/Q1/Q2/Mensual
-   (BUSINESS-RULES.md seccion 41). th.fcol no lleva mayusculas/negrita como
-   el resto de encabezados, para que se note que es un control, no un titulo. */
-th.fcol{background:var(--surface);padding:2px 4px;text-transform:none;letter-spacing:0;font-weight:400}
-/* Filtro estilo Excel (menu desplegable con casillas por valor + ordenar
-   A-Z/Z-A), pedido del usuario con una captura de Excel como referencia:
-   reemplaza las cajas de texto/desplegables simples que tenia antes la fila
-   de filtros (misma fila th.fcol, mismas 4 columnas filtrables por tabla -
-   Personal/1Q/2Q/Mensual-, ver FILTROS_EXCEL/ordenarFilasDOM_ en el script).
-   El boton va DENTRO de la celda fcol; el menu es un panel flotante que se
-   agrega a <body> al abrirse (position:fixed, para no quedar recortado por
-   el overflow-x:auto de .tw) y se destruye al cerrarse. */
-.ffbtn{display:flex;align-items:center;justify-content:space-between;gap:4px;width:100%;box-sizing:border-box;
-  background:var(--surface);border:1px solid var(--border2);border-radius:4px;padding:2px 5px;font-size:10px;
-  font-weight:400;color:var(--ink2);cursor:pointer;text-align:left}
-.ffbtn:hover{border-color:var(--indigo)}
-.ffbtn.activo{background:var(--indigo);color:#fff;border-color:var(--indigo)}
-.ffbtn svg{flex:none;width:11px;height:11px}
+/* Filtro estilo Excel: el icono de embudo vive DENTRO del mismo <th> del
+   titulo de columna (pedido de Eduardo: "que los filtros se integren
+   directo al encabezado con el icono de filtro asi como en excel"), ya no
+   en una fila aparte debajo como antes (BUSINESS-RULES.md seccion 41/46).
+   Solo Nombre/Documento/Tipo/CC (y en Personal ademas Cargo/CUSPP/C.Costo/
+   Rég.Laboral/Régimen Pens./Estado) llevan este boton; el resto de columnas
+   sigue siendo un <th> normal sin filtro. El menu desplegable (casillas por
+   valor + Ordenar A-Z/Z-A) se agrega a <body> al abrirse (position:fixed,
+   para no quedar recortado por el overflow-x:auto de .tw) y se destruye al
+   cerrarse -ver FILTROS_EXCEL/ORDEN_COL en el script-. */
+th.fcol{padding:0}
+.ffbtn{display:flex;align-items:center;justify-content:center;gap:4px;width:100%;height:100%;box-sizing:border-box;
+  background:transparent;border:0;padding:6px 6px;font:inherit;text-transform:inherit;letter-spacing:inherit;
+  color:inherit;cursor:pointer;white-space:nowrap}
+th.left .ffbtn{justify-content:flex-start;text-align:left}
+.ffbtn:hover{filter:brightness(1.15)}
+.ffbtn.activo{background:var(--indigo);color:#fff}
+.ffbtn svg{flex:none;width:11px;height:11px;opacity:.6}
+.ffbtn:hover svg,.ffbtn.activo svg{opacity:1}
 #ffmenu{position:fixed;z-index:400;background:var(--surface);border:1px solid var(--border2);border-radius:8px;
   box-shadow:0 8px 28px rgba(0,0,0,.22);width:230px;font-size:11.5px;padding:8px}
 #ffmenu .ffsort{display:flex;flex-direction:column;gap:2px;margin-bottom:6px;padding-bottom:6px;border-bottom:1px solid var(--border)}
 #ffmenu .ffsort button{display:flex;align-items:center;gap:6px;background:none;border:0;padding:4px 2px;font-size:11px;
   color:var(--ink);cursor:pointer;text-align:left;border-radius:4px}
 #ffmenu .ffsort button:hover{background:var(--surface2)}
+#ffmenu .ffsort-nota{font-size:10px;color:var(--ink3);font-style:italic;margin-bottom:6px;padding-bottom:6px;border-bottom:1px solid var(--border)}
 #ffmenu input[type="search"]{width:100%;box-sizing:border-box;margin-bottom:6px;font-size:11px;padding:4px 6px}
 #ffmenu .fflista{max-height:190px;overflow-y:auto;border:1px solid var(--border);border-radius:4px;padding:4px 2px;margin-bottom:6px}
 #ffmenu .fflista label{display:flex;align-items:center;gap:6px;padding:2px 4px;font-size:11px;cursor:pointer;border-radius:3px}
@@ -476,11 +478,15 @@ body.bloqueado header,body.bloqueado nav,body.bloqueado main,body.bloqueado #bar
 .tw table td:first-child,.tw table thead tr:first-child th:first-child{position:sticky;left:0;z-index:2;background:var(--surface)}
 .tw table thead tr:first-child th:first-child{z-index:4;background:var(--indigo);color:#fff}
 /* La regla anterior aplicaba "th:first-child" a TODAS las filas del thead. Como
-   el encabezado tiene 2 filas (la primera con "Nombre" en rowspan=2, la segunda
-   ya arrancando en el primer concepto: "Sueldo"), ese segundo "Sueldo" tambien
-   calificaba como th:first-child de SU fila y se volvia sticky+indigo encima de
-   Nombre. Por eso al desplazar horizontalmente Sueldo terminaba pegado a la
-   izquierda, tapando a Nombre. Ahora solo la primera fila del thead es sticky. */
+   el encabezado tiene varias filas (la primera con "Nombre" en rowspan=2, la
+   segunda ya arrancando en el primer concepto: "Sueldo"), ese segundo "Sueldo"
+   tambien calificaba como th:first-child de SU fila y se volvia sticky+indigo
+   encima de Nombre. Por eso al desplazar horizontalmente Sueldo terminaba
+   pegado a la izquierda, tapando a Nombre. Ahora solo la primera fila del
+   thead es sticky para ese tratamiento indigo. Esto ya alcanza tambien para
+   el filtro: desde que el icono de filtro se integro al mismo <th> de Nombre
+   (ya no hay una fila de filtros aparte, ver celdaFiltroExcel_), ese <th>
+   fusionado hereda esta misma regla sin necesitar un selector adicional. */
 .tw table td:first-child{box-shadow:1px 0 0 var(--border)}
 .tw table tbody tr:hover td:first-child{background:var(--hover)}
 .tw table .rh-row td:first-child{background:var(--rh)}
@@ -2114,27 +2120,21 @@ function rPersonal(){
      (p.tipo==='PLANILLA'?
      '<button type="button" class="bd" style="padding:2px 7px;font-size:10px;margin-right:3px" onclick="abrirTRegAlta(\''+p.dni+'\')" title="Datos para el Alta T-Registro (SUNAT): fecha de nacimiento, ocupacion, tipo de contrato, etc. Solo hace falta completarlos si esta persona ingreso este periodo.">SUNAT</button>':'')+
      '<button class="bd" style="padding:2px 7px" onclick="delTrab('+p.id+')">X</button></td></tr>').join('');
-  const filaFiltroPers=cont=>'<tr>'+
-   celdaFiltroExcel_(cont,'nom','Nombre')+
-   '<th></th>'+
-   celdaFiltroExcel_(cont,'dni','DNI')+
-   celdaFiltroExcel_(cont,'car','Cargo')+
-   celdaFiltroExcel_(cont,'cus','CUSPP')+
-   celdaFiltroExcel_(cont,'cc','C. Costo')+
-   celdaFiltroExcel_(cont,'tipo','Tipo')+
-   celdaFiltroExcel_(cont,'reg','Rég. Lab.')+
-   celdaFiltroExcel_(cont,'afp','AFP')+
-   '<th></th><th></th><th></th><th></th><th></th><th></th>'+
-   celdaFiltroExcel_(cont,'est','Estado')+
-   '<th></th><th></th></tr>';
   document.getElementById('wPers').innerHTML='<table><thead><tr>'+
-   '<th class="left">Apellidos y Nombres</th><th>#</th><th class="left">DNI / RUC</th><th class="left">Cargo</th>'+
-   '<th class="left">CUSPP</th><th>Centro Costo</th><th>Tipo</th><th title="Régimen laboral: define vacaciones, gratificación y CTS">Rég. Laboral</th><th>Régimen Pens.</th>'+
+   celdaFiltroExcel_('wPers','nom','Apellidos y Nombres',{left:true})+
+   '<th>#</th>'+
+   celdaFiltroExcel_('wPers','dni','DNI / RUC',{left:true})+
+   celdaFiltroExcel_('wPers','car','Cargo',{left:true})+
+   celdaFiltroExcel_('wPers','cus','CUSPP',{left:true})+
+   celdaFiltroExcel_('wPers','cc','Centro Costo')+
+   celdaFiltroExcel_('wPers','tipo','Tipo')+
+   celdaFiltroExcel_('wPers','reg','Rég. Laboral',{title:'Régimen laboral: define vacaciones, gratificación y CTS'})+
+   celdaFiltroExcel_('wPers','afp','Régimen Pens.')+
    '<th title="Solo para quien sigue en el esquema de comision por flujo (afiliados desde antes de feb-2013)">Comisión AFP</th>'+
    '<th title="Asignación familiar: S/ 102.50 (10% RMV) si tiene hijos">Asig. Familiar</th><th>Sueldo / Honor.</th>'+
-   '<th>F. Ingreso</th><th>F. Cese</th><th title="Si es a plazo fijo, con su fecha de vencimiento: avisa en el boton Alertas cuando se acerca">Contrato</th><th>Estado</th>'+
+   '<th>F. Ingreso</th><th>F. Cese</th><th title="Si es a plazo fijo, con su fecha de vencimiento: avisa en el boton Alertas cuando se acerca">Contrato</th>'+
+   celdaFiltroExcel_('wPers','est','Estado')+
    '<th title="Solo para quien tiene fecha de cese: define la liquidacion (antes vivia en Beneficios)">Motivo de cese</th><th></th></tr>'+
-   filaFiltroPers('wPers')+
    '</thead><tbody>'+
    (rows||'<tr><td colspan="17" style="text-align:center;padding:20px;color:var(--ink3)">Sin personal registrado.</td></tr>')+'</tbody></table>';
   ordenarFilasDOM_('wPers');
@@ -2202,7 +2202,11 @@ function rQna(q){
       num(p.dni,'r5',m.r5)+incBtnCell(p.dni,q,m,'tar')+num(p.dni,'ade',m.ade)+num(p.dni,'pre',m.pre)+
       '<td class="num"><b style="'+(c.neto<0?'color:var(--red2)':'')+'">'+f(c.neto)+'</b></td>'+btn;}).join('');
   document.getElementById('wQ'+q).innerHTML='<table><thead>'+
-   '<tr><th class="left" rowspan="2">Nombre</th><th rowspan="2">Documento</th><th rowspan="2">Tipo</th><th rowspan="2">CC</th>'+
+   '<tr>'+
+   celdaFiltroExcel_('wQ'+q,'nom','Nombre',{left:true,rowspan:2})+
+   celdaFiltroExcel_('wQ'+q,'dni','Documento',{rowspan:2})+
+   celdaFiltroExcel_('wQ'+q,'tipo','Tipo',{rowspan:2})+
+   celdaFiltroExcel_('wQ'+q,'cc','CC',{rowspan:2})+
    '<th rowspan="2" title="Se calcula solo: dias del bloque menos faltas y vacaciones (gozadas o adelantadas) de este periodo. Editable a mano si hace falta un ajuste (ingreso/cese a mitad de periodo).">Días</th><th rowspan="2">Faltas</th><th rowspan="2">Inasistencia</th>'+
    '<th colspan="14" class="gi">INGRESOS AFECTOS A APORTES</th>'+
    '<th colspan="5" class="gt">NO AFECTOS A APORTES</th>'+
@@ -2222,13 +2226,6 @@ function rQna(q){
    '<th class="gt">Total Ing.</th><th class="gt">Base Afecta</th>'+
    '<th class="gd">AFP/ONP</th><th class="gd">Prima</th><th class="gd" title="Comisión AFP - solo esquema Flujo">Comisión AFP</th><th class="gd">5ta / 4ta</th>'+
    '<th class="gd">Tardanza</th><th class="gd">Adelanto</th><th class="gd">Préstamo</th></tr>'+
-   '<tr>'+
-    celdaFiltroExcel_('wQ'+q,'nom','Nombre')+
-    celdaFiltroExcel_('wQ'+q,'dni','Documento')+
-    celdaFiltroExcel_('wQ'+q,'tipo','Tipo')+
-    celdaFiltroExcel_('wQ'+q,'cc','CC')+
-    '<th></th><th></th><th></th><th colspan="28"></th><th></th><th></th>'+
-   '</tr>'+
    '</thead><tbody>'+
    (rows||'<tr><td colspan="37" style="text-align:center;padding:20px;color:var(--ink3)">Sin personal activo.</td></tr>')+
    '</tbody><tfoot><tr class="total"><td colspan="6"><b>TOTALES</b></td>'+
@@ -2250,7 +2247,7 @@ function rQna(q){
    '<td class="num"><b>'+f(t.r4+t.r5)+'</b></td><td class="num"><b>'+f(t.tar)+'</b></td>'+
    '<td class="num"><b>'+f(t.ade)+'</b></td><td class="num"><b>'+f(t.pre)+'</b></td>'+
    '<td class="num"><b>'+f(t.neto)+'</b></td><td></td></tr></tfoot></table>';
-  ordenarFilasDOM_('wQ'+q);
+  ordenarIgualQuePersonal_('wQ'+q);
   const neg=act().filter(p=>calc(p,q).neto<0).length;
   document.getElementById('sQ'+q).innerHTML=
    '<div class="chip inf"><span class="dot"></span>Neto Q'+q+': <b>S/ '+f0(t.neto)+'</b></div>'+
@@ -2305,20 +2302,16 @@ function rMensual(){
      '<td class="num"><b>'+f(m.neto)+'</b></td>'+
      '<td class="num" title="Lo que se paga al cierre: el neto del mes menos el adelanto de la 1ra quincena. Es el importe que debe cuadrar con el PLAME."><b style="color:var(--tit)">'+f(r2(m.neto-m.q1.neto))+'</b></td></tr>';}).join('');
   document.getElementById('wMen').innerHTML='<table><thead><tr>'+
-   '<th class="left">Nombre</th><th>Documento</th><th>Tipo</th><th>CC</th><th>Régimen</th><th>CUSPP</th><th>Días</th>'+
+   celdaFiltroExcel_('wMen','nom','Nombre',{left:true})+
+   celdaFiltroExcel_('wMen','dni','Documento')+
+   celdaFiltroExcel_('wMen','tipo','Tipo')+
+   celdaFiltroExcel_('wMen','cc','CC')+
+   '<th>Régimen</th><th>CUSPP</th><th>Días</th>'+
    '<th>Inasistencia</th>'+
    '<th>Sueldo/Hon.</th><th>Bono</th><th>Comisión</th><th>H.Extras</th><th>Imp. 25%</th><th>Imp. 35%</th><th>Total Ing.</th>'+
    '<th>Base Afecta</th><th>Base EsSalud</th><th>AFP/ONP</th><th>Prima</th>'+
    '<th>EsSalud</th><th>Ret. 4ta/5ta</th><th>Vida Ley</th><th>Prov. Vac.</th>'+
    '<th>Neto Q1</th><th>Neto Q2</th><th>Neto Mes</th><th class="gt">Neto a pagar</th>'+
-   '</tr><tr>'+
-    celdaFiltroExcel_('wMen','nom','Nombre')+
-    celdaFiltroExcel_('wMen','dni','Documento')+
-    celdaFiltroExcel_('wMen','tipo','Tipo')+
-    celdaFiltroExcel_('wMen','cc','CC')+
-    '<th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th>'+
-    '<th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th>'+
-    '<th></th><th></th><th></th>'+
    '</tr></thead><tbody>'+(rows||'<tr><td colspan="27" style="text-align:center;padding:20px;color:var(--ink3)">Sin datos. Agrega personal o trae el del mes anterior.</td></tr>')+
    '</tbody><tfoot><tr class="total"><td colspan="7"><b>TOTALES</b></td>'+
    '<td class="num"><b>'+(t.falta>0?'-'+f(t.falta):'')+'</b></td>'+
@@ -2337,7 +2330,7 @@ function rMensual(){
    '<div style="padding:8px 14px;font-size:10.5px;color:var(--ink2);background:var(--amber);border-top:1px solid var(--border)">'+
    'Base EsSalud en ambar = se aplico el mínimo de la RMV de este periodo (S/ '+f0(tasaDe_(CFG,'RMV',per().a,per().m))+'). Ejemplo: remuneración de S/ 900 al mes, el EsSalud se calcula sobre esa RMV y no sobre 900. '+
    'Las filas naranjas son recibos por honorarios: sin EsSalud, AFP ni beneficios.</div>';
-  ordenarFilasDOM_('wMen');
+  ordenarIgualQuePersonal_('wMen');
 }
 /* BENEFICIOS */
 
@@ -4573,7 +4566,10 @@ function textoFilaBuscable_(tr){
    (captura de pantalla de Excel: menu desplegable con casillas por cada
    valor, buscador dentro del menu, "Seleccionar todo" y Ordenar A-Z/Z-A) -
    ver BUSINESS-RULES.md seccion 46. Reemplaza la primera version (cajas de
-   texto/select simples). Vive en Personal, Mensual (ambas vistas, resumen y
+   texto/select simples), y desde el pedido "que los filtros se integren
+   directo al encabezado... asi como en excel" el boton de filtro vive DENTRO
+   del mismo <th> del titulo de columna (ya no en una fila aparte debajo, ver
+   celdaFiltroExcel_). Vive en Personal, Mensual (ambas vistas, resumen y
    editable) y 1Q/2Q, siempre en las mismas columnas de antes (las que ya
    eran filtrables: dni/nom/car/cus/cc/tipo/reg/afp/est en Personal; nom/dni/
    tipo/cc en 1Q/2Q/Mensual).
@@ -4585,7 +4581,14 @@ function textoFilaBuscable_(tr){
      congelado con "todos los valores de hoy", para que una fila nueva con un
      valor que todavia no existia en la lista no quede oculta por error).
    - ORDEN_COL[contenedor] = {key,dir:'asc'|'desc'} o ausente = sin orden (se
-     queda en el orden en que vienen las filas, igual que siempre).
+     queda en el orden en que vienen las filas, igual que siempre). SOLO
+     existe para 'wPers': Personal es la unica tabla que se puede ordenar por
+     columna (pedido de Eduardo: "todo debe seguir el orden del modulo de
+     personal", confirmado como "Siempre igual a Personal" -nunca distinto-).
+     1Q/2Q/Mensual ya NO tienen orden propio: su menu de filtro ni siquiera
+     muestra los botones de Ordenar (ver pintarMenuFiltro_) y, en vez de
+     ordenarFilasDOM_, usan ordenarIgualQuePersonal_ para copiar siempre el
+     orden de filas que tiene Personal en ese momento.
    - MENU_FILTRO = {cont,key,draft:Set,busq} del menu actualmente abierto (uno
      solo a la vez), o null.
    Ambos objetos de estado son `let` de nivel superior -sobreviven al
@@ -4596,9 +4599,9 @@ function textoFilaBuscable_(tr){
    Se combina con el buscador global (FILTRO) con Y logico: una fila se
    oculta si falla el buscador global O cualquier filtro de columna activo.
    El orden es independiente de los filtros: reordena los <tr> del <tbody>
-   (ordenarFilasDOM_), y como ocultar una fila es solo su display:none, ese
-   estado viaja con el nodo al moverlo -no hace falta re-aplicar el filtro
-   despues de ordenar-.
+   (ordenarFilasDOM_ en Personal, ordenarIgualQuePersonal_ en las demas), y
+   como ocultar una fila es solo su display:none, ese estado viaja con el
+   nodo al moverlo -no hace falta re-aplicar el filtro despues de ordenar-.
    ======================================================================== */
 let FILTROS_EXCEL={};
 let ORDEN_COL={};
@@ -4638,12 +4641,20 @@ function valoresUnicosColumna_(cont,key){
   return Array.from(vistos.entries()).map(([val,label])=>({val,label}))
     .sort((a,b)=>a.label.localeCompare(b.label,'es',{numeric:true,sensitivity:'base'}));}
 function filtroColActivo_(cont,key){return !!(FILTROS_EXCEL[cont]&&FILTROS_EXCEL[cont][key]);}
-// El boton que reemplaza la caja de texto/select de antes: icono de embudo +
-// la etiqueta de la columna. Se resalta cuando esa columna tiene un filtro
-// activo o es la columna por la que esta ordenada la tabla.
-function celdaFiltroExcel_(cont,key,etiqueta){
+// Genera el <th> COMPLETO de una columna filtrable: titulo + icono de embudo
+// integrados en una sola celda, estilo Excel (ya no hay una fila de filtros
+// aparte debajo). Reemplaza el <th> normal de esa columna por completo, asi
+// que acepta las mismas variantes que un <th> normal necesitaria: left (texto
+// a la izquierda), rowspan (para las tablas con encabezado de 2 filas, donde
+// esta columna debe cubrir ambas) y title (tooltip). Se resalta cuando esa
+// columna tiene un filtro activo o -solo en Personal- es la columna por la
+// que esta ordenada la tabla.
+function celdaFiltroExcel_(cont,key,etiqueta,opts){
+  opts=opts||{};
   const activo=filtroColActivo_(cont,key)||(ORDEN_COL[cont]&&ORDEN_COL[cont].key===key);
-  return '<th class="fcol"><button type="button" class="ffbtn'+(activo?' activo':'')+'" onclick="toggleMenuFiltro(event,\''+cont+'\',\''+key+'\',\''+escAttr_(etiqueta)+'\')">'+
+  const cls='fcol'+(opts.left?' left':''),rs=opts.rowspan?' rowspan="'+opts.rowspan+'"':'',
+    tt=opts.title?' title="'+escAttr_(opts.title)+'"':'';
+  return '<th class="'+cls+'"'+rs+tt+'><button type="button" class="ffbtn'+(activo?' activo':'')+'" onclick="toggleMenuFiltro(event,\''+cont+'\',\''+key+'\',\''+escAttr_(etiqueta)+'\')">'+
     '<span>'+etiqueta+'</span>'+
     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 5h16l-6 8v6l-4-2v-4z"/></svg>'+
     '</button></th>';}
@@ -4686,6 +4697,30 @@ function ordenarFilasDOM_(cont){
     const c=esNum?(parseFloat(a)-parseFloat(b)):a.localeCompare(b,'es',{numeric:true,sensitivity:'base'});
     return orden.dir==='desc'?-c:c;});
   filas.forEach(tr=>tbody.appendChild(tr));}
+// Fuerza que 1Q/2Q/Mensual sigan SIEMPRE el mismo orden de filas que
+// Personal (pedido de Eduardo: "todo debe seguir el orden del modulo de
+// personal", confirmado como "Siempre igual a Personal" -nunca distinto,
+// no solo una sincronizacion puntual-). A diferencia de ordenarFilasDOM_
+// (que usa ORDEN_COL, solo disponible para 'wPers'), esta funcion ignora
+// cualquier columna y simplemente copia el orden de los <tr> de #wPers,
+// buscando cada fila por su DNI (unico en ambas tablas). Una fila que no
+// tenga ese DNI en Personal (no deberia pasar, pero por seguridad) queda al
+// final, en el orden en que ya estaba.
+function ordenarIgualQuePersonal_(cont){
+  const raizPers=document.getElementById('wPers');
+  const tbPers=raizPers&&raizPers.querySelector('tbody');
+  const raiz=document.getElementById(cont);
+  const tbody=raiz&&raiz.querySelector('tbody');
+  if(!tbPers||!tbody)return;
+  const orden=Array.from(tbPers.querySelectorAll('tr')).map(tr=>valorColumnaFila_(tr,'dni'));
+  const pos=new Map(orden.map((dni,i)=>[dni,i]));
+  const filas=Array.from(tbody.querySelectorAll('tr'));
+  if(filas.length<2)return;
+  filas.sort((a,b)=>{
+    const ia=pos.has(valorColumnaFila_(a,'dni'))?pos.get(valorColumnaFila_(a,'dni')):Infinity;
+    const ib=pos.has(valorColumnaFila_(b,'dni'))?pos.get(valorColumnaFila_(b,'dni')):Infinity;
+    return ia-ib;});
+  filas.forEach(tr=>tbody.appendChild(tr));}
 // Vuelve a pintar SOLO la tabla indicada (no toda la pantalla como R()): se
 // usa despues de Aceptar/Borrar/Ordenar en el menu de filtro, para que el
 // boton de esa columna quede marcado como "activo" al toque -celdaFiltroExcel_
@@ -4699,7 +4734,10 @@ function rerenderTabla_(cont){
   else if(cont==='wMen'&&typeof window.rMensual==='function')window.rMensual();
   filtrarTablas();}
 function ordenarPorColumna_(dir){
-  if(!MENU_FILTRO)return;
+  // Solo Personal se puede ordenar por columna (ver nota en ORDEN_COL, arriba):
+  // 1Q/2Q/Mensual ya ni muestran estos botones en su menu (pintarMenuFiltro_),
+  // esto es solo una segunda barrera por si quedara un menu abierto de antes.
+  if(!MENU_FILTRO||MENU_FILTRO.cont!=='wPers')return;
   const cont=MENU_FILTRO.cont;
   ORDEN_COL[cont]={key:MENU_FILTRO.key,dir};
   cerrarMenuFiltro();
@@ -4738,11 +4776,15 @@ function pintarMenuFiltro_(){
   const vals=valoresUnicosColumna_(cont,key).filter(v=>!busq||v.label.toLowerCase().indexOf(busq)>=0);
   const visibles=vals.map(v=>v.val);
   const todosVisMarcados=visibles.length>0&&visibles.every(v=>draft.has(v));
+  // El orden propio por columna (Ordenar A-Z/Z-A) solo tiene sentido en
+  // Personal: las demas tablas siempre siguen su orden (ver ORDEN_COL y
+  // ordenarIgualQuePersonal_), asi que ahi el menu se queda solo con el
+  // filtro, sin botones de orden que de todos modos no harian nada.
   m.innerHTML=
-   '<div class="ffsort">'+
+   (cont==='wPers'?('<div class="ffsort">'+
      '<button type="button" onclick="ordenarPorColumna_(\'asc\')">&#8593; Ordenar de A a Z</button>'+
      '<button type="button" onclick="ordenarPorColumna_(\'desc\')">&#8595; Ordenar de Z a A</button>'+
-   '</div>'+
+   '</div>'):'<div class="ffsort-nota">El orden de esta tabla sigue siempre al de Personal.</div>')+
    '<input type="search" placeholder="Buscar..." value="'+escAttr_(busq)+'" oninput="buscarEnMenuFiltro_(this.value)">'+
    '<div class="fflista">'+
     '<label><input type="checkbox" '+(todosVisMarcados?'checked':'')+' onchange="toggleTodosMenuFiltro_(this.checked)"><b>(Seleccionar todo)</b></label>'+
@@ -5888,7 +5930,11 @@ function rMensualEd(){
       '<td class="num" title="Lo que se paga al cierre: neto del mes menos el adelanto de la 1ra quincena."><b style="color:var(--tit)">'+f(r2(m.neto-m.q1.neto))+'</b></td>'+
       '<td class="ctr">'+chipVerifPlanilla_(p,m.neto)+'</td>'+btn;}).join('');
   document.getElementById('wMen').innerHTML='<table><thead>'+
-   '<tr><th class="left" rowspan="2">Nombre</th><th rowspan="2">Documento</th><th rowspan="2">Tipo</th><th rowspan="2">CC</th>'+
+   '<tr>'+
+   celdaFiltroExcel_('wMen','nom','Nombre',{left:true,rowspan:2})+
+   celdaFiltroExcel_('wMen','dni','Documento',{rowspan:2})+
+   celdaFiltroExcel_('wMen','tipo','Tipo',{rowspan:2})+
+   celdaFiltroExcel_('wMen','cc','CC',{rowspan:2})+
    '<th rowspan="2" title="Se calcula solo: dias del bloque menos faltas y vacaciones (gozadas o adelantadas) de este periodo. Editable a mano si hace falta un ajuste (ingreso/cese a mitad de periodo).">Días</th><th rowspan="2">Faltas</th><th rowspan="2">Inasistencia</th>'+
    '<th colspan="14" class="gi">INGRESOS AFECTOS A APORTES</th>'+
    '<th colspan="5" class="gt">NO AFECTOS A APORTES</th>'+
@@ -5909,13 +5955,6 @@ function rMensualEd(){
    '<th class="gt">Total Ing.</th><th class="gt">Base Afecta</th>'+
    '<th class="gd">Base EsSalud</th><th class="gd">AFP/ONP</th><th class="gd">Prima</th><th class="gd" title="Comisión AFP - solo esquema Flujo">Comisión AFP</th><th class="gd">EsSalud</th>'+
    '<th class="gd">5ta / 4ta</th><th class="gd">Tardanza</th><th class="gd">Adelanto</th><th class="gd">Préstamo</th></tr>'+
-   '<tr>'+
-    celdaFiltroExcel_('wMen','nom','Nombre')+
-    celdaFiltroExcel_('wMen','dni','Documento')+
-    celdaFiltroExcel_('wMen','tipo','Tipo')+
-    celdaFiltroExcel_('wMen','cc','CC')+
-    '<th></th><th></th><th></th><th colspan="30"></th><th></th><th></th><th></th><th></th><th></th>'+
-   '</tr>'+
    '</thead><tbody>'+
    (rows||'<tr><td colspan="42" style="text-align:center;padding:20px;color:var(--ink3)">Sin personal activo.</td></tr>')+
    '</tbody><tfoot><tr class="total"><td colspan="6"><b>TOTALES</b></td>'+
@@ -5943,7 +5982,7 @@ function rMensualEd(){
    'Modalidad <b>mensualizada</b>: un solo pago al cierre del mes, las quincenas estan bloqueadas y los campos ambar se editan aqui. '+
    'Días del mes = '+CFG.DM+'. Base EsSalud en ambar = se aplico el mínimo de la RMV de este periodo (S/ '+f0(tasaDe_(CFG,'RMV',per().a,per().m))+'). '+
    'El bono de productividad, la gratificación con su bonificación, la CTS y la liquidación se pagan pero no entran a la base de aportes.</div>';
-  ordenarFilasDOM_('wMen');}
+  ordenarIgualQuePersonal_('wMen');}
 /* despacho: la pestaña Mensual cambia de render segun la modalidad */
 const rMensual_base=window.rMensual;
 window.rMensual=function(){if(esMensual())rMensualEd();else rMensual_base();};
