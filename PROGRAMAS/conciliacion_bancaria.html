@@ -226,6 +226,33 @@
   .pill-yaasignado{background:var(--violet-bg); color:var(--violet); border-color:transparent;}
   .pill-manual{background:var(--teal-bg); color:var(--teal); border-color:transparent;}
   .pill-bad{background:var(--bad-bg); color:var(--bad); border-color:transparent;}
+  .pill-forzado{background:var(--bad-bg); color:var(--bad); border-color:transparent; box-shadow:0 0 0 1px currentColor inset;}
+  .sug-box{margin-top:14px; padding-top:12px; border-top:1px dashed var(--border);}
+  .sug-btns{display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:10px;}
+  .sug-btns button{margin:0;}
+  .sug-detalle{font-size:11.5px; line-height:1.35; max-width:260px; white-space:normal;}
+  .sug-detalle .nota{display:block; color:var(--muted); overflow:hidden; text-overflow:ellipsis; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;}
+  .sug-resumen{margin-top:8px; font-size:12px; line-height:1.5; color:var(--muted);}
+  .sug-resumen b{color:var(--text);}
+  .fx-filter-badge{cursor:pointer; user-select:none;}
+  .fx-filter-active{box-shadow:0 0 0 2px var(--accent-ink) inset;}
+  #fxTable tbody tr.fx-sel td{background:var(--ok-bg);}
+  #fxTable tbody tr.fx-sel td:first-child{background:var(--ok-bg);}
+  #fxTable td.num, #fxLinesTable td.num{text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap;}
+  #fxTable td.neg, #fxLinesTable td.neg{color:var(--bad);}
+  #fxTable td.nota{font-size:11.5px; color:var(--muted); min-width:250px; max-width:340px; white-space:normal; line-height:1.4;}
+  #fxTable th:last-child{min-width:250px;}
+  #fxTable td{vertical-align:middle;}
+  #fxLinesTable tbody tr.fx-contra td{background:var(--row-hover);}
+  .fx-asientos{display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:10px; margin:0 0 12px;}
+  .fx-card{border:1px solid var(--border); border-radius:10px; padding:10px 12px; background:var(--panel); font-size:12.5px; line-height:1.55;}
+  .fx-card b{color:var(--text);}
+  .fx-avisos{margin:0 0 12px; font-size:12.5px; line-height:1.5;}
+  .fx-avisos div{margin:0 0 4px;}
+  .fx-view{display:inline-flex; gap:0;}
+  .fx-view button{margin:0; border-radius:0;}
+  .fx-view button:first-child{border-radius:8px 0 0 8px;}
+  .fx-view button:last-child{border-radius:0 8px 8px 0;}
   .pd-filter-badge{cursor:pointer; user-select:none; transition:filter .12s;}
   .pd-filter-badge:hover{filter:brightness(1.25);}
   .pd-filter-badge.pd-filter-active{outline:2px solid currentColor; outline-offset:1px;}
@@ -840,7 +867,7 @@ body.gate-open{overflow:hidden;}
   <div class="dlg-body">
     <h3 id="kbdTitle">Atajos de teclado</h3>
     <dl class="kbd-list">
-      <div><dt><kbd>Alt</kbd> <kbd>1</kbd> … <kbd>4</kbd></dt><dd>Ir a la pestaña 1, 2, 3 o 4</dd></div>
+      <div><dt><kbd>Alt</kbd> <kbd>1</kbd> … <kbd>5</kbd></dt><dd>Ir a la pestaña 1, 2, 3, 4 o 5</dd></div>
       <div><dt><kbd>/</kbd></dt><dd>Buscar en la tabla de la pestaña</dd></div>
       <div><dt><kbd>Ctrl</kbd> <kbd>Z</kbd></dt><dd>Deshacer el último cambio masivo</dd></div>
       <div><dt><kbd>Alt</kbd> <kbd>B</kbd></dt><dd>Contraer o abrir el menú lateral</dd></div>
@@ -863,6 +890,7 @@ body.gate-open{overflow:hidden;}
     <button type="button" data-tab="tab-pending" id="tabBtn2" role="tab" aria-selected="false" aria-controls="tab-pending" tabindex="-1" title="Documentos pendientes (Alt+2)"><span class="tn-num">2</span><span class="tn-text"><span class="tn-title">Documentos pendientes</span><span class="tn-hint">Cruce con facturas por pagar</span></span><span class="tn-count" id="tabCount2"></span></button>
     <button type="button" data-tab="tab-concar" id="tabBtn3" role="tab" aria-selected="false" aria-controls="tab-concar" tabindex="-1" title="Formato CONCAR (Alt+3)"><span class="tn-num">3</span><span class="tn-text"><span class="tn-title">Formato CONCAR</span><span class="tn-hint">Asientos listos para importar</span></span><span class="tn-count" id="tabCount3"></span></button>
     <button type="button" data-tab="tab-tesoreria" id="tabBtn4" role="tab" aria-selected="false" aria-controls="tab-tesoreria" tabindex="-1" title="Cruce con Tesorería (Alt+4)"><span class="tn-num">4</span><span class="tn-text"><span class="tn-title">Cruce con Tesorería</span><span class="tn-hint">Banco contra registros</span></span><span class="tn-count" id="tabCount4"></span></button>
+    <button type="button" data-tab="tab-fx" id="tabBtn5" role="tab" aria-selected="false" aria-controls="tab-fx" tabindex="-1" title="Diferencia de cambio (Alt+5)"><span class="tn-num">5</span><span class="tn-text"><span class="tn-title">Diferencia de cambio</span><span class="tn-hint">Ajuste de saldos residuales</span></span><span class="tn-count" id="tabCount5"></span></button>
   </nav>
   <div class="rail-foot">
     <div id="acctSlotRail">
@@ -1163,6 +1191,9 @@ body.gate-open{overflow:hidden;}
             <div><label>Saldo Dólares</label><select id="map_saldoUsd"></select></div>
             <div><label>Saldo Soles</label><select id="map_saldoPen"></select></div>
             <div><label>Anexo / RUC (opcional)</label><select id="map_anexo"></select></div>
+            <div><label>Fecha del documento (para el cruce sugerido)</label><select id="map_fecha"></select></div>
+            <div><label>Fecha de vencimiento (opcional)</label><select id="map_venc"></select></div>
+            <div><label>Nombre del cliente / proveedor (opcional)</label><select id="map_nombre"></select></div>
           </div>
           <button id="pdConfirmMapBtn" class="secondary"><svg class="ico"><use href="#i-check"/></svg>Confirmar columnas</button>
         </div>
@@ -1175,7 +1206,7 @@ body.gate-open{overflow:hidden;}
           <div class="tablewrap">
             <table id="pdDocsTable">
               <thead>
-                <tr><th>Cuenta</th><th>Tipo</th><th>N° Doc.</th><th>Moneda</th><th>Saldo USD</th><th>Saldo PEN</th><th>Anexo</th><th></th></tr>
+                <tr><th>Cuenta</th><th>Tipo</th><th>N° Doc.</th><th>Moneda</th><th>Saldo USD</th><th>Saldo PEN</th><th>Anexo</th><th>Fecha doc.</th><th>Nombre</th><th></th></tr>
               </thead>
               <tbody id="pdDocsBody"></tbody>
             </table>
@@ -1193,7 +1224,16 @@ body.gate-open{overflow:hidden;}
         <input type="text" id="pdTolerancia" value="20">
         <span style="font-size:11px; color:var(--muted);">Diferencia ≤ 1.00 = coincidencia exacta. Entre 1.00 y este valor = sugerencia a revisar. Más que esto = sin match.</span>
         <button id="pdCruzarBtn" style="margin-top:12px;" disabled><svg class="ico"><use href="#i-scale"/></svg>Cruzar documentos</button>
-        <button id="pdExportBtn" class="green" style="margin-top:8px;" disabled><svg class="ico"><use href="#i-download"/></svg>Exportar resultado</button>
+        <div class="sug-box">
+          <label style="margin-bottom:2px;">Movimientos sin sustento</label>
+          <details class="help"><summary>Cómo funcionan «Sugerir cruce» y «Forzar cruce»</summary><div>Muchas empresas no tienen su banco al detalle (la glosa solo dice «TRAN.CTAS.TERC»). Estos dos botones trabajan sobre los movimientos que el cruce simple dejó <b>Sin match</b> (y re-evalúan las «Sugerencias» de poca confianza). Se usan las fechas de los documentos, por eso conviene mapear «Fecha del documento» en el paso 2. <b>Sugerir cruce</b> solo propone, por orden de confianza: (1) un documento de importe igual, de fecha cercana; (2) un cobro neto de detracción del 4/10/12/15 %; (3) varios comprobantes de un mismo cliente o proveedor que suman justo el importe; (4) un documento de importe parecido. Lo que no calce queda <b>Sin match</b> con los documentos más parecidos en la nota. <b>Forzar cruce</b> hace lo mismo y, para lo que siga vacío, consume el saldo de los documentos pendientes hasta agotarlos: si el banco nombra al tercero («DE PAPELERA DEL PERU»), el más antiguo de ese cliente primero; si no, parte del documento más parecido en importe y fecha y sigue con lo más antiguo del mismo proveedor. Un solo movimiento puede cancelar varios comprobantes y un comprobante puede cancelarse en partes: el programa lleva el <b>saldo restante</b> de cada documento, así que nunca usa uno que ya no tiene saldo ni lo cancela por más de lo que debe. Reglas: un <b>cobro</b> (abono, Sub Diario 21) cancela saldos al debe (positivos del reporte); un <b>pago</b> (cargo, Sub Diario 22) cancela saldos al haber (negativos: cuentas 42 y demás pasivos). Las notas de crédito que ya anulan su factura no se ofrecen al banco; los documentos en dólares no se cruzan con cuentas en soles. En una transferencia a otro banco desde BCP se separan los S/ 4.80 de comisión y se cancelan contra la factura del banco (o van a 639101 si no hay factura). Todo lo que no sea «Exacto» sale con <b>Revisar = SI</b> en el CONCAR y con la explicación en la nota. Es una sugerencia: confírmala antes de subirla al sistema.</div></details>
+          <div class="sug-btns">
+            <button id="pdSugerirBtn" class="secondary" disabled><svg class="ico"><use href="#i-wand"/></svg>Sugerir cruce</button>
+            <button id="pdForzarBtn" class="secondary" disabled><svg class="ico"><use href="#i-scale"/></svg>Forzar cruce</button>
+          </div>
+          <div class="sug-resumen" id="pdSugResumen"></div>
+        </div>
+        <button id="pdExportBtn" class="green" style="margin-top:12px;" disabled><svg class="ico"><use href="#i-download"/></svg>Exportar resultado</button>
       </div>
 
     </div>
@@ -1206,6 +1246,8 @@ body.gate-open{overflow:hidden;}
         <span class="badge pill-sugerencia pd-filter-badge" id="pdCountSugerencia" data-estado="Sugerencia" title="Clic para ver solo estos">Sugerencias: 0</span>
         <span class="badge pill-manual pd-filter-badge" id="pdCountManual" data-estado="Manual" title="Clic para ver solo estos">Manuales: 0</span>
         <span class="badge pill-yaasignado pd-filter-badge" id="pdCountYaAsignado" data-estado="Ya asignado" title="Clic para ver solo estos">Ya asignados: 0</span>
+        <span class="badge pill-forzado pd-filter-badge" id="pdCountForzado" data-estado="Forzado" title="Clic para ver solo estos">Forzados: 0</span>
+        <span class="badge pill-bad pd-filter-badge" id="pdCountSinSustento" data-estado="Sin sustento" title="Clic para ver solo estos">Sin sustento: 0</span>
         <span class="badge pill-sinmatch pd-filter-badge" id="pdCountSinMatch" data-estado="Sin match" title="Clic para ver solo estos">Sin match: 0</span>
         <span class="badge pill-noaplica pd-filter-badge" id="pdCountNoAplica" data-estado="No aplica" title="Clic para ver solo estos">No aplica: 0</span>
         <span class="badge" id="pdFilterActiveLabel" style="display:none; cursor:pointer;" title="Clic para quitar el filtro">Mostrando solo: <span id="pdFilterActiveName"></span> ✕</span>
@@ -1216,7 +1258,7 @@ body.gate-open{overflow:hidden;}
           <thead>
             <tr>
               <th>Fecha</th><th>Descripción</th><th>N° Oper.</th><th class="num col-abono">Abono</th><th class="num col-cargo">Cargo</th><th class="num col-saldo">Saldo</th><th>Banco</th><th>Moneda</th>
-              <th>Cuenta Contable</th><th>Anexo/RUC</th><th>Tipo Doc.</th><th>N° Doc.</th><th>Estado</th>
+              <th>Cuenta Contable</th><th>Anexo/RUC</th><th>Tipo Doc.</th><th>N° Doc.</th><th>Importes por comprobante</th><th>Estado</th>
             </tr>
           </thead>
           <tbody id="pdBody"></tbody>
@@ -1246,7 +1288,7 @@ body.gate-open{overflow:hidden;}
       <details class="help flat"><summary>Formato de columnas esperado</summary><div>
         Columnas esperadas al subir un Excel (el mismo formato que usan las demás pestañas): <b>Fecha, Descripción, N° Operación, Abono, Cargo, Saldo, Banco, Moneda, Cuenta Contable, Anexo/RUC, Tipo Doc., N° Doc.</b>
         El orden no importa y los nombres pueden variar un poco, se detectan de forma flexible. "Cuenta Contable" cumple ambos roles: cuenta directa para movimientos sin documento (ITF, comisiones, AFP, etc.) o cuenta del documento cuando ya viene de un cruce con Pestaña 2 — en ese caso, complétala junto con Tipo Doc. y N° Doc. Usa el botón "Descargar plantilla Excel" para tener el formato exacto listo para llenar.
-        <br><br><b>Monto con signo:</b> en lugar de Abono y Cargo puedes traer una sola columna <b>Monto</b> (negativo, como -S/ 934.80, es cargo; positivo es abono).
+        <br><br><b>Monto con signo:</b> en lugar de Abono y Cargo puedes traer una sola columna <b>Monto</b> o <b>Movimiento</b> (negativo, como -S/ 934.80, es cargo; positivo es abono). La plantilla trae las dos formas en pestañas separadas: <i>Formato Cargo-Abono</i> y <i>Formato Monto (alternativo)</i>. Llena solo una; si el libro tiene datos en las dos, se lee la que dejaste seleccionada al guardar (las filas de ejemplo de la plantilla se ignoran).
         <br><b>Varios comprobantes:</b> el signo <b>|</b> separa comprobantes en <i>Tipo Doc.</i>, <i>N° Doc.</i>, <i>Anexo/RUC</i> y <i>Cuenta Contable</i> (ej. <i>RH|FT</i> con <i>E001-42|FN01-50098378</i>; o <i>FT</i> con <i>F001-1|F001-2</i>). Cada comprobante genera su propia línea en el asiento; una columna con un solo valor se repite en todas las líneas. El importe de cada línea sale de Documentos pendientes y, si no se sabe, queda en blanco.
       </div></details>
 
@@ -1401,6 +1443,114 @@ body.gate-open{overflow:hidden;}
   </div>
 </div>
 <!-- /tab-tesoreria -->
+
+<!-- ============================================================
+     TAB 5: DIFERENCIA DE CAMBIO
+     ============================================================ -->
+<div id="tab-fx" class="tabpanel">
+  <div class="layout">
+    <div class="panel">
+      <div class="step-card" id="fxStep1">
+        <div class="step-head">
+          <span class="step-num">1</span>
+          <span class="step-title">Documentos pendientes (CONCAR)</span>
+          <span class="step-check">✓ listo</span>
+        </div>
+        <div class="step-sub">Sube el reporte de documentos pendientes al cierre del mes (el mismo de la Pestaña 2). Se detectan las columnas y la fecha de corte solas.</div>
+        <div class="dropzone" id="fxDropzone">Arrastra el Excel aquí<br>o haz clic para seleccionar</div>
+        <input type="file" id="fxFileInput" accept=".xlsx,.xls" style="display:none;">
+        <div class="source-toggle" style="margin-top:8px;">
+          <button class="secondary" id="fxUseTab2Btn"><svg class="ico"><use href="#i-undo"/></svg>Usar los de la Pestaña 2</button>
+        </div>
+        <div class="status" id="fxFileStatus"></div>
+      </div>
+
+      <div class="step-card" id="fxStep2">
+        <div class="step-head">
+          <span class="step-num">2</span>
+          <span class="step-title">Documentos a cancelar</span>
+          <span class="step-check">✓ listo</span>
+        </div>
+        <details class="help"><summary>Qué se sugiere y por qué</summary><div>Al cierre del mes algunos documentos quedan con un saldo <b>residual</b> por el tipo de cambio: solo queda saldo en dólares (en soles ya es cero), solo en soles, con signo contrario, o con dólares y soles que no guardan relación entre sí. Esos son los <b>sugeridos</b> y vienen marcados. Los <b>ínfimos</b> (saldo normal pero de hasta US$ 1) no se marcan solos. Puedes marcar o desmarcar cualquier documento: el programa solo cancela lo que tú dejes marcado.</div></details>
+        <div class="step-sub" id="fxSelResumen">Aún no hay documentos cargados.</div>
+      </div>
+
+      <div class="step-card" id="fxStep3">
+        <div class="step-head">
+          <span class="step-num">3</span>
+          <span class="step-title">Datos del asiento</span>
+        </div>
+        <div class="cfg-grid">
+          <div><label>Fecha del asiento (dd/mm/aaaa)</label><input type="text" id="fxFecha" placeholder="31/10/2026"></div>
+          <div><label>Sub Diario</label><input type="text" id="fxSubdiario" value="56"></div>
+          <div><label>Correlativo inicial</label><input type="text" id="fxCorrelativo" value="1"></div>
+          <div><label>Glosa</label><input type="text" id="fxGlosa" value="AJUS DIF"></div>
+        </div>
+        <details class="help flat" style="margin-top:8px;"><summary>Cuentas y otros datos</summary><div>
+          <div class="cfg-grid" style="margin-top:6px;">
+            <div><label>Cuenta de pérdida (Debe)</label><input type="text" id="fxCtaPerdida" value="676101"></div>
+            <div><label>Cuenta de ganancia (Haber)</label><input type="text" id="fxCtaGanancia" value="776101"></div>
+            <div><label>Centro de costo</label><input type="text" id="fxCentroCosto" value="200"></div>
+            <div><label>Código de Área</label><input type="text" id="fxArea" value="050"></div>
+            <div><label>Tipo de documento (contrapartida)</label><input type="text" id="fxTipoDocDif" value="VR"></div>
+            <div><label>N° de documento (vacío = AAAAMM)</label><input type="text" id="fxNroDocDif" placeholder="202610"></div>
+            <div><label>Medio de Pago</label><input type="text" id="fxMedioPago" value="002"></div>
+          </div>
+          <label class="dlg-check" style="margin-top:10px; display:flex; gap:8px; align-items:flex-start;"><input type="checkbox" id="fxGananciaSep"><span>Documentos en soles (MN): enviar la ganancia a la cuenta de ganancia. Si lo dejas sin marcar, el asiento en soles lleva Debe y Haber en la cuenta de pérdida, como en tu ejemplo de setiembre.</span></label>
+        </div></details>
+        <details class="help"><summary>Cómo se arma el asiento</summary><div>Cada documento marcado genera una línea que <b>cancela su saldo</b>: un saldo positivo (Debe) se cancela con Haber y uno negativo (Haber) con Debe; si el saldo en dólares y el de soles tienen signo contrario, salen dos líneas. «Importe Original» queda en blanco y los montos van en las columnas Dólares y Soles (Flag de Conversión N). Se arma <b>un asiento por moneda del documento</b> (MN y US) con correlativo que empieza con el mes (por ejemplo 100001). La contrapartida va a pérdida en el Debe y ganancia en el Haber, con el centro de costo indicado y un documento VR del mes, de modo que <b>Debe = Haber en dólares y en soles</b>.</div></details>
+        <button id="fxGenerarBtn" style="margin-top:6px;" disabled><svg class="ico"><use href="#i-wand"/></svg>Generar asiento de ajuste</button>
+        <button id="fxExportBtn" class="green" style="margin-top:8px;" disabled><svg class="ico"><use href="#i-download"/></svg>Descargar Excel CONCAR</button>
+        <div class="sug-resumen" id="fxResumen"></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="toolbar">
+        <div class="searchbox"><svg class="ico"><use href="#i-search"/></svg><input type="text" id="fxSearchInput" placeholder="Buscar documento, cliente, cuenta…" aria-label="Buscar en la tabla" autocomplete="off"></div>
+        <span class="badge fx-filter-badge" id="fxCountTodos" data-f="all" role="button" tabindex="0" title="Ver todos los documentos">Todos: 0</span>
+        <span class="badge pill-sugerencia fx-filter-badge" id="fxCountSug" data-f="sug" role="button" tabindex="0" title="Ver solo los sugeridos">Sugeridos: 0</span>
+        <span class="badge pill-yaasignado fx-filter-badge" id="fxCountInfimo" data-f="infimo" role="button" tabindex="0" title="Ver solo los saldos ínfimos">Ínfimos: 0</span>
+        <span class="badge pill-exacto fx-filter-badge" id="fxCountSel" data-f="sel" role="button" tabindex="0" title="Ver solo los marcados">Marcados: 0</span>
+        <button class="ghost sm clr tb-clear" data-clear-tab="5" title="Borra los documentos y el asiento de esta pestaña"><svg class="ico"><use href="#i-trash"/></svg>Limpiar pestaña</button>
+      </div>
+      <div class="toolbar">
+        <button class="secondary sm" id="fxMarkSugBtn"><svg class="ico"><use href="#i-wand"/></svg>Marcar sugeridos</button>
+        <button class="secondary sm" id="fxMarkVisBtn"><svg class="ico"><use href="#i-check"/></svg>Marcar los visibles</button>
+        <button class="secondary sm" id="fxMarkNoneBtn">Quitar marcas</button>
+        <span class="fx-view" role="group" aria-label="Vista">
+          <button class="sm" id="fxViewDocs">Documentos</button>
+          <button class="secondary sm" id="fxViewAsiento">Asiento generado</button>
+        </span>
+      </div>
+      <div id="fxDocsWrap">
+        <div class="tablewrap">
+          <table id="fxTable">
+            <thead>
+              <tr><th><input type="checkbox" id="fxChkAll" aria-label="Marcar o desmarcar los visibles"></th><th>Cuenta</th><th>Anexo/RUC</th><th>Cliente / proveedor</th><th>Tipo</th><th>N° Doc.</th><th>Mon.</th><th>Fecha</th><th>Saldo US$</th><th>Saldo S/</th><th>Motivo</th></tr>
+            </thead>
+            <tbody id="fxBody"></tbody>
+          </table>
+          <div class="empty" id="fxEmptyMsg">Sube el reporte de documentos pendientes para ver qué saldos quedaron residuales.</div>
+        </div>
+      </div>
+      <div id="fxPreviewWrap" hidden>
+        <div class="fx-avisos hint" id="fxAvisos" hidden></div>
+        <div class="fx-asientos" id="fxAsientosBox"></div>
+        <div class="tablewrap">
+          <table id="fxLinesTable">
+            <thead>
+              <tr><th>Sub.D</th><th>Comprob.</th><th>Fecha</th><th>Mon.</th><th>Cuenta</th><th>Anexo</th><th>C.C.</th><th>D/H</th><th>US$</th><th>S/</th><th>Tipo</th><th>N° Doc.</th><th>Fecha doc.</th></tr>
+            </thead>
+            <tbody id="fxLinesBody"></tbody>
+          </table>
+          <div class="empty" id="fxLinesEmpty">Marca los documentos y presiona «Generar asiento de ajuste».</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /tab-fx -->
 </div>
 </div>
 <div class="gate" id="gate" hidden role="dialog" aria-modal="true" aria-labelledby="gateTitle">
@@ -1459,7 +1609,7 @@ window.EC_CONFIG = { API_URL: "PEGA_AQUI_LA_URL_DEL_SERVIDOR", GEO: true };
    Acceso: usuario + contraseña (se validan en cada pedido; la contraseña vive solo en memoria),
    equipo autorizado (id guardado en este navegador) y RUC habilitados.
    ============================================================ */
-const EC_CLIENT_VERSION = '1.0.0';
+const EC_CLIENT_VERSION = '1.2.1';
 const EC_USER_STORE = 'ec_usuario';
 const EC_DEVICE_STORE = 'ec_deviceId';
 const EC_URL_STORE = 'ec_api_url';
@@ -1978,6 +2128,32 @@ async function cruzarDocumentos(){
   }catch(e){ ecFail(e); }
 }
 
+/* Sugerir / forzar cruce de los movimientos sin sustento (el criterio vive en el servidor). */
+async function sugerirCruceDocs(modo){
+  if(!(pdMovements.length && pendingDocs.length)) return;
+  if(!pdResults.length) await cruzarDocumentos();            // primero el cruce simple, si todavia no se hizo
+  if(!pdResults.length) return;
+  const btn = modo === 'forzar' ? pdForzarBtn : pdSugerirBtn;
+  const tolerancia = parseFloat(pdTolerancia.value) || 0;
+  const anio = parseInt((document.getElementById('cfgAnio') || {}).value, 10) || undefined;
+  try{
+    const d = await EC.call('suggestCross', { movements: pdResults, docs: pendingDocs, tolerancia, modo, anio },
+      { heavy: true, label: modo === 'forzar' ? 'Forzando el cruce con los saldos pendientes…' : 'Buscando documentos que respalden los movimientos…', btn });
+    pdResults = d.results || [];
+    recomputePdDuplicates();
+    renderPdTable();
+    const r = d.resumen || {};
+    const partes = [];
+    if(r['Sugerencia']) partes.push(`<b>${r['Sugerencia']}</b> sugerencia(s)`);
+    if(r['Forzado']) partes.push(`<b>${r['Forzado']}</b> forzado(s)`);
+    if(r['Sin sustento']) partes.push(`<b>${r['Sin sustento']}</b> sin sustento`);
+    if(r['Sin match']) partes.push(`<b>${r['Sin match']}</b> siguen sin match`);
+    const avisos = (d.avisos || []).map(a => `<div>• ${escapeHtml(a)}</div>`).join('');
+    document.getElementById('pdSugResumen').innerHTML = (partes.length ? (modo === 'forzar' ? 'Cruce forzado: ' : 'Sugerencias: ') + partes.join(' · ') + '. Revisa cada fila (pasa el mouse por «Estado» o por los importes para leer el porqué).' : 'No había movimientos vacíos que cruzar.') + avisos;
+    toast(modo === 'forzar' ? 'Cruce forzado listo: revísalo antes de subirlo.' : 'Sugerencias listas: revísalas.', 'ok');
+  }catch(e){ ecFail(e); }
+}
+
 /* ---------------- Pestaña 3: formato CONCAR ---------------- */
 async function cgGenerar(){
   if(!cgMovements.length){ cgSourceStatus.textContent = 'Primero carga movimientos (Pestaña 1, Pestaña 2 o un Excel).'; return; }
@@ -2165,7 +2341,8 @@ const Shell = (function(){
     'tab-recon': { title: 'Conciliación bancaria', sub: 'De los extractos bancarios en PDF o Excel a movimientos ordenados, con controles que avisan si falta alguno.' },
     'tab-pending': { title: 'Documentos pendientes', sub: 'Cruza cada movimiento del banco con los documentos pendientes de pago del cliente.' },
     'tab-concar': { title: 'Formato CONCAR', sub: 'Arma los asientos de bancos, revísalos y exporta el archivo listo para importar en CONCAR.' },
-    'tab-tesoreria': { title: 'Cruce con Tesorería', sub: 'Compara lo que muestra el banco con los registros de Tesorería y deja a la vista lo que no coincide.' }
+    'tab-tesoreria': { title: 'Cruce con Tesorería', sub: 'Compara lo que muestra el banco con los registros de Tesorería y deja a la vista lo que no coincide.' },
+    'tab-fx': { title: 'Diferencia de cambio', sub: 'Sube los documentos pendientes, marca los que quieres cancelar y descarga el asiento de ajuste para CONCAR.' }
   };
   const state = { processing: false };
 
@@ -2283,7 +2460,7 @@ const Shell = (function(){
       const dlg = $('kbdDlg');
       if(dlg && dlg.open) return;
       if(e.altKey && !e.ctrlKey && !e.metaKey){
-        const m = /^Digit([1-4])$/.exec(e.code || '');
+        const m = /^Digit([1-5])$/.exec(e.code || '');
         if(m){ e.preventDefault(); goTab(+m[1] - 1, false); return; }
         if(e.code === 'KeyB'){ e.preventDefault(); toggleRail(); return; }
         if(e.code === 'KeyP'){ e.preventDefault(); toggleSrc(); return; }
@@ -2481,7 +2658,8 @@ function extState(){
     tes: {
       mios: tesMovimientos, tesoreria: tesoreriaMovimientos, results: tesResults, misResultados,
       tolerancia: (document.getElementById('tesTolerancia') || {}).value
-    }
+    },
+    fx: fxState()
   };
 }
 
@@ -2572,6 +2750,7 @@ function applyExtState(ext){
     const tolEl = document.getElementById('tesTolerancia');
     if(tolEl && ext.tes.tolerancia !== undefined && ext.tes.tolerancia !== '') tolEl.value = ext.tes.tolerancia;
   }
+  if(ext.fx) fxApplyState(ext.fx);
 }
 
 function loadState(){
@@ -3234,7 +3413,8 @@ function updateTabBadges(){
     ['tab-recon', 'tabCount1', movements.length],
     ['tab-pending', 'tabCount2', pdResults.length],
     ['tab-concar', 'tabCount3', cgRows.length],
-    ['tab-tesoreria', 'tabCount4', tesResults.length]
+    ['tab-tesoreria', 'tabCount4', tesResults.length],
+    ['tab-fx', 'tabCount5', fxRows.length]
   ];
   defs.forEach(d => {
     const cnt = document.getElementById(d[1]);
@@ -3301,13 +3481,57 @@ function cloneMovements(arr){
   return arr.map(m => ({ ...m }));
 }
 
-async function readExcelFile(file){
-  const buf = await file.arrayBuffer();
-  const wb = XLSX.read(buf, { type: 'array' });
-  const ws = wb.Sheets[wb.SheetNames[0]];
+/* Descripciones de las filas de ejemplo de las plantillas descargables: una hoja que solo
+   contiene esas filas es "ejemplo sin llenar", no datos del usuario. */
+const TEMPLATE_EXAMPLE_DESCS = new Set(['000E00100002325 UNIVER', 'PAGOS AFP HABITAT', 'TRANSF.BCO.BBVA', 'PAGO PROVEEDOR XYZ', 'COBRO CLIENTE ABC']);
+
+function sheetRowsClean_(ws){
   const rows = XLSX.utils.sheet_to_json(ws, { defval: '' });
   // Excels con cientos de filas vacias formateadas al final: no son movimientos.
   return rows.filter(r => Object.values(r).some(v => String(v == null ? '' : v).trim() !== ''));
+}
+function sheetIsTemplateExample_(rows){
+  if(!rows.length) return false;
+  return rows.every(r => {
+    const k = Object.keys(r).find(h => /^descripci/i.test(String(h).trim()));
+    return k && TEMPLATE_EXAMPLE_DESCS.has(String(r[k]).trim().toUpperCase());
+  });
+}
+
+/* Lee un Excel de movimientos. Con opts.pickSheet y varias hojas (p. ej. la plantilla con
+   "Formato Cargo-Abono" y "Formato Monto (alternativo)") usa la hoja que tenga datos del
+   usuario: descarta las que solo traen los ejemplos de la plantilla y, si quedan varias
+   con datos, la hoja activa al guardar. Sin opts, lee siempre la primera hoja. El arreglo
+   devuelto lleva .sheetName / .sheetCount / .otherData para informar cuál se leyó. */
+async function readExcelFile(file, opts){
+  const buf = await file.arrayBuffer();
+  const wb = XLSX.read(buf, { type: 'array' });
+  const names = wb.SheetNames;
+  let pick = 0, others = [];
+  if(opts && opts.pickSheet && names.length > 1){
+    let cand = names.map((n, i) => ({ n, i, rows: sheetRowsClean_(wb.Sheets[n]) })).filter(s => s.rows.length);
+    const real = cand.filter(s => !sheetIsTemplateExample_(s.rows));
+    if(real.length) cand = real;
+    if(cand.length){
+      /* SheetJS expone la pestaña activa guardada por Excel en Workbook.WBView[0].activeTab. */
+      const act = parseInt((((wb.Workbook || {}).WBView || [])[0] || {}).activeTab, 10) || 0;
+      const chosen = cand.find(s => s.i === act) || cand[0];
+      pick = chosen.i;
+      others = cand.filter(s => s !== chosen && !sheetIsTemplateExample_(s.rows)).map(s => s.n);
+    }
+  }
+  const rows = sheetRowsClean_(wb.Sheets[names[pick]]);
+  rows.sheetName = names[pick];
+  rows.sheetCount = names.length;
+  rows.otherData = others;
+  return rows;
+}
+/* Texto breve para el estado de carga: indica la hoja leída si el libro tiene varias. */
+function sheetNote_(rows){
+  if(!rows || !rows.sheetCount || rows.sheetCount < 2) return '';
+  let t = ` (hoja «${rows.sheetName}»`;
+  if(rows.otherData && rows.otherData.length) t += `; también hay datos en ${rows.otherData.map(n => '«' + n + '»').join(', ')}, que no se leyeron`;
+  return t + ')';
 }
 
 
@@ -3331,6 +3555,11 @@ const pdFileStatus = document.getElementById('pdFileStatus');
 const pdMappingBox = document.getElementById('pdMappingBox');
 const pdConfirmMapBtn = document.getElementById('pdConfirmMapBtn');
 const pdCruzarBtn = document.getElementById('pdCruzarBtn');
+const pdSugerirBtn = document.getElementById('pdSugerirBtn');
+const pdForzarBtn = document.getElementById('pdForzarBtn');
+function setPdBtns(){ const ok = !!(pdMovements.length && pendingDocs.length); pdCruzarBtn.disabled = !ok; pdSugerirBtn.disabled = !ok; pdForzarBtn.disabled = !ok; }
+pdSugerirBtn.addEventListener('click', () => sugerirCruceDocs('sugerir'));
+pdForzarBtn.addEventListener('click', () => sugerirCruceDocs('forzar'));
 const pdExportBtn = document.getElementById('pdExportBtn');
 const pdTolerancia = document.getElementById('pdTolerancia');
 const pdBody = document.getElementById('pdBody');
@@ -3340,7 +3569,7 @@ function setPdMovements(arr, label){
   pdMovements = cloneMovements(arr);
   pdBankSourceStatus.textContent = `${label}: ${pdMovements.length} movimientos cargados.`;
   document.getElementById('pdStep1').classList.toggle('step-done', pdMovements.length > 0);
-  pdCruzarBtn.disabled = !(pdMovements.length && pendingDocs.length);
+  setPdBtns();
   scheduleExtSave();
 }
 
@@ -3364,11 +3593,11 @@ pdBankFileInput.addEventListener('change', async (e) => {
   const file = e.target.files[0];
   if(!file) return;
   try{
-    const rows = await readExcelFile(file);
+    const rows = await readExcelFile(file, { pickSheet: true });
     if(!rows.length){ pdBankSourceStatus.textContent = 'El archivo no tiene filas de datos.'; return; }
     const headers = Object.keys(rows[0]);
     const mapped = await mapBankRemote(rows, headers);
-    setPdMovements(mapped, file.name);
+    setPdMovements(mapped, file.name + sheetNote_(rows));
   }catch(err){
     pdBankSourceStatus.textContent = 'Error leyendo el Excel: ' + err.message;
   }
@@ -3399,7 +3628,7 @@ async function handlePdFile(file){
     pendingDocsRaw = rows;
     if(!pendingDocsRaw.length){ pdFileStatus.textContent = 'El archivo no tiene filas de datos.'; return; }
     pendingDocsHeaders = headers;
-    ['map_cuenta','map_tipo','map_nrodoc','map_moneda','map_saldoUsd','map_saldoPen','map_anexo'].forEach(id => {
+    ['map_cuenta','map_tipo','map_nrodoc','map_moneda','map_saldoUsd','map_saldoPen','map_anexo','map_fecha','map_venc','map_nombre'].forEach(id => {
       const sel = document.getElementById(id);
       sel.innerHTML = '<option value="">(ninguna)</option>' + pendingDocsHeaders.map(h => `<option value="${escapeHtml(h)}">${escapeHtml(h)}</option>`).join('');
       const guess = (guessMap || {})[id];
@@ -3414,7 +3643,7 @@ async function handlePdFile(file){
 
 pdConfirmMapBtn.addEventListener('click', async () => {
   const val = id => document.getElementById(id).value;
-  const mapping = { cuenta: val('map_cuenta'), tipo: val('map_tipo'), nrodoc: val('map_nrodoc'), moneda: val('map_moneda'), saldoUsd: val('map_saldoUsd'), saldoPen: val('map_saldoPen'), anexo: val('map_anexo') };
+  const mapping = { cuenta: val('map_cuenta'), tipo: val('map_tipo'), nrodoc: val('map_nrodoc'), moneda: val('map_moneda'), saldoUsd: val('map_saldoUsd'), saldoPen: val('map_saldoPen'), anexo: val('map_anexo'), fecha: val('map_fecha'), venc: val('map_venc'), nombre: val('map_nombre') };
   try{
     const d = await EC.call('buildDocs', { raw: pendingDocsRaw, mapping }, { heavy: true, label: 'Leyendo los documentos pendientes…', btn: pdConfirmMapBtn });
     pendingDocs = d.docs || [];
@@ -3422,7 +3651,7 @@ pdConfirmMapBtn.addEventListener('click', async () => {
   pdFileStatus.textContent = `Columnas confirmadas: ${pendingDocs.length} documentos pendientes con saldo distinto de cero.`;
   document.getElementById('pdDocsBox').style.display = 'block';
   renderPdDocsTable();
-  pdCruzarBtn.disabled = !(pdMovements.length && pendingDocs.length);
+  setPdBtns();
 });
 
 function renderPdDocsTable(){
@@ -3438,6 +3667,8 @@ function renderPdDocsTable(){
       <td contenteditable="true" data-field="saldoUsd" class="num">${d.saldoUsd ? d.saldoUsd.toFixed(2) : ''}</td>
       <td contenteditable="true" data-field="saldoPen" class="num">${d.saldoPen ? d.saldoPen.toFixed(2) : ''}</td>
       <td contenteditable="true" data-field="anexo">${escapeHtml(d.anexo)}</td>
+      <td contenteditable="true" data-field="fecha">${escapeHtml(d.fecha || '')}</td>
+      <td contenteditable="true" data-field="nombre">${escapeHtml(d.nombre || '')}</td>
       <td class="row-actions"><span data-i="${i}" class="delDocRow">\u2715</span></td>
     `;
     body.appendChild(tr);
@@ -3461,11 +3692,11 @@ function renderPdDocsTable(){
   });
   document.getElementById('pdDocsCount').textContent = `${pendingDocs.length} documentos`;
   document.getElementById('pdStep2').classList.toggle('step-done', pendingDocs.length > 0);
-  pdCruzarBtn.disabled = !(pdMovements.length && pendingDocs.length);
+  setPdBtns();
 }
 
 document.getElementById('pdAddDocBtn').addEventListener('click', () => {
-  pendingDocs.push({ cuenta: '', tipo: '', nrodoc: '', moneda: 'PEN', saldoUsd: 0, saldoPen: 0, anexo: '', used: false });
+  pendingDocs.push({ cuenta: '', tipo: '', nrodoc: '', moneda: 'PEN', saldoUsd: 0, saldoPen: 0, anexo: '', fecha: '', venc: '', nombre: '', used: false });
   document.getElementById('pdDocsBox').style.display = 'block';
   renderPdDocsTable();
 });
@@ -3480,6 +3711,8 @@ function pdPillClass(estado){
     : estado === 'Manual' ? 'pill-manual'
     : estado === 'No aplica' ? 'pill-noaplica'
     : estado === 'Ya asignado' ? 'pill-yaasignado'
+    : estado === 'Forzado' ? 'pill-forzado'
+    : estado === 'Sin sustento' ? 'pill-bad'
     : 'pill-sinmatch';
 }
 
@@ -3489,13 +3722,13 @@ function pdPillClass(estado){
 function recomputePdDuplicates(){
   const docKeyCount = {};
   pdResults.forEach(r => {
-    if(r.estado === 'Exacto' || r.estado === 'Sugerencia' || r.estado === 'Manual'){
+    if((r.estado === 'Exacto' || r.estado === 'Sugerencia' || r.estado === 'Manual') && !r.sugNivel){
       const key = r.cuentaContable + '|' + r.docTipo + '|' + r.docNroDoc;
       docKeyCount[key] = (docKeyCount[key] || 0) + 1;
     }
   });
   pdResults.forEach(r => {
-    if(r.estado === 'Exacto' || r.estado === 'Sugerencia' || r.estado === 'Manual'){
+    if((r.estado === 'Exacto' || r.estado === 'Sugerencia' || r.estado === 'Manual') && !r.sugNivel){
       const key = r.cuentaContable + '|' + r.docTipo + '|' + r.docNroDoc;
       r.duplicateSuggestion = docKeyCount[key] > 1;
     } else {
@@ -3505,12 +3738,14 @@ function recomputePdDuplicates(){
 }
 
 function updatePdCounts(){
-  const counts = { 'Exacto': 0, 'Sugerencia': 0, 'Manual': 0, 'Sin match': 0, 'No aplica': 0, 'Ya asignado': 0 };
+  const counts = { 'Exacto': 0, 'Sugerencia': 0, 'Manual': 0, 'Sin match': 0, 'No aplica': 0, 'Ya asignado': 0, 'Forzado': 0, 'Sin sustento': 0 };
   pdResults.forEach(r => { counts[r.estado] = (counts[r.estado] || 0) + 1; });
   document.getElementById('pdCountExacto').textContent = `Exactos: ${counts['Exacto'] || 0}`;
   document.getElementById('pdCountSugerencia').textContent = `Sugerencias: ${counts['Sugerencia'] || 0}`;
   document.getElementById('pdCountManual').textContent = `Manuales: ${counts['Manual'] || 0}`;
   document.getElementById('pdCountYaAsignado').textContent = `Ya asignados: ${counts['Ya asignado'] || 0}`;
+  document.getElementById('pdCountForzado').textContent = `Forzados: ${counts['Forzado'] || 0}`;
+  document.getElementById('pdCountSinSustento').textContent = `Sin sustento: ${counts['Sin sustento'] || 0}`;
   document.getElementById('pdCountSinMatch').textContent = `Sin match: ${counts['Sin match'] || 0}`;
   document.getElementById('pdCountNoAplica').textContent = `No aplica: ${counts['No aplica'] || 0}`;
 }
@@ -3564,6 +3799,16 @@ function applyPdFilter(){
   }
 }
 
+function pdFmt2(x){ const n = parseFloat(x); return isNaN(n) ? '' : n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+function pdDetalleHtml(r){
+  const bits = [];
+  if(r.docMontos) bits.push(String(r.docMontos).split('|').map(pdFmt2).join(' | '));
+  if(parseFloat(r.docComision) > 0) bits.push('+ comisión 639101: ' + pdFmt2(r.docComision));
+  if(parseFloat(r.docResto) > 0) bits.push('+ sin documento: ' + pdFmt2(r.docResto));
+  if(!bits.length && !r.sugNota) return '';
+  const nota = r.sugNota ? `<span class="nota">${escapeHtml(r.sugNota)}</span>` : '';
+  return `<div class="sug-detalle" title="${escapeHtml(r.sugNota || '')}">${bits.map(escapeHtml).join('<br>')}${nota}</div>`;
+}
 function renderPdTable(){
   pdBody.innerHTML = '';
   pdResults.forEach((r, i) => {
@@ -3584,7 +3829,8 @@ function renderPdTable(){
       <td contenteditable="true" data-field="docAnexo">${escapeHtml(r.docAnexo)}</td>
       <td contenteditable="true" data-field="docTipo">${escapeHtml(r.docTipo)}</td>
       <td contenteditable="true" data-field="docNroDoc">${escapeHtml(r.docNroDoc)}</td>
-      <td><span class="badge ${pdPillClass(r.estado)}">${escapeHtml(r.estado)}</span>${r.duplicateSuggestion ? ' <span title="El mismo documento quedó asignado más de una vez — revisa cuál corresponde realmente." style="color:var(--danger); cursor:help;">⚠</span>' : ''}</td>
+      <td data-detalle="1">${pdDetalleHtml(r)}</td>
+      <td><span class="badge ${pdPillClass(r.estado)}" title="${escapeHtml(r.sugNota || '')}">${escapeHtml(r.estado)}</span>${r.duplicateSuggestion ? ' <span title="El mismo documento quedó asignado más de una vez — revisa cuál corresponde realmente." style="color:var(--danger); cursor:help;">⚠</span>' : ''}</td>
     `;
     pdBody.appendChild(tr);
   });
@@ -3595,7 +3841,14 @@ function renderPdTable(){
       const idx = parseInt(tr.dataset.i, 10);
       const field = e.target.dataset.field;
       const val = e.target.textContent.trim();
+      const antes = pdResults[idx][field];
       pdResults[idx][field] = val;
+      // si se corrige a mano una fila que venia del cruce sugerido/forzado, deja de ser una sugerencia
+      if((antes || '') !== val && (pdResults[idx].sugNivel || pdResults[idx].docMontos)){
+        const r0 = pdResults[idx];
+        r0.estado = 'Manual'; r0.docMontos = ''; r0.docResto = 0; r0.docComision = 0; r0.sugNivel = ''; r0.sugNota = '';
+        const det = tr.querySelector('td[data-detalle]'); if(det) det.innerHTML = '';
+      }
       // Si se le llena a mano la cuenta o el N° de documento a una fila que no tenia match
       // automatico (Sin match o No aplica), se marca como "Manual" para distinguirla de un
       // cruce automatico y que quede registrada la correccion.
@@ -3637,11 +3890,12 @@ pdExportBtn.addEventListener('click', () => {
     Abono: r.abono ? parseFloat(r.abono) : '', Cargo: r.cargo ? parseFloat(r.cargo) : '',
     Saldo: r.saldo ? parseFloat(r.saldo) : '', Banco: r.banco, Moneda: r.moneda,
     'Cuenta Contable': r.cuentaContable, 'Anexo/RUC': r.docAnexo, 'Tipo Doc.': r.docTipo, 'N\u00b0 Doc.': r.docNroDoc,
-    Estado: r.estado,
+    'Importes por comprobante': r.docMontos || '', 'Sin documento': r.docResto || '', 'Comisi\u00f3n 639101': r.docComision || '',
+    Estado: r.estado, 'Nota del cruce': r.sugNota || '',
     Traspaso: r.traspaso || ''
   }));
   const ws = XLSX.utils.json_to_sheet(data);
-  ws['!cols'] = [{wch:12},{wch:40},{wch:12},{wch:12},{wch:12},{wch:14},{wch:14},{wch:9},{wch:14},{wch:16},{wch:12},{wch:14},{wch:14}];
+  ws['!cols'] = [{wch:12},{wch:40},{wch:12},{wch:12},{wch:12},{wch:14},{wch:14},{wch:9},{wch:14},{wch:16},{wch:12},{wch:22},{wch:22},{wch:12},{wch:12},{wch:14},{wch:60},{wch:14}];
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, 'Cruce');
   const today = new Date().toISOString().slice(0,10);
@@ -3683,11 +3937,11 @@ cgBankFileInput.addEventListener('change', async (e) => {
   const file = e.target.files[0];
   if(!file) return;
   try{
-    const rows = await readExcelFile(file);
+    const rows = await readExcelFile(file, { pickSheet: true });
     if(!rows.length){ cgSourceStatus.textContent = 'El archivo no tiene filas de datos.'; return; }
     const headers = Object.keys(rows[0]);
     cgMovements = await mapBankRemote(rows, headers);
-    cgSourceStatus.textContent = `${file.name}: ${cgMovements.length} movimientos cargados.`;
+    cgSourceStatus.textContent = `${file.name}${sheetNote_(rows)}: ${cgMovements.length} movimientos cargados.`;
   }catch(err){
     cgSourceStatus.textContent = 'Error leyendo el Excel: ' + err.message;
   }
@@ -3696,14 +3950,24 @@ cgBankFileInput.addEventListener('change', async (e) => {
 
 const cgTemplateBtn = document.getElementById('cgTemplateBtn');
 cgTemplateBtn.addEventListener('click', () => {
-  const data = [
+  /* Dos pesta\u00f1as con los mismos ejemplos: (1) Abono y Cargo en columnas separadas y
+     (2) el movimiento en una sola columna "Monto" con signo (negativo = cargo, positivo =
+     abono), que es como lo exportan algunas \u00e1reas de finanzas / ERP. Se llena UNA de las dos. */
+  const conCargoAbono = [
     { Fecha:'25/06/2026', Descripci\u00f3n:'000E00100002325 UNIVER', 'N\u00b0 Operaci\u00f3n':'474111', Abono:17445.12, Cargo:'', Saldo:'', Banco:'BCP', Moneda:'PEN', 'Cuenta Contable':'1212', 'Anexo/RUC':'20601234567', 'Tipo Doc.':'FAC', 'N\u00b0 Doc.':'E001-500' },
     { Fecha:'07/06/2026', Descripci\u00f3n:'PAGOS AFP HABITAT', 'N\u00b0 Operaci\u00f3n':'004387', Abono:'', Cargo:386.97, Saldo:'', Banco:'BCP', Moneda:'PEN', 'Cuenta Contable':'407101', 'Anexo/RUC':'', 'Tipo Doc.':'', 'N\u00b0 Doc.':'' }
   ];
-  const ws = XLSX.utils.json_to_sheet(data);
-  ws['!cols'] = [{wch:12},{wch:30},{wch:14},{wch:12},{wch:12},{wch:14},{wch:9},{wch:9},{wch:14},{wch:16},{wch:12},{wch:10}];
+  const conMonto = [
+    { Fecha:'25/06/2026', Descripci\u00f3n:'000E00100002325 UNIVER', 'N\u00b0 Operaci\u00f3n':'474111', Monto:17445.12, Saldo:'', Banco:'BCP', Moneda:'PEN', 'Cuenta Contable':'1212', 'Anexo/RUC':'20601234567', 'Tipo Doc.':'FAC', 'N\u00b0 Doc.':'E001-500' },
+    { Fecha:'07/06/2026', Descripci\u00f3n:'PAGOS AFP HABITAT', 'N\u00b0 Operaci\u00f3n':'004387', Monto:-386.97, Saldo:'', Banco:'BCP', Moneda:'PEN', 'Cuenta Contable':'407101', 'Anexo/RUC':'', 'Tipo Doc.':'', 'N\u00b0 Doc.':'' }
+  ];
+  const ws1 = XLSX.utils.json_to_sheet(conCargoAbono);
+  ws1['!cols'] = [{wch:12},{wch:30},{wch:14},{wch:12},{wch:12},{wch:14},{wch:9},{wch:9},{wch:14},{wch:16},{wch:12},{wch:10}];
+  const ws2 = XLSX.utils.json_to_sheet(conMonto);
+  ws2['!cols'] = [{wch:12},{wch:30},{wch:14},{wch:12},{wch:14},{wch:9},{wch:9},{wch:14},{wch:16},{wch:12},{wch:10}];
   const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, 'Movimientos');
+  XLSX.utils.book_append_sheet(wb, ws1, 'Formato Cargo-Abono');
+  XLSX.utils.book_append_sheet(wb, ws2, 'Formato Monto (alternativo)');
   XLSX.writeFile(wb, 'plantilla_movimientos_concar.xlsx');
 });
 
@@ -4231,11 +4495,11 @@ document.getElementById('tesMiosFileInput').addEventListener('change', async (e)
   if(!file) return;
   const status = document.getElementById('tesMiosStatus');
   try{
-    const rows = await readExcelFile(file);
+    const rows = await readExcelFile(file, { pickSheet: true });
     if(!rows.length){ status.textContent = 'El archivo no tiene filas de datos.'; return; }
     const headers = Object.keys(rows[0]);
     tesMovimientos = await mapBankRemote(rows, headers);
-    status.textContent = `${file.name}: ${tesMovimientos.length} movimientos.`;
+    status.textContent = `${file.name}${sheetNote_(rows)}: ${tesMovimientos.length} movimientos.`;
   }catch(err){
     status.textContent = 'Error leyendo el Excel: ' + err.message;
   }
@@ -4269,11 +4533,11 @@ tesFileInput.addEventListener('change', async (e) => {
   if(!file) return;
   const status = document.getElementById('tesFileStatus');
   try{
-    const rows = await readExcelFile(file);
+    const rows = await readExcelFile(file, { pickSheet: true });
     if(!rows.length){ status.textContent = 'El archivo no tiene filas de datos.'; return; }
     const headers = Object.keys(rows[0]);
     tesoreriaMovimientos = await mapTesRemote(rows, headers);
-    status.textContent = `${file.name}: ${tesoreriaMovimientos.length} registros de tesorer\u00eda.`;
+    status.textContent = `${file.name}${sheetNote_(rows)}: ${tesoreriaMovimientos.length} registros de tesorer\u00eda.`;
   }catch(err){
     status.textContent = 'Error leyendo el Excel: ' + err.message;
   }
@@ -4634,7 +4898,7 @@ function projectYear(){
 }
 
 function hasAnyData(){
-  return !!(movements.length || pdMovements.length || pendingDocs.length || cgRows.length || tesMovimientos.length || tesoreriaMovimientos.length);
+  return !!(movements.length || pdMovements.length || pendingDocs.length || cgRows.length || tesMovimientos.length || tesoreriaMovimientos.length || fxDocs.length);
 }
 
 function downloadJson(obj, filename){
@@ -4698,7 +4962,7 @@ function renderTab2(){
   document.getElementById('pdStep1').classList.toggle('step-done', pdMovements.length > 0);
   document.getElementById('pdStep2').classList.toggle('step-done', pendingDocs.length > 0);
   pdFileStatus.textContent = pendingDocs.length ? `${pendingDocs.length} documentos pendientes cargados.` : '';
-  pdCruzarBtn.disabled = !(pdMovements.length && pendingDocs.length);
+  setPdBtns();
   renderPdTable();
 }
 function renderTab3(){
@@ -4719,10 +4983,258 @@ function renderAllTabs(){
   renderTab2();
   renderTab3();
   renderTab4();
+  renderTab5();
   updateTabBadges();
   renderFileList();
   processBtn.disabled = files.length === 0;
 }
+
+/* ============================================================
+   TAB 5: DIFERENCIA DE CAMBIO
+   Sube el reporte de documentos pendientes, marca los documentos a cancelar y baja el asiento de ajuste.
+   El criterio (qué es un residuo y cómo se arma el asiento) vive en el servidor.
+   ============================================================ */
+let fxDocs = [];        // documentos del reporte, con fxCat / fxSug / fxNota (servidor) y fxSel (lo marcado)
+let fxRows = [];        // lineas CONCAR generadas
+let fxAsientos = [];    // resumen por asiento
+let fxAvisos = [];
+let fxCorte = '';
+let fxEmpresa = '';
+let fxFilter = 'sug';
+let fxView = 'docs';
+let fxStale = false;    // la seleccion cambio despues de generar
+const FX_CFG_IDS = ['fxFecha','fxSubdiario','fxCorrelativo','fxGlosa','fxCtaPerdida','fxCtaGanancia','fxCentroCosto','fxTipoDocDif','fxNroDocDif','fxArea','fxMedioPago'];
+const FX_CATS = {
+  'usd-solo': { t: 'Solo dólares', c: 'pill-sugerencia' },
+  'pen-solo': { t: 'Solo soles', c: 'pill-sugerencia' },
+  'opuestos': { t: 'Signos contrarios', c: 'pill-sugerencia' },
+  'sin-relacion': { t: 'Sin relación de T.C.', c: 'pill-sugerencia' },
+  'infimo': { t: 'Saldo ínfimo', c: 'pill-yaasignado' },
+  'normal': { t: 'Saldo normal', c: 'pill-noaplica' }
+};
+const fxEl = id => document.getElementById(id);
+const fxLean = d => ({ cuenta: d.cuenta, tipo: d.tipo, nrodoc: d.nrodoc, moneda: d.moneda, saldoUsd: d.saldoUsd, saldoPen: d.saldoPen, anexo: d.anexo, fecha: d.fecha, venc: d.venc, nombre: d.nombre });
+const fxNum = x => { const n = parseFloat(x); return isNaN(n) ? '' : n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); };
+
+function fxCfgValues(){ const o = {}; FX_CFG_IDS.forEach(id => { const e = fxEl(id); if(e) o[id] = e.value; }); return o; }
+function fxState(){
+  return { docs: fxDocs, rows: fxRows, asientos: fxAsientos, avisos: fxAvisos, corte: fxCorte, empresa: fxEmpresa, filter: fxFilter, view: fxView, stale: fxStale,
+           cfg: fxCfgValues(), gsep: !!(fxEl('fxGananciaSep') || {}).checked };
+}
+function fxApplyState(s){
+  if(!s || typeof s !== 'object') return;
+  fxDocs = Array.isArray(s.docs) ? s.docs : [];
+  fxRows = Array.isArray(s.rows) ? s.rows : [];
+  fxAsientos = Array.isArray(s.asientos) ? s.asientos : [];
+  fxAvisos = Array.isArray(s.avisos) ? s.avisos : [];
+  fxCorte = String(s.corte || ''); fxEmpresa = String(s.empresa || '');
+  fxFilter = ['all', 'sug', 'infimo', 'sel'].includes(s.filter) ? s.filter : 'sug';
+  fxView = s.view === 'asiento' ? 'asiento' : 'docs';
+  fxStale = !!s.stale;
+  if(s.cfg) FX_CFG_IDS.forEach(id => { const e = fxEl(id); if(e && s.cfg[id] !== undefined && s.cfg[id] !== '') e.value = s.cfg[id]; });
+  const g = fxEl('fxGananciaSep'); if(g) g.checked = !!s.gsep;
+}
+
+/* Revisa los saldos en el servidor y deja listos los documentos (los sugeridos quedan marcados). */
+async function fxCargarDocs(docs, corte, empresa){
+  const d = await EC.call('fxAnalyze', { docs: docs.map(fxLean) }, { heavy: true, label: 'Revisando los saldos de cada documento…' });
+  const items = (d && d.items) || [];
+  fxDocs = docs.map((x, i) => {
+    const it = items[i] || {};
+    return { ...fxLean(x), fxCat: it.cat || '', fxSug: !!it.sug, fxNota: it.nota || '', fxSel: !!it.sug };
+  }).filter(x => x.fxCat);
+  fxCorte = corte || ''; fxEmpresa = empresa || '';
+  if(corte) fxEl('fxFecha').value = corte;
+  fxRows = []; fxAsientos = []; fxAvisos = []; fxStale = false; fxView = 'docs';
+  fxFilter = fxDocs.some(x => x.fxSug) ? 'sug' : 'all';
+  renderTab5();
+  scheduleExtSave();
+}
+
+async function fxHandleFile(file){
+  const st = fxEl('fxFileStatus');
+  try{
+    st.textContent = 'Leyendo ' + file.name + '…';
+    const r = await readReportRemote(file);
+    if(!r || !r.rows || !r.rows.length){ st.textContent = 'El archivo no tiene filas de datos.'; return; }
+    const g = r.guess || {};
+    const faltan = [['map_cuenta', 'Cuenta'], ['map_nrodoc', 'N° Documento'], ['map_moneda', 'Moneda'], ['map_saldoUsd', 'Saldo Dólares'], ['map_saldoPen', 'Saldo Soles']].filter(x => !g[x[0]]).map(x => x[1]);
+    if(faltan.length){ st.textContent = 'No se reconocieron estas columnas del reporte: ' + faltan.join(', ') + '. Usa el reporte de documentos pendientes de CONCAR tal como sale del sistema.'; return; }
+    const mapping = { cuenta: g.map_cuenta, tipo: g.map_tipo, nrodoc: g.map_nrodoc, moneda: g.map_moneda, saldoUsd: g.map_saldoUsd, saldoPen: g.map_saldoPen, anexo: g.map_anexo, fecha: g.map_fecha, venc: g.map_venc, nombre: g.map_nombre };
+    const b = await EC.call('buildDocs', { raw: r.rows, mapping }, { heavy: true, label: 'Leyendo los documentos pendientes…' });
+    await fxCargarDocs(b.docs || [], r.corte || '', r.empresa || '');
+    fxEl('fxFileStatus').textContent = file.name + ': ' + fxResumenCarga();
+  }catch(e){ st.textContent = 'No se pudo leer el reporte.'; ecFail(e); }
+}
+function fxResumenCarga(){
+  const nSug = fxDocs.filter(d => d.fxSug).length;
+  return `${fxDocs.length} documentos con saldo` + (fxEmpresa ? ' · ' + fxEmpresa : '') + (fxCorte ? ' · corte al ' + fxCorte : '') + ` · ${nSug} con saldo residual sugeridos.`;
+}
+
+function fxVisibles(){
+  const q = ((fxEl('fxSearchInput') || {}).value || '').trim().toLowerCase();
+  return fxDocs.map((d, i) => ({ d, i })).filter(x => {
+    if(fxFilter === 'sug' && !x.d.fxSug) return false;
+    if(fxFilter === 'infimo' && x.d.fxCat !== 'infimo') return false;
+    if(fxFilter === 'sel' && !x.d.fxSel) return false;
+    if(q && ![x.d.cuenta, x.d.anexo, x.d.nombre, x.d.tipo, x.d.nrodoc, x.d.moneda].join(' ').toLowerCase().includes(q)) return false;
+    return true;
+  });
+}
+
+function renderFxTable(){
+  const body = fxEl('fxBody');
+  const vis = fxVisibles();
+  body.innerHTML = vis.map(({ d, i }) => {
+    const cat = FX_CATS[d.fxCat] || { t: '', c: '' };
+    const u = parseFloat(d.saldoUsd) || 0, p = parseFloat(d.saldoPen) || 0;
+    return `<tr class="${d.fxSel ? 'fx-sel' : ''}" data-i="${i}">
+      <td><input type="checkbox" class="fx-chk" data-i="${i}" ${d.fxSel ? 'checked' : ''} aria-label="Cancelar ${escapeHtml(d.tipo)} ${escapeHtml(d.nrodoc)}"></td>
+      <td>${escapeHtml(d.cuenta)}</td><td>${escapeHtml(d.anexo)}</td><td>${escapeHtml(d.nombre)}</td><td>${escapeHtml(d.tipo)}</td><td>${escapeHtml(d.nrodoc)}</td>
+      <td>${d.moneda === 'USD' ? 'US' : 'MN'}</td><td>${escapeHtml(d.fecha)}</td>
+      <td class="num ${u < 0 ? 'neg' : ''}">${fxNum(u)}</td><td class="num ${p < 0 ? 'neg' : ''}">${fxNum(p)}</td>
+      <td class="nota"><span class="badge ${cat.c}">${cat.t}</span>${d.fxNota ? ' ' + escapeHtml(d.fxNota) : ''}</td></tr>`;
+  }).join('');
+  fxEl('fxEmptyMsg').style.display = vis.length ? 'none' : 'block';
+  fxEl('fxEmptyMsg').textContent = fxDocs.length ? 'Ningún documento coincide con el filtro o la búsqueda.' : 'Sube el reporte de documentos pendientes para ver qué saldos quedaron residuales.';
+  const all = fxEl('fxChkAll');
+  if(all){ const n = vis.filter(x => x.d.fxSel).length; all.checked = vis.length > 0 && n === vis.length; all.indeterminate = n > 0 && n < vis.length; }
+}
+
+function renderFxPreview(){
+  const f2 = x => fxNum(x);
+  fxEl('fxAsientosBox').innerHTML = fxAsientos.map(a => {
+    const neto = a.neto || 0;
+    return `<div class="fx-card"><div><b>Sub Diario ${escapeHtml(a.subdiario)} · ${escapeHtml(a.numero)}</b> <span class="badge">${escapeHtml(a.moneda)}</span></div>
+      <div>${a.documentos} documentos · ${a.lineas} líneas</div>
+      <div>Total Debe = Haber: US$ ${f2(a.totalUsd)} · S/ ${f2(a.totalPen)}</div>
+      <div>Ganancia S/ ${f2(a.ganancia)} · Pérdida S/ ${f2(a.perdida)}<br><b>${neto >= 0 ? 'Resultado: ganancia' : 'Resultado: pérdida'} de S/ ${f2(Math.abs(neto))}</b></div></div>`;
+  }).join('');
+  const av = fxEl('fxAvisos');
+  const msgs = (fxStale ? ['La selección cambió después de generar: vuelve a generar el asiento antes de descargar.'] : []).concat(fxAvisos);
+  av.hidden = !msgs.length;
+  av.innerHTML = msgs.map(m => `<div>• ${escapeHtml(m)}</div>`).join('');
+  fxEl('fxLinesBody').innerHTML = fxRows.map(r => {
+    const contra = !String(r['Código de Anexo'] || '').trim() && /^(67|77)/.test(String(r['Cuenta Contable']));
+    const u = parseFloat(r['Importe en Dólares']) || 0, p = parseFloat(r['Importe en Soles']) || 0;
+    return `<tr class="${contra ? 'fx-contra' : ''}"><td>${escapeHtml(r['Sub Diario'])}</td><td>${escapeHtml(r['Número de Comprobante'])}</td><td>${escapeHtml(r['Fecha de Comprobante'])}</td><td>${escapeHtml(r['Código de Moneda'])}</td>
+      <td>${escapeHtml(r['Cuenta Contable'])}</td><td>${escapeHtml(r['Código de Anexo'])}</td><td>${escapeHtml(r['Código de Centro de Costo'])}</td><td>${escapeHtml(r['Debe / Haber'])}</td>
+      <td class="num">${fxNum(u)}</td><td class="num">${fxNum(p)}</td><td>${escapeHtml(r['Tipo de Documento'])}</td><td>${escapeHtml(r['Número de Documento'])}</td><td>${escapeHtml(r['Fecha de Documento'])}</td></tr>`;
+  }).join('');
+  fxEl('fxLinesEmpty').style.display = fxRows.length ? 'none' : 'block';
+}
+
+function renderTab5(){
+  const nSel = fxDocs.filter(d => d.fxSel).length;
+  fxEl('fxCountTodos').textContent = `Todos: ${fxDocs.length}`;
+  fxEl('fxCountSug').textContent = `Sugeridos: ${fxDocs.filter(d => d.fxSug).length}`;
+  fxEl('fxCountInfimo').textContent = `Ínfimos: ${fxDocs.filter(d => d.fxCat === 'infimo').length}`;
+  fxEl('fxCountSel').textContent = `Marcados: ${nSel}`;
+  document.querySelectorAll('.fx-filter-badge').forEach(b => b.classList.toggle('fx-filter-active', b.dataset.f === fxFilter));
+  fxEl('fxStep1').classList.toggle('step-done', fxDocs.length > 0);
+  fxEl('fxStep2').classList.toggle('step-done', nSel > 0);
+  fxEl('fxSelResumen').textContent = fxDocs.length ? `${nSel} de ${fxDocs.length} documentos marcados para cancelar.` : 'Aún no hay documentos cargados.';
+  if(fxDocs.length && !fxEl('fxFileStatus').textContent) fxEl('fxFileStatus').textContent = fxResumenCarga();
+  if(!fxDocs.length) fxEl('fxFileStatus').textContent = '';
+  fxEl('fxGenerarBtn').disabled = nSel === 0;
+  fxEl('fxExportBtn').disabled = !fxRows.length || fxStale;
+  fxEl('fxDocsWrap').hidden = fxView !== 'docs';
+  fxEl('fxPreviewWrap').hidden = fxView !== 'asiento';
+  fxEl('fxViewDocs').className = 'sm' + (fxView === 'docs' ? '' : ' secondary');
+  fxEl('fxViewAsiento').className = 'sm' + (fxView === 'asiento' ? '' : ' secondary');
+  renderFxTable();
+  renderFxPreview();
+  updateTabBadges();
+}
+
+function fxSelChanged(){
+  if(fxRows.length) fxStale = true;
+  renderTab5();
+  scheduleExtSave();
+}
+
+async function fxGenerarAsiento(){
+  const sel = fxDocs.filter(d => d.fxSel);
+  if(!sel.length){ toast('Marca al menos un documento a cancelar.', 'warn'); return; }
+  const fecha = fxEl('fxFecha').value.trim();
+  if(!/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(fecha)){ toast('Escribe la fecha del asiento (dd/mm/aaaa).', 'warn'); fxEl('fxFecha').focus(); return; }
+  const v = id => fxEl(id).value.trim();
+  const cfg = { fecha, subdiario: v('fxSubdiario'), correlativo: v('fxCorrelativo'), glosa: v('fxGlosa'), ctaPerdida: v('fxCtaPerdida'), ctaGanancia: v('fxCtaGanancia'),
+                centroCosto: v('fxCentroCosto'), tipoDocDif: v('fxTipoDocDif'), nroDocDif: v('fxNroDocDif'), area: v('fxArea'), medioPago: v('fxMedioPago'),
+                gananciaSeparadaMN: fxEl('fxGananciaSep').checked };
+  try{
+    const d = await EC.call('fxGenerate', { docs: sel.map(fxLean), cfg }, { heavy: true, label: 'Armando el asiento de ajuste…', btn: fxEl('fxGenerarBtn') });
+    fxRows = d.rows || []; fxAsientos = d.asientos || []; fxAvisos = d.avisos || []; fxStale = false;
+    fxView = 'asiento';
+    renderTab5();
+    scheduleExtSave();
+    const resumen = fxAsientos.map(a => `Asiento ${a.subdiario}-${a.numero} (${a.moneda}): ${a.documentos} documentos, ${a.lineas} líneas.`).join(' ');
+    fxEl('fxResumen').textContent = resumen + (fxRows.length ? ' Debe = Haber en dólares y en soles.' : '');
+    toast('Asiento de ajuste generado.', 'ok');
+  }catch(e){ ecFail(e); }
+}
+
+function fxExportar(){
+  if(!fxRows.length || fxStale){ toast('Genera el asiento antes de descargarlo.', 'warn'); return; }
+  const data = fxRows.map(r => {
+    const o = {};
+    CONCAR_HEADERS.forEach(h => { o[h] = r[h] != null ? r[h] : ''; });
+    if(o['Importe Original'] === '') o['Importe Original'] = null;
+    return o;
+  });
+  const ws = XLSX.utils.json_to_sheet(data, { header: CONCAR_HEADERS });
+  ['Importe en Dólares', 'Importe en Soles'].forEach(h => {
+    const c = CONCAR_HEADERS.indexOf(h);
+    for(let r = 1; r <= data.length; r++){ const a = XLSX.utils.encode_cell({ r, c }); if(ws[a] && typeof ws[a].v === 'number') ws[a].z = '0.00'; }
+  });
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'CONCAR');
+  const m = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/.exec(fxEl('fxFecha').value.trim());
+  const tag = m ? m[3] + m[2].padStart(2, '0') : new Date().toISOString().slice(0, 7).replace('-', '');
+  XLSX.writeFile(wb, `ajuste_diferencia_cambio_${tag}.xlsx`);
+}
+
+(function wireFx(){
+  const dz = fxEl('fxDropzone'), inp = fxEl('fxFileInput');
+  dz.addEventListener('click', () => inp.click());
+  dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('drag'); });
+  dz.addEventListener('dragleave', () => dz.classList.remove('drag'));
+  dz.addEventListener('drop', e => { e.preventDefault(); dz.classList.remove('drag'); const f = e.dataTransfer.files[0]; if(f) fxHandleFile(f); });
+  inp.addEventListener('change', e => { const f = e.target.files[0]; if(f) fxHandleFile(f); inp.value = ''; });
+  fxEl('fxUseTab2Btn').addEventListener('click', async () => {
+    if(!pendingDocs.length){ fxEl('fxFileStatus').textContent = 'La Pestaña 2 aún no tiene documentos pendientes.'; return; }
+    try{ await fxCargarDocs(pendingDocs, '', ''); fxEl('fxFileStatus').textContent = 'Pestaña 2: ' + fxResumenCarga(); }catch(e){ ecFail(e); }
+  });
+  fxEl('fxBody').addEventListener('change', e => {
+    const c = e.target.closest('.fx-chk'); if(!c) return;
+    const d = fxDocs[parseInt(c.dataset.i, 10)]; if(!d) return;
+    d.fxSel = c.checked; fxSelChanged();
+  });
+  fxEl('fxBody').addEventListener('click', e => {
+    if(e.target.closest('.fx-chk') || e.target.closest('a')) return;
+    const tr = e.target.closest('tr[data-i]'); if(!tr) return;
+    const d = fxDocs[parseInt(tr.dataset.i, 10)]; if(!d) return;
+    d.fxSel = !d.fxSel; fxSelChanged();
+  });
+  fxEl('fxChkAll').addEventListener('change', e => { fxVisibles().forEach(x => { x.d.fxSel = e.target.checked; }); fxSelChanged(); });
+  fxEl('fxMarkSugBtn').addEventListener('click', () => { fxDocs.forEach(d => { d.fxSel = d.fxSug; }); fxSelChanged(); });
+  fxEl('fxMarkVisBtn').addEventListener('click', () => { fxVisibles().forEach(x => { x.d.fxSel = true; }); fxSelChanged(); });
+  fxEl('fxMarkNoneBtn').addEventListener('click', () => { fxDocs.forEach(d => { d.fxSel = false; }); fxSelChanged(); });
+  document.querySelectorAll('.fx-filter-badge').forEach(b => {
+    const go = () => { fxFilter = b.dataset.f; renderTab5(); scheduleExtSave(); };
+    b.addEventListener('click', go);
+    b.addEventListener('keydown', e => { if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); go(); } });
+  });
+  fxEl('fxSearchInput').addEventListener('input', renderFxTable);
+  fxEl('fxViewDocs').addEventListener('click', () => { fxView = 'docs'; renderTab5(); scheduleExtSave(); });
+  fxEl('fxViewAsiento').addEventListener('click', () => { fxView = 'asiento'; renderTab5(); scheduleExtSave(); });
+  fxEl('fxGenerarBtn').addEventListener('click', fxGenerarAsiento);
+  fxEl('fxExportBtn').addEventListener('click', fxExportar);
+  FX_CFG_IDS.concat(['fxGananciaSep']).forEach(id => {
+    const e = fxEl(id); if(!e) return;
+    e.addEventListener('change', () => { if(fxRows.length && !fxStale){ fxStale = true; renderTab5(); } scheduleExtSave(); });
+  });
+})();
 
 /* ============================================================
    LIMPIAR: por pestana, todo el proyecto, reglas y configuracion
@@ -4772,7 +5284,9 @@ const TAB_CLEAR = {
   3: { name: 'Pestaña 3 (Formato CONCAR)', has: () => cgMovements.length > 0 || cgRows.length > 0,
        text: 'Se borran los movimientos y el formato CONCAR generado en esta pestaña. La configuración contable se conserva.' },
   4: { name: 'Pestaña 4 (Cruce con Tesorería)', has: () => tesMovimientos.length > 0 || tesoreriaMovimientos.length > 0 || tesResults.length > 0,
-       text: 'Se borran tus movimientos, el archivo de Tesorería y el cruce de esta pestaña. La Pestaña 1 no se toca.' }
+       text: 'Se borran tus movimientos, el archivo de Tesorería y el cruce de esta pestaña. La Pestaña 1 no se toca.' },
+  5: { name: 'Pestaña 5 (Diferencia de cambio)', has: () => fxDocs.length > 0 || fxRows.length > 0,
+       text: 'Se borran los documentos cargados, lo que marcaste y el asiento generado en esta pestaña. Los datos del asiento (cuentas, sub diario) se conservan.' }
 };
 
 function wipeTab(n){
@@ -4801,6 +5315,12 @@ function wipeTab(n){
     const si = document.getElementById('tesSearchInput'); if(si) si.value = '';
     renderTab4();
   }
+  if(n === 5){
+    fxDocs = []; fxRows = []; fxAsientos = []; fxAvisos = []; fxCorte = ''; fxEmpresa = ''; fxFilter = 'sug'; fxView = 'docs'; fxStale = false;
+    const si = fxEl('fxSearchInput'); if(si) si.value = '';
+    fxEl('fxResumen').textContent = '';
+    renderTab5();
+  }
   updateTabBadges();
   markChanged();
 }
@@ -4828,6 +5348,7 @@ function showRestoreBanner(){
   if(pdResults.length || pendingDocs.length) parts.push('cruce de documentos');
   if(cgRows.length) parts.push('formato CONCAR');
   if(tesResults.length) parts.push('cruce con Tesorería');
+  if(fxDocs.length) parts.push('diferencia de cambio');
   document.getElementById('restoreText').textContent = `Se recuperó el trabajo anterior de este navegador${projectMeta.cliente ? ' (' + projectMeta.cliente + ')' : ''}: ${parts.join(', ')}. Si es de otro cliente, empieza de cero.`;
   b.hidden = false;
 }
