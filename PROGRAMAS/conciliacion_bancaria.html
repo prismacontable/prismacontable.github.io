@@ -547,6 +547,67 @@
   .sh-grid .ci-chk input, .ci-chk input{width:auto; margin:0; flex:0 0 auto;}
   #ciSum .warn{color:var(--warn); font-weight:600;}
   #diaStep4 .dia-btns.row2{margin-top:8px;}
+  /* ---------- v1.7: saldo inicial, categorías, razones sociales, comisión y filtros por columna ---------- */
+  #diaMovTable{min-width:1340px;}
+  #diaMovTable td.c-com, #diaMovTable th.c-com{text-align:center; width:64px; min-width:64px; padding-left:4px; padding-right:4px;}
+  #diaMovTable td.c-com input[type=checkbox]{width:16px; height:16px; margin:0; cursor:pointer;}
+  #diaMovTable td.desc .glosa{display:block; margin-top:2px; font-size:11.5px; font-weight:600; color:var(--accent-ink); line-height:1.3;}
+  #diaMovTable tr.dia-colf th{top:var(--th1,30px); padding:3px 5px; background:var(--panel2); z-index:2; font-weight:400;}
+  #diaMovTable tr.dia-colf th:first-child{z-index:3;}
+  #diaMovTable tr.dia-colf input, #diaMovTable tr.dia-colf select{margin:0; width:100%; min-width:0; padding:3px 5px; font-size:12px; border-radius:5px; background:var(--panel); height:auto;}
+  #diaMovTable tr.dia-colf select{padding-right:18px; text-overflow:ellipsis;}
+  #diaMovTable tr.dia-colf .on{border-color:var(--accent); box-shadow:0 0 0 1px var(--accent) inset; background:var(--accent-bg);}
+  #diaMovTable tr.dia-colf th.num input{text-align:right;}
+  .dia-kpi.sal .s b{color:var(--text); font-weight:600;}
+  .dia-kpi.sal .s.warn{color:var(--warn);}
+  .sb-row{padding:10px 0; border-bottom:1px solid var(--rule);}
+  .sb-h{display:flex; gap:8px 12px; flex-wrap:wrap; align-items:center; justify-content:space-between; margin-bottom:6px; font-size:13px;}
+  .sb-h span{font-size:12px; color:var(--muted);} .sb-h span button{margin:0 0 0 4px; width:auto;}
+  .sb-f{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto; gap:8px 10px; align-items:end;}
+  .sb-f label{display:block; font-size:12.5px; font-weight:700; color:var(--muted); margin:0 0 3px;}
+  .sb-f input{margin:0; width:100%;} .sb-f button{width:auto; margin:0;}
+  .cat-add{display:grid; grid-template-columns:minmax(0,1.6fr) minmax(0,1fr) auto; gap:8px;}
+  .cat-add input, .cat-add select{margin:0; width:100%;} .cat-add button{width:auto; margin:0;}
+  .cat-list{max-height:min(46vh,420px); overflow:auto; border-top:1px solid var(--rule); margin-top:4px;}
+  .cat-grp{padding:10px 0 4px; font-size:13px; position:sticky; top:0; background:var(--panel); z-index:1;}
+  .cat-grp small{color:var(--faint); font-weight:400; margin-left:4px;}
+  .cat-row{display:grid; grid-template-columns:minmax(0,1.5fr) minmax(0,1fr) minmax(70px,auto) auto; gap:6px 8px; align-items:center; padding:3px 0;}
+  .cat-row input, .cat-row select{margin:0; width:100%; padding:5px 8px; font-size:13px;}
+  .cat-row button{width:auto; margin:0;}
+  .cat-tag{font-size:11.5px; color:var(--faint); white-space:nowrap;}
+  .rs-bar{display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin:6px 0 8px;}
+  .rs-bar input[type=text]{flex:1 1 220px; margin:0; min-width:0;} .rs-bar button{width:auto; margin:0;}
+  .rs-tab{max-height:min(40vh,360px); margin-bottom:10px;}
+  .rs-tab td{padding:3px 5px;} .rs-tab input{margin:0; width:100%; padding:4px 7px; font-size:12.5px;}
+  .rs-tab td:first-child{width:128px;} .rs-tab td:last-child{width:34px; text-align:center;} .rs-tab td button{width:auto; margin:0; padding:2px 8px;}
+  #rsInfo .warn{color:var(--warn); font-weight:600;} #rsInfo button{margin:0 0 0 6px; width:auto;}
+  @media (max-width:560px){
+    .sb-f{grid-template-columns:1fr 1fr;} .sb-f button{grid-column:1 / -1;}
+    .cat-add{grid-template-columns:1fr;}
+    .cat-row{grid-template-columns:1fr 1fr;} .cat-row .cat-tag{grid-column:1;} .cat-row button{grid-column:2;}
+    .rs-tab thead{display:none;}
+    .rs-tab table, .rs-tab tbody{display:block; width:100%; min-width:0;}
+    .rs-tab tr{display:grid; grid-template-columns:minmax(0,1fr) 36px; gap:3px 6px; padding:8px 6px; border-bottom:1px solid var(--rule);}
+    .rs-tab td, .rs-tab td:first-child, .rs-tab td:last-child{display:block; width:auto; padding:0; border:0; position:static; background:transparent;}
+    .rs-tab td::before{content:attr(data-l); display:block; font-size:11.5px; font-weight:700; color:var(--muted); margin:0 0 2px;}
+    .rs-tab td:last-child::before{content:none;}
+    .rs-tab td:nth-child(1){grid-column:1; grid-row:1;} .rs-tab td:nth-child(4){grid-column:2; grid-row:1; align-self:end;}
+    .rs-tab td:nth-child(2){grid-column:1 / -1; grid-row:2;} .rs-tab td:nth-child(3){grid-column:1 / -1; grid-row:3;}
+  }
+  #diaFlowTable tr.fin td{font-weight:700; border-top:2px solid var(--text); border-bottom:3px double var(--text);}
+  #diaFlowTable tr.ini td{background:var(--panel2);}
+  #diaMovTable tr.dia-colf input::placeholder{color:var(--faint); opacity:.85;}
+  .dia-kpis-wrap{container-type:inline-size;}
+  @container (max-width: 960px){ .dia-kpis{grid-template-columns:repeat(3,minmax(0,1fr));} }
+  @container (max-width: 470px){ .dia-kpis{grid-template-columns:repeat(2,minmax(0,1fr));} }
+  /* ---------- v1.7.1: barra de desplazamiento horizontal arriba de la tabla ---------- */
+  .dia-topscroll{position:sticky; top:var(--topbar-h,0px); z-index:6; overflow-x:scroll; overflow-y:hidden; height:14px; margin:0 0 3px; background:var(--panel); border-radius:6px;}
+  .dia-topscroll[hidden]{display:none;}
+  .dia-topscroll > div{height:1px;}
+  .dia-topscroll::-webkit-scrollbar{height:12px;}
+  .dia-topscroll::-webkit-scrollbar-track{background:var(--panel2); border-radius:6px;}
+  .dia-topscroll::-webkit-scrollbar-thumb{background:var(--faint); border-radius:6px; border:2px solid var(--panel2);}
+  @supports not selector(::-webkit-scrollbar){ .dia-topscroll{scrollbar-width:thin; scrollbar-color:var(--faint) var(--panel2);} }
   /* ---------- v1.5: flujo por rubros y enlace de solo lectura ---------- */
   #diaFlowTable tr.act td, #pyMatrixT tr.act td{background:var(--panel3); color:var(--text); font-weight:700; letter-spacing:.03em; font-size:12px; text-transform:uppercase; border-top:1px solid var(--border);}
   #diaFlowTable tr.grp td, #pyMatrixT tr.grp td{font-weight:700; background:var(--panel2);}
@@ -1970,7 +2031,7 @@ body.gate-open{overflow:hidden;}
     </div>
 
     <div class="panel">
-      <div class="dia-kpis" id="diaKpis"></div>
+      <div class="dia-kpis-wrap"><div class="dia-kpis" id="diaKpis"></div></div>
       <div class="dia-cierre-bar" id="diaCierreBar" hidden></div>
 
       <div class="dia-bar2">
@@ -2033,11 +2094,14 @@ body.gate-open{overflow:hidden;}
             <option value="sindoc">Sin comprobante</option>
             <option value="obs">Con observaciones del comprobante</option>
             <option value="auto">Cruces por aceptar</option>
-            <option value="omit">Omitidos</option>
+            <option value="omit">Eliminados o excluidos</option>
             <option value="tarde">Nuevos tras el cierre</option>
             <option value="cerrado">Cerrados (con candado)</option>
           </select>
           <button class="secondary sm" id="diaAddToggle"><svg class="ico"><use href="#i-plus"/></svg>Agregar movimiento</button>
+          <button class="secondary sm" id="diaSaldosBtn" title="Saldo con el que empezó cada cuenta: el programa lo arrastra de un período al siguiente">Saldos iniciales…</button>
+          <button class="secondary sm" id="diaCatsBtn" title="Agrega tus propias categorías o cambia el nombre y el grupo de las que existen">Categorías…</button>
+          <button class="secondary sm" id="diaRSBtn" title="Tu base de razones sociales: con ella la glosa sale como PAGO A / COBRO A + razón social + documento">Razones sociales…</button>
         </div>
         <div class="hint" id="diaFilterLabel" style="margin:-4px 0 8px;" hidden></div>
         <div class="dia-add" id="diaAddBox" hidden>
@@ -2060,15 +2124,33 @@ body.gate-open{overflow:hidden;}
           <input type="text" id="diaBulkCta" placeholder="Cuenta" aria-label="Cuenta contable para los seleccionados" style="max-width:96px;">
           <input type="text" id="diaBulkAnx" placeholder="Anexo/RUC" aria-label="Anexo para los seleccionados" style="max-width:116px;">
           <button class="secondary sm" id="diaBulkCtaBtn">Aplicar cuenta/anexo</button>
-          <button class="secondary sm" id="diaBulkOmitBtn">Omitir</button>
+          <button class="secondary sm" id="diaBulkOmitBtn" title="Quita estos movimientos de la tabla y de los totales; el programa no los vuelve a traer">Eliminar</button>
           <button class="secondary sm" id="diaBulkRestBtn">Restaurar</button>
+          <button class="secondary sm" id="diaBulkComBtn" title="Marca que estos movimientos tienen comisión bancaria">Con comisión</button>
+          <button class="secondary sm" id="diaBulkNoComBtn" title="Quita la marca de comisión bancaria">Sin comisión</button>
           <button class="ghost sm" id="diaBulkNoneBtn">Quitar selección</button>
         </div>
         <div class="tablewrap tall">
           <table id="diaMovTable">
             <thead><tr>
               <th class="chk"><input type="checkbox" id="diaChkAll" aria-label="Marcar o desmarcar los visibles"></th>
-              <th>Fecha</th><th>Descripción</th><th>N° Op.</th><th class="num">Entrada</th><th class="num">Salida</th><th>Categoría</th><th>Cuenta</th><th>Tipo</th><th>N° Doc.</th><th>Anexo/RUC</th><th>Estado</th><th></th>
+              <th>Fecha</th><th>Descripción</th><th>N° Op.</th><th class="num">Entrada</th><th class="num">Salida</th><th>Categoría</th><th>Cuenta</th><th>Tipo</th><th>N° Doc.</th><th>Anexo/RUC</th><th class="c-com" title="Marca si el movimiento tiene comisión bancaria">Comisión</th><th>Estado</th><th></th>
+            </tr>
+            <tr class="dia-colf" id="diaColF">
+              <th class="chk"></th>
+              <th><input type="text" data-cf="fecha" placeholder="Filtrar" aria-label="Filtrar por fecha" autocomplete="off"></th>
+              <th><input type="text" data-cf="desc" placeholder="Filtrar" aria-label="Filtrar por descripción o glosa" autocomplete="off"></th>
+              <th><input type="text" data-cf="op" placeholder="Filtrar" aria-label="Filtrar por número de operación" autocomplete="off"></th>
+              <th class="num"><input type="text" data-cf="ent" placeholder="&gt;1000" title="Texto, o un importe: &gt;1000, &lt;=500, 100-300" aria-label="Filtrar entradas por importe" autocomplete="off"></th>
+              <th class="num"><input type="text" data-cf="sal" placeholder="&gt;1000" title="Texto, o un importe: &gt;1000, &lt;=500, 100-300" aria-label="Filtrar salidas por importe" autocomplete="off"></th>
+              <th><select data-cf="cat" id="diaCfCat" aria-label="Filtrar por categoría"><option value="all">Todas</option></select></th>
+              <th><input type="text" data-cf="cta" placeholder="Filtrar" aria-label="Filtrar por cuenta contable" autocomplete="off"></th>
+              <th><input type="text" data-cf="tipo" placeholder="Filtrar" aria-label="Filtrar por tipo de documento" autocomplete="off"></th>
+              <th><input type="text" data-cf="nro" placeholder="Filtrar" aria-label="Filtrar por número de documento" autocomplete="off"></th>
+              <th><input type="text" data-cf="anexo" placeholder="Filtrar" aria-label="Filtrar por anexo, RUC o razón social" autocomplete="off"></th>
+              <th class="c-com"><select data-cf="com" aria-label="Filtrar por comisión bancaria"><option value="">Todas</option><option value="1">Con</option><option value="0">Sin</option></select></th>
+              <th><select data-cf="est" id="diaCfEst" aria-label="Filtrar por estado"></select></th>
+              <th><button type="button" class="ghost sm" id="diaColClearBtn" title="Quitar los filtros de las columnas" aria-label="Quitar los filtros de las columnas">✕</button></th>
             </tr></thead>
             <tbody id="diaMovBody"></tbody>
           </table>
@@ -2090,6 +2172,7 @@ body.gate-open{overflow:hidden;}
           <div class="dia-bar2" style="margin-bottom:6px;">
             <div class="dia-seg" id="diaFlowGrpSeg" role="group" aria-label="Columnas por"><button type="button" data-fg="dia" class="on">Por día</button><button type="button" data-fg="sem">Por semana</button><button type="button" data-fg="mes">Por mes</button></div>
             <div class="dia-seg" id="diaFlowDetSeg" role="group" aria-label="Detalle"><button type="button" data-fd="det" class="on">Con rubros</button><button type="button" data-fd="grp">Solo grupos</button></div>
+            <button class="secondary sm" id="diaSaldosBtn2" title="Escribe con cuánto empezó cada cuenta: el flujo muestra el saldo inicial y final de cada columna">Saldos iniciales…</button>
             <span class="sp"></span>
             <button class="secondary sm" id="diaFlowShareBtn" disabled title="Crea un enlace para que otra persona vea este flujo, solo para leer"><svg class="ico"><use href="#i-link"/></svg>Compartir con un enlace</button>
           </div>
@@ -2317,6 +2400,49 @@ body.gate-open{overflow:hidden;}
 
 
 <datalist id="cuentasConocidas"></datalist>
+<dialog class="dlg dlg-wide" id="sbDlg" aria-labelledby="sbTitle">
+  <div class="dlg-body">
+    <h3 id="sbTitle">Saldo inicial de cada cuenta</h3>
+    <p>Escribe con cuánto empezó cada cuenta en el primer día que trabajas. Desde ahí el programa <b>arrastra el saldo</b>: el saldo final de un período es el saldo inicial del siguiente, así que puedes mirar un mes, una semana o un día y siempre verás con cuánto empezó y con cuánto terminó. Se guarda con tu trabajo.</p>
+    <div class="sh-list" id="sbList"></div>
+    <div class="hint">El saldo sugerido sale del último saldo que informó el banco en tus descargas: es el saldo inicial que hace que el saldo final calculado coincida con el del banco.</div>
+  </div>
+  <div class="dlg-actions"><button type="button" class="secondary" id="sbClose">Cancelar</button><button type="button" id="sbSave">Guardar saldos</button></div>
+</dialog>
+<dialog class="dlg dlg-wide" id="catDlg" aria-labelledby="catTitle">
+  <div class="dlg-body">
+    <h3 id="catTitle">Categorías</h3>
+    <p>Agrega tus propias categorías o cambia el nombre y el grupo de las que ya existen. Los grupos deciden dónde aparece cada una en el flujo de caja (operación, inversión o financiamiento). Los cambios se ven al instante en Movimientos, en el Flujo de caja y en la Proyección.</p>
+    <div class="sh-grid">
+      <div class="wide"><label for="catNewName">Nueva categoría</label>
+        <div class="cat-add"><input type="text" id="catNewName" maxlength="60" placeholder="Ej. Comisiones por pasarela de pago" autocomplete="off"><select id="catNewGrp" aria-label="Grupo de la nueva categoría"></select><button type="button" id="catAddBtn">Agregar</button></div></div>
+    </div>
+    <div class="cat-list" id="catList"></div>
+  </div>
+  <div class="dlg-actions"><button type="button" id="catClose">Listo</button></div>
+</dialog>
+<dialog class="dlg dlg-wide" id="rsDlg" aria-labelledby="rsTitle">
+  <div class="dlg-body">
+    <h3 id="rsTitle">Base de razones sociales</h3>
+    <p>Con tu base, la <b>glosa</b> de cada movimiento sale sola y siempre igual: <b>PAGO A</b> + razón social + tipo y N° de documento para las salidas, y <b>COBRO A</b> + razón social + tipo y N° de documento para las entradas. Basta con que el movimiento tenga el Anexo/RUC. Esa glosa es la que se envía a las Pestañas 2 y 3.</p>
+    <div class="rs-bar">
+      <input type="text" id="rsQ" placeholder="Buscar por RUC, razón social o alias…" aria-label="Buscar en la base" autocomplete="off">
+      <button type="button" class="secondary sm" id="rsAddBtn">Agregar</button>
+      <button type="button" class="secondary sm" id="rsDocsBtn" title="Trae el RUC y el nombre de los documentos pendientes que cargaste en el paso 2">Traer de los pendientes</button>
+      <button type="button" class="secondary sm" id="rsImportBtn">Subir Excel</button>
+      <button type="button" class="secondary sm" id="rsExportBtn">Descargar Excel</button>
+      <button type="button" class="secondary sm" id="rsFillBtn" title="Completa el Anexo/RUC de los movimientos que no lo tienen cuando su descripción dice el nombre (o el alias) de una razón social de tu base">Completar anexos</button>
+      <input type="file" id="rsImportInput" accept=".xlsx,.xls,.csv" hidden>
+    </div>
+    <div class="hint" id="rsInfo"></div>
+    <div class="tablewrap rs-tab">
+      <table><thead><tr><th>RUC o DNI</th><th>Razón social</th><th>Aparece en el banco como (alias)</th><th></th></tr></thead><tbody id="rsBody"></tbody></table>
+      <div class="empty dia-empty" id="rsEmpty" hidden>Todavía no hay razones sociales. Agrega una, sube tu Excel o tráelas de los documentos pendientes.</div>
+    </div>
+    <div class="sh-sum" id="rsEj"></div>
+  </div>
+  <div class="dlg-actions"><button type="button" id="rsClose">Listo</button></div>
+</dialog>
 <dialog class="dlg dlg-wide" id="ciDlg" aria-labelledby="ciTitle">
   <div class="dlg-body">
     <h3 id="ciTitle">Cerrar el día</h3>
@@ -2384,7 +2510,7 @@ window.EC_CONFIG = { API_URL: "PEGA_AQUI_LA_URL_DEL_SERVIDOR", GEO: true };
    Acceso: usuario + contraseña (se validan en cada pedido; la contraseña vive solo en memoria),
    equipo autorizado (id guardado en este navegador) y RUC habilitados.
    ============================================================ */
-const EC_CLIENT_VERSION = '1.6.0';
+const EC_CLIENT_VERSION = '1.7.1';
 const EC_USER_STORE = 'ec_usuario';
 const EC_DEVICE_STORE = 'ec_deviceId';
 const EC_URL_STORE = 'ec_api_url';
@@ -6073,6 +6199,10 @@ let diaFolderOn = false;
 let diaEffCache = null;
 let diaCierres = [];        // cierres del día: {id, hasta, at, ids, abierto, n}
 let diaLockCache = null;
+let diaSaldos = {};         // saldo inicial por cuenta: 'BANCO|MONEDA' -> {fecha, monto}
+let diaCatCfg = { custom: [], ren: {}, grp: {} };   // categorías propias, nombres cambiados y grupos cambiados
+let diaRS = [];             // base de razones sociales: [{ruc, nombre, alias}]
+let diaColF = { fecha: '', desc: '', op: '', ent: '', sal: '', cta: '', tipo: '', nro: '', anexo: '', com: '', _ent: null, _sal: null };   // filtros del encabezado
 let diaSavedAt = 0, diaIdbOk = null, diaPersistOk = null, diaIdbAt = null;
 /* Proyección de caja (Pestaña 6 › Flujo de caja › Proyección): lo cargado y el último cálculo */
 const PY_MONEY = ['saldo', 'minimo', 'linea'];   // montos: uno por moneda (cada moneda tiene su propia caja)
@@ -6110,7 +6240,7 @@ function diaWeekday(f){
   const m = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(f || ''); if(!m) return '';
   return ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'][new Date(+m[3], +m[2] - 1, +m[1]).getDay()];
 }
-function diaCats(){ return (diaMerged && diaMerged.categorias && diaMerged.categorias.length) ? diaMerged.categorias : FLOW_CATS; }
+function diaCats(){ return FLOW_CATS; }
 function diaCatT(k){ const c = diaCats().find(x => x.k === k); return c ? c.t : (k || ''); }
 function diaDocs(){ return diaDocsSrc === 'tab2' ? pendingDocs : (diaDocsSrc === 'own' ? diaDocsOwn : []); }
 const diaLeanDoc = d => ({ cuenta: d.cuenta, tipo: d.tipo, nrodoc: d.nrodoc, moneda: d.moneda, saldoUsd: d.saldoUsd, saldoPen: d.saldoPen, anexo: d.anexo, fecha: d.fecha, venc: d.venc, nombre: d.nombre });
@@ -6140,7 +6270,7 @@ function diaEff(){
     const cat = ed.cat || ((cta || nro) && v && v.cat) || m.cat;
     const cerrado = L.locked.has(m.id);
     const tarde = !cerrado && !omit && L.max > 0 && !L.known.has(m.id) && diaKey(m.fecha) <= L.max;
-    out.push(Object.assign({}, m, { _i: i, omit, cta, tipo: ed.tipo || '', nro, anexo: ed.anexo || '', nota: ed.nota || '', auto: ed.auto || '', catEff: cat, catUser: !!ed.cat, val: v, cerrado, tarde,
+    out.push(Object.assign({}, m, { _i: i, omit, cta, tipo: ed.tipo || '', nro, anexo: ed.anexo || '', nota: ed.nota || '', com: ed.com === '1', auto: ed.auto || '', catEff: cat, catUser: !!ed.cat, val: v, cerrado, tarde,
       revisar: tarde ? (m.revisar || []).concat('tarde') : m.revisar, flag: flagged.has(m.id) || tarde }));
   });
   diaEffCache = out;
@@ -6243,7 +6373,7 @@ async function diaIngest(list, opts){
     const mf = new Map(((diaMerged && diaMerged.files) || []).map(f => [f.id, f]));
     const lines = addedIds.map(fid => { const f = diaFiles.find(x => x.id === fid), s = mf.get(fid); return (f && s) ? `${f.name}: ${s.nuevos} movimiento(s) nuevo(s); ${s.duplicados} ya estaban y no se repitieron.` : ''; }).filter(Boolean);
     const nT = diaMerged ? diaEff().filter(m => m.tarde).length : 0;
-    st.textContent += '\n' + lines.join('\n') + '\nLo que ya identificaste no se tocó.' + (nT ? `\n⚠ ${nT} movimiento(s) son de días que ya cerraste: míralos en «Nuevo tras el cierre».` : '');
+    st.textContent += '\n' + lines.join('\n') + '\nLo que ya identificaste no se tocó.' + (diaMerged && diaMerged.dedup ? `\n${diaMerged.dedup} movimiento(s) eran la misma operación que otro (otra fecha, otra descarga): se contaron una sola vez. Los ves en «Estado › Eliminados o excluidos».` : '') + (nT ? `\n⚠ ${nT} movimiento(s) son de días que ya cerraste: míralos en «Nuevo tras el cierre».` : '');
   }
   else renderTab6();
   return added;
@@ -6276,7 +6406,7 @@ async function diaRemerge(){
   try{
     const d = await EC.call('dayMerge', { files }, { label: 'Uniendo las descargas sin duplicar…' });
     if(my !== diaSeq) return;
-    diaMerged = d; diaInheritItf(); diaInvalidate();
+    diaMerged = d; diaInheritItf(); diaDedupOps(); diaInvalidate();
     const have = new Set(d.movs.map(m => m.id));
     diaSel.forEach(id => { if(!have.has(id)) diaSel.delete(id); });
     // si la moneda o el banco elegidos ya no tienen movimientos, pasar a los que sí
@@ -6711,6 +6841,646 @@ async function diaBootRestore(){
   });
 })();
 
+/* ============================================================
+   v1.7: saldo inicial editable, categorías propias, razones sociales y glosa,
+         comisión bancaria y filtros por columna
+   ============================================================ */
+
+/* ---------------- 1) saldo inicial por cuenta y arrastre entre períodos ---------------- */
+function diaCuentas(){
+  const m = new Map();
+  const add = (banco, mon) => { const k = banco + '|' + mon; if(!m.has(k)) m.set(k, { k, banco, mon }); };
+  ((diaMerged && diaMerged.movs) || []).forEach(x => add(x.banco, x.moneda));
+  ((diaMerged && diaMerged.files) || []).forEach(f => { if(!f.manual) add(f.banco, f.moneda); });
+  Object.keys(diaSaldos || {}).forEach(k => { const p = k.split('|'); if(p.length === 2) add(p[0], p[1]); });
+  return Array.from(m.values()).sort((a, b) => a.k.localeCompare(b.k));
+}
+const diaCtaLabel = c => c.banco + ' · ' + (c.mon === 'USD' ? 'dólares' : 'soles');
+const diaSaldoOk = b => !!(b && diaKey(b.fecha) && isFinite(Number(b.monto)));
+/* saldo (en centavos) de una cuenta al INICIO del día `dayKey`, a partir de su saldo base; incluye los traspasos propios */
+function diaBalanceAt(acct, b, dayKey, eff){
+  const bk = diaKey(b.fecha);
+  let c = diaCents(b.monto);
+  eff.forEach(m => {
+    if(m.banco + '|' + m.moneda !== acct) return;
+    const k = diaKey(m.fecha);
+    if(dayKey >= bk){ if(k >= bk && k < dayKey) c += diaCents(m.monto); }
+    else if(k >= dayKey && k < bk) c -= diaCents(m.monto);
+  });
+  return c;
+}
+/* saldo inicial y final de lo que se está viendo (moneda y banco elegidos); null si no hay movimientos */
+function diaSaldoCalc(list, mon, banco, startKey){
+  const keys = list.map(m => diaKey(m.fecha)).filter(Boolean);
+  if(!keys.length) return null;
+  const start = startKey || Math.min.apply(null, keys);
+  const cuentas = diaCuentas().filter(c => c.mon === mon && (banco === 'all' || c.banco === banco));
+  const eff = diaEff().filter(m => !m.omit);
+  const con = new Set(), falta = [];
+  let ini = 0;
+  cuentas.forEach(c => {
+    const b = diaSaldos[c.k];
+    if(!diaSaldoOk(b)){ falta.push(c); return; }
+    con.add(c.k); ini += diaBalanceAt(c.k, b, start, eff);
+  });
+  let net = 0;
+  list.forEach(m => { if(con.has(m.banco + '|' + m.moneda)) net += diaCents(m.monto); });
+  return { n: con.size, con, falta, start, ini: ini / 100, fin: (ini + net) / 100, net: net / 100 };
+}
+/* saldo final de todas las cuentas de una moneda (para arrancar la proyección); solo si todas tienen saldo inicial */
+function diaSaldoFinalAll(mon){
+  const eff = diaEff().filter(m => !m.omit && m.moneda === mon);
+  if(!eff.length) return null;
+  const S = diaSaldoCalc(eff, mon, 'all');
+  return (S && S.n && !S.falta.length) ? S : null;
+}
+/* filas «Saldo inicial» y «Saldo final» del flujo de caja: cada columna empieza con lo que terminó la anterior */
+function flowSaldoRows(list, per, mon, banco, a){
+  const S = diaSaldoCalc(list, mon, banco);
+  if(!S || !S.n) return null;
+  const mk = list.filter(m => S.con.has(m.banco + '|' + m.moneda)).map(m => [diaKey(m.fecha), diaCents(m.monto)]).sort((x, y) => x[0] - y[0]);
+  const first = per.map(p => Math.min.apply(null, p.fs.map(diaKey)));
+  const ini = [], fin = [];
+  let cur = Math.round(S.ini * 100), j = 0;
+  for(let i = 0; i < per.length; i++){
+    const limite = i + 1 < per.length ? first[i + 1] : Infinity;
+    while(j < mk.length && mk[j][0] < first[i]){ cur += mk[j][1]; j++; }
+    ini.push(cur / 100);
+    while(j < mk.length && mk[j][0] < limite){ cur += mk[j][1]; j++; }
+    fin.push(cur / 100);
+  }
+  const falta = S.falta.map(diaCtaLabel);
+  const nota = falta.length ? ' (sin saldo inicial de: ' + falta.join(', ') + ')' : '';
+  return { S, ini: { k: 'ini', l: 'Saldo inicial' + nota, v: ini, t: ini[0] }, fin: { k: 'fin', l: 'Saldo final' + ((a.pIn || a.pOut) ? ' (con los traspasos propios)' : ''), v: fin, t: fin[fin.length - 1] } };
+}
+/* tarjeta «Saldo final calculado» del panel */
+function diaKpiSaldoHtml(sb){
+  const scope = diaScope();
+  const rg = diaPeriodoRange(diaEff().filter(m => !m.omit));
+  const S = diaSaldoCalc(scope, diaMon, diaBanco, rg ? rg[0] : 0);
+  const fmt = k => { const f = String(k); return f.slice(6, 8) + '/' + f.slice(4, 6); };
+  const head = '<button type="button" class="dia-kpi clickable sal" id="diaKpiSaldo" title="Escribe o cambia el saldo inicial de tus cuentas">';
+  if(!S || !S.n){
+    const hay = diaCuentas().some(c => c.mon === diaMon && diaSaldoOk(diaSaldos[c.k]));
+    return head + `<span class="l">Saldo final calculado</span><span class="v">—</span><span class="s">${hay ? 'Sin movimientos en este período' : 'Haz clic y escribe el saldo inicial de tus cuentas'}</span></button>`;
+  }
+  let s = `<span class="s">Inicial <b>${diaMoney(S.ini, diaMon)}</b> al ${fmt(S.start)}</span>`;
+  if(S.falta.length) s += `<span class="s warn">Falta el saldo inicial de ${escapeHtml(S.falta.map(diaCtaLabel).join(', '))}</span>`;
+  else if(diaPeriodo === 'all' && sb.files.length === S.n){
+    const dif = Math.round((S.fin - sb.total) * 100) / 100;
+    s += Math.abs(dif) < 0.005 ? '<span class="s">✓ Cuadra con el saldo del banco</span>' : `<span class="s warn">Difiere del saldo del banco en ${diaMoney(dif, diaMon)}</span>`;
+  }
+  return head + `<span class="l">Saldo final calculado</span><span class="v">${diaMoney(S.fin, diaMon)}</span>${s}</button>`;
+}
+/* glosa que se ve bajo la descripción */
+function diaGlosaHtml(m){
+  const g = diaGlosaOf(m);
+  return g ? `<span class="glosa" title="Glosa genérica: se envía a las Pestañas 2 y 3">${escapeHtml(g)}</span>` : '';
+}
+function diaPatchGlosa(td, m){
+  const g = diaGlosaOf(m);
+  let sp = td.querySelector('.glosa');
+  if(!g){ if(sp) sp.remove(); return; }
+  if(!sp){ sp = document.createElement('span'); sp.className = 'glosa'; sp.title = 'Glosa genérica: se envía a las Pestañas 2 y 3'; td.appendChild(sp); }
+  if(sp.textContent !== g) sp.textContent = g;
+}
+/* cuánto debería ser el saldo inicial para que el saldo final cuadre con el último saldo que informó el banco */
+function diaSaldoSugerido(c){
+  const fl = ((diaMerged && diaMerged.files) || []).filter(f => !f.manual && f.banco === c.banco && f.moneda === c.mon && f.saldo !== null && f.saldo !== undefined);
+  if(!fl.length) return null;
+  const last = fl[fl.length - 1];
+  const movs = diaEff().filter(m => !m.omit && m.banco === c.banco && m.moneda === c.mon);
+  if(!movs.length) return null;
+  const keys = movs.map(m => diaKey(m.fecha));
+  const min = Math.min.apply(null, keys), lk = diaKey(last.fecha) || Math.max.apply(null, keys);
+  let sum = 0; movs.forEach(m => { if(diaKey(m.fecha) <= lk) sum += diaCents(m.monto); });
+  const f = String(min);
+  return { fecha: f.slice(6, 8) + '/' + f.slice(4, 6) + '/' + f.slice(0, 4), monto: (diaCents(last.saldo) - sum) / 100, archivo: last.name || '' };
+}
+function diaSaldoPrimerDia(c){
+  const ks = diaEff().filter(m => m.banco === c.banco && m.moneda === c.mon).map(m => diaKey(m.fecha)).filter(Boolean);
+  if(!ks.length) return '';
+  const f = String(Math.min.apply(null, ks));
+  return f.slice(6, 8) + '/' + f.slice(4, 6) + '/' + f.slice(0, 4);
+}
+function diaSaldosOpen(){
+  const dlg = dEl('sbDlg'); if(!dlg || !dlg.showModal) return;
+  if(!diaMerged){ toast('Primero carga las descargas del banco.', 'warn'); return; }
+  diaSaldosRender();
+  if(!dlg.open) dlg.showModal();
+}
+function diaSaldosRender(){
+  const cs = diaCuentas();
+  dEl('sbList').innerHTML = cs.map((c, i) => {
+    const b = diaSaldos[c.k] || {};
+    const sg = diaSaldoSugerido(c);
+    return `<div class="sb-row" data-k="${escapeHtml(c.k)}">
+      <div class="sb-h"><b>${escapeHtml(diaCtaLabel(c))}</b>${sg ? `<span>Sugerido para cuadrar con el banco: <b>${diaNum(sg.monto)}</b> al ${escapeHtml(sg.fecha)} <button type="button" class="secondary sm" data-sb-use="${i}">Usar</button></span>` : '<span>Las descargas de esta cuenta no traen saldo.</span>'}</div>
+      <div class="sb-f"><div><label>Saldo al inicio del día</label><input type="text" data-sb="fecha" value="${escapeHtml(b.fecha || '')}" placeholder="${escapeHtml(diaSaldoPrimerDia(c) || 'dd/mm/aaaa')}" autocomplete="off" aria-label="Fecha del saldo inicial de ${escapeHtml(diaCtaLabel(c))}"></div>
+      <div><label>Saldo inicial (${c.mon === 'USD' ? 'US$' : 'S/'})</label><input type="text" data-sb="monto" value="${b.monto === undefined || b.monto === '' ? '' : escapeHtml(String(b.monto))}" placeholder="0.00" inputmode="decimal" autocomplete="off" aria-label="Saldo inicial de ${escapeHtml(diaCtaLabel(c))}"></div>
+      <button type="button" class="ghost sm" data-sb-clear="${escapeHtml(c.k)}">Quitar</button></div></div>`;
+  }).join('') || '<div class="hint">Aún no hay cuentas.</div>';
+  dEl('sbList')._cs = cs;
+}
+function diaSaldosSave(){
+  const out = {};
+  let bad = '';
+  document.querySelectorAll('#sbList .sb-row').forEach(r => {
+    const k = r.dataset.k;
+    const f = r.querySelector('[data-sb="fecha"]').value.trim(), m = r.querySelector('[data-sb="monto"]').value.trim();
+    if(!f && !m) return;
+    const mt = /^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{4})$/.exec(f);
+    const num = parseFloat(m.replace(/,/g, ''));
+    if(!mt && !bad) bad = 'La fecha de «' + k.replace('|', ' ') + '» debe ser dd/mm/aaaa.';
+    else if(!isFinite(num) && !bad) bad = 'El saldo de «' + k.replace('|', ' ') + '» no es un número.';
+    if(mt && isFinite(num)) out[k] = { fecha: String(+mt[1]).padStart(2, '0') + '/' + String(+mt[2]).padStart(2, '0') + '/' + mt[3], monto: Math.round(num * 100) / 100 };
+  });
+  if(bad){ toast(bad, 'warn'); return false; }
+  diaSaldos = out;
+  dEl('sbDlg').close();
+  diaInvalidate(); renderTab6(); scheduleExtSave();
+  toast(Object.keys(out).length ? 'Saldos iniciales guardados: el flujo ya arrastra el saldo de un período al siguiente.' : 'Se quitaron los saldos iniciales.', 'ok');
+  return true;
+}
+
+/* ---------------- 2) categorías propias y renombrables ---------------- */
+let FLOW_CATS_BASE = null;
+function diaCatsApply(){
+  if(!FLOW_CATS_BASE) FLOW_CATS_BASE = FLOW_CATS.map(c => Object.assign({}, c));
+  const cfg = diaCatCfg || {};
+  const out = FLOW_CATS_BASE.map(c => {
+    const o = Object.assign({}, c);
+    if(cfg.ren && cfg.ren[c.k]) o.t = cfg.ren[c.k];
+    if(cfg.grp && cfg.grp[c.k] && flowGrupo(cfg.grp[c.k])) o.g = cfg.grp[c.k];
+    return o;
+  });
+  (cfg.custom || []).forEach(c => {
+    const g = flowGrupo(c.g) ? c.g : 'gastos_op';
+    const o = { k: c.k, t: c.t, f: flowGrupo(g).f, g, custom: true };
+    let at = -1; out.forEach((x, i) => { if(x.g === g) at = i; });
+    if(at >= 0) out.splice(at + 1, 0, o); else out.splice(Math.max(0, out.length - 2), 0, o);
+  });
+  FLOW_CATS.splice(0, FLOW_CATS.length, ...out);
+  try{ PY_CATS.splice(0, PY_CATS.length, ...FLOW_CATS.filter(c => c.g).map(c => [c.k, c.t, c.f])); }catch(e){}
+  try{ Object.keys(PY_OPT).forEach(k => { delete PY_OPT[k]; }); }catch(e){}
+}
+function diaCatSlug(name){
+  const base = 'u_' + (diaNormRS(name).toLowerCase().replace(/ /g, '_').slice(0, 24) || 'categoria');
+  let k = base, i = 2;
+  while(FLOW_CATS.some(c => c.k === k)) k = base + '_' + (i++);
+  return k;
+}
+function diaCatsOpen(){
+  const dlg = dEl('catDlg'); if(!dlg || !dlg.showModal) return;
+  diaCatsRender();
+  if(!dlg.open) dlg.showModal();
+}
+function diaCatUso(k){
+  const usados = Object.keys(diaEdits).filter(id => diaEdits[id].cat === k);
+  return { n: usados.length, cerrados: usados.filter(id => diaLocked(id)).length };
+}
+function diaCatsRender(){
+  const opt = (sel, f) => FLOW_GRUPOS.filter(g => g.f === f).map(g => `<option value="${g.g}"${g.g === sel ? ' selected' : ''}>${escapeHtml(g.t)}</option>`).join('');
+  const selNew = dEl('catNewGrp'), prev = selNew.value || 'gastos_op';
+  selNew.innerHTML = ['out', 'in'].map(f => `<optgroup label="${f === 'in' ? 'Entradas' : 'Salidas'}">${FLOW_GRUPOS.filter(g => g.f === f).map(g => `<option value="${g.g}">${escapeHtml(g.t)}</option>`).join('')}</optgroup>`).join('');
+  selNew.value = prev;
+  const cfg = diaCatCfg;
+  let h = '';
+  FLOW_GRUPOS.forEach(g => {
+    const l = FLOW_CATS.filter(c => c.g === g.g);
+    if(!l.length) return;
+    h += `<div class="cat-grp"><b>${escapeHtml(g.t)}</b> <small>${g.f === 'in' ? 'entradas' : 'salidas'} · actividades de ${FLOW_ACT[g.s]}</small></div>`;
+    l.forEach(c => {
+      const base = FLOW_CATS_BASE ? FLOW_CATS_BASE.find(x => x.k === c.k) : null;
+      const mod = !c.custom && ((cfg.ren && cfg.ren[c.k]) || (cfg.grp && cfg.grp[c.k]));
+      const uso = diaCatUso(c.k);
+      h += `<div class="cat-row" data-k="${escapeHtml(c.k)}"><input type="text" data-cat="t" value="${escapeHtml(c.t)}" maxlength="60" aria-label="Nombre de la categoría ${escapeHtml(c.t)}">
+        <select data-cat="g" aria-label="Grupo de ${escapeHtml(c.t)}">${opt(c.g, g.f)}</select>
+        <span class="cat-tag">${c.custom ? 'Propia' : (mod ? 'Editada' : '')}${uso.n ? ` · ${uso.n} mov.` : ''}</span>
+        ${c.custom ? `<button type="button" class="ghost sm" data-cat-del="${escapeHtml(c.k)}">Borrar</button>` : (mod ? `<button type="button" class="ghost sm" data-cat-reset="${escapeHtml(c.k)}">Restablecer</button>` : '<span></span>')}</div>`;
+    });
+  });
+  dEl('catList').innerHTML = h;
+}
+function diaCatsChanged(){
+  diaCatsApply();
+  diaCatsRender();
+  diaFillCatSelects(); diaColFillCats();
+  diaInvalidate(); renderTab6(); renderProyAfterCats(); scheduleExtSave();
+}
+function renderProyAfterCats(){ try{ if(typeof renderProy === 'function' && proy && proy.items && proy.items.length) renderProy(); }catch(e){} }
+function diaCatAdd(){
+  const t = dEl('catNewName').value.trim().replace(/\s+/g, ' ');
+  if(!t){ toast('Escribe el nombre de la categoría.', 'warn'); dEl('catNewName').focus(); return; }
+  if(FLOW_CATS.some(c => diaNormRS(c.t) === diaNormRS(t))){ toast('Ya existe una categoría con ese nombre.', 'warn'); return; }
+  const g = dEl('catNewGrp').value;
+  diaCatCfg.custom.push({ k: diaCatSlug(t), t, g, f: (flowGrupo(g) || {}).f || 'out' });
+  dEl('catNewName').value = '';
+  diaCatsChanged();
+  toast('Categoría «' + t + '» agregada: ya puedes elegirla en los movimientos y en la proyección.', 'ok');
+}
+function diaCatEdit(k, field, val){
+  const cfg = diaCatCfg;
+  const cu = cfg.custom.find(c => c.k === k);
+  val = String(val || '').trim().replace(/\s+/g, ' ');
+  if(field === 't'){
+    if(!val){ diaCatsRender(); toast('El nombre no puede quedar vacío.', 'warn'); return; }
+    if(FLOW_CATS.some(c => c.k !== k && diaNormRS(c.t) === diaNormRS(val))){ diaCatsRender(); toast('Ya existe una categoría con ese nombre.', 'warn'); return; }
+    if(cu) cu.t = val;
+    else { const b = FLOW_CATS_BASE.find(x => x.k === k); if(b && b.t === val) delete cfg.ren[k]; else cfg.ren[k] = val; }
+  } else if(field === 'g' && flowGrupo(val)){
+    if(cu) cu.g = val;
+    else { const b = FLOW_CATS_BASE.find(x => x.k === k); if(b && b.g === val) delete cfg.grp[k]; else cfg.grp[k] = val; }
+  }
+  diaCatsChanged();
+}
+async function diaCatDelete(k){
+  const cu = diaCatCfg.custom.find(c => c.k === k); if(!cu) return;
+  const uso = diaCatUso(k);
+  if(uso.cerrados){ toast(`No se puede borrar «${cu.t}»: ${uso.cerrados} movimiento(s) cerrados la usan. Reabre el cierre primero.`, 'warn'); return; }
+  const r = await askConfirm({ title: 'Borrar la categoría', text: `Se borra «${cu.t}».` + (uso.n ? ` Los ${uso.n} movimiento(s) que la usan vuelven a su categoría automática.` : '') + (proy && proy.items && proy.items.some(i => i.cat === k) ? ' Hay partidas de la proyección con esa categoría: pasan a «Otros».' : ''), okLabel: 'Borrar', danger: true });
+  if(!r.ok) return;
+  await diaSnapNow('Antes de borrar la categoría «' + cu.t + '»', 'seguridad');
+  Object.keys(diaEdits).forEach(id => { if(diaEdits[id].cat === k){ delete diaEdits[id].cat; diaCleanEdit(id); } });
+  try{ proy.items.forEach(i => { if(i.cat === k) i.cat = i.tipo === 'in' ? 'otros_in' : 'otros_out'; }); }catch(e){}
+  diaCatCfg.custom = diaCatCfg.custom.filter(c => c.k !== k);
+  if(diaFilt.cat === k) diaFilt.cat = 'all';
+  diaCatsChanged();
+}
+function diaCatReset(k){
+  delete diaCatCfg.ren[k]; delete diaCatCfg.grp[k];
+  diaCatsChanged();
+}
+
+/* ---------------- 3) razones sociales y glosa ---------------- */
+const diaNormRS = s => String(s == null ? '' : s).toUpperCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^A-Z0-9 ]+/g, ' ').replace(/\s+/g, ' ').trim();
+const diaRucKey = s => String(s == null ? '' : s).replace(/\s+/g, '').replace(/\.0$/, '').toUpperCase();
+let diaRSIdx = null;
+function diaRSIndex(){
+  if(diaRSIdx) return diaRSIdx;
+  const m = new Map();
+  diaRS.forEach(e => { const k = diaRucKey(e.ruc); if(k && e.nombre) m.set(k, e); });
+  diaRSIdx = m;
+  return m;
+}
+const diaRSName = anexo => { const e = diaRSIndex().get(diaRucKey(anexo)); return e ? e.nombre : ''; };
+function diaGlosaPrefijos(){
+  const g = id => ((document.getElementById(id) || {}).value || '').replace(/\s+/g, ' ').trim();
+  return { pago: g('cfgGlosaPago') || 'PAGO A', cobro: g('cfgGlosaCobro') || 'COBRO A' };
+}
+function diaGlosaDe(m, pf){
+  if(!diaRS.length || !m.anexo) return '';
+  const nombre = diaRSName(m.anexo); if(!nombre) return '';
+  return [m.monto < 0 ? pf.pago : pf.cobro, nombre, m.tipo, m.nro].filter(Boolean).join(' ').replace(/\s+/g, ' ').trim();
+}
+const diaGlosaOf = m => diaGlosaDe(m, diaGlosaPrefijos());
+function diaRSChanged(){
+  diaRSIdx = null;
+  diaInvalidate();
+  renderTab6(); scheduleExtSave();
+}
+function diaRSAddFromDocs(quiet){
+  const docs = diaDocs();
+  let n = 0;
+  const have = new Set(diaRS.map(e => diaRucKey(e.ruc)));
+  docs.forEach(d => {
+    const k = diaRucKey(d.anexo), nombre = String(d.nombre || '').replace(/\s+/g, ' ').trim();
+    if(!k || !nombre || have.has(k)) return;
+    have.add(k); diaRS.push({ ruc: k, nombre, alias: '' }); n++;
+  });
+  if(n){ diaRSIdx = null; diaInvalidate(); }
+  if(!quiet) toast(n ? `Se agregaron ${n} razones sociales de los documentos pendientes.` : 'Los documentos pendientes no traen razones sociales nuevas.', n ? 'ok' : 'warn');
+  return n;
+}
+function diaRSFaltan(){
+  const have = diaRSIndex();
+  const set = new Set();
+  diaEff().forEach(m => { const k = diaRucKey(m.anexo); if(k && !have.has(k)) set.add(k); });
+  diaRS.forEach(e => { const k = diaRucKey(e.ruc); if(k && !e.nombre) set.delete(k); });
+  return Array.from(set);
+}
+function diaRSFillAnexo(){
+  const keys = diaRS.filter(e => diaRucKey(e.ruc) && (e.nombre || e.alias)).map(e => ({ ruc: diaRucKey(e.ruc), txt: [e.alias, e.nombre].filter(Boolean).map(diaNormRS).filter(t => t.length >= 5) }));
+  let n = 0, amb = 0;
+  diaEff().forEach(m => {
+    if(m.omit || m.cerrado || m.anexo) return;
+    const d = ' ' + diaNormRS(m.descripcion) + ' ';
+    const hit = new Set();
+    keys.forEach(k => { if(k.txt.some(t => d.indexOf(' ' + t + ' ') >= 0)) hit.add(k.ruc); });
+    if(hit.size === 1){ const ed = diaEdits[m.id] = diaEdits[m.id] || {}; ed.anexo = Array.from(hit)[0]; n++; }
+    else if(hit.size > 1) amb++;
+  });
+  if(n){ diaInvalidate(); renderTab6(); diaRevalidateSoon(0); scheduleExtSave(); }
+  toast(n ? `Se completó el anexo de ${n} movimiento(s) por su razón social.` + (amb ? ` ${amb} coinciden con varias: complétalos a mano.` : '') : 'Ningún movimiento sin anexo coincide con tus razones sociales (escribe el nombre como aparece en el banco en «Alias»).', n ? 'ok' : 'warn');
+  diaRSRender();
+}
+function diaRSOpen(){
+  const dlg = dEl('rsDlg'); if(!dlg || !dlg.showModal) return;
+  dEl('rsQ').value = '';
+  diaRSRender();
+  if(!dlg.open) dlg.showModal();
+}
+function diaRSRender(){
+  const q = diaNormRS(dEl('rsQ').value);
+  const all = diaRS.map((e, i) => ({ e, i }));
+  const list = q ? all.filter(x => diaNormRS([x.e.ruc, x.e.nombre, x.e.alias].join(' ')).indexOf(q) >= 0) : all;
+  const show = list.slice(0, 120);
+  const falta = diaRSFaltan();
+  dEl('rsInfo').innerHTML = `<b>${diaRS.length.toLocaleString('en-US')}</b> razón(es) social(es) en la base` + (list.length !== diaRS.length ? ` · ${list.length.toLocaleString('en-US')} coinciden con la búsqueda` : '') + (list.length > show.length ? ` · se muestran las primeras ${show.length}` : '') + '.'
+    + (falta.length ? ` <span class="warn">${falta.length} anexo(s) de tus movimientos no están en la base.</span> <button type="button" class="ghost sm" id="rsAddMissing">Agregarlos para completar</button>` : '');
+  dEl('rsBody').innerHTML = show.map(x => `<tr data-i="${x.i}"><td data-l="RUC o DNI"><input type="text" data-rs="ruc" value="${escapeHtml(x.e.ruc)}" aria-label="RUC o DNI" autocomplete="off"></td><td data-l="Razón social"><input type="text" data-rs="nombre" value="${escapeHtml(x.e.nombre)}" aria-label="Razón social" autocomplete="off"></td><td data-l="Aparece en el banco como (alias)"><input type="text" data-rs="alias" value="${escapeHtml(x.e.alias || '')}" placeholder="(opcional)" aria-label="Como aparece en el banco" autocomplete="off"></td><td><button type="button" class="ghost sm" data-rs-del="${x.i}" aria-label="Quitar">×</button></td></tr>`).join('');
+  dEl('rsEmpty').hidden = show.length > 0;
+  const pf = diaGlosaPrefijos();
+  dEl('rsEj').textContent = `Ejemplo de glosa: ${pf.pago} NOMBRE DE LA EMPRESA FT F001-123  ·  ${pf.cobro} NOMBRE DE LA EMPRESA FT F001-456`;
+}
+function diaRSAdd(){
+  diaRS.unshift({ ruc: '', nombre: '', alias: '' });
+  dEl('rsQ').value = '';
+  diaRSRender();
+  const f = dEl('rsBody').querySelector('tr input'); if(f) f.focus();
+}
+async function diaRSImport(file){
+  try{
+    const aoa = await diaReadAoa(file);
+    if(!aoa.length){ toast('El archivo no tiene datos.', 'warn'); return; }
+    const norm = v => diaNormRS(v);
+    let h = -1, cR = 0, cN = 1, cA = 2;
+    for(let i = 0; i < Math.min(8, aoa.length); i++){
+      const r = aoa[i].map(norm);
+      const iR = r.findIndex(x => /^(RUC|DNI|ANEXO|DOCUMENTO|NRO DOC|N DOC|RUC DNI|RUC O DNI)/.test(x));
+      const iN = r.findIndex(x => /(RAZON SOCIAL|NOMBRE|DESCRIPCION ANEXO|PROVEEDOR|CLIENTE)/.test(x));
+      if(iR >= 0 && iN >= 0){ h = i; cR = iR; cN = iN; cA = r.findIndex(x => /(ALIAS|COMO APARECE|BANCO)/.test(x)); break; }
+    }
+    let n = 0, up = 0;
+    const idx = new Map(diaRS.map((e, i) => [diaRucKey(e.ruc), i]));
+    aoa.slice(h + 1).forEach(r => {
+      const ruc = diaRucKey(r[cR]), nombre = String(r[cN] == null ? '' : r[cN]).replace(/\s+/g, ' ').trim();
+      if(!ruc || !nombre) return;
+      const alias = cA >= 0 ? String(r[cA] == null ? '' : r[cA]).replace(/\s+/g, ' ').trim() : '';
+      if(idx.has(ruc)){ const e = diaRS[idx.get(ruc)]; e.nombre = nombre; if(alias) e.alias = alias; up++; }
+      else { idx.set(ruc, diaRS.length); diaRS.push({ ruc, nombre, alias }); n++; }
+    });
+    diaRSIdx = null; diaInvalidate();
+    diaRSRender(); renderTab6(); scheduleExtSave();
+    toast(`Excel leído: ${n} razón(es) social(es) nueva(s)` + (up ? ` y ${up} actualizada(s)` : '') + '.', n || up ? 'ok' : 'warn');
+  }catch(e){ toast('No se pudo leer el Excel: ' + ((e && e.message) || ''), 'bad'); }
+}
+function diaRSExport(){
+  const rows = diaRS.length ? diaRS.map(e => ({ 'RUC o DNI': e.ruc, 'Razón social': e.nombre, 'Aparece en el banco como (alias)': e.alias || '' })) : [{ 'RUC o DNI': '', 'Razón social': '', 'Aparece en el banco como (alias)': '' }];
+  const ws = XLSX.utils.json_to_sheet(rows); ws['!cols'] = [{ wch: 14 }, { wch: 48 }, { wch: 40 }];
+  const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, 'Razones sociales');
+  XLSX.writeFile(wb, `razones_sociales_${projectSlug()}.xlsx`);
+}
+
+/* ---------------- 5) filtros por columna ---------------- */
+const DIA_COLN = { fecha: 'Fecha', desc: 'Descripción', op: 'N° Op.', ent: 'Entrada', sal: 'Salida', cta: 'Cuenta', tipo: 'Tipo', nro: 'N° Doc.', anexo: 'Anexo/RUC', com: 'Comisión' };
+const diaColVacio = () => ({ fecha: '', desc: '', op: '', ent: '', sal: '', cta: '', tipo: '', nro: '', anexo: '', com: '', _ent: null, _sal: null });
+function diaColActive(){ return Object.keys(diaColF).filter(k => k.charAt(0) !== '_' && diaColF[k] !== '' && diaColF[k] !== null); }
+function diaNumPred(txt){
+  const t = String(txt).trim().replace(/,/g, '').replace(/^s\/\s*/i, '');
+  let m;
+  if((m = /^(>=|<=|>|<|=)\s*(-?\d+(?:\.\d+)?)$/.exec(t))){
+    const v = parseFloat(m[2]);
+    return { '>': x => x > v, '<': x => x < v, '>=': x => x >= v - 0.0049, '<=': x => x <= v + 0.0049, '=': x => Math.abs(x - v) < 0.005 }[m[1]];
+  }
+  if((m = /^(\d+(?:\.\d+)?)\s*(?:-|a)\s*(\d+(?:\.\d+)?)$/.exec(t))){ const a = parseFloat(m[1]), b = parseFloat(m[2]); return x => x >= Math.min(a, b) - 0.0049 && x <= Math.max(a, b) + 0.0049; }
+  return x => String(x.toFixed(2)).indexOf(t) >= 0;
+}
+function diaColMatch(m){
+  const f = diaColF, lc = s => String(s == null ? '' : s).toLowerCase();
+  if(f.fecha && lc(m.fecha).indexOf(f.fecha.toLowerCase()) < 0) return false;
+  if(f.desc && lc(m.descripcion + ' ' + diaGlosaOf(m)).indexOf(f.desc.toLowerCase()) < 0) return false;
+  if(f.op && lc(m.operacion).indexOf(f.op.toLowerCase()) < 0) return false;
+  if(f.ent && !(m.monto > 0 && f._ent(m.monto))) return false;
+  if(f.sal && !(m.monto < 0 && f._sal(-m.monto))) return false;
+  if(f.cta && lc(m.cta).indexOf(f.cta.toLowerCase()) < 0) return false;
+  if(f.tipo && lc(m.tipo).indexOf(f.tipo.toLowerCase()) < 0) return false;
+  if(f.nro && lc(m.nro).indexOf(f.nro.toLowerCase()) < 0) return false;
+  if(f.anexo && lc(m.anexo + ' ' + diaRSName(m.anexo)).indexOf(f.anexo.toLowerCase()) < 0) return false;
+  if(f.com === '1' && !m.com) return false;
+  if(f.com === '0' && m.com) return false;
+  return true;
+}
+function diaColPrep(){
+  diaColF._ent = diaColF.ent ? diaNumPred(diaColF.ent) : null;
+  diaColF._sal = diaColF.sal ? diaNumPred(diaColF.sal) : null;
+}
+function diaColFillCats(){
+  const s = dEl('diaCfCat'); if(!s) return;
+  const sig = '<option value="all">Todas</option>' + (window._diaCatOpts || '');
+  if(s.dataset.sig !== sig){ s.innerHTML = sig; s.dataset.sig = sig; }
+}
+function diaColSync(){
+  document.querySelectorAll('#diaColF [data-cf]').forEach(el => {
+    const k = el.dataset.cf;
+    const v = k === 'cat' ? diaFilt.cat : (k === 'est' ? diaFilt.est : diaColF[k]);
+    if(el !== document.activeElement && el.value !== v) el.value = v;
+    el.classList.toggle('on', v !== '' && v !== 'all');
+  });
+}
+function diaColClear(){
+  diaColF = diaColVacio();
+  diaFilt.cat = 'all'; diaFilt.est = 'all';
+  dEl('diaCatFilter').value = 'all'; dEl('diaEstFilter').value = 'all';
+}
+
+/* ---------------- arranque ---------------- */
+(function wireDia17(){
+  const on = (id, ev, fn) => { const e = dEl(id); if(e) e.addEventListener(ev, fn); };
+  // saldos iniciales
+  on('diaSaldosBtn', 'click', diaSaldosOpen);
+  on('diaSaldosBtn2', 'click', diaSaldosOpen);
+  on('sbClose', 'click', () => dEl('sbDlg').close());
+  on('sbSave', 'click', diaSaldosSave);
+  on('sbList', 'click', e => {
+    const u = e.target.closest('[data-sb-use]'), c = e.target.closest('[data-sb-clear]');
+    if(u){
+      const cs = dEl('sbList')._cs || [], cu = cs[+u.dataset.sbUse]; if(!cu) return;
+      const sg = diaSaldoSugerido(cu); if(!sg) return;
+      const row = u.closest('.sb-row');
+      row.querySelector('[data-sb="fecha"]').value = sg.fecha; row.querySelector('[data-sb="monto"]').value = String(Math.round(sg.monto * 100) / 100);
+    } else if(c){
+      const row = c.closest('.sb-row'); row.querySelector('[data-sb="fecha"]').value = ''; row.querySelector('[data-sb="monto"]').value = '';
+    }
+  });
+  on('diaKpis', 'click', e => { if(e.target.closest('#diaKpiSaldo')) diaSaldosOpen(); });
+  // categorías
+  on('diaCatsBtn', 'click', diaCatsOpen);
+  on('catClose', 'click', () => dEl('catDlg').close());
+  on('catAddBtn', 'click', diaCatAdd);
+  on('catNewName', 'keydown', e => { if(e.key === 'Enter'){ e.preventDefault(); diaCatAdd(); } });
+  on('catList', 'change', e => { const t = e.target, r = t.closest('.cat-row'); if(r && t.dataset.cat) diaCatEdit(r.dataset.k, t.dataset.cat, t.value); });
+  on('catList', 'click', e => {
+    const d = e.target.closest('[data-cat-del]'), r = e.target.closest('[data-cat-reset]');
+    if(d) diaCatDelete(d.dataset.catDel); else if(r) diaCatReset(r.dataset.catReset);
+  });
+  // razones sociales
+  on('diaRSBtn', 'click', diaRSOpen);
+  on('rsClose', 'click', () => dEl('rsDlg').close());
+  on('rsQ', 'input', diaRSRender);
+  on('rsAddBtn', 'click', diaRSAdd);
+  on('rsDocsBtn', 'click', () => { diaRSAddFromDocs(false); diaRSRender(); renderTab6(); scheduleExtSave(); });
+  on('rsFillBtn', 'click', diaRSFillAnexo);
+  on('rsExportBtn', 'click', diaRSExport);
+  on('rsImportBtn', 'click', () => dEl('rsImportInput').click());
+  on('rsImportInput', 'change', e => { const f = e.target.files[0]; e.target.value = ''; if(f) diaRSImport(f); });
+  on('rsInfo', 'click', e => {
+    if(!e.target.closest('#rsAddMissing')) return;
+    const have = new Set(diaRS.map(x => diaRucKey(x.ruc)));
+    diaRSFaltan().forEach(k => { if(!have.has(k)) diaRS.unshift({ ruc: k, nombre: '', alias: '' }); });
+    diaRSIdx = null; dEl('rsQ').value = ''; diaRSRender();
+  });
+  on('rsBody', 'change', e => {
+    const t = e.target, tr = t.closest('tr'); if(!tr || !t.dataset.rs) return;
+    const x = diaRS[+tr.dataset.i]; if(!x) return;
+    x[t.dataset.rs] = t.dataset.rs === 'ruc' ? diaRucKey(t.value) : t.value.replace(/\s+/g, ' ').trim();
+    if(t.dataset.rs === 'ruc') t.value = x.ruc;
+    diaRSChanged(); diaRSRender();
+  });
+  on('rsBody', 'click', e => {
+    const d = e.target.closest('[data-rs-del]'); if(!d) return;
+    diaRS.splice(+d.dataset.rsDel, 1); diaRSChanged(); diaRSRender();
+  });
+  // comisión bancaria en bloque
+  on('diaBulkComBtn', 'click', () => { diaSetEdit(Array.from(diaSel), { com: '1' }); diaCatChanged(); renderDiaMov(); });
+  on('diaBulkNoComBtn', 'click', () => { diaSetEdit(Array.from(diaSel), { com: '' }); diaCatChanged(); renderDiaMov(); });
+  on('diaMovBody', 'change', e => {
+    const t = e.target; if(!t.classList || !t.classList.contains('dia-com')) return;
+    diaSetEdit([t.dataset.id], { com: t.checked ? '1' : '' });
+    diaCatChanged();
+  });
+  // filtros por columna
+  const bar = dEl('diaColF');
+  const ce = dEl('diaCfEst'), es = dEl('diaEstFilter');
+  if(ce && es){ ce.innerHTML = es.innerHTML; if(ce.options.length) ce.options[0].textContent = 'Todos'; }
+  on('diaColClearBtn', 'click', () => { diaColClear(); diaLimit = 300; renderDiaMov(); });
+  on('diaFilterLabel', 'click', e => { if(e.target.closest('[data-act="clearf"]') && diaColActive().length){ diaColF = diaColVacio(); renderDiaMov(); } });
+  if(bar){
+    let timer = null;
+    const apply = el => {
+      const k = el.dataset.cf, v = el.value;
+      if(k === 'cat'){ diaFilt.cat = v || 'all'; dEl('diaCatFilter').value = diaFilt.cat; diaFilt.sign = ''; }
+      else if(k === 'est'){ diaFilt.est = v || 'all'; dEl('diaEstFilter').value = diaFilt.est; }
+      else diaColF[k] = v.trim();
+      diaLimit = 300; renderDiaMov();
+    };
+    bar.addEventListener('input', e => { const el = e.target.closest('[data-cf]'); if(!el || el.tagName === 'SELECT') return; clearTimeout(timer); timer = setTimeout(() => apply(el), 160); });
+    bar.addEventListener('change', e => { const el = e.target.closest('[data-cf]'); if(el && el.tagName === 'SELECT') apply(el); });
+    bar.addEventListener('keydown', e => { if(e.key === 'Escape'){ const el = e.target.closest('[data-cf]'); if(el && el.tagName === 'INPUT' && el.value){ el.value = ''; apply(el); } } });
+  }
+})();
+
+/* ============================================================
+   v1.7.1: la misma operación se cuenta una sola vez (aunque esté en otra descarga con otra fecha),
+           «Eliminar» en lugar de «Omitir» y barra de desplazamiento horizontal arriba de la tabla
+   ============================================================ */
+const DIA_OP_DIAS = 5;   // si el banco cambia la fecha de una operación entre descargas, rara vez pasa de unos días
+const diaOpKey = op => String(op == null ? '' : op).trim().replace(/^0+/, '');
+const diaDayN = f => { const k = diaKey(f); return Date.UTC(Math.floor(k / 10000), Math.floor(k / 100) % 100 - 1, k % 100) / 86400000; };
+/* Misma operación (banco, moneda, N° de operación e importe) que llega en descargas distintas con otra fecha:
+   es un solo movimiento. Se queda el que ya está cerrado o trabajado; si ninguno lo está, el de la descarga más antigua.
+   Dos líneas de la misma descarga con la misma operación NO se juntan (el banco las trajo así: pagos masivos). */
+function diaDedupOps(){
+  if(!diaMerged) return 0;
+  const movs = diaMerged.movs || [];
+  const rank = new Map((diaMerged.files || []).map((f, i) => [f.id, i]));
+  const rk = m => Math.min.apply(null, (m.fuentes || []).map(f => rank.has(f) ? rank.get(f) : 9999).concat([9999]));
+  const L = diaLocks();
+  const worked = id => { const e = diaEdits[id]; return !!(e && (e.cta || e.nro || e.tipo || e.anexo || e.cat)); };
+  const score = m => L.locked.has(m.id) ? 2 : (worked(m.id) ? 1 : 0);
+  const G = new Map();
+  movs.forEach(m => {
+    const k = diaOpKey(m.operacion); if(!k || m.omitido) return;
+    const g = m.banco + '|' + m.moneda + '|' + k + '|' + diaCents(m.monto);
+    if(!G.has(g)) G.set(g, []);
+    G.get(g).push(m);
+  });
+  const touched = new Set(), dropped = [];
+  G.forEach(lst => {
+    if(lst.length < 2) return;
+    lst.sort((a, b) => (rk(a) - rk(b)) || (diaKey(a.fecha) - diaKey(b.fecha)));
+    const kept = [];
+    lst.forEach(b => {
+      const twin = kept.find(a => a.fecha !== b.fecha && Math.abs(diaDayN(a.fecha) - diaDayN(b.fecha)) <= DIA_OP_DIAS
+        && !(a.fuentes || []).some(f => (b.fuentes || []).indexOf(f) >= 0));
+      if(!twin){ kept.push(b); return; }
+      const sa = score(twin), sb = score(b);
+      if(sa === sb && sa > 0){ kept.push(b); return; }          // los dos ya están trabajados: que lo decida la persona
+      const keep = sb > sa ? b : twin, drop = keep === b ? twin : b;
+      if(keep === b) kept[kept.indexOf(twin)] = b;
+      drop.omitido = true; drop.omitMotivo = 'op-repetida'; drop.repetidoDe = keep.id;
+      keep.fuentes = Array.from(new Set((keep.fuentes || []).concat(drop.fuentes || [])));
+      touched.add(keep.id); touched.add(drop.id); dropped.push(drop);
+    });
+  });
+  if(!dropped.length) { diaRewriteAlerts(); return 0; }
+  // las descargas que trajeron la copia ya tenían esa operación: no son «nuevas»
+  const fmap = new Map((diaMerged.files || []).map(f => [f.id, f]));
+  dropped.forEach(d => { (d.fuentes || []).forEach(fid => { const f = fmap.get(fid); if(f && f.nuevos > 0){ f.nuevos--; f.duplicados = (f.duplicados || 0) + 1; } }); });
+  const byId = new Map(movs.map(m => [m.id, m]));
+  touched.forEach(id => { const m = byId.get(id); if(m) m.revisar = (m.revisar || []).filter(x => x !== 'op-fecha' && x !== 'desaparecido'); });
+  diaMerged.alertas = (diaMerged.alertas || []).filter(a => {
+    if(a.tipo === 'op-fecha'){ const act = (a.ids || []).filter(id => byId.get(id) && !byId.get(id).omitido); if(act.length <= 1) return false; a.ids = act; return true; }
+    if(a.tipo === 'desaparecido'){
+      const keepIds = (a.ids || []).filter(id => !touched.has(id));
+      if(!keepIds.length) return false;
+      if(keepIds.length !== (a.ids || []).length){ a.detalle += ' (Se descontaron las operaciones que llegaron con otra fecha en la descarga siguiente: ya cuentan como una sola.)'; a.ids = keepIds; }
+      return true;
+    }
+    return true;
+  });
+  if(diaMerged.resumen){ const r = diaMerged.resumen; r.activos -= dropped.length; r.omitidos += dropped.length; r.repetidosEntreDescargas = (r.repetidosEntreDescargas || 0) + dropped.length; }
+  diaMerged.dedup = dropped.length;
+  diaRewriteAlerts();
+  return dropped.length;
+}
+/* en los avisos, «omitir» pasa a «eliminar» (así se llama ahora el botón) */
+function diaRewriteAlerts(){
+  ((diaMerged && diaMerged.alertas) || []).forEach(a => { if(a.detalle) a.detalle = a.detalle.replace(/\bu omite una\b/g, 'o elimina una').replace(/\bomite (una|uno)\b/g, 'elimina $1'); });
+}
+/* texto del filtro de estado con cuántos hay eliminados o excluidos */
+function diaOmitLabels(){
+  const n = diaMerged ? diaEff().filter(m => m.omit).length : 0;
+  const t = 'Eliminados o excluidos' + (n ? ' (' + n + ')' : '');
+  ['diaEstFilter', 'diaCfEst'].forEach(id => { const o = document.querySelector('#' + id + ' option[value="omit"]'); if(o && o.textContent !== t) o.textContent = t; });
+}
+const diaOmitWhy = m => m.omitMotivo === 'op-repetida' ? 'Es la misma operación (mismo N° y mismo importe) que otro movimiento que llegó con otra fecha en otra descarga: se cuenta una sola vez.'
+  : (m.omitMotivo === 'itf-reemplazado' ? 'ITF de ese día reemplazado por el de una descarga más reciente: no suma en los totales.' : 'Eliminado: no suma en los totales y el programa no lo vuelve a traer.');
+async function diaBulkDelete(){
+  const ids = diaUnlocked(Array.from(diaSel));
+  if(!ids.length) return;
+  if(ids.length > 1){
+    const r = await askConfirm({ title: 'Eliminar movimientos', text: `Se eliminan ${ids.length} movimientos de la tabla y de los totales. Podrás verlos y restaurarlos en «Estado › Eliminados o excluidos».`, okLabel: 'Eliminar', danger: true });
+    if(!r.ok) return;
+  }
+  diaOmit(ids, true);
+}
+
+/* barra de desplazamiento horizontal arriba de la tabla (siempre a la vista, sincronizada con la de abajo) */
+function diaTopScrollInit(sel){
+  const wrap = document.querySelector(sel);
+  if(!wrap || wrap._topScroll) return;
+  const bar = document.createElement('div'); bar.className = 'dia-topscroll'; bar.hidden = true;
+  bar.setAttribute('aria-hidden', 'true'); bar.title = 'Desplázate de lado';
+  const inner = document.createElement('div'); bar.appendChild(inner);
+  wrap.parentNode.insertBefore(bar, wrap);
+  bar.addEventListener('scroll', () => { if(wrap.scrollLeft !== bar.scrollLeft) wrap.scrollLeft = bar.scrollLeft; });
+  wrap.addEventListener('scroll', () => { if(bar.scrollLeft !== wrap.scrollLeft) bar.scrollLeft = wrap.scrollLeft; });
+  const sync = () => {
+    const w = wrap.scrollWidth, over = w > wrap.clientWidth + 1;
+    inner.style.width = w + 'px'; bar.style.width = wrap.clientWidth + 'px'; bar.hidden = !over;
+    if(over && bar.scrollLeft !== wrap.scrollLeft) bar.scrollLeft = wrap.scrollLeft;
+  };
+  wrap._topScroll = { bar, sync };
+  if(typeof ResizeObserver === 'function'){
+    const ro = new ResizeObserver(sync); ro.observe(wrap); const t = wrap.querySelector('table'); if(t) ro.observe(t);
+  } else window.addEventListener('resize', sync);
+  sync();
+}
+(function wireDia171(){
+  ['#diaV-mov .tablewrap', '#diaFlowReal .tablewrap'].forEach(diaTopScrollInit);
+})();
+
 /* ---------------- carpeta compartida (File System Access API) ---------------- */
 const diaFS = { handle: null, timer: null, busy: false, last: null, found: 0 };
 const diaIDB = {
@@ -6835,6 +7605,7 @@ function renderDiaKpis(){
     <div class="dia-kpi k-out"><span class="l">Salidas</span><span class="v">${diaMoney(a.totOut / 100, diaMon)}</span><span class="s">${nOut} movimiento${nOut === 1 ? '' : 's'}</span></div>
     <div class="dia-kpi"><span class="l">Neto del período</span><span class="v">${diaMoney(neto, diaMon)}</span><span class="s">${escapeHtml(propias || 'Entradas menos salidas')}</span></div>
     <div class="dia-kpi"><span class="l">Saldo según el banco</span><span class="v">${sb.files.length ? diaMoney(sb.total, diaMon) : '—'}</span><span class="s">${sb.files.length ? escapeHtml(sb.files.map(f => f.banco + ' · ' + (f.turno ? f.turno + ' ' : '') + diaDM(f.fecha)).join(' + ')) : 'las descargas no traen saldo'}</span></div>
+    ${diaKpiSaldoHtml(sb)}
     <button type="button" class="dia-kpi clickable ${rc.bad ? 'k-bad' : (rc.n || rc.sinclas ? 'k-warn' : 'k-ok')}" id="diaKpiRev" title="${rc.n || rc.sinclas || rc.alertas ? 'Ver lo que hay que revisar' : 'Todo cuadra'}"><span class="l">Por revisar</span><span class="v">${rc.n + rc.sinclas}</span><span class="s">${rc.alertas} alerta${rc.alertas === 1 ? '' : 's'} · ${rc.sinclas} por clasificar · ${rc.obs} comprobante${rc.obs === 1 ? '' : 's'}</span></button>`;
   box.querySelectorAll('.dia-kpi .v').forEach(v => { v.title = v.textContent; });
 }
@@ -6954,6 +7725,7 @@ function diaFillCatSelects(){
   const sigB = '<option value="">Categoría…</option>' + html;
   if(b.dataset.sig !== sigB){ b.innerHTML = sigB; b.dataset.sig = sigB; }
   window._diaCatOpts = html;
+  diaColFillCats();
 }
 
 /* ---------------- Panel: gráficos ---------------- */
@@ -7063,12 +7835,13 @@ function renderDiaPanel(){
 /* ---------------- Movimientos: tabla editable ---------------- */
 function diaFiltered(){
   const q = diaFilt.q.trim().toLowerCase();
+  diaColPrep();
   const rg = diaPeriodoRange(diaEff().filter(m => !m.omit));
   return diaEff().filter(m => {
     if(m.moneda !== diaMon) return false;
     if(diaBanco !== 'all' && m.banco !== diaBanco) return false;
     if(rg && !(diaKey(m.fecha) >= rg[0] && diaKey(m.fecha) <= rg[1])) return false;
-    if(diaFilt.est !== 'omit' && diaFilt.est !== 'all' && m.omit) return false;
+    if(m.omit && diaFilt.est !== 'omit' && !diaFilt.ids) return false;
     if(diaFilt.ids && !diaFilt.ids.has(m.id)) return false;
     if(diaFilt.dia && m.fecha !== diaFilt.dia) return false;
     if(diaFilt.cat !== 'all' && m.catEff !== diaFilt.cat) return false;
@@ -7083,7 +7856,8 @@ function diaFiltered(){
     if(e === 'omit' && !m.omit) return false;
     if(e === 'tarde' && !m.tarde) return false;
     if(e === 'cerrado' && !m.cerrado) return false;
-    if(q && ![m.descripcion, m.operacion, m.nro, m.cta, m.anexo, m.fecha, diaCatT(m.catEff)].join(' ').toLowerCase().includes(q)) return false;
+    if(!diaColMatch(m)) return false;
+    if(q && ![m.descripcion, m.operacion, m.nro, m.cta, m.anexo, m.fecha, diaCatT(m.catEff), diaGlosaOf(m)].join(' ').toLowerCase().includes(q)) return false;
     return true;
   }).sort((a, b) => (diaKey(b.fecha) - diaKey(a.fecha)) || (a._i - b._i));
 }
@@ -7093,7 +7867,7 @@ function diaEstadoHtml(m){
   if(m.tarde) pills.push(`<span class="badge pill-sugerencia" title="Llegó en una descarga posterior al cierre del día: es nuevo. Identifícalo y vuelve a cerrar el día.">Nuevo tras el cierre</span>`);
   if(m.omit){
     const manual = diaEdits[m.id] && diaEdits[m.id].omit !== undefined;
-    pills.push(`<span class="badge pill-sinmatch" title="${manual ? 'Omitido por ti: no suma en los totales.' : 'ITF de ese día reemplazado por el de una descarga más reciente: no suma en los totales.'}">Omitido</span>`);
+    pills.push(`<span class="badge pill-sinmatch" title="${escapeHtml(manual ? diaOmitWhy({}) : diaOmitWhy(m))}">${manual || !m.omitMotivo ? 'Eliminado' : 'Excluido'}</span>`);
   }
   if((m.fuentes || []).length > 1) pills.push(`<span class="badge" title="Aparece en ${m.fuentes.length} descargas y se cuenta una sola vez.">En ${m.fuentes.length} descargas</span>`);
   if(m.flag){
@@ -7127,12 +7901,12 @@ function diaRowHtml(m){
   if(m.catUser) acts.push(`<button type="button" data-act="catauto" title="Volver a la categoría automática">↺</button>`);
   if(m.auto) acts.push(`<button type="button" data-act="ok" title="Aceptar este cruce">✓</button>`);
   if(diaIsManual(m)) acts.push(`<button type="button" data-act="rm" title="Quitar este movimiento agregado a mano">✕</button>`);
-  acts.push(`<button type="button" data-act="${m.omit ? 'rest' : 'omit'}" title="${m.omit ? 'Volver a contarlo' : 'Omitirlo: no suma en los totales'}">${m.omit ? 'Restaurar' : 'Omitir'}</button>`);
+  acts.push(`<button type="button" data-act="${m.omit ? 'rest' : 'omit'}" title="${m.omit ? 'Volver a contarlo' : 'Eliminarlo: sale de la tabla y de los totales, y el programa no lo vuelve a traer'}">${m.omit ? 'Restaurar' : 'Eliminar'}</button>`);
   if(m.cerrado) acts.length = 0;
   return `<tr data-id="${id}" class="${cls}">
     <td class="chk"><input type="checkbox" class="dia-chk" data-id="${id}" ${diaSel.has(m.id) ? 'checked' : ''} aria-label="Seleccionar ${escapeHtml(m.descripcion)}"></td>
     <td>${escapeHtml(m.fecha)}</td>
-    <td class="desc">${escapeHtml(m.descripcion)}</td>
+    <td class="desc">${escapeHtml(m.descripcion)}${diaGlosaHtml(m)}</td>
     <td>${escapeHtml(m.operacion)}</td>
     <td class="num in">${m.monto > 0 ? diaNum(m.monto) : ''}</td>
     <td class="num out">${m.monto < 0 ? diaNum(-m.monto) : ''}</td>
@@ -7141,6 +7915,7 @@ function diaRowHtml(m){
     <td>${inp('tipo', 'tipo', m.tipo, '—', 'Tipo de documento')}</td>
     <td>${inp('nro', 'nro', m.nro, '—', 'Número de documento')}</td>
     <td>${inp('anexo', 'anx', m.anexo, '—', 'Anexo o RUC')}</td>
+    <td class="c-com"><input type="checkbox" class="dia-com" data-id="${id}" ${m.com ? 'checked' : ''} aria-label="Tiene comisión bancaria"${m.cerrado ? ' disabled' : ''}></td>
     <td class="est">${diaEstadoHtml(m)}</td>
     <td class="acts">${acts.join('')}</td></tr>`;
 }
@@ -7158,11 +7933,14 @@ function renderDiaMov(){
   if(diaFilt.ids) tags.push(diaFilt.idsLabel || 'Selección');
   if(diaFilt.dia) tags.push('Día ' + diaFilt.dia);
   if(diaFilt.sign) tags.push(diaFilt.sign === 'in' ? 'Solo entradas' : 'Solo salidas');
+  const caf = diaColActive(); if(caf.length) tags.push('Columnas: ' + caf.map(k => DIA_COLN[k] || k).join(', '));
   lab.hidden = !tags.length;
   lab.innerHTML = tags.length ? `Filtro: <b>${escapeHtml(tags.join(' · '))}</b> — ${list.length} movimiento(s). <u data-act="clearf" style="cursor:pointer;color:var(--accent-ink);">Quitar este filtro</u>` : '';
   const all = dEl('diaChkAll');
   const nSel = show.filter(m => diaSel.has(m.id)).length;
   all.checked = show.length > 0 && nSel === show.length; all.indeterminate = nSel > 0 && nSel < show.length;
+  diaColSync();
+  diaOmitLabels();
   renderDiaBulk();
 }
 function renderDiaBulk(){
@@ -7176,6 +7954,8 @@ function diaPatchRows(){
   document.querySelectorAll('#diaMovBody tr[data-id]').forEach(tr => {
     const m = byId.get(tr.dataset.id); if(!m) return;
     const est = tr.querySelector('td.est'); if(est) est.innerHTML = diaEstadoHtml(m);
+    const gl = tr.querySelector('td.desc'); if(gl) diaPatchGlosa(gl, m);
+    const cb = tr.querySelector('input.dia-com'); if(cb){ cb.checked = !!m.com; cb.disabled = !!m.cerrado; }
     const sel = tr.querySelector('select.dia-cat'); if(sel && document.activeElement !== sel) sel.value = m.catEff;
     tr.classList.toggle('dia-flag', !!m.flag); tr.classList.toggle('dia-omit', !!m.omit); tr.classList.toggle('dia-lock', !!m.cerrado);
     const acts = tr.querySelector('td.acts');
@@ -7184,7 +7964,7 @@ function diaPatchRows(){
       if(m.catUser) a.push(`<button type="button" data-act="catauto" title="Volver a la categoría automática">↺</button>`);
       if(m.auto) a.push(`<button type="button" data-act="ok" title="Aceptar este cruce">✓</button>`);
       if(diaIsManual(m)) a.push(`<button type="button" data-act="rm" title="Quitar este movimiento agregado a mano">✕</button>`);
-      a.push(`<button type="button" data-act="${m.omit ? 'rest' : 'omit'}" title="${m.omit ? 'Volver a contarlo' : 'Omitirlo: no suma en los totales'}">${m.omit ? 'Restaurar' : 'Omitir'}</button>`);
+      a.push(`<button type="button" data-act="${m.omit ? 'rest' : 'omit'}" title="${m.omit ? 'Volver a contarlo' : 'Eliminarlo: sale de la tabla y de los totales, y el programa no lo vuelve a traer'}">${m.omit ? 'Restaurar' : 'Eliminar'}</button>`);
       if(m.cerrado) a.length = 0;
       acts.innerHTML = a.join('');
     }
@@ -7430,6 +8210,8 @@ function flowRealRows(list, grp, o){
   rows.push({ k: 'tot', l: 'Total de entradas', v: T.tin, t: sum(T.tin) });
   rows.push({ k: 'tot', l: 'Total de salidas', v: T.tout, t: sum(T.tout) });
   rows.push({ k: 'net', l: 'Flujo neto', v: net, t: sum(net) });
+  const SR = flowSaldoRows(list, per, mon, banco, a);
+  if(SR){ rows.unshift(SR.ini); rows.push(SR.fin); }
   let acc = 0;
   rows.push({ k: 'memo', l: 'Acumulado del período', v: net.map(v => r2(acc += v)), t: null });
   const bancos = Array.from(new Set(list.map(m => m.banco)));
@@ -8725,8 +9507,9 @@ function diaApplySug(id, i){
 }
 function diaOmit(ids, omit){
   ids = diaUnlocked(ids);
-  ids.forEach(id => { const ed = diaEdits[id] = diaEdits[id] || {}; ed.omit = omit; });
+  ids.forEach(id => { const ed = diaEdits[id] = diaEdits[id] || {}; ed.omit = omit; if(omit) diaSel.delete(id); });
   diaInvalidate(); diaAfterChange();
+  if(ids.length) toast(omit ? (ids.length === 1 ? 'Movimiento eliminado.' : ids.length + ' movimientos eliminados.') + ' Si lo necesitas, míralo en «Estado › Eliminados o excluidos»; el programa no lo vuelve a traer.' : (ids.length === 1 ? 'Movimiento restaurado.' : ids.length + ' movimientos restaurados.'), 'ok');
 }
 function diaRemoveManual(m){
   const i = diaManual.findIndex(x => x.fecha === m.fecha && x.descripcion === m.descripcion && (x.operacion || '') === (m.operacion || '') && Math.abs(x.monto - m.monto) < 0.005 && x.moneda === m.moneda && x.banco === m.banco);
@@ -8754,7 +9537,8 @@ function diaState(){
     v: 1, files: diaFiles, manual: diaManual, merged: diaMerged, edits: diaEdits, val: diaVal, valResumen: diaValResumen, ack: diaAck, seen: diaSeen,
     docsSrc: diaDocsSrc, docsOwn: diaDocsOwn, docsName: diaDocsName, view: diaView, mon: diaMon, banco: diaBanco, periodo: diaPeriodo, panelMode: diaPanelMode,
     folder: { name: diaFolderName, on: diaFolderOn }, tol: (dEl('diaTol') || {}).value, proy: proyState(),
-    cierres: diaCierres, savedAt: diaSavedAt
+    cierres: diaCierres, savedAt: diaSavedAt,
+    saldos: diaSaldos, catCfg: diaCatCfg, rs: diaRS
   };
 }
 function diaApplyState(s){
@@ -8779,6 +9563,11 @@ function diaApplyState(s){
   const t = dEl('diaTol'); if(t && s.tol) t.value = s.tol;
   diaCierres = Array.isArray(s.cierres) ? s.cierres.filter(c => c && c.hasta && Array.isArray(c.ids)) : [];
   diaSavedAt = +s.savedAt || 0;
+  diaSaldos = (s.saldos && typeof s.saldos === 'object' && !Array.isArray(s.saldos)) ? s.saldos : {};
+  const cc = (s.catCfg && typeof s.catCfg === 'object') ? s.catCfg : {};
+  diaCatCfg = { custom: Array.isArray(cc.custom) ? cc.custom.filter(c => c && c.k && c.t) : [], ren: (cc.ren && typeof cc.ren === 'object') ? cc.ren : {}, grp: (cc.grp && typeof cc.grp === 'object') ? cc.grp : {} };
+  diaRS = Array.isArray(s.rs) ? s.rs.filter(e => e && (e.ruc || e.nombre)).map(e => ({ ruc: String(e.ruc || ''), nombre: String(e.nombre || ''), alias: String(e.alias || '') })) : [];
+  diaRSIdx = null; diaCatsApply();
   proyApply(s.proy);
   diaSel = new Set(); diaCompare = null; diaInvalidate();
 }
@@ -8821,6 +9610,7 @@ function diaEstadoText(m){
   const t = [];
   if(m.cerrado) t.push('Cerrado.');
   if(m.tarde) t.push('Nuevo tras el cierre del día.');
+  if(m.com) t.push('Con comisión bancaria.');
   if(m.flag) t.push('Revisar: ' + (m.revisar || []).map(c => DIA_REVISAR[c] || c).join(' '));
   if(m.val) (m.val.msgs || []).filter(x => x.n !== 'ok').forEach(x => t.push(x.t));
   if(m.itf && m.itf.estado === 'no-cuadra') t.push('ITF distinto del esperado por las operaciones del día.');
@@ -8832,12 +9622,12 @@ function diaExportXlsx(){
   const wb = XLSX.utils.book_new();
   const movs = diaMovsForExport();
   const rows = movs.map(m => ({
-    Fecha: m.fecha, Banco: m.banco, Moneda: m.moneda, 'Descripción': m.descripcion, 'N° Operación': m.operacion,
+    Fecha: m.fecha, Banco: m.banco, Moneda: m.moneda, 'Descripción': m.descripcion, Glosa: diaGlosaOf(m), 'N° Operación': m.operacion,
     Entrada: m.monto > 0 ? m.monto : '', Salida: m.monto < 0 ? -m.monto : '', 'Categoría': diaCatT(m.catEff),
-    'Cuenta Contable': m.cta, 'Tipo Doc.': m.tipo, 'N° Doc.': m.nro, 'Anexo/RUC': m.anexo, Observaciones: diaEstadoText(m), 'Descargas': (m.fuentes || []).length
+    'Cuenta Contable': m.cta, 'Tipo Doc.': m.tipo, 'N° Doc.': m.nro, 'Anexo/RUC': m.anexo, 'Razón social': diaRSName(m.anexo), 'Comisión bancaria': m.com ? 'Sí' : '', Observaciones: diaEstadoText(m), 'Descargas': (m.fuentes || []).length
   }));
   const ws = XLSX.utils.json_to_sheet(rows.length ? rows : [{ Fecha: '' }]);
-  ws['!cols'] = [{ wch: 11 }, { wch: 11 }, { wch: 8 }, { wch: 40 }, { wch: 12 }, { wch: 13 }, { wch: 13 }, { wch: 26 }, { wch: 14 }, { wch: 8 }, { wch: 14 }, { wch: 14 }, { wch: 50 }, { wch: 10 }];
+  ws['!cols'] = [{ wch: 11 }, { wch: 11 }, { wch: 8 }, { wch: 40 }, { wch: 46 }, { wch: 12 }, { wch: 13 }, { wch: 13 }, { wch: 26 }, { wch: 14 }, { wch: 8 }, { wch: 14 }, { wch: 14 }, { wch: 36 }, { wch: 11 }, { wch: 50 }, { wch: 10 }];
   XLSX.utils.book_append_sheet(wb, ws, 'Movimientos');
   // resumen por categoría y moneda
   const sum = [];
@@ -8863,12 +9653,13 @@ function diaExportXlsx(){
   if(al.length) XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(al), 'Alertas');
   const fl = (diaMerged.files || []).map(f => ({ Archivo: f.name, Banco: f.banco, 'Descargado el': f.fecha, Turno: f.turno, Moneda: f.moneda, Filas: f.filas, Nuevos: f.nuevos, Repetidos: f.duplicados, 'Saldo del banco': f.saldo === null ? '' : f.saldo, Cuadre: f.cuadre ? (f.cuadre.ok ? 'Cuadra' : 'Diferencia ' + f.cuadre.dif) : '' }));
   XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(fl), 'Descargas');
-  const om = diaEff().filter(m => m.omit).map(m => ({ Fecha: m.fecha, Banco: m.banco, Moneda: m.moneda, 'Descripción': m.descripcion, 'N° Operación': m.operacion, Importe: m.monto, Motivo: m.omitMotivo === 'itf-reemplazado' && !(diaEdits[m.id] && diaEdits[m.id].omit !== undefined) ? 'ITF reemplazado por el de una descarga más reciente' : 'Omitido por el usuario' }));
-  if(om.length) XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(om), 'Omitidos');
+  const om = diaEff().filter(m => m.omit).map(m => ({ Fecha: m.fecha, Banco: m.banco, Moneda: m.moneda, 'Descripción': m.descripcion, 'N° Operación': m.operacion, Importe: m.monto, Motivo: (diaEdits[m.id] && diaEdits[m.id].omit !== undefined) ? 'Eliminado por el usuario' : (m.omitMotivo === 'op-repetida' ? 'Misma operación que otro movimiento (otra fecha, otra descarga)' : 'ITF reemplazado por el de una descarga más reciente') }));
+  if(om.length) XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(om), 'Eliminados y excluidos');
   XLSX.writeFile(wb, `trabajo_diario_${diaLastDate()}.xlsx`);
 }
 function diaToCg(m){
-  return { fecha: m.fecha, descripcion: m.descripcion, operacion: m.operacion, cargo: m.monto < 0 ? (-m.monto).toFixed(2) : '', abono: m.monto > 0 ? m.monto.toFixed(2) : '', saldo: '', banco: m.banco, ocrNota: '', cuentaContable: m.cta, docTipo: m.tipo, docNroDoc: m.nro, docAnexo: m.anexo, moneda: m.moneda };
+  const gl = diaGlosaOf(m);
+  return { fecha: m.fecha, descripcion: gl || m.descripcion, descBanco: gl ? m.descripcion : '', comisionBancaria: m.com ? '1' : '', operacion: m.operacion, cargo: m.monto < 0 ? (-m.monto).toFixed(2) : '', abono: m.monto > 0 ? m.monto.toFixed(2) : '', saldo: '', banco: m.banco, ocrNota: '', cuentaContable: m.cta, docTipo: m.tipo, docNroDoc: m.nro, docAnexo: m.anexo, moneda: m.moneda };
 }
 async function diaSendTo(n){
   if(!diaMerged){ return; }
@@ -8974,7 +9765,7 @@ async function diaSendTo(n){
   const body = dEl('diaMovBody');
   body.addEventListener('change', e => {
     const t = e.target;
-    if(t.classList.contains('dia-in')){ diaEditField(t.dataset.id, t.dataset.f, t.value); const m = diaEff().find(x => x.id === t.dataset.id); if(m){ const tr = t.closest('tr'); const est = tr && tr.querySelector('td.est'); if(est) est.innerHTML = diaEstadoHtml(m); } return; }
+    if(t.classList.contains('dia-in')){ diaEditField(t.dataset.id, t.dataset.f, t.value); const m = diaEff().find(x => x.id === t.dataset.id); if(m){ const tr = t.closest('tr'); const est = tr && tr.querySelector('td.est'); if(est) est.innerHTML = diaEstadoHtml(m); const gl = tr && tr.querySelector('td.desc'); if(gl) diaPatchGlosa(gl, m); } return; }
     if(t.classList.contains('dia-cat')){ diaSetEdit([t.dataset.id], { cat: t.value }); diaCatChanged(); return; }
     if(t.classList.contains('dia-chk')){
       if(t.checked) diaSel.add(t.dataset.id); else diaSel.delete(t.dataset.id);
@@ -9023,7 +9814,7 @@ async function diaSendTo(n){
     dEl('diaBulkCta').value = ''; dEl('diaBulkAnx').value = '';
     diaInvalidate(); renderTab6(); diaRevalidateSoon(); scheduleExtSave();
   });
-  dEl('diaBulkOmitBtn').addEventListener('click', () => { diaOmit(selIds(), true); });
+  dEl('diaBulkOmitBtn').addEventListener('click', diaBulkDelete);
   dEl('diaBulkRestBtn').addEventListener('click', () => { diaOmit(selIds(), false); });
   dEl('diaBulkNoneBtn').addEventListener('click', () => { diaSel = new Set(); renderDiaMov(); });
 
@@ -9105,10 +9896,10 @@ async function diaRemoveFile(id){
 function diaReset(){
   if(diaHasData()){ diaSnapNow('Antes de limpiar el trabajo diario', 'seguridad'); diaAllowEmpty = true; }
   clearTimeout(diaMergeTimer); clearTimeout(diaValTimer); diaSeq++; diaValSeq++;
-  diaCierres = []; diaFiles = []; diaManual = []; diaMerged = null; diaEdits = {}; diaVal = {}; diaValResumen = null; diaAck = {};
+  diaCierres = []; diaSaldos = {}; diaFiles = []; diaManual = []; diaMerged = null; diaEdits = {}; diaVal = {}; diaValResumen = null; diaAck = {};
   diaDocsSrc = ''; diaDocsOwn = []; diaDocsName = ''; diaCompare = null;
   diaView = 'panel'; diaMon = 'PEN'; diaBanco = 'all'; diaPeriodo = 'all'; diaPanelMode = 'graf';
-  diaFilt = { q: '', cat: 'all', sign: '', est: 'all', ids: null, idsLabel: '', dia: '' };
+  diaFilt = { q: '', cat: 'all', sign: '', est: 'all', ids: null, idsLabel: '', dia: '' }; diaColF = diaColVacio();
   diaLimit = 300; diaSel = new Set(); diaInvalidate(); proyReset();
   ['diaFileStatus', 'diaCrossResumen', 'diaSendStatus'].forEach(id => { const e = dEl(id); if(e) e.textContent = ''; });
   const s = dEl('diaSearch'); if(s) s.value = '';
