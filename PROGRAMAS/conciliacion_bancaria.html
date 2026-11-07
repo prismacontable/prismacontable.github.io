@@ -531,6 +531,22 @@
     .py-top{grid-template-columns:auto minmax(0,1fr) auto;}
   }
 
+  /* ---------- v1.6: cierre del día, candados y copias ---------- */
+  #diaMovTable tr.dia-lock td:first-child{box-shadow:inset 3px 0 0 var(--faint);}
+  #diaMovTable tr.dia-lock input.dia-in:disabled, #diaMovTable tr.dia-lock select:disabled{opacity:.78; cursor:not-allowed; background:transparent;}
+  .dia-cierre-bar{display:flex; gap:10px; align-items:center; flex-wrap:wrap; padding:8px 12px; margin:0 0 10px; border:1px solid var(--border); border-left:4px solid var(--faint); border-radius:9px; background:var(--panel2); font-size:13px;}
+  .dia-cierre-bar.warn{border-left-color:var(--warn); background:var(--warn-bg);}
+  .dia-cierre-bar .ico{width:16px; height:16px; flex:0 0 auto;}
+  .dia-cierre-bar span{flex:1 1 220px; min-width:0;}
+  .dia-cierre-bar button{width:auto; margin:0; flex:0 0 auto;}
+  .dia-savestat{font-size:12.5px; color:var(--muted); line-height:1.5; margin-top:10px; display:flex; flex-direction:column; gap:3px;}
+  .dia-savestat .ok{color:var(--ok); font-weight:600;}
+  .dia-savestat .warn{color:var(--warn);}
+  .dia-savestat .bad{color:var(--bad); font-weight:600;}
+  .sh-grid label.ci-chk, .ci-chk{display:flex; gap:7px; align-items:center; font-size:13px; font-weight:600; color:var(--text); margin:0; padding-bottom:9px;}
+  .sh-grid .ci-chk input, .ci-chk input{width:auto; margin:0; flex:0 0 auto;}
+  #ciSum .warn{color:var(--warn); font-weight:600;}
+  #diaStep4 .dia-btns.row2{margin-top:8px;}
   /* ---------- v1.5: flujo por rubros y enlace de solo lectura ---------- */
   #diaFlowTable tr.act td, #pyMatrixT tr.act td{background:var(--panel3); color:var(--text); font-weight:700; letter-spacing:.03em; font-size:12px; text-transform:uppercase; border-top:1px solid var(--border);}
   #diaFlowTable tr.grp td, #pyMatrixT tr.grp td{font-weight:700; background:var(--panel2);}
@@ -1152,6 +1168,7 @@ body.gate-open{overflow:hidden;}
     <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6 7 7M17 17l1.4 1.4M5.6 18.4 7 17M17 7l1.4-1.4"/></symbol>
     <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5z"/></symbol>
     <symbol id="i-tag" viewBox="0 0 24 24"><path d="M3 12V4h8l9 9-8 8z"/><circle cx="7.5" cy="8.5" r="1"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></symbol>
     <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></symbol>
     <symbol id="i-undo" viewBox="0 0 24 24"><path d="M9 14 4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-2"/></symbol>
     <symbol id="i-scale" viewBox="0 0 24 24"><path d="M12 4v16M7 20h10M5 8h14"/><path d="m5 8-3 7a3 3 0 0 0 6 0zM19 8l-3 7a3 3 0 0 0 6 0z"/></symbol>
@@ -1926,14 +1943,21 @@ body.gate-open{overflow:hidden;}
       <div class="step-card" id="diaStep4">
         <div class="step-head">
           <span class="step-num">4</span>
-          <span class="step-title">Guardar y enviar</span>
+          <span class="step-title">Cerrar, guardar y enviar</span>
         </div>
-        <div class="step-sub">El avance queda en este navegador y no sube a ningún servidor; guárdalo en un archivo para no perderlo.</div>
+        <div class="step-sub">Tu trabajo se guarda solo en este navegador (no sube a ningún servidor) y se hacen copias de seguridad. Al terminar el día, ciérralo: lo que identificaste queda con candado y las descargas siguientes no lo tocan.</div>
         <div class="dia-btns col">
-          <button class="green" id="diaSaveBtn" disabled><svg class="ico"><use href="#i-save"/></svg>Guardar avance (.json)</button>
+          <button class="green" id="diaCloseBtn" disabled><svg class="ico"><use href="#i-lock"/></svg>Cerrar el día…</button>
+          <button class="secondary" id="diaSaveBtn" disabled><svg class="ico"><use href="#i-save"/></svg>Guardar avance (.json)</button>
           <button class="secondary" id="diaOpenBtn"><svg class="ico"><use href="#i-folder"/></svg>Abrir avance guardado</button>
           <button class="secondary" id="diaXlsxBtn" disabled><svg class="ico"><use href="#i-download"/></svg>Descargar Excel del día</button>
         </div>
+        <div class="dia-btns row2">
+          <button class="secondary sm" id="diaBakFolderBtn"><svg class="ico"><use href="#i-folder"/></svg>Respaldo en carpeta…</button>
+          <button class="ghost sm" id="diaBakOffBtn" hidden>Dejar de respaldar</button>
+          <button class="secondary sm" id="diaBakListBtn"><svg class="ico"><use href="#i-undo"/></svg>Copias de seguridad…</button>
+        </div>
+        <div class="dia-savestat" id="diaSaveStat" aria-live="polite"></div>
         <input type="file" id="diaOpenInput" accept=".json,application/json" style="display:none;">
         <hr class="dia-sep">
         <div class="step-sub" style="margin-bottom:6px;">Pasar los movimientos ya cruzados a las demás pestañas:</div>
@@ -1947,6 +1971,7 @@ body.gate-open{overflow:hidden;}
 
     <div class="panel">
       <div class="dia-kpis" id="diaKpis"></div>
+      <div class="dia-cierre-bar" id="diaCierreBar" hidden></div>
 
       <div class="dia-bar2">
         <div class="dia-seg" role="tablist" aria-label="Vistas del trabajo diario" id="diaViews">
@@ -2009,6 +2034,8 @@ body.gate-open{overflow:hidden;}
             <option value="obs">Con observaciones del comprobante</option>
             <option value="auto">Cruces por aceptar</option>
             <option value="omit">Omitidos</option>
+            <option value="tarde">Nuevos tras el cierre</option>
+            <option value="cerrado">Cerrados (con candado)</option>
           </select>
           <button class="secondary sm" id="diaAddToggle"><svg class="ico"><use href="#i-plus"/></svg>Agregar movimiento</button>
         </div>
@@ -2290,6 +2317,29 @@ body.gate-open{overflow:hidden;}
 
 
 <datalist id="cuentasConocidas"></datalist>
+<dialog class="dlg dlg-wide" id="ciDlg" aria-labelledby="ciTitle">
+  <div class="dlg-body">
+    <h3 id="ciTitle">Cerrar el día</h3>
+    <p>Al cerrar, lo que ya identificaste (cuenta contable, documento, cancelaciones) queda <b>con candado</b>: las descargas siguientes no lo cambian ni lo borran. Si el banco trae después movimientos de un día cerrado, se suman solos (por número de operación e ITF, sin repetir los que ya tienes) y quedan marcados como <b>«Nuevo tras el cierre»</b> para que los identifiques.</p>
+    <div class="sh-grid">
+      <div><label for="ciFecha">Cerrar hasta el día</label><select id="ciFecha"></select></div>
+      <div id="ciDescargaWrap" style="align-self:end;"><label class="ci-chk"><input type="checkbox" id="ciDescarga"> Descargar también el archivo .json</label></div>
+    </div>
+    <div class="sh-sum" id="ciSum"></div>
+    <h4 id="ciListH" hidden>Cierres hechos</h4>
+    <div class="sh-list" id="ciList"></div>
+  </div>
+  <div class="dlg-actions"><button type="button" class="secondary" id="ciClose">Cancelar</button><button type="button" id="ciDo">Cerrar el día</button></div>
+</dialog>
+<dialog class="dlg dlg-wide" id="bkDlg" aria-labelledby="bkTitle">
+  <div class="dlg-body">
+    <h3 id="bkTitle">Copias de seguridad</h3>
+    <p>El programa guarda copias de tu trabajo en este navegador: una por día mientras trabajas, una cada vez que cierras el día y una antes de limpiar, quitar una descarga o abrir otro avance. Sirven por si algo se borra por error. Para no depender del navegador, usa también «Respaldo en carpeta».</p>
+    <div class="sh-list" id="bkList"></div>
+    <div class="hint" id="bkEmpty" hidden>Aún no hay copias: se crean cuando empiezas a trabajar.</div>
+  </div>
+  <div class="dlg-actions"><button type="button" class="secondary" id="bkClose">Cerrar</button></div>
+</dialog>
 <dialog class="dlg dlg-wide" id="shDlg" aria-labelledby="shTitle">
   <div class="dlg-body">
     <h3 id="shTitle">Compartir con un enlace</h3>
@@ -2334,7 +2384,7 @@ window.EC_CONFIG = { API_URL: "PEGA_AQUI_LA_URL_DEL_SERVIDOR", GEO: true };
    Acceso: usuario + contraseña (se validan en cada pedido; la contraseña vive solo en memoria),
    equipo autorizado (id guardado en este navegador) y RUC habilitados.
    ============================================================ */
-const EC_CLIENT_VERSION = '1.5.0';
+const EC_CLIENT_VERSION = '1.6.0';
 const EC_USER_STORE = 'ec_usuario';
 const EC_DEVICE_STORE = 'ec_deviceId';
 const EC_URL_STORE = 'ec_api_url';
@@ -3420,12 +3470,22 @@ function scheduleExtSave(){
   _extSaveTimer = setTimeout(saveExtState, 600);
 }
 function saveExtState(){
+  diaSavedAt = Date.now();
+  let full = null;
+  try{ full = extState(); }catch(e){ console.warn('No se pudo armar el estado:', e); return; }
   try{
-    localStorage.setItem(CBAN_STORAGE_KEY_EXT, JSON.stringify(extState()));
+    localStorage.setItem(CBAN_STORAGE_KEY_EXT, JSON.stringify(full));
   }catch(e){
-    console.warn('No se pudo guardar el cruce de las Pestañas 2-4 en este navegador:', e);
-    if(!window._extQuotaWarned){ window._extQuotaWarned = true; try{ toast('El navegador no tiene espacio para autoguardar todo el trabajo. Usa «Guardar proyecto» o «Guardar avance» para no perderlo.', 'warn'); }catch(e2){} }
+    console.warn('No se pudo guardar todo en localStorage; el trabajo diario va a IndexedDB:', e);
+    try{
+      // sin el trabajo diario (que es lo más grande) lo de las Pestañas 2-4 sí cabe
+      localStorage.setItem(CBAN_STORAGE_KEY_EXT, JSON.stringify(Object.assign({}, full, { dia: { v: 1, slim: true, savedAt: diaSavedAt } })));
+    }catch(e2){
+      if(!window._extQuotaWarned){ window._extQuotaWarned = true; try{ toast('El navegador no tiene espacio para autoguardar todo el trabajo. Usa «Guardar proyecto» o «Guardar avance» para no perderlo.', 'warn'); }catch(e3){} }
+    }
   }
+  try{ diaPersistIDB(); }catch(e){}
+  try{ diaBakSchedule(); }catch(e){}
 }
 
 function acctKeyOf(m){ return normalizeBankCode(m && m.banco) + '|' + normalizeMoneda(m && m.moneda); }
@@ -6011,6 +6071,9 @@ let diaSel = new Set();
 let diaFolderName = '';
 let diaFolderOn = false;
 let diaEffCache = null;
+let diaCierres = [];        // cierres del día: {id, hasta, at, ids, abierto, n}
+let diaLockCache = null;
+let diaSavedAt = 0, diaIdbOk = null, diaPersistOk = null, diaIdbAt = null;
 /* Proyección de caja (Pestaña 6 › Flujo de caja › Proyección): lo cargado y el último cálculo */
 const PY_MONEY = ['saldo', 'minimo', 'linea'];   // montos: uno por moneda (cada moneda tiene su propia caja)
 const proyDefParams = () => ({ desde: '', dias: 90, saldo: { PEN: '', USD: '' }, minimo: { PEN: '', USD: '' }, linea: { PEN: '', USD: '' }, cobroPct: 100, cobroAtraso: 0, atrasoBase: 0, esperaCobro: 7, esperaPago: 7, igv: { deuda: '', fecha: '', cuotas: '1', auto: false, ventas: '', compras: '', favor: '', dia: '15', detrac: '' } });
@@ -6026,7 +6089,8 @@ const DIA_REVISAR = {
   'repetido-archivo': 'La operación aparece más de una vez en la misma descarga.',
   'op-monto': 'La misma operación aparece con importes distintos.',
   'op-fecha': 'La misma operación e importe aparecen con fechas distintas.',
-  'desaparecido': 'Estaba en una descarga anterior y ya no está en la siguiente.'
+  'desaparecido': 'Estaba en una descarga anterior y ya no está en la siguiente.',
+  'tarde': 'Llegó en una descarga posterior al cierre del día: es nuevo, no estaba cuando cerraste.'
 };
 const dEl = id => document.getElementById(id);
 const diaNum = n => { const x = Number(n); return isFinite(x) ? x.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; };
@@ -6050,7 +6114,7 @@ function diaCats(){ return (diaMerged && diaMerged.categorias && diaMerged.categ
 function diaCatT(k){ const c = diaCats().find(x => x.k === k); return c ? c.t : (k || ''); }
 function diaDocs(){ return diaDocsSrc === 'tab2' ? pendingDocs : (diaDocsSrc === 'own' ? diaDocsOwn : []); }
 const diaLeanDoc = d => ({ cuenta: d.cuenta, tipo: d.tipo, nrodoc: d.nrodoc, moneda: d.moneda, saldoUsd: d.saldoUsd, saldoPen: d.saldoPen, anexo: d.anexo, fecha: d.fecha, venc: d.venc, nombre: d.nombre });
-function diaInvalidate(){ diaEffCache = null; }
+function diaInvalidate(){ diaEffCache = null; diaLockCache = null; }
 function diaHasData(){ return !!(diaFiles.length || diaManual.length || proy.items.length); }
 
 /* ---------------- movimientos con lo que el usuario cambió ---------------- */
@@ -6066,6 +6130,7 @@ function diaFlaggedIds(){
 function diaEff(){
   if(diaEffCache) return diaEffCache;
   const flagged = diaFlaggedIds();
+  const L = diaLocks();
   const out = [];
   ((diaMerged && diaMerged.movs) || []).forEach((m, i) => {
     const ed = diaEdits[m.id] || {};
@@ -6073,7 +6138,10 @@ function diaEff(){
     const omit = ed.omit !== undefined ? !!ed.omit : !!m.omitido;
     const cta = ed.cta || '', nro = ed.nro || '';
     const cat = ed.cat || ((cta || nro) && v && v.cat) || m.cat;
-    out.push(Object.assign({}, m, { _i: i, omit, cta, tipo: ed.tipo || '', nro, anexo: ed.anexo || '', nota: ed.nota || '', auto: ed.auto || '', catEff: cat, catUser: !!ed.cat, val: v, flag: flagged.has(m.id) }));
+    const cerrado = L.locked.has(m.id);
+    const tarde = !cerrado && !omit && L.max > 0 && !L.known.has(m.id) && diaKey(m.fecha) <= L.max;
+    out.push(Object.assign({}, m, { _i: i, omit, cta, tipo: ed.tipo || '', nro, anexo: ed.anexo || '', nota: ed.nota || '', auto: ed.auto || '', catEff: cat, catUser: !!ed.cat, val: v, cerrado, tarde,
+      revisar: tarde ? (m.revisar || []).concat('tarde') : m.revisar, flag: flagged.has(m.id) || tarde }));
   });
   diaEffCache = out;
   return out;
@@ -6144,6 +6212,7 @@ async function diaIngest(list, opts){
   const st = dEl('diaFileStatus');
   const files = Array.from(list || []);
   const msgs = [];
+  const addedIds = [];
   let added = 0;
   for(const file of files){
     if(!/\.(xlsx|xls|csv)$/i.test(file.name) || /^~\$/.test(file.name)){ msgs.push(file.name + ': no es un Excel (.xlsx, .xls o .csv).'); continue; }
@@ -6159,6 +6228,7 @@ async function diaIngest(list, opts){
       while(diaFiles.some(f => f.name === name)) name = file.name.replace(/(\.[^.]+)$/, ' (' + (k++) + ')$1');
       const id = 'f' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
       diaFiles.push({ id, name, meta: r.meta, rows: r.rows, size: file.size, modified: file.lastModified || 0, sig, avisos: r.avisos || [], ignoradas: r.ignoradas || 0 });
+      addedIds.push(id);
       diaSeen[sig] = 1;
       added++;
       (r.avisos || []).forEach(a => msgs.push(file.name + ': ' + a));
@@ -6168,7 +6238,13 @@ async function diaIngest(list, opts){
     }
   }
   st.textContent = (added ? `${added} descarga${added === 1 ? '' : 's'} agregada${added === 1 ? '' : 's'}.` : 'No se agregó ninguna descarga.') + (msgs.length ? '\n' + msgs.join('\n') : '');
-  if(added){ diaPeriodo = 'all'; await diaRemerge(); }
+  if(added){
+    diaPeriodo = 'all'; await diaRemerge();
+    const mf = new Map(((diaMerged && diaMerged.files) || []).map(f => [f.id, f]));
+    const lines = addedIds.map(fid => { const f = diaFiles.find(x => x.id === fid), s = mf.get(fid); return (f && s) ? `${f.name}: ${s.nuevos} movimiento(s) nuevo(s); ${s.duplicados} ya estaban y no se repitieron.` : ''; }).filter(Boolean);
+    const nT = diaMerged ? diaEff().filter(m => m.tarde).length : 0;
+    st.textContent += '\n' + lines.join('\n') + '\nLo que ya identificaste no se tocó.' + (nT ? `\n⚠ ${nT} movimiento(s) son de días que ya cerraste: míralos en «Nuevo tras el cierre».` : '');
+  }
   else renderTab6();
   return added;
 }
@@ -6200,7 +6276,7 @@ async function diaRemerge(){
   try{
     const d = await EC.call('dayMerge', { files }, { label: 'Uniendo las descargas sin duplicar…' });
     if(my !== diaSeq) return;
-    diaMerged = d; diaInvalidate();
+    diaMerged = d; diaInheritItf(); diaInvalidate();
     const have = new Set(d.movs.map(m => m.id));
     diaSel.forEach(id => { if(!have.has(id)) diaSel.delete(id); });
     // si la moneda o el banco elegidos ya no tienen movimientos, pasar a los que sí
@@ -6273,6 +6349,7 @@ async function diaCross(){
       { heavy: true, label: 'Buscando documentos que respalden los movimientos…', btn: dEl('diaCrossBtn') });
     let nEx = 0, nSug = 0;
     (d.cambios || []).forEach(c => {
+      if(diaLocked(c.id)) return;
       const ed = diaEdits[c.id] = diaEdits[c.id] || {};
       if(ed.cta || ed.nro) return;
       ed.cta = c.cuentaContable || ''; ed.tipo = c.docTipo || ''; ed.nro = c.docNroDoc || ''; ed.anexo = c.docAnexo || ''; ed.auto = c.estado; ed.nota = c.nota || '';
@@ -6286,12 +6363,361 @@ async function diaCross(){
   }catch(e){ ecFail(e); }
 }
 
+/* ============================================================
+   v1.6: cierre del día, copias de seguridad y guardado reforzado
+   - El trabajo diario se guarda también en IndexedDB (mucho más espacio que localStorage).
+   - Copias de seguridad automáticas (una por día, una por cierre, una antes de limpiar/quitar/abrir).
+   - Respaldo opcional en una carpeta del disco (se reescribe solo mientras trabajas).
+   - Cierre del día: lo identificado queda con candado; lo que llegue después se suma y se avisa.
+   ============================================================ */
+const DIA_BAK_KEEP = { auto: 10, seguridad: 15, cierre: 45 };
+let diaBootDone = false, diaAllowEmpty = false, diaLastDailyAt = 0, diaToastAt = 0;
+
+/* ---- candados ---- */
+function diaLocks(){
+  if(diaLockCache) return diaLockCache;
+  const locked = new Set(), known = new Set();
+  let max = 0;
+  (diaCierres || []).forEach(c => {
+    const k = diaKey(c.hasta); if(k > max) max = k;
+    (c.ids || []).forEach(id => { known.add(id); if(!c.abierto) locked.add(id); });
+  });
+  diaLockCache = { locked, known, max };
+  return diaLockCache;
+}
+const diaLocked = id => diaLocks().locked.has(id);
+function diaUnlocked(ids){
+  const L = diaLocks();
+  const ok = ids.filter(id => !L.locked.has(id));
+  const n = ids.length - ok.length;
+  if(n > 0 && Date.now() - diaToastAt > 800){
+    diaToastAt = Date.now();
+    toast(n === 1 ? 'Ese movimiento está en un día cerrado: no se cambió. Reabre el cierre si necesitas corregirlo.' : `${n} movimientos están en un día cerrado: no se cambiaron. Reabre el cierre si necesitas corregirlos.`, 'warn');
+  }
+  return ok;
+}
+
+/* ---- el ITF reemplazado entrega lo identificado al ITF nuevo del mismo día ---- */
+function diaInheritItf(){
+  if(!diaMerged) return;
+  const movs = diaMerged.movs || [];
+  movs.filter(m => m.omitido && m.omitMotivo === 'itf-reemplazado').forEach(old => {
+    const ed = diaEdits[old.id]; if(!ed) return;
+    const sv = movs.filter(s => !s.omitido && !s.operacion && s.id !== old.id && s.banco === old.banco && s.moneda === old.moneda && s.fecha === old.fecha);
+    if(sv.length !== 1) return;
+    const dst = diaEdits[sv[0].id] = diaEdits[sv[0].id] || {};
+    ['cta', 'tipo', 'nro', 'anexo', 'cat'].forEach(f => { if(ed[f] && !dst[f]) dst[f] = ed[f]; });
+    diaCleanEdit(sv[0].id);
+  });
+}
+
+/* ---- guardar en IndexedDB ---- */
+function diaWorkFile(){ return { app: 'prisma-trabajo-diario', version: 1, savedAt: new Date().toISOString(), meta: projectMeta, dia: diaState() }; }
+async function diaPersistIDB(){
+  if(!diaBootDone) return;
+  const has = diaHasData();
+  if(!has && !diaAllowEmpty) return;
+  const n = (diaMerged && diaMerged.movs && diaMerged.movs.length) || 0;
+  let ok = false;
+  try{ ok = await diaIDB.set('work', { savedAt: diaSavedAt, at: Date.now(), n, meta: projectMeta, dia: diaState() }); }catch(e){ ok = false; }
+  diaIdbOk = ok; diaAllowEmpty = false;
+  if(ok) diaIdbAt = new Date();
+  if(ok && has){
+    if(diaPersistOk === null && navigator.storage && navigator.storage.persist){ try{ diaPersistOk = await navigator.storage.persist(); }catch(e){ diaPersistOk = false; } }
+    if(Date.now() - diaLastDailyAt > 5 * 60 * 1000){ diaLastDailyAt = Date.now(); diaSnapNow('Copia automática del día', 'auto'); }
+  }
+  renderDiaSaveStat();
+}
+
+/* ---- copias de seguridad ---- */
+function diaDayKey(){ const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+function diaSnapNow(motivo, kind){
+  if(!diaHasData()) return Promise.resolve(false);
+  kind = kind || 'seguridad';
+  let json;
+  try{ json = JSON.stringify(diaWorkFile()); }catch(e){ return Promise.resolve(false); }
+  const at = Date.now();
+  const n = (diaMerged && diaMerged.movs && diaMerged.movs.length) || 0;
+  const key = kind === 'auto' ? 'auto|' + diaDayKey() : kind + '|' + at;   // la copia automática se reescribe durante el día
+  const meta = { kind, motivo, at, n, files: diaFiles.length, size: json.length, key };
+  return diaIDB.set('bak|' + key, json).then(ok => ok ? diaIDB.set('bakm|' + key, meta) : false).then(ok => { if(ok) diaBakPrune(); return ok; });
+}
+async function diaBakList(){
+  const ks = await diaIDB.keys('bakm|');
+  const out = [];
+  for(const k of ks){ const m = await diaIDB.get(k); if(m) out.push(m); }
+  out.sort((a, b) => b.at - a.at);
+  return out;
+}
+async function diaBakPrune(){
+  try{
+    const all = await diaBakList();
+    const seen = {};
+    for(const m of all){
+      seen[m.kind] = (seen[m.kind] || 0) + 1;
+      if(seen[m.kind] > (DIA_BAK_KEEP[m.kind] || 15)){ await diaIDB.del('bak|' + m.key); await diaIDB.del('bakm|' + m.key); }
+    }
+  }catch(e){}
+}
+async function diaBakRestore(key){
+  const json = await diaIDB.get('bak|' + key);
+  if(!json){ toast('No se encontró esa copia.', 'bad'); return; }
+  let data; try{ data = JSON.parse(json); }catch(e){ toast('La copia está dañada.', 'bad'); return; }
+  if(!data || !data.dia){ toast('La copia no tiene trabajo diario.', 'bad'); return; }
+  const r = await askConfirm({ title: 'Restaurar esta copia', text: 'Se reemplaza lo que tienes ahora en esta pestaña por el contenido de la copia. Antes se guarda otra copia de lo actual, así que puedes volver atrás.', okLabel: 'Restaurar', danger: true });
+  if(!r.ok) return;
+  await diaSnapNow('Antes de restaurar una copia', 'seguridad');
+  diaApplyState(data.dia);
+  renderTab6(); scheduleExtSave();
+  toast('Copia restaurada.', 'ok');
+  dEl('bkDlg').close();
+}
+async function diaBakDownload(key){
+  const json = await diaIDB.get('bak|' + key);
+  if(!json){ toast('No se encontró esa copia.', 'bad'); return; }
+  try{ downloadJson(JSON.parse(json), `trabajo_diario_${projectSlug()}_copia_${String(key).replace(/[^0-9A-Za-z-]+/g, '_')}.json`); }catch(e){ toast('No se pudo descargar la copia.', 'bad'); }
+}
+async function diaBakOpen(){
+  const dlg = dEl('bkDlg'); if(!dlg || !dlg.showModal) return;
+  dEl('bkList').innerHTML = '<div class="hint">Buscando copias…</div>';
+  if(!dlg.open) dlg.showModal();
+  const list = await diaBakList();
+  const KIND = { auto: 'Automática del día', cierre: 'Al cerrar el día', seguridad: 'De seguridad' };
+  dEl('bkEmpty').hidden = list.length > 0;
+  dEl('bkList').innerHTML = list.map(m => {
+    const f = new Date(m.at);
+    const when = f.toLocaleDateString('es-PE', { day: '2-digit', month: '2-digit', year: 'numeric' }) + ' ' + f.toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit' });
+    return `<div class="sh-item"><div class="m"><b>${escapeHtml(KIND[m.kind] || m.kind)} · ${escapeHtml(when)}</b><span>${escapeHtml(m.motivo || '')} · ${(m.n || 0).toLocaleString('en-US')} movimientos · ${m.files || 0} descarga(s) · ${Math.max(1, Math.round((m.size || 0) / 1024)).toLocaleString('en-US')} KB</span></div><div class="b"><button type="button" class="secondary sm" data-bk-rest="${escapeHtml(m.key)}">Restaurar</button><button type="button" class="ghost sm" data-bk-dl="${escapeHtml(m.key)}">Descargar</button></div></div>`;
+  }).join('');
+}
+
+/* ---- respaldo en una carpeta del disco (opcional) ---- */
+const diaBak = { handle: null, name: '', on: false, last: null, err: '', busy: false, timer: null };
+const diaBakSupported = () => typeof window.showDirectoryPicker === 'function';
+async function diaBakPerm(ask){
+  const h = diaBak.handle; if(!h) return false;
+  try{
+    const o = { mode: 'readwrite' };
+    if(h.queryPermission && (await h.queryPermission(o)) === 'granted') return true;
+    if(ask && h.requestPermission) return (await h.requestPermission(o)) === 'granted';
+  }catch(e){}
+  return false;
+}
+async function diaBakPick(){
+  if(!diaBakSupported()){ toast('Este navegador no permite escribir en una carpeta. Usa Chrome o Edge, o guarda el avance en un archivo.', 'warn'); return; }
+  if(diaBak.handle && !(await diaBakPerm(false))){
+    // ya había una carpeta elegida: solo falta el permiso de esta sesión
+    if(await diaBakPerm(true)){ diaBak.err = ''; await diaBakWrite('manual', true); return; }
+  }
+  let h;
+  try{ h = await window.showDirectoryPicker({ id: 'ec-respaldo', mode: 'readwrite' }); }catch(e){ return; }
+  diaBak.handle = h; diaBak.name = h.name || 'carpeta'; diaBak.on = true; diaBak.err = '';
+  await diaIDB.set('bakdir', { handle: h, name: diaBak.name });
+  await diaBakWrite('manual', true);
+}
+async function diaBakOff(){
+  clearTimeout(diaBak.timer);
+  diaBak.handle = null; diaBak.name = ''; diaBak.on = false; diaBak.err = ''; diaBak.last = null;
+  await diaIDB.del('bakdir');
+  renderDiaSaveStat();
+}
+async function diaBakWrite(why, ask){
+  if(!diaBak.handle || diaBak.busy || !diaHasData()) return false;
+  if(!(await diaBakPerm(!!ask))){ diaBak.err = 'permiso'; renderDiaSaveStat(); return false; }
+  diaBak.busy = true;
+  try{
+    const slug = projectSlug();
+    const text = JSON.stringify(diaWorkFile());
+    const put = async name => { const fh = await diaBak.handle.getFileHandle(name, { create: true }); const w = await fh.createWritable(); await w.write(text); await w.close(); };
+    await put('trabajo_diario_' + slug + '.json');
+    if(why === 'cierre') await put('trabajo_diario_' + slug + '_cierre_' + diaCierreIso() + '.json');
+    diaBak.last = new Date(); diaBak.err = '';
+    return true;
+  }catch(e){ diaBak.err = (e && e.message) || 'error'; return false; }
+  finally{ diaBak.busy = false; renderDiaSaveStat(); }
+}
+function diaBakSchedule(){
+  if(!diaBak.handle) return;
+  clearTimeout(diaBak.timer);
+  diaBak.timer = setTimeout(() => { diaBakWrite('auto', false); }, 15000);
+}
+function diaCierreIso(){
+  const act = (diaCierres || []).filter(c => !c.abierto).sort((a, b) => diaKey(b.hasta) - diaKey(a.hasta))[0];
+  const k = act ? String(diaKey(act.hasta)) : '';
+  return k ? k.slice(0, 4) + '-' + k.slice(4, 6) + '-' + k.slice(6, 8) : diaDayKey();
+}
+
+/* ---- estado de guardado (columna izquierda) ---- */
+function renderDiaSaveStat(){
+  const box = dEl('diaSaveStat'); if(!box) return;
+  const hhmm = d => d instanceof Date ? d.toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit' }) : '';
+  const n = (diaMerged && diaMerged.movs && diaMerged.movs.length) || 0;
+  const l = [];
+  if(diaHasData()){
+    if(diaIdbOk === true) l.push(`<span class="ok">✔ Guardado en este navegador${diaIdbAt ? ' a las ' + hhmm(diaIdbAt) : ''}</span> · ${n.toLocaleString('en-US')} movimientos`);
+    else if(diaIdbOk === false) l.push('<span class="bad">⚠ El navegador no dejó guardar el trabajo. Guarda el avance en un archivo ahora.</span>');
+  } else l.push('Aún no hay nada que guardar.');
+  const act = (diaCierres || []).filter(c => !c.abierto);
+  if(act.length){
+    const mx = act.map(c => c.hasta).sort((a, b) => diaKey(b) - diaKey(a))[0];
+    l.push(`🔒 Cerrado hasta el <b>${escapeHtml(mx)}</b>`);
+  }
+  if(diaBakSupported()){
+    if(diaBak.handle){
+      if(diaBak.err === 'permiso') l.push(`<span class="warn">Respaldo en «${escapeHtml(diaBak.name)}»: falta dar permiso (pulsa «Reactivar respaldo»).</span>`);
+      else if(diaBak.err) l.push(`<span class="bad">Respaldo en «${escapeHtml(diaBak.name)}»: ${escapeHtml(diaBak.err)}</span>`);
+      else l.push(`Respaldo en «${escapeHtml(diaBak.name)}»${diaBak.last ? ': última copia ' + hhmm(diaBak.last) : ': se escribe al próximo cambio'}`);
+    } else l.push('<span class="' + (diaPersistOk === false ? 'warn' : '') + '">Sin respaldo en carpeta: el navegador es el único lugar donde está tu trabajo' + (diaPersistOk === false ? ' y podría borrarlo si le falta espacio' : '') + '.</span>');
+  }
+  box.innerHTML = l.map(x => `<div>${x}</div>`).join('');
+  const bb = dEl('diaBakFolderBtn');
+  if(bb){
+    bb.hidden = !diaBakSupported();
+    const lab = diaBak.handle ? (diaBak.err === 'permiso' ? 'Reactivar respaldo' : 'Cambiar carpeta de respaldo…') : 'Respaldo en carpeta…';
+    if(bb.lastChild) bb.lastChild.textContent = lab;
+  }
+  const off = dEl('diaBakOffBtn'); if(off) off.hidden = !diaBak.handle;
+}
+
+/* ---- cierre del día ---- */
+function diaCierreFechas(){
+  const set = new Set();
+  diaEff().forEach(m => { if(m.fecha) set.add(m.fecha); });
+  return Array.from(set).sort((a, b) => diaKey(b) - diaKey(a));
+}
+function diaCierreResumen(){
+  const hasta = dEl('ciFecha').value;
+  const k = diaKey(hasta);
+  const L = diaLocks();
+  const eff = diaEff().filter(m => diaKey(m.fecha) <= k && !L.locked.has(m.id));
+  const act = eff.filter(m => !m.omit);
+  const sinclas = act.filter(m => m.catEff === 'sinclas').length;
+  const sindoc = act.filter(m => (m.catEff === 'cobranza' || m.catEff === 'proveedores') && !m.nro).length;
+  const tarde = eff.filter(m => m.tarde).length;
+  const l = [`Se bloquearán <b>${eff.length.toLocaleString('en-US')}</b> movimiento(s) hasta el ${escapeHtml(hasta)}.`];
+  if(tarde) l.push(`${tarde} de ellos llegaron después de un cierre anterior.`);
+  if(sinclas) l.push(`<span class="warn">${sinclas} sin clasificar.</span>`);
+  if(sindoc) l.push(`<span class="warn">${sindoc} de cobranza o proveedores sin comprobante.</span>`);
+  if(sinclas || sindoc) l.push('Puedes cerrar igual y reabrir luego si hace falta.');
+  dEl('ciSum').innerHTML = l.join(' ');
+  dEl('ciDo').disabled = eff.length === 0;
+}
+function diaCierreOpen(){
+  const dlg = dEl('ciDlg'); if(!dlg || !dlg.showModal) return;
+  if(!diaMerged){ toast('Primero carga las descargas del banco.', 'warn'); return; }
+  const fechas = diaCierreFechas();
+  dEl('ciFecha').innerHTML = fechas.map(f => `<option value="${escapeHtml(f)}">${escapeHtml(f)}</option>`).join('');
+  dEl('ciDescarga').checked = !diaBak.handle;
+  dEl('ciDescargaWrap').hidden = !!diaBak.handle;
+  diaCierreRenderList();
+  diaCierreResumen();
+  if(!dlg.open) dlg.showModal();
+}
+function diaCierreRenderList(){
+  const lst = diaCierres || [];
+  dEl('ciListH').hidden = !lst.length;
+  dEl('ciList').innerHTML = lst.slice().reverse().map(c => {
+    const f = new Date(c.at);
+    const when = f.toLocaleDateString('es-PE', { day: '2-digit', month: '2-digit' }) + ' ' + f.toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit' });
+    return `<div class="sh-item ${c.abierto ? 'off' : ''}"><div class="m"><b>Hasta el ${escapeHtml(c.hasta)}${c.abierto ? ' · reabierto' : ''}</b><span>Hecho el ${escapeHtml(when)} · ${(c.n || (c.ids || []).length).toLocaleString('en-US')} movimiento(s)</span></div><div class="b">${c.abierto ? '' : `<button type="button" class="secondary sm" data-ci-reab="${escapeHtml(c.id)}">Reabrir</button>`}</div></div>`;
+  }).join('');
+}
+async function diaCierreDo(){
+  const hasta = dEl('ciFecha').value; if(!hasta) return;
+  const k = diaKey(hasta);
+  const L = diaLocks();
+  const ids = diaEff().filter(m => diaKey(m.fecha) <= k && !L.locked.has(m.id)).map(m => m.id);
+  if(!ids.length){ toast('No hay movimientos nuevos que cerrar hasta esa fecha.', 'warn'); return; }
+  const bajar = dEl('ciDescarga').checked && !dEl('ciDescargaWrap').hidden;
+  diaCierres.push({ id: 'c' + Date.now().toString(36), hasta, at: new Date().toISOString(), ids, abierto: false, n: ids.length });
+  diaInvalidate();
+  dEl('ciDlg').close();
+  renderTab6(); scheduleExtSave();
+  await diaSnapNow('Cierre del día ' + hasta, 'cierre');
+  let respaldo = '';
+  if(diaBak.handle){ respaldo = (await diaBakWrite('cierre', true)) ? ` Se escribió una copia en «${diaBak.name}».` : ' No se pudo escribir en la carpeta de respaldo (revisa el permiso).'; }
+  if(bajar) diaSaveFile();
+  toast(`Día cerrado hasta el ${hasta}: ${ids.length.toLocaleString('en-US')} movimiento(s) con candado.${respaldo}`, 'ok');
+}
+async function diaCierreReabrir(id){
+  const c = (diaCierres || []).find(x => x.id === id); if(!c || c.abierto) return;
+  const r = await askConfirm({ title: 'Reabrir el cierre', text: `Se quita el candado a los ${(c.n || c.ids.length).toLocaleString('en-US')} movimiento(s) cerrados hasta el ${c.hasta}. Podrás editarlos otra vez; no se borra nada. Vuelve a cerrar el día cuando termines.`, okLabel: 'Reabrir' });
+  if(!r.ok) return;
+  await diaSnapNow('Antes de reabrir el cierre del ' + c.hasta, 'seguridad');
+  c.abierto = true;
+  diaInvalidate();
+  renderTab6(); scheduleExtSave();
+  diaCierreRenderList(); diaCierreResumen();
+  toast('Cierre reabierto.', 'ok');
+}
+function renderDiaCierreBar(){
+  const b = dEl('diaCierreBar'); if(!b) return;
+  const act = (diaCierres || []).filter(c => !c.abierto);
+  if(!diaMerged || !act.length){ b.hidden = true; b.innerHTML = ''; return; }
+  const mx = act.map(c => c.hasta).sort((a, c) => diaKey(c) - diaKey(a))[0];
+  const nLock = diaLocks().locked.size;
+  const nT = diaEff().filter(m => m.tarde).length;
+  b.hidden = false;
+  b.className = 'dia-cierre-bar' + (nT ? ' warn' : '');
+  b.innerHTML = `<svg class="ico"><use href="#i-lock"/></svg><span>Día cerrado hasta el <b>${escapeHtml(mx)}</b> · ${nLock.toLocaleString('en-US')} movimiento(s) con candado.</span>`
+    + (nT ? `<button type="button" class="secondary sm" data-ci-tarde="1">${nT} nuevo${nT === 1 ? '' : 's'} tras el cierre: verlo${nT === 1 ? '' : 's'}</button>` : '')
+    + `<button type="button" class="ghost sm" data-ci-open="1">Cierres…</button>`;
+}
+
+/* ---- arranque: recuperar lo guardado en IndexedDB ---- */
+async function diaBootRestore(){
+  try{
+    const w = await diaIDB.get('work');
+    if(w && w.dia && (((w.dia.files || []).length) || ((w.dia.manual || []).length) || (w.dia.proy && w.dia.proy.items && w.dia.proy.items.length))){
+      if(!diaHasData() || (+w.savedAt || 0) > (diaSavedAt || 0)){
+        diaApplyState(w.dia);
+        diaSavedAt = +w.savedAt || 0;
+        renderTab6();
+        const hh = w.at ? new Date(w.at).toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit' }) : '';
+        toast('Se recuperó tu trabajo diario guardado en este navegador' + (hh ? ' (' + hh + ')' : '') + '.', 'ok');
+      }
+    }
+    if(w) diaIdbOk = true;
+  }catch(e){}
+  try{
+    const bd = await diaIDB.get('bakdir');
+    if(bd && bd.handle){ diaBak.handle = bd.handle; diaBak.name = bd.name || bd.handle.name || 'carpeta'; diaBak.on = true; if(!(await diaBakPerm(false))) diaBak.err = 'permiso'; }
+  }catch(e){}
+  diaBootDone = true;
+  renderDiaSaveStat();
+}
+
+(function wireDia16(){
+  const on = (id, ev, fn) => { const e = dEl(id); if(e) e.addEventListener(ev, fn); };
+  on('diaCloseBtn', 'click', diaCierreOpen);
+  on('ciClose', 'click', () => dEl('ciDlg').close());
+  on('ciDo', 'click', diaCierreDo);
+  on('ciFecha', 'change', diaCierreResumen);
+  on('ciList', 'click', e => { const b = e.target.closest('[data-ci-reab]'); if(b) diaCierreReabrir(b.dataset.ciReab); });
+  on('diaCierreBar', 'click', e => {
+    if(e.target.closest('[data-ci-open]')){ diaCierreOpen(); return; }
+    if(e.target.closest('[data-ci-tarde]')){
+      diaFilt = { q: '', cat: 'all', sign: '', est: 'tarde', ids: null, idsLabel: '', dia: '' };
+      dEl('diaEstFilter').value = 'tarde'; dEl('diaSearch').value = ''; diaLimit = 300; diaSetView('mov');
+    }
+  });
+  on('diaBakFolderBtn', 'click', diaBakPick);
+  on('diaBakOffBtn', 'click', async () => { await diaBakOff(); toast('Se dejó de escribir en la carpeta de respaldo. Los archivos que ya estaban allí no se tocan.', 'ok'); });
+  on('diaBakListBtn', 'click', diaBakOpen);
+  on('bkClose', 'click', () => dEl('bkDlg').close());
+  on('bkList', 'click', e => {
+    const r = e.target.closest('[data-bk-rest]'), d = e.target.closest('[data-bk-dl]');
+    if(r) diaBakRestore(r.dataset.bkRest); else if(d) diaBakDownload(d.dataset.bkDl);
+  });
+})();
+
 /* ---------------- carpeta compartida (File System Access API) ---------------- */
 const diaFS = { handle: null, timer: null, busy: false, last: null, found: 0 };
 const diaIDB = {
   open(){ return new Promise((res, rej) => { try{ const r = indexedDB.open('ec_dia', 1); r.onupgradeneeded = () => r.result.createObjectStore('kv'); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); }catch(e){ rej(e); } }); },
   async get(k){ try{ const db = await this.open(); return await new Promise(res => { const t = db.transaction('kv').objectStore('kv').get(k); t.onsuccess = () => res(t.result || null); t.onerror = () => res(null); }); }catch(e){ return null; } },
   async set(k, v){ try{ const db = await this.open(); return await new Promise(res => { try{ const tx = db.transaction('kv', 'readwrite'); tx.objectStore('kv').put(v, k); tx.oncomplete = () => res(true); tx.onerror = () => res(false); }catch(e){ res(false); } }); }catch(e){ return false; } },
+  async keys(prefix){ try{ const db = await this.open(); return await new Promise(res => { const t = db.transaction('kv').objectStore('kv').getAllKeys(); t.onsuccess = () => res((t.result || []).filter(k => String(k).indexOf(prefix) === 0)); t.onerror = () => res([]); }); }catch(e){ return []; } },
   async del(k){ try{ const db = await this.open(); return await new Promise(res => { const tx = db.transaction('kv', 'readwrite'); tx.objectStore('kv').delete(k); tx.oncomplete = () => res(true); tx.onerror = () => res(false); }); }catch(e){ return false; } }
 };
 const diaFSSupported = () => typeof window.showDirectoryPicker === 'function';
@@ -6485,10 +6911,12 @@ function renderDiaLeft(){
   dEl('diaAcceptBtn').disabled = !eff.some(m => m.auto === 'Exacto');
   ['diaXlsxBtn', 'diaToTab2Btn', 'diaToTab3Btn'].forEach(id => { dEl(id).disabled = !hasMerged; });
   dEl('diaSaveBtn').disabled = !(hasMerged || proy.items.length > 0);
+  dEl('diaCloseBtn').disabled = !hasMerged;
   const a = eff.filter(m => m.auto);
   if(!a.length && !dEl('diaCrossResumen').dataset.keep) dEl('diaCrossResumen').innerHTML = '';
   renderDiaFiles();
   renderDiaFolder();
+  renderDiaSaveStat();
 }
 function renderTab6(){
   if(!dEl('tab-dia')) return;
@@ -6496,6 +6924,7 @@ function renderTab6(){
   diaFillCatSelects();
   renderDiaLeft();
   renderDiaKpis();
+  renderDiaCierreBar();
   renderDiaScope();
   const rc = has ? diaReviewCounts() : { alertas: 0 };
   dEl('diaNMov').textContent = has ? diaEff().filter(m => !m.omit).length.toLocaleString('en-US') : '';
@@ -6652,12 +7081,16 @@ function diaFiltered(){
     if(e === 'obs' && !(m.val && (m.val.nivel === 'warn' || m.val.nivel === 'bad'))) return false;
     if(e === 'auto' && !m.auto) return false;
     if(e === 'omit' && !m.omit) return false;
+    if(e === 'tarde' && !m.tarde) return false;
+    if(e === 'cerrado' && !m.cerrado) return false;
     if(q && ![m.descripcion, m.operacion, m.nro, m.cta, m.anexo, m.fecha, diaCatT(m.catEff)].join(' ').toLowerCase().includes(q)) return false;
     return true;
   }).sort((a, b) => (diaKey(b.fecha) - diaKey(a.fecha)) || (a._i - b._i));
 }
 function diaEstadoHtml(m){
   const pills = [], msgs = [];
+  if(m.cerrado) pills.push(`<span class="badge pill-noaplica" title="Este movimiento está en un día cerrado: no se puede cambiar ni borrar. Para corregirlo, reabre el cierre.">🔒 Cerrado</span>`);
+  if(m.tarde) pills.push(`<span class="badge pill-sugerencia" title="Llegó en una descarga posterior al cierre del día: es nuevo. Identifícalo y vuelve a cerrar el día.">Nuevo tras el cierre</span>`);
   if(m.omit){
     const manual = diaEdits[m.id] && diaEdits[m.id].omit !== undefined;
     pills.push(`<span class="badge pill-sinmatch" title="${manual ? 'Omitido por ti: no suma en los totales.' : 'ITF de ese día reemplazado por el de una descarga más reciente: no suma en los totales.'}">Omitido</span>`);
@@ -6681,20 +7114,21 @@ function diaEstadoHtml(m){
     if(!msgs.length) v.msgs.slice(0, 1).forEach(x => msgs.push(`<span class="msg">${escapeHtml(x.t)}</span>`));
   }
   let sugs = '';
-  if(v && v.sug && v.sug.length) sugs = `<span class="sugs">${v.sug.map((s, i) => `<button type="button" class="secondary" data-sug="${i}" title="${escapeHtml((s.nombre || '') + ' · saldo ' + diaNum(s.saldo) + ' · ' + (s.why || ''))}">¿${escapeHtml((s.tipo ? s.tipo + ' ' : '') + s.nro)}?</button>`).join('')}</span>`;
+  if(v && v.sug && v.sug.length && !m.cerrado) sugs = `<span class="sugs">${v.sug.map((s, i) => `<button type="button" class="secondary" data-sug="${i}" title="${escapeHtml((s.nombre || '') + ' · saldo ' + diaNum(s.saldo) + ' · ' + (s.why || ''))}">¿${escapeHtml((s.tipo ? s.tipo + ' ' : '') + s.nro)}?</button>`).join('')}</span>`;
   if(m.cta && !m.nro && !m.auto && (!v || !v.msgs || !v.msgs.length)) {}
   return (pills.length ? `<span class="pill-row">${pills.join('')}</span>` : '') + msgs.join('') + sugs;
 }
 function diaRowHtml(m){
-  const cls = ['', m.omit ? 'dia-omit' : '', m.flag ? 'dia-flag' : '', diaSel.has(m.id) ? 'dia-sel' : ''].filter(Boolean).join(' ');
+  const cls = ['', m.omit ? 'dia-omit' : '', m.flag ? 'dia-flag' : '', m.cerrado ? 'dia-lock' : '', diaSel.has(m.id) ? 'dia-sel' : ''].filter(Boolean).join(' ');
   const id = escapeHtml(m.id);
-  const cat = `<select class="dia-cat" data-id="${id}" aria-label="Categoría">${window._diaCatOpts.replace(`value="${m.catEff}"`, `value="${m.catEff}" selected`)}</select>`;
-  const inp = (f, c, v, ph, lab) => `<input type="text" class="dia-in ${c}" data-id="${id}" data-f="${f}" value="${escapeHtml(v)}" placeholder="${ph}" aria-label="${lab}" autocomplete="off">`;
+  const cat = `<select class="dia-cat" data-id="${id}" aria-label="Categoría"${m.cerrado ? ' disabled' : ''}>${window._diaCatOpts.replace(`value="${m.catEff}"`, `value="${m.catEff}" selected`)}</select>`;
+  const inp = (f, c, v, ph, lab) => `<input type="text" class="dia-in ${c}" data-id="${id}" data-f="${f}" value="${escapeHtml(v)}" placeholder="${ph}" aria-label="${lab}" autocomplete="off"${m.cerrado ? ' disabled' : ''}>`;
   const acts = [];
   if(m.catUser) acts.push(`<button type="button" data-act="catauto" title="Volver a la categoría automática">↺</button>`);
   if(m.auto) acts.push(`<button type="button" data-act="ok" title="Aceptar este cruce">✓</button>`);
   if(diaIsManual(m)) acts.push(`<button type="button" data-act="rm" title="Quitar este movimiento agregado a mano">✕</button>`);
   acts.push(`<button type="button" data-act="${m.omit ? 'rest' : 'omit'}" title="${m.omit ? 'Volver a contarlo' : 'Omitirlo: no suma en los totales'}">${m.omit ? 'Restaurar' : 'Omitir'}</button>`);
+  if(m.cerrado) acts.length = 0;
   return `<tr data-id="${id}" class="${cls}">
     <td class="chk"><input type="checkbox" class="dia-chk" data-id="${id}" ${diaSel.has(m.id) ? 'checked' : ''} aria-label="Seleccionar ${escapeHtml(m.descripcion)}"></td>
     <td>${escapeHtml(m.fecha)}</td>
@@ -6743,7 +7177,7 @@ function diaPatchRows(){
     const m = byId.get(tr.dataset.id); if(!m) return;
     const est = tr.querySelector('td.est'); if(est) est.innerHTML = diaEstadoHtml(m);
     const sel = tr.querySelector('select.dia-cat'); if(sel && document.activeElement !== sel) sel.value = m.catEff;
-    tr.classList.toggle('dia-flag', !!m.flag); tr.classList.toggle('dia-omit', !!m.omit);
+    tr.classList.toggle('dia-flag', !!m.flag); tr.classList.toggle('dia-omit', !!m.omit); tr.classList.toggle('dia-lock', !!m.cerrado);
     const acts = tr.querySelector('td.acts');
     if(acts){
       const a = [];
@@ -6751,6 +7185,7 @@ function diaPatchRows(){
       if(m.auto) a.push(`<button type="button" data-act="ok" title="Aceptar este cruce">✓</button>`);
       if(diaIsManual(m)) a.push(`<button type="button" data-act="rm" title="Quitar este movimiento agregado a mano">✕</button>`);
       a.push(`<button type="button" data-act="${m.omit ? 'rest' : 'omit'}" title="${m.omit ? 'Volver a contarlo' : 'Omitirlo: no suma en los totales'}">${m.omit ? 'Restaurar' : 'Omitir'}</button>`);
+      if(m.cerrado) a.length = 0;
       acts.innerHTML = a.join('');
     }
   });
@@ -8173,6 +8608,8 @@ function renderDiaAlertas(){
   if(rc && (rc.obs || rc.sinclas)){
     cards.push(`<div class="dia-alert ${diaValResumen && diaValResumen.bad ? 'bad' : 'warn'}"><svg class="ico ic"><use href="#i-alert"/></svg><h4>Comprobantes y clasificación</h4><p>${rc.obs ? `<b>${rc.obs}</b> movimiento(s) con observaciones en el comprobante (no existe, está a nombre de otro, importe distinto…). ` : ''}${rc.sinclas ? `<b>${rc.sinclas}</b> movimiento(s) todavía «por clasificar».` : ''}</p><div class="ac">${rc.obs ? '<button class="secondary sm" data-go-est="obs">Ver los comprobantes con observaciones</button>' : ''}${rc.sinclas ? '<button class="secondary sm" data-go-est="sinclas">Ver los por clasificar</button>' : ''}</div></div>`);
   }
+  const nTarde = diaMerged ? diaEff().filter(m => m.tarde).length : 0;
+  if(nTarde) cards.push(`<div class="dia-alert warn"><svg class="ico ic"><use href="#i-alert"/></svg><h4>Movimientos nuevos tras el cierre del día</h4><p>Llegaron <b>${nTarde}</b> movimiento(s) con fecha de un día que ya cerraste (el banco los registró después de tu descarga). Se sumaron sin repetir los que ya tenías y sin tocar lo que identificaste. Identifícalos y vuelve a cerrar el día.</p><div class="ac"><button class="secondary sm" data-go-est="tarde">Ver los ${nTarde}</button></div></div>`);
   al.forEach((a, i) => {
     const key = diaAlertKey(a), ack = !!diaAck[key];
     const ic = a.nivel === 'info' ? '#i-info' : '#i-alert';
@@ -8247,6 +8684,7 @@ function diaSetView(v){
   renderTab6(); scheduleExtSave();
 }
 function diaEditField(id, f, raw){
+  if(diaLocked(id)){ diaUnlocked([id]); renderDiaMov(); return; }
   const ed = diaEdits[id] = diaEdits[id] || {};
   let v = String(raw || '').trim();
   if(f === 'tipo' || f === 'nro') v = v.toUpperCase();
@@ -8265,6 +8703,7 @@ function diaCleanEdit(id){
   if(ed && !Object.keys(ed).some(k => ed[k] !== '' && ed[k] !== undefined)) delete diaEdits[id];
 }
 function diaSetEdit(ids, patch){
+  ids = diaUnlocked(ids);
   ids.forEach(id => {
     const ed = diaEdits[id] = diaEdits[id] || {};
     Object.keys(patch).forEach(k => { if(patch[k] === undefined || patch[k] === '') delete ed[k]; else ed[k] = patch[k]; });
@@ -8276,6 +8715,7 @@ function diaAfterChange(){
   renderTab6(); diaRevalidateSoon(); scheduleExtSave();
 }
 function diaApplySug(id, i){
+  if(diaLocked(id)) return;
   const v = diaVal[id]; if(!v || !v.sug || !v.sug[i]) return;
   const s = v.sug[i];
   diaSetEdit([id], { tipo: s.tipo, nro: s.nro, anexo: s.anexo, auto: '', nota: '' });
@@ -8284,6 +8724,7 @@ function diaApplySug(id, i){
   toast('Comprobante corregido a ' + (s.tipo ? s.tipo + ' ' : '') + s.nro + '.', 'ok');
 }
 function diaOmit(ids, omit){
+  ids = diaUnlocked(ids);
   ids.forEach(id => { const ed = diaEdits[id] = diaEdits[id] || {}; ed.omit = omit; });
   diaInvalidate(); diaAfterChange();
 }
@@ -8312,7 +8753,8 @@ function diaState(){
   return {
     v: 1, files: diaFiles, manual: diaManual, merged: diaMerged, edits: diaEdits, val: diaVal, valResumen: diaValResumen, ack: diaAck, seen: diaSeen,
     docsSrc: diaDocsSrc, docsOwn: diaDocsOwn, docsName: diaDocsName, view: diaView, mon: diaMon, banco: diaBanco, periodo: diaPeriodo, panelMode: diaPanelMode,
-    folder: { name: diaFolderName, on: diaFolderOn }, tol: (dEl('diaTol') || {}).value, proy: proyState()
+    folder: { name: diaFolderName, on: diaFolderOn }, tol: (dEl('diaTol') || {}).value, proy: proyState(),
+    cierres: diaCierres, savedAt: diaSavedAt
   };
 }
 function diaApplyState(s){
@@ -8335,6 +8777,8 @@ function diaApplyState(s){
   diaPanelMode = s.panelMode === 'tabla' ? 'tabla' : 'graf';
   if(s.folder){ diaFolderName = String(s.folder.name || ''); diaFolderOn = !!s.folder.on; }
   const t = dEl('diaTol'); if(t && s.tol) t.value = s.tol;
+  diaCierres = Array.isArray(s.cierres) ? s.cierres.filter(c => c && c.hasta && Array.isArray(c.ids)) : [];
+  diaSavedAt = +s.savedAt || 0;
   proyApply(s.proy);
   diaSel = new Set(); diaCompare = null; diaInvalidate();
 }
@@ -8363,6 +8807,7 @@ async function diaOpenFile(file){
     const r = await askConfirm({ title: 'Abrir avance guardado', text: 'Abrirlo reemplaza las descargas y lo trabajado que tienes ahora en esta pestaña.', okLabel: 'Abrir', danger: true });
     if(!r.ok) return;
   }
+  if(diaHasData()) await diaSnapNow('Antes de abrir un avance guardado', 'seguridad');
   const keepSeen = diaSeen;
   diaApplyState(st);
   diaSeen = Object.assign({}, keepSeen, diaSeen);
@@ -8374,6 +8819,8 @@ function diaMovsForExport(){
 }
 function diaEstadoText(m){
   const t = [];
+  if(m.cerrado) t.push('Cerrado.');
+  if(m.tarde) t.push('Nuevo tras el cierre del día.');
   if(m.flag) t.push('Revisar: ' + (m.revisar || []).map(c => DIA_REVISAR[c] || c).join(' '));
   if(m.val) (m.val.msgs || []).filter(x => x.n !== 'ok').forEach(x => t.push(x.t));
   if(m.itf && m.itf.estado === 'no-cuadra') t.push('ITF distinto del esperado por las operaciones del día.');
@@ -8471,7 +8918,7 @@ async function diaSendTo(n){
   dEl('diaCrossBtn').addEventListener('click', diaCross);
   dEl('diaAcceptBtn').addEventListener('click', () => {
     let n = 0;
-    Object.keys(diaEdits).forEach(id => { if(diaEdits[id].auto === 'Exacto'){ delete diaEdits[id].auto; delete diaEdits[id].nota; n++; } });
+    Object.keys(diaEdits).forEach(id => { if(diaEdits[id].auto === 'Exacto' && !diaLocked(id)){ delete diaEdits[id].auto; delete diaEdits[id].nota; n++; } });
     diaInvalidate(); renderTab6(); scheduleExtSave();
     dEl('diaCrossResumen').innerHTML = `Se aceptaron <b>${n}</b> cruce(s) exacto(s).`;
   });
@@ -8563,7 +9010,7 @@ async function diaSendTo(n){
     document.querySelectorAll('#diaMovBody tr[data-id]').forEach(tr => { const c = tr.querySelector('.dia-chk'); if(c) c.checked = e.target.checked; tr.classList.toggle('dia-sel', e.target.checked); });
     renderDiaBulk();
   });
-  const selIds = () => Array.from(diaSel);
+  const selIds = () => diaUnlocked(Array.from(diaSel));
   dEl('diaBulkCatBtn').addEventListener('click', () => {
     const k = dEl('diaBulkCat').value; if(!k){ toast('Elige la categoría.', 'warn'); return; }
     diaSetEdit(selIds(), { cat: k }); diaCatChanged(); renderDiaMov();
@@ -8641,15 +9088,24 @@ function diaCatChanged(){
 }
 async function diaRemoveFile(id){
   const f = diaFiles.find(x => x.id === id); if(!f) return;
-  const r = await askConfirm({ title: 'Quitar la descarga', text: `Se quita «${f.name}» del trabajo diario. Los movimientos que solo estaban en ese archivo desaparecen; lo que anotaste en los demás se conserva.`, okLabel: 'Quitar', danger: true });
+  const solo = ((diaMerged && diaMerged.movs) || []).filter(m => (m.fuentes || []).length && m.fuentes.every(x => x === id));
+  const nCerr = solo.filter(m => diaLocked(m.id)).length;
+  if(nCerr){
+    toast(`No se puede quitar «${f.name}»: ${nCerr} movimiento(s) cerrados solo existen en ese archivo. Reabre el cierre primero si de verdad quieres quitarlo.`, 'warn');
+    return;
+  }
+  const nId = solo.filter(m => diaEdits[m.id] && (diaEdits[m.id].cta || diaEdits[m.id].nro)).length;
+  const r = await askConfirm({ title: 'Quitar la descarga', text: `Se quita «${f.name}» del trabajo diario. Los movimientos que solo estaban en ese archivo (${solo.length}) dejan de verse; lo que anotaste en los demás se conserva.` + (nId ? ` De esos, ${nId} ya tienen cuenta o documento: lo identificado se guarda y reaparece si vuelves a cargar el archivo.` : '') + ' Antes se guarda una copia de seguridad.', okLabel: 'Quitar', danger: true });
   if(!r.ok) return;
+  await diaSnapNow('Antes de quitar «' + f.name + '»', 'seguridad');
   diaFiles = diaFiles.filter(x => x.id !== id);
   await diaRemerge();
 }
 
 function diaReset(){
+  if(diaHasData()){ diaSnapNow('Antes de limpiar el trabajo diario', 'seguridad'); diaAllowEmpty = true; }
   clearTimeout(diaMergeTimer); clearTimeout(diaValTimer); diaSeq++; diaValSeq++;
-  diaFiles = []; diaManual = []; diaMerged = null; diaEdits = {}; diaVal = {}; diaValResumen = null; diaAck = {};
+  diaCierres = []; diaFiles = []; diaManual = []; diaMerged = null; diaEdits = {}; diaVal = {}; diaValResumen = null; diaAck = {};
   diaDocsSrc = ''; diaDocsOwn = []; diaDocsName = ''; diaCompare = null;
   diaView = 'panel'; diaMon = 'PEN'; diaBanco = 'all'; diaPeriodo = 'all'; diaPanelMode = 'graf';
   diaFilt = { q: '', cat: 'all', sign: '', est: 'all', ids: null, idsLabel: '', dia: '' };
@@ -9445,6 +9901,7 @@ dirtySinceFile = false;  // lo recien restaurado no cuenta como "cambio sin guar
 updateSaveChip();
 showRestoreBanner();
 diaFolderInit();
+diaBootRestore();
 statusEl.textContent = '';
 
 
