@@ -552,18 +552,16 @@
   #diaMovTable td.c-com, #diaMovTable th.c-com{text-align:center; width:64px; min-width:64px; padding-left:4px; padding-right:4px;}
   #diaMovTable td.c-com input[type=checkbox]{width:16px; height:16px; margin:0; cursor:pointer;}
   #diaMovTable td.desc .glosa{display:block; margin-top:2px; font-size:11.5px; font-weight:600; color:var(--accent-ink); line-height:1.3;}
-  #diaMovTable tr.dia-colf th{top:var(--th1,30px); padding:3px 5px; background:var(--panel2); z-index:2; font-weight:400;}
-  #diaMovTable tr.dia-colf th:first-child{z-index:3;}
-  #diaMovTable tr.dia-colf input, #diaMovTable tr.dia-colf select{margin:0; width:100%; min-width:0; padding:3px 5px; font-size:12px; border-radius:5px; background:var(--panel); height:auto;}
-  #diaMovTable tr.dia-colf select{padding-right:18px; text-overflow:ellipsis;}
-  #diaMovTable tr.dia-colf .on{border-color:var(--accent); box-shadow:0 0 0 1px var(--accent) inset; background:var(--accent-bg);}
-  #diaMovTable tr.dia-colf th.num input{text-align:right;}
   .dia-kpi.sal .s b{color:var(--text); font-weight:600;}
   .dia-kpi.sal .s.warn{color:var(--warn);}
   .sb-row{padding:10px 0; border-bottom:1px solid var(--rule);}
   .sb-h{display:flex; gap:8px 12px; flex-wrap:wrap; align-items:center; justify-content:space-between; margin-bottom:6px; font-size:13px;}
   .sb-h span{font-size:12px; color:var(--muted);} .sb-h span button{margin:0 0 0 4px; width:auto;}
-  .sb-f{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto; gap:8px 10px; align-items:end;}
+  .sb-m{padding:8px 0 9px; border-top:1px dashed var(--rule);} .sb-m:first-of-type{border-top:0;}
+  .sb-f{display:grid; grid-template-columns:minmax(96px,.8fr) minmax(0,1fr) minmax(0,1fr) auto; gap:8px 10px; align-items:end;}
+  .sb-mes{align-self:center; font-size:13px; text-transform:capitalize;}
+  .sb-st{margin:5px 0 0; font-size:12px; line-height:1.5; color:var(--muted);} .sb-st b{color:var(--text);}
+  .sb-st .ok{color:var(--ok, #1d7a4a); font-weight:600;} .sb-st .warn{color:var(--warn); font-weight:600;}
   .sb-f label{display:block; font-size:12.5px; font-weight:700; color:var(--muted); margin:0 0 3px;}
   .sb-f input{margin:0; width:100%;} .sb-f button{width:auto; margin:0;}
   .cat-add{display:grid; grid-template-columns:minmax(0,1.6fr) minmax(0,1fr) auto; gap:8px;}
@@ -582,7 +580,7 @@
   .rs-tab td:first-child{width:128px;} .rs-tab td:last-child{width:34px; text-align:center;} .rs-tab td button{width:auto; margin:0; padding:2px 8px;}
   #rsInfo .warn{color:var(--warn); font-weight:600;} #rsInfo button{margin:0 0 0 6px; width:auto;}
   @media (max-width:560px){
-    .sb-f{grid-template-columns:1fr 1fr;} .sb-f button{grid-column:1 / -1;}
+    .sb-f{grid-template-columns:1fr 1fr;} .sb-f button{grid-column:1 / -1;} .sb-mes{grid-column:1 / -1;}
     .cat-add{grid-template-columns:1fr;}
     .cat-row{grid-template-columns:1fr 1fr;} .cat-row .cat-tag{grid-column:1;} .cat-row button{grid-column:2;}
     .rs-tab thead{display:none;}
@@ -596,7 +594,6 @@
   }
   #diaFlowTable tr.fin td{font-weight:700; border-top:2px solid var(--text); border-bottom:3px double var(--text);}
   #diaFlowTable tr.ini td{background:var(--panel2);}
-  #diaMovTable tr.dia-colf input::placeholder{color:var(--faint); opacity:.85;}
   .dia-kpis-wrap{container-type:inline-size;}
   @container (max-width: 960px){ .dia-kpis{grid-template-columns:repeat(3,minmax(0,1fr));} }
   @container (max-width: 470px){ .dia-kpis{grid-template-columns:repeat(2,minmax(0,1fr));} }
@@ -608,6 +605,73 @@
   .dia-topscroll::-webkit-scrollbar-track{background:var(--panel2); border-radius:6px;}
   .dia-topscroll::-webkit-scrollbar-thumb{background:var(--faint); border-radius:6px; border:2px solid var(--panel2);}
   @supports not selector(::-webkit-scrollbar){ .dia-topscroll{scrollbar-width:thin; scrollbar-color:var(--faint) var(--panel2);} }
+  /* ---------- v1.7.2: filtro tipo Excel en el encabezado y comisión con importe ---------- */
+  #diaMovTable{min-width:1500px;}
+  #diaMovTable th .th-in{display:flex; align-items:center; gap:2px; min-width:0;}
+  #diaMovTable th.num .th-in{justify-content:flex-end;}
+  #diaMovTable th .th-t{min-width:0; overflow:hidden; text-overflow:ellipsis;}
+  #diaMovTable th .fx-btn{flex:none; width:22px; height:22px; min-width:0; margin:0; padding:0; border:0; border-radius:5px; background:transparent; color:var(--faint); display:inline-grid; place-items:center; cursor:pointer; box-shadow:none; font-size:0; line-height:1;}
+  #diaMovTable th .fx-btn svg{width:13px; height:13px; fill:none; stroke:currentColor; stroke-width:2; stroke-linejoin:round; stroke-linecap:round; pointer-events:none;}
+  #diaMovTable th .fx-btn:hover{background:var(--panel); color:var(--text);}
+  #diaMovTable th .fx-btn:focus-visible{outline:2px solid var(--accent); outline-offset:1px;}
+  #diaMovTable th .fx-btn.on{background:var(--accent-bg); color:var(--accent-ink);}
+  #diaMovTable th .fx-btn.on svg{fill:currentColor;}
+  #diaMovTable th.fx-on .th-t{color:var(--accent-ink);}
+  #diaMovTable td.c-com, #diaMovTable th.c-com{width:112px; min-width:112px; text-align:left; padding-left:6px; padding-right:4px;}
+  #diaMovTable th.c-com .th-in{justify-content:flex-start;}
+  .com-wrap{display:flex; align-items:center; gap:5px;}
+  #diaMovTable td.c-com .dia-comm{width:64px; min-width:0; margin:0; padding:3px 6px; font-size:12px; text-align:right; border-radius:5px;}
+  #diaMovTable td.c-com input[type=checkbox]{flex:none;}
+  .fx-pop{position:fixed; z-index:1200; width:min(300px, calc(100vw - 16px)); box-sizing:border-box; background:var(--panel); color:var(--text); border:1px solid var(--border); border-radius:10px; box-shadow:0 14px 34px rgba(0,0,0,.22); padding:10px; display:flex; flex-direction:column; gap:7px; font-size:13px;}
+  .fx-pop[hidden]{display:none;}
+  .fx-head{display:flex; align-items:center; justify-content:space-between; gap:8px;}
+  .fx-head b{font-size:13.5px;}
+  .fx-head button{width:auto; margin:0; padding:2px 8px;}
+  .fx-pop input[type=search]{width:100%; margin:0; padding:6px 9px; font-size:13px; box-sizing:border-box;}
+  .fx-pop input[type=checkbox]{width:16px; height:16px; margin:0; flex:none; cursor:pointer;}
+  .fx-it{display:flex; align-items:center; gap:8px; margin:0; padding:5px 8px; cursor:pointer; font-weight:400; font-size:13px; border-radius:5px;}
+  .fx-it:hover{background:var(--panel2);}
+  .fx-it span{flex:1; min-width:0; overflow-wrap:anywhere;}
+  .fx-it small{flex:none; margin-left:auto; color:var(--faint); font-size:11.5px;}
+  .fx-all{border-bottom:1px solid var(--rule); border-radius:0; font-weight:600; padding-bottom:6px;}
+  .fx-list{overflow:auto; border:1px solid var(--rule); border-radius:6px; padding:2px 0; background:var(--panel);}
+  .fx-none{padding:10px 8px; color:var(--muted); font-size:12.5px;}
+  .fx-foot{font-size:11.5px; color:var(--muted); min-height:0;} .fx-foot:empty{display:none;}
+  .fx-act{display:flex; align-items:center; gap:6px;}
+  .fx-act .sp{flex:1;} .fx-act button{width:auto; margin:0;}
+  .fx-act button[disabled]{opacity:.5; cursor:not-allowed;}
+  /* ---------- v1.7.3: tipo de documento con menú y saldos por mes ---------- */
+  #diaMovTable td.c-tipo, #diaMovTable th.c-tipo{width:88px; min-width:88px;}
+  .tp-wrap{display:flex; align-items:center; gap:2px;}
+  #diaMovTable .dia-in.tipo{width:54px; text-transform:uppercase;}
+  #diaMovTable .dia-in.tipo.bad{border-color:var(--bad); background:var(--bad-bg); color:var(--bad);}
+  #diaMovTable .dia-tp{flex:none; width:22px; height:26px; min-width:0; margin:0; padding:0; border:1px solid var(--border); border-radius:5px; background:var(--panel); color:var(--muted); cursor:pointer; font-size:12px; line-height:1; box-shadow:none;}
+  #diaMovTable .dia-tp[hidden]{display:none;}
+  #diaMovTable .dia-tp:hover{background:var(--panel2); color:var(--text);}
+  #diaMovTable .dia-tp:focus-visible{outline:2px solid var(--accent); outline-offset:1px;}
+  #diaMovTable .dia-tp:disabled{opacity:.5; cursor:not-allowed;}
+  .tp-pop{position:fixed; z-index:1200; min-width:170px; max-width:min(260px, calc(100vw - 16px)); box-sizing:border-box; background:var(--panel); color:var(--text); border:1px solid var(--border); border-radius:10px; box-shadow:0 14px 34px rgba(0,0,0,.22); padding:6px; display:flex; flex-direction:column; gap:2px; font-size:13px;}
+  .tp-pop[hidden]{display:none;}
+  .tp-h{padding:4px 8px 6px; font-size:12px; font-weight:700; color:var(--muted);}
+  .tp-it{width:100%; margin:0; text-align:left; padding:7px 10px; border:0; border-radius:6px; background:transparent; color:var(--text); font-size:13.5px; font-weight:600; cursor:pointer; box-shadow:none;}
+  .tp-it:hover, .tp-it:focus-visible{background:var(--panel2); outline:none;}
+  .tp-it.on{background:var(--accent-bg); color:var(--accent-ink);}
+  .tp-it.on::after{content:"  ✓";}
+  .tp-f{padding:6px 8px 3px; font-size:11.5px; color:var(--muted); border-top:1px solid var(--rule); margin-top:4px;}
+  #sbDlg .dlg-actions{position:sticky; bottom:0; background:var(--panel); border-top:1px solid var(--rule); border-radius:0 0 14px 14px;}
+  /* ---------- v1.7.4: documentos pendientes de cualquier origen ---------- */
+  .src-list{display:flex; flex-wrap:wrap; gap:6px; margin-top:8px;}
+  .src-list:empty{display:none;}
+  .src-chip{display:inline-flex; align-items:center; gap:6px; padding:3px 4px 3px 10px; border:1px solid var(--border); border-radius:999px; background:var(--panel2); font-size:12px; color:var(--text);}
+  .src-chip b{font-weight:600;}
+  .src-x{flex:none; width:auto; min-height:22px; margin:0; padding:0 7px; border:0; border-radius:999px; background:transparent; color:var(--muted); font-size:12px; cursor:pointer;}
+  .src-x:hover{color:var(--bad); background:var(--panel);}
+  .src-x:focus-visible{outline:2px solid var(--accent); outline-offset:1px;}
+  .docs-tools{display:flex; flex-wrap:wrap; align-items:center; gap:8px 14px; margin-top:10px;}
+  .docs-tools button{width:auto; margin:0;}
+  .docs-chk{display:inline-flex; align-items:center; gap:6px; margin:0; font-size:12px; color:var(--muted); cursor:pointer;}
+  .docs-chk input{width:auto; margin:0;}
+  #pdDocsFilter{flex:1 1 180px; max-width:280px; margin:0; padding:6px 9px; font-size:13px;}
   /* ---------- v1.5: flujo por rubros y enlace de solo lectura ---------- */
   #diaFlowTable tr.act td, #pyMatrixT tr.act td{background:var(--panel3); color:var(--text); font-weight:700; letter-spacing:.03em; font-size:12px; text-transform:uppercase; border-top:1px solid var(--border);}
   #diaFlowTable tr.grp td, #pyMatrixT tr.grp td{font-weight:700; background:var(--panel2);}
@@ -1275,7 +1339,7 @@ body.gate-open{overflow:hidden;}
   <nav class="tabnav" id="tabNav" aria-label="Pestañas" role="tablist" aria-orientation="vertical">
     <button type="button" class="active" data-tab="tab-recon" id="tabBtn1" role="tab" aria-selected="true" aria-controls="tab-recon" title="Conciliación bancaria (Alt+1)"><span class="tn-num">1</span><span class="tn-text"><span class="tn-title">Conciliación bancaria</span><span class="tn-hint">Extractos a movimientos</span></span><span class="tn-count" id="tabCount1"></span></button>
     <button type="button" data-tab="tab-pending" id="tabBtn2" role="tab" aria-selected="false" aria-controls="tab-pending" tabindex="-1" title="Documentos pendientes (Alt+2)"><span class="tn-num">2</span><span class="tn-text"><span class="tn-title">Documentos pendientes</span><span class="tn-hint">Cruce con facturas por pagar</span></span><span class="tn-count" id="tabCount2"></span></button>
-    <button type="button" data-tab="tab-concar" id="tabBtn3" role="tab" aria-selected="false" aria-controls="tab-concar" tabindex="-1" title="Formato CONCAR (Alt+3)"><span class="tn-num">3</span><span class="tn-text"><span class="tn-title">Formato CONCAR</span><span class="tn-hint">Asientos listos para importar</span></span><span class="tn-count" id="tabCount3"></span></button>
+    <button type="button" data-tab="tab-concar" id="tabBtn3" role="tab" aria-selected="false" aria-controls="tab-concar" tabindex="-1" title="Asientos contables (Alt+3)"><span class="tn-num">3</span><span class="tn-text"><span class="tn-title">Asientos contables</span><span class="tn-hint">Listos para importar</span></span><span class="tn-count" id="tabCount3"></span></button>
     <button type="button" data-tab="tab-tesoreria" id="tabBtn4" role="tab" aria-selected="false" aria-controls="tab-tesoreria" tabindex="-1" title="Cruce con Tesorería (Alt+4)"><span class="tn-num">4</span><span class="tn-text"><span class="tn-title">Cruce con Tesorería</span><span class="tn-hint">Banco contra registros</span></span><span class="tn-count" id="tabCount4"></span></button>
     <button type="button" data-tab="tab-fx" id="tabBtn5" role="tab" aria-selected="false" aria-controls="tab-fx" tabindex="-1" title="Diferencia de cambio (Alt+5)"><span class="tn-num">5</span><span class="tn-text"><span class="tn-title">Diferencia de cambio</span><span class="tn-hint">Ajuste de saldos residuales</span></span><span class="tn-count" id="tabCount5"></span></button>
     <button type="button" data-tab="tab-dia" id="tabBtn6" role="tab" aria-selected="false" aria-controls="tab-dia" tabindex="-1" title="Trabajo diario (Alt+6)"><span class="tn-num">6</span><span class="tn-text"><span class="tn-title">Trabajo diario</span><span class="tn-hint">Descargas del banco del día</span></span><span class="tn-count" id="tabCount6"></span></button>
@@ -1443,7 +1507,7 @@ body.gate-open{overflow:hidden;}
         <b>Lectura del PDF:</b> el extractor usa la posición real del texto para reconstruir cada fila (fecha, descripción, operación, cargo, abono y saldo). Si el PDF no tiene texto seleccionable (escaneado o fotocopia), se activa <b>OCR</b>, que puede tardar más. Revisa siempre la tabla antes de exportar: puedes editar cualquier celda o eliminar filas.<br><br>
         <b>Cuenta contable automática:</b> <b>639101</b> para comisiones y gastos bancarios, <b>641201</b> para el ITF y <b>407101</b> para pagos de AFP (no llevan factura: se cancelan directo contra la cuenta). Para lo demás, usa las reglas o «Asignar cuenta a visibles».<br><br>
         <b>Controles:</b> el saldo se compara día por día contra el que informa el banco, se verifica que el saldo final de un mes sea el inicial del siguiente, se buscan movimientos repetidos y se revisa que el ITF no supere el 0.005% de lo movido.<br><br>
-        Cuando termines aquí, sigue con <b>2. Documentos pendientes</b> para cruzar contra facturas, o ve directo a <b>3. Formato CONCAR</b>.
+        Cuando termines aquí, sigue con <b>2. Documentos pendientes</b> para cruzar contra facturas, o ve directo a <b>3. Asientos contables</b>.
       </div>
     </details>
   </div>
@@ -1561,13 +1625,19 @@ body.gate-open{overflow:hidden;}
       <div class="step-card" id="pdStep2">
         <div class="step-head">
           <span class="step-num">2</span>
-          <span class="step-title">Documentos pendientes (CONCAR)</span>
+          <span class="step-title">Documentos pendientes</span>
           <span class="step-check">✓ listo</span>
         </div>
-        <div class="step-sub">El reporte de facturas/documentos por cobrar o pagar. Detectamos automáticamente dónde empiezan tus columnas, aunque el archivo tenga cabecera de empresa arriba.</div>
-        <div class="dropzone" id="pdDropzone">Arrastra el Excel aquí<br>o haz clic para seleccionar</div>
-        <input type="file" id="pdFileInput" accept=".xlsx,.xls" style="display:none;">
+        <div class="step-sub">Sube lo que tengas: el reporte de pendientes de tu sistema contable (Excel o CSV), los ZIP del SIRE (compras y ventas) y los RH del año. Puedes elegir varios archivos a la vez; detectamos solos qué es cada uno.</div>
+        <div class="dropzone" id="pdDropzone">Arrastra los archivos aquí<br>o haz clic para seleccionar<br><span style="font-size:11px; color:var(--muted);">Excel, CSV, TXT o ZIP del SIRE</span></div>
+        <input type="file" id="pdFileInput" accept=".xlsx,.xls,.csv,.txt,.zip" multiple style="display:none;">
         <div class="status" id="pdFileStatus"></div>
+        <div class="src-list" id="pdSrcList"></div>
+        <div class="docs-tools">
+          <button type="button" class="secondary sm" id="pdTplBtn" title="Un Excel simple para llenar con cualquier sistema"><svg class="ico"><use href="#i-download"/></svg>Descargar plantilla</button>
+          <label class="docs-chk" title="Se aplica a los archivos que subas desde ahora"><input type="checkbox" id="pdIncBol"> Incluir boletas y tickets (SIRE)</label>
+        </div>
+        <details class="help"><summary>Qué archivos acepto y cómo se usan</summary><div><b>Reporte de tu sistema contable</b>: Excel o CSV de documentos pendientes. Si no trae la cuenta, elige abajo si es «por pagar» o «por cobrar»; si trae serie y número separados o una sola columna de saldo, también se arma. <br><b>SIRE compras y ventas</b>: el ZIP, el TXT o el Excel de la propuesta o del registro; puedes subir los de todos los meses a la vez. El SIRE no trae saldos: cada comprobante entra como pendiente por su importe total y se va cancelando con los movimientos del banco. Compras van a 421201/421202 y ventas a 121201/121202; las notas de crédito van con signo contrario. Las boletas y los tickets se omiten salvo que marques la casilla antes de subir. <br><b>RH del año</b> (TXT o Excel): entran a 424101 por el importe neto (renta neta, o bruta menos retención si el archivo la trae); los anulados se saltan. <br>Un comprobante que se repite (mismo tipo, número y RUC) no se agrega dos veces. Con la ✕ de cada fuente la quitas completa. <br>Si tu sistema no exporta bien, descarga la <b>plantilla</b>.</div></details>
 
         <div id="pdMappingBox" style="display:none; margin-top:10px;">
           <label>Mapea las columnas de tu reporte:</label>
@@ -1582,6 +1652,9 @@ body.gate-open{overflow:hidden;}
             <div><label>Fecha del documento (para el cruce sugerido)</label><select id="map_fecha"></select></div>
             <div><label>Fecha de vencimiento (opcional)</label><select id="map_venc"></select></div>
             <div><label>Nombre del cliente / proveedor (opcional)</label><select id="map_nombre"></select></div>
+            <div><label>Serie (solo si va aparte del número)</label><select id="map_serie"></select></div>
+            <div><label>Saldo (solo si es una sola columna)</label><select id="map_saldo"></select></div>
+            <div><label>Si el reporte no trae cuenta, es…</label><select id="map_flujo"><option value="">Ya trae la cuenta</option><option value="pagar">Por pagar (proveedores)</option><option value="cobrar">Por cobrar (clientes)</option></select></div>
           </div>
           <button id="pdConfirmMapBtn" class="secondary"><svg class="ico"><use href="#i-check"/></svg>Confirmar columnas</button>
         </div>
@@ -1589,6 +1662,7 @@ body.gate-open{overflow:hidden;}
         <div id="pdDocsBox" style="display:none; margin-top:14px;">
           <div class="toolbar">
             <span class="badge" id="pdDocsCount">0 documentos</span>
+            <input type="search" id="pdDocsFilter" placeholder="Buscar por N° doc., RUC o nombre…" aria-label="Buscar en los documentos pendientes" autocomplete="off">
             <button class="secondary sm" id="pdAddDocBtn"><svg class="ico"><use href="#i-plus"/></svg>Agregar cuenta manual</button>
           </div>
           <div class="tablewrap">
@@ -1614,7 +1688,7 @@ body.gate-open{overflow:hidden;}
         <button id="pdCruzarBtn" style="margin-top:12px;" disabled><svg class="ico"><use href="#i-scale"/></svg>Cruzar documentos</button>
         <div class="sug-box">
           <label style="margin-bottom:2px;">Movimientos sin sustento</label>
-          <details class="help"><summary>Cómo funcionan «Sugerir cruce» y «Forzar cruce»</summary><div>Muchas empresas no tienen su banco al detalle (la glosa solo dice «TRAN.CTAS.TERC»). Estos dos botones trabajan sobre los movimientos que el cruce simple dejó <b>Sin match</b> (y re-evalúan las «Sugerencias» de poca confianza). Se usan las fechas de los documentos, por eso conviene mapear «Fecha del documento» en el paso 2. <b>Sugerir cruce</b> solo propone, por orden de confianza: (1) un documento de importe igual, de fecha cercana; (2) un cobro neto de detracción del 4/10/12/15 %; (3) varios comprobantes de un mismo cliente o proveedor que suman justo el importe; (4) un documento de importe parecido. Lo que no calce queda <b>Sin match</b> con los documentos más parecidos en la nota. <b>Forzar cruce</b> hace lo mismo y, para lo que siga vacío, consume el saldo de los documentos pendientes hasta agotarlos: si el banco nombra al tercero («DE PAPELERA DEL PERU»), el más antiguo de ese cliente primero; si no, parte del documento más parecido en importe y fecha y sigue con lo más antiguo del mismo proveedor. Un solo movimiento puede cancelar varios comprobantes y un comprobante puede cancelarse en partes: el programa lleva el <b>saldo restante</b> de cada documento, así que nunca usa uno que ya no tiene saldo ni lo cancela por más de lo que debe. Reglas: un <b>cobro</b> (abono, Sub Diario 21) cancela saldos al debe (positivos del reporte); un <b>pago</b> (cargo, Sub Diario 22) cancela saldos al haber (negativos: cuentas 42 y demás pasivos). Las notas de crédito que ya anulan su factura no se ofrecen al banco; los documentos en dólares no se cruzan con cuentas en soles. En una transferencia a otro banco desde BCP se separan los S/ 4.80 de comisión y se cancelan contra la factura del banco (o van a 639101 si no hay factura). Todo lo que no sea «Exacto» sale con <b>Revisar = SI</b> en el CONCAR y con la explicación en la nota. Es una sugerencia: confírmala antes de subirla al sistema.</div></details>
+          <details class="help"><summary>Cómo funcionan «Sugerir cruce» y «Forzar cruce»</summary><div>Muchas empresas no tienen su banco al detalle (la glosa solo dice «TRAN.CTAS.TERC»). Estos dos botones trabajan sobre los movimientos que el cruce simple dejó <b>Sin match</b> (y re-evalúan las «Sugerencias» de poca confianza). Se usan las fechas de los documentos, por eso conviene mapear «Fecha del documento» en el paso 2. <b>Sugerir cruce</b> solo propone, por orden de confianza: (1) un documento de importe igual, de fecha cercana; (2) un cobro neto de detracción del 4/10/12/15 %; (3) varios comprobantes de un mismo cliente o proveedor que suman justo el importe; (4) un documento de importe parecido. Lo que no calce queda <b>Sin match</b> con los documentos más parecidos en la nota. <b>Forzar cruce</b> hace lo mismo y, para lo que siga vacío, consume el saldo de los documentos pendientes hasta agotarlos: si el banco nombra al tercero («DE PAPELERA DEL PERU»), el más antiguo de ese cliente primero; si no, parte del documento más parecido en importe y fecha y sigue con lo más antiguo del mismo proveedor. Un solo movimiento puede cancelar varios comprobantes y un comprobante puede cancelarse en partes: el programa lleva el <b>saldo restante</b> de cada documento, así que nunca usa uno que ya no tiene saldo ni lo cancela por más de lo que debe. Reglas: un <b>cobro</b> (abono, Sub Diario 21) cancela saldos al debe (positivos del reporte); un <b>pago</b> (cargo, Sub Diario 22) cancela saldos al haber (negativos: cuentas 42 y demás pasivos). Las notas de crédito que ya anulan su factura no se ofrecen al banco; los documentos en dólares no se cruzan con cuentas en soles. En una transferencia a otro banco desde BCP se separan los S/ 4.80 de comisión y se cancelan contra la factura del banco (o van a 639101 si no hay factura). Todo lo que no sea «Exacto» sale con <b>Revisar = SI</b> en el Excel de asientos y con la explicación en la nota. Es una sugerencia: confírmala antes de subirla al sistema.</div></details>
           <div class="sug-btns">
             <button id="pdSugerirBtn" class="secondary" disabled><svg class="ico"><use href="#i-wand"/></svg>Sugerir cruce</button>
             <button id="pdForzarBtn" class="secondary" disabled><svg class="ico"><use href="#i-scale"/></svg>Forzar cruce</button>
@@ -1712,13 +1786,13 @@ body.gate-open{overflow:hidden;}
         <div><label>Máx. caracteres Glosa Principal</label><input type="text" id="cfgGlosaMax" value="40"></div>
         <div><label>Máx. caracteres Glosa Detalle</label><input type="text" id="cfgGlosaDetMax" value="30"></div>
       </div>
-      <div class="step-sub" style="margin-top:6px;">Si en CONCAR ya tienes asientos registrados este mes para el Sub Diario de Cobros o Pagos (por ejemplo, cargados manualmente o desde otra fuente), indica aquí el siguiente correlativo disponible en vez de 1, para no duplicar números de comprobante.</div>
+      <div class="step-sub" style="margin-top:6px;">Si en tu sistema contable ya tienes asientos registrados este mes para el Sub Diario de Cobros o Pagos (por ejemplo, cargados manualmente o desde otra fuente), indica aquí el siguiente correlativo disponible en vez de 1, para no duplicar números de comprobante.</div>
 
-      <button id="cgGenerarBtn" style="margin-top:10px;">Generar formato CONCAR</button>
-      <button id="cgExportBtn" class="green" style="margin-top:8px;" disabled><svg class="ico"><use href="#i-download"/></svg>Descargar Excel CONCAR</button>
+      <button id="cgGenerarBtn" style="margin-top:10px;">Generar asientos</button>
+      <button id="cgExportBtn" class="green" style="margin-top:8px;" disabled><svg class="ico"><use href="#i-download"/></svg>Descargar Excel de asientos</button>
 
       <div class="hint" style="margin-top:14px;">
-        Las filas en <span style="color:var(--bad);">rojo</span> usan la cuenta genérica porque no se encontró coincidencia en Documentos Pendientes — revísalas antes de importar a CONCAR.
+        Las filas en <span style="color:var(--bad);">rojo</span> usan la cuenta genérica porque no se encontró coincidencia en Documentos Pendientes — revísalas antes de importarlas a tu sistema contable.
       </div>
       <div class="hint" style="margin-top:10px;">
         <b>Glosas:</b> la Glosa Principal (máx. 40 caracteres) y la de Detalle (máx. 30) empiezan con <b>PAGO A</b> en las salidas y <b>COBRO A</b> en los ingresos, seguido de la descripción del banco. El prefijo y los máximos se pueden cambiar arriba.
@@ -1747,7 +1821,7 @@ body.gate-open{overflow:hidden;}
           </thead>
           <tbody id="cgBody"></tbody>
         </table>
-        <div class="empty" id="cgEmptyMsg">Configura las cuentas y presiona "Generar formato CONCAR".</div>
+        <div class="empty" id="cgEmptyMsg">Configura las cuentas y presiona "Generar asientos".</div>
       </div>
     </div>
   </div>
@@ -1841,7 +1915,7 @@ body.gate-open{overflow:hidden;}
       <div class="step-card" id="fxStep1">
         <div class="step-head">
           <span class="step-num">1</span>
-          <span class="step-title">Documentos pendientes (CONCAR)</span>
+          <span class="step-title">Documentos pendientes</span>
           <span class="step-check">✓ listo</span>
         </div>
         <div class="step-sub">Sube el reporte de documentos pendientes al cierre del mes (el mismo de la Pestaña 2). Se detectan las columnas y la fecha de corte solas.</div>
@@ -1888,7 +1962,7 @@ body.gate-open{overflow:hidden;}
         </div></details>
         <details class="help"><summary>Cómo se arma el asiento</summary><div>Cada documento marcado genera una línea que <b>cancela su saldo</b>: un saldo positivo (Debe) se cancela con Haber y uno negativo (Haber) con Debe; si el saldo en dólares y el de soles tienen signo contrario, salen dos líneas. «Importe Original» queda en blanco y los montos van en las columnas Dólares y Soles (Flag de Conversión N). Se arma <b>un asiento por moneda del documento</b> (MN y US) con correlativo que empieza con el mes (por ejemplo 100001). La contrapartida va a pérdida en el Debe y ganancia en el Haber, con el centro de costo indicado y un documento VR del mes, de modo que <b>Debe = Haber en dólares y en soles</b>.</div></details>
         <button id="fxGenerarBtn" style="margin-top:6px;" disabled><svg class="ico"><use href="#i-wand"/></svg>Generar asiento de ajuste</button>
-        <button id="fxExportBtn" class="green" style="margin-top:8px;" disabled><svg class="ico"><use href="#i-download"/></svg>Descargar Excel CONCAR</button>
+        <button id="fxExportBtn" class="green" style="margin-top:8px;" disabled><svg class="ico"><use href="#i-download"/></svg>Descargar Excel de asientos</button>
         <div class="sug-resumen" id="fxResumen"></div>
       </div>
     </div>
@@ -1975,13 +2049,16 @@ body.gate-open{overflow:hidden;}
           <span class="step-title">Documentos pendientes</span>
           <span class="step-check">✓ listo</span>
         </div>
-        <div class="step-sub">Sirven para comprobar que cada factura que anotes exista y para sugerir cuál cancela cada pago.</div>
+        <div class="step-sub">Sirven para comprobar que cada factura que anotes exista y para sugerir cuál cancela cada pago. Sube el reporte de tu sistema contable o, sin esperar a contabilidad, los ZIP del SIRE (compras y ventas) y los RH del año.</div>
         <div class="dia-btns">
           <button class="secondary sm" id="diaDocsTab2Btn"><svg class="ico"><use href="#i-undo"/></svg>Usar los de la Pestaña 2</button>
-          <button class="secondary sm" id="diaDocsUpBtn"><svg class="ico"><use href="#i-upload"/></svg>Subir el reporte</button>
+          <button class="secondary sm" id="diaDocsUpBtn" title="Excel, CSV, TXT o ZIP del SIRE; puedes elegir varios"><svg class="ico"><use href="#i-upload"/></svg>Subir archivos</button>
+          <button class="secondary sm" id="diaTplBtn" title="Un Excel simple para llenar con cualquier sistema"><svg class="ico"><use href="#i-download"/></svg>Plantilla</button>
         </div>
-        <input type="file" id="diaDocsInput" accept=".xlsx,.xls" style="display:none;">
+        <label class="docs-chk" style="margin-top:8px;" title="Se aplica a los archivos que subas desde ahora"><input type="checkbox" id="diaIncBol"> Incluir boletas y tickets (SIRE)</label>
+        <input type="file" id="diaDocsInput" accept=".xlsx,.xls,.csv,.txt,.zip" multiple style="display:none;">
         <div class="status" id="diaDocsStatus"></div>
+        <div class="src-list" id="diaSrcList"></div>
       </div>
 
       <div class="step-card" id="diaStep3">
@@ -2024,7 +2101,7 @@ body.gate-open{overflow:hidden;}
         <div class="step-sub" style="margin-bottom:6px;">Pasar los movimientos ya cruzados a las demás pestañas:</div>
         <div class="dia-btns">
           <button class="secondary sm" id="diaToTab2Btn" disabled>A la Pestaña 2</button>
-          <button class="secondary sm" id="diaToTab3Btn" disabled>A CONCAR (Pestaña 3)</button>
+          <button class="secondary sm" id="diaToTab3Btn" disabled>A Asientos (Pestaña 3)</button>
         </div>
         <div class="status" id="diaSendStatus"></div>
       </div>
@@ -2134,23 +2211,19 @@ body.gate-open{overflow:hidden;}
           <table id="diaMovTable">
             <thead><tr>
               <th class="chk"><input type="checkbox" id="diaChkAll" aria-label="Marcar o desmarcar los visibles"></th>
-              <th>Fecha</th><th>Descripción</th><th>N° Op.</th><th class="num">Entrada</th><th class="num">Salida</th><th>Categoría</th><th>Cuenta</th><th>Tipo</th><th>N° Doc.</th><th>Anexo/RUC</th><th class="c-com" title="Marca si el movimiento tiene comisión bancaria">Comisión</th><th>Estado</th><th></th>
-            </tr>
-            <tr class="dia-colf" id="diaColF">
-              <th class="chk"></th>
-              <th><input type="text" data-cf="fecha" placeholder="Filtrar" aria-label="Filtrar por fecha" autocomplete="off"></th>
-              <th><input type="text" data-cf="desc" placeholder="Filtrar" aria-label="Filtrar por descripción o glosa" autocomplete="off"></th>
-              <th><input type="text" data-cf="op" placeholder="Filtrar" aria-label="Filtrar por número de operación" autocomplete="off"></th>
-              <th class="num"><input type="text" data-cf="ent" placeholder="&gt;1000" title="Texto, o un importe: &gt;1000, &lt;=500, 100-300" aria-label="Filtrar entradas por importe" autocomplete="off"></th>
-              <th class="num"><input type="text" data-cf="sal" placeholder="&gt;1000" title="Texto, o un importe: &gt;1000, &lt;=500, 100-300" aria-label="Filtrar salidas por importe" autocomplete="off"></th>
-              <th><select data-cf="cat" id="diaCfCat" aria-label="Filtrar por categoría"><option value="all">Todas</option></select></th>
-              <th><input type="text" data-cf="cta" placeholder="Filtrar" aria-label="Filtrar por cuenta contable" autocomplete="off"></th>
-              <th><input type="text" data-cf="tipo" placeholder="Filtrar" aria-label="Filtrar por tipo de documento" autocomplete="off"></th>
-              <th><input type="text" data-cf="nro" placeholder="Filtrar" aria-label="Filtrar por número de documento" autocomplete="off"></th>
-              <th><input type="text" data-cf="anexo" placeholder="Filtrar" aria-label="Filtrar por anexo, RUC o razón social" autocomplete="off"></th>
-              <th class="c-com"><select data-cf="com" aria-label="Filtrar por comisión bancaria"><option value="">Todas</option><option value="1">Con</option><option value="0">Sin</option></select></th>
-              <th><select data-cf="est" id="diaCfEst" aria-label="Filtrar por estado"></select></th>
-              <th><button type="button" class="ghost sm" id="diaColClearBtn" title="Quitar los filtros de las columnas" aria-label="Quitar los filtros de las columnas">✕</button></th>
+              <th><span class="th-in"><span class="th-t">Fecha</span><button type="button" class="fx-btn" data-fx="fecha" aria-haspopup="dialog" aria-expanded="false" aria-label="Filtrar Fecha" title="Filtrar Fecha"><svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg></button></span></th>
+              <th><span class="th-in"><span class="th-t">Descripción</span><button type="button" class="fx-btn" data-fx="desc" aria-haspopup="dialog" aria-expanded="false" aria-label="Filtrar Descripción" title="Filtrar Descripción"><svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg></button></span></th>
+              <th><span class="th-in"><span class="th-t">N° Op.</span><button type="button" class="fx-btn" data-fx="op" aria-haspopup="dialog" aria-expanded="false" aria-label="Filtrar N° Op." title="Filtrar N° Op."><svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg></button></span></th>
+              <th class="num"><span class="th-in"><span class="th-t">Entrada</span><button type="button" class="fx-btn" data-fx="ent" aria-haspopup="dialog" aria-expanded="false" aria-label="Filtrar Entrada" title="Filtrar Entrada"><svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg></button></span></th>
+              <th class="num"><span class="th-in"><span class="th-t">Salida</span><button type="button" class="fx-btn" data-fx="sal" aria-haspopup="dialog" aria-expanded="false" aria-label="Filtrar Salida" title="Filtrar Salida"><svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg></button></span></th>
+              <th><span class="th-in"><span class="th-t">Categoría</span><button type="button" class="fx-btn" data-fx="cat" aria-haspopup="dialog" aria-expanded="false" aria-label="Filtrar Categoría" title="Filtrar Categoría"><svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg></button></span></th>
+              <th><span class="th-in"><span class="th-t">Cuenta</span><button type="button" class="fx-btn" data-fx="cta" aria-haspopup="dialog" aria-expanded="false" aria-label="Filtrar Cuenta" title="Filtrar Cuenta"><svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg></button></span></th>
+              <th class="c-tipo"><span class="th-in"><span class="th-t">Tipo</span><button type="button" class="fx-btn" data-fx="tipo" aria-haspopup="dialog" aria-expanded="false" aria-label="Filtrar Tipo" title="Filtrar Tipo"><svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg></button></span></th>
+              <th><span class="th-in"><span class="th-t">N° Doc.</span><button type="button" class="fx-btn" data-fx="nro" aria-haspopup="dialog" aria-expanded="false" aria-label="Filtrar N° Doc." title="Filtrar N° Doc."><svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg></button></span></th>
+              <th><span class="th-in"><span class="th-t">Anexo/RUC</span><button type="button" class="fx-btn" data-fx="anexo" aria-haspopup="dialog" aria-expanded="false" aria-label="Filtrar Anexo/RUC" title="Filtrar Anexo/RUC"><svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg></button></span></th>
+              <th class="c-com" title="Marca si el movimiento tiene comisión bancaria y escribe su importe: se separa del pago y va a Comisiones bancarias"><span class="th-in"><span class="th-t">Comisión</span><button type="button" class="fx-btn" data-fx="com" aria-haspopup="dialog" aria-expanded="false" aria-label="Filtrar Comisión" title="Filtrar Comisión"><svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg></button></span></th>
+              <th><span class="th-in"><span class="th-t">Estado</span><button type="button" class="fx-btn" data-fx="est" aria-haspopup="dialog" aria-expanded="false" aria-label="Filtrar Estado" title="Filtrar Estado"><svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg></button></span></th>
+              <th></th>
             </tr></thead>
             <tbody id="diaMovBody"></tbody>
           </table>
@@ -2195,7 +2268,7 @@ body.gate-open{overflow:hidden;}
             <button class="secondary sm" id="pyXlsxBtn" disabled><svg class="ico"><use href="#i-download"/></svg>Exportar proyección</button>
           </div>
           <input type="file" id="pyFileInput" accept=".xlsx,.xls,.csv" multiple style="display:none;">
-          <input type="file" id="pyDocsInput" accept=".xlsx,.xls" style="display:none;">
+          <input type="file" id="pyDocsInput" accept=".xlsx,.xls,.csv,.txt,.zip" multiple style="display:none;">
 
           <div class="dia-add" id="pyAddBox" hidden>
             <div class="grid">
@@ -2402,10 +2475,10 @@ body.gate-open{overflow:hidden;}
 <datalist id="cuentasConocidas"></datalist>
 <dialog class="dlg dlg-wide" id="sbDlg" aria-labelledby="sbTitle">
   <div class="dlg-body">
-    <h3 id="sbTitle">Saldo inicial de cada cuenta</h3>
-    <p>Escribe con cuánto empezó cada cuenta en el primer día que trabajas. Desde ahí el programa <b>arrastra el saldo</b>: el saldo final de un período es el saldo inicial del siguiente, así que puedes mirar un mes, una semana o un día y siempre verás con cuánto empezó y con cuánto terminó. Se guarda con tu trabajo.</p>
+    <h3 id="sbTitle">Saldo inicial de cada cuenta, mes por mes</h3>
+    <p>Escribe con cuánto empezó cada mes (el saldo final del estado de cuenta del mes anterior). Ese saldo se toma como cierto y <b>reinicia el arrastre</b>; los meses en blanco arrastran el final del anterior. Así, trabajar solo noviembre no queda «cuadrado a la fuerza»: bajo cada mes ves el final calculado, cómo cuadra con el banco y si coincide con lo que terminó el mes anterior. Se guarda con tu trabajo.</p>
     <div class="sh-list" id="sbList"></div>
-    <div class="hint">El saldo sugerido sale del último saldo que informó el banco en tus descargas: es el saldo inicial que hace que el saldo final calculado coincida con el del banco.</div>
+    <div class="hint">El «atajo» calcula el saldo inicial que hace que el último saldo del banco cuadre; úsalo solo si no tienes el estado de cuenta del mes anterior, porque así el primer mes siempre cuadra y no detecta movimientos que falten.</div>
   </div>
   <div class="dlg-actions"><button type="button" class="secondary" id="sbClose">Cancelar</button><button type="button" id="sbSave">Guardar saldos</button></div>
 </dialog>
@@ -2510,7 +2583,7 @@ window.EC_CONFIG = { API_URL: "PEGA_AQUI_LA_URL_DEL_SERVIDOR", GEO: true };
    Acceso: usuario + contraseña (se validan en cada pedido; la contraseña vive solo en memoria),
    equipo autorizado (id guardado en este navegador) y RUC habilitados.
    ============================================================ */
-const EC_CLIENT_VERSION = '1.7.1';
+const EC_CLIENT_VERSION = '1.7.4';
 const EC_USER_STORE = 'ec_usuario';
 const EC_DEVICE_STORE = 'ec_deviceId';
 const EC_URL_STORE = 'ec_api_url';
@@ -3017,7 +3090,9 @@ async function readReportRemote(file){
   const wb = XLSX.read(buf, { type: 'array' });
   const ws = wb.Sheets[wb.SheetNames[0]];
   const aoa = XLSX.utils.sheet_to_json(ws, { header: 1, defval: '', blankrows: false });
-  return await EC.call('detectReport', { aoa }, { heavy: true, label: 'Buscando la tabla en el reporte…' });
+  const r0 = await EC.call('detectReport', { aoa }, { heavy: true, label: 'Buscando la tabla en el reporte…' });
+  if(r0 && r0.headers) r0.guess = docsGuess(r0.headers, r0.guess, r0.rows);
+  return r0;
 }
 
 /* ---------------- Pestaña 2: cruce con documentos pendientes ---------------- */
@@ -3061,7 +3136,7 @@ async function sugerirCruceDocs(modo){
 async function cgGenerar(){
   if(!cgMovements.length){ cgSourceStatus.textContent = 'Primero carga movimientos (Pestaña 1, Pestaña 2 o un Excel).'; return; }
   try{
-    const d = await EC.call('concarGenerate', { cfg: cfgPayload(), docs: pendingDocs, movements: cgMovements }, { heavy: true, label: 'Generando el formato CONCAR…', btn: cgGenerarBtn });
+    const d = await EC.call('concarGenerate', { cfg: cfgPayload(), docs: pendingDocs, movements: cgMovements }, { heavy: true, label: 'Generando los asientos…', btn: cgGenerarBtn });
     cgRows = d.rows || [];
     cgFilter = 'all';
     renderCgTable(d.flaggedCount || 0);
@@ -3243,9 +3318,9 @@ const Shell = (function(){
   const MODS = {
     'tab-recon': { title: 'Conciliación bancaria', sub: 'De los extractos bancarios en PDF o Excel a movimientos ordenados, con controles que avisan si falta alguno.' },
     'tab-pending': { title: 'Documentos pendientes', sub: 'Cruza cada movimiento del banco con los documentos pendientes de pago del cliente.' },
-    'tab-concar': { title: 'Formato CONCAR', sub: 'Arma los asientos de bancos, revísalos y exporta el archivo listo para importar en CONCAR.' },
+    'tab-concar': { title: 'Asientos contables', sub: 'Arma los asientos de bancos, revísalos y exporta el archivo listo para importar en tu sistema contable.' },
     'tab-tesoreria': { title: 'Cruce con Tesorería', sub: 'Compara lo que muestra el banco con los registros de Tesorería y deja a la vista lo que no coincide.' },
-    'tab-fx': { title: 'Diferencia de cambio', sub: 'Sube los documentos pendientes, marca los que quieres cancelar y descarga el asiento de ajuste para CONCAR.' },
+    'tab-fx': { title: 'Diferencia de cambio', sub: 'Sube los documentos pendientes, marca los que quieres cancelar y descarga el asiento de ajuste para tu sistema contable.' },
     'tab-dia': { title: 'Trabajo diario', sub: 'Junta las descargas del banco de cada día sin duplicar, controla el ITF y los saldos, clasifica los movimientos y arma el flujo de caja.' }
   };
   const state = { processing: false };
@@ -3969,8 +4044,18 @@ function renderTable(){
         val = sanitizeAmountText(val);
         e.target.textContent = val;
       }
+      if(field === 'docTipo' && val){
+        val = val.toUpperCase();
+        const er = docTipoCheck(movements[idx].cuentaContable, val);
+        if(er){ toast(er, 'warn'); e.target.textContent = movements[idx].docTipo || ''; return; }
+        e.target.textContent = val;
+      }
       if((movements[idx][field] || '') === val) return;   // sin cambios: no recalcular nada
       movements[idx][field] = val;
+      if(field === 'cuentaContable'){
+        const nt = docTipoAuto(val, movements[idx].docTipo);
+        if(nt !== (movements[idx].docTipo || '')){ movements[idx].docTipo = nt; const tt = tr.querySelector('td[data-field="docTipo"]'); if(tt) tt.textContent = nt; }
+      }
       if(field === 'fecha') movements[idx]._periodKey = computePeriodKeyFromFecha(val);
       if(field === 'cuentaContable' || field === 'docAnexo' || field === 'docTipo' || field === 'docNroDoc'){
         // Solo cambia la clasificacion: se actualizan los indicadores, pero NO se vuelve a
@@ -4541,90 +4626,17 @@ pdDropzone.addEventListener('dragover', e => { e.preventDefault(); pdDropzone.cl
 pdDropzone.addEventListener('dragleave', () => pdDropzone.classList.remove('drag'));
 pdDropzone.addEventListener('drop', e => {
   e.preventDefault(); pdDropzone.classList.remove('drag');
-  const f = e.dataTransfer.files[0];
-  if(f) handlePdFile(f);
+  const fs = Array.from(e.dataTransfer.files);
+  if(fs.length) handlePdFiles(fs);
 });
 pdFileInput.addEventListener('change', e => {
-  const f = e.target.files[0];
-  if(f) handlePdFile(f);
+  const fs = Array.from(e.target.files);
   pdFileInput.value = '';
+  if(fs.length) handlePdFiles(fs);
 });
-
-async function handlePdFile(file){
-  try{
-    const { rows, headers, headerRowIdx, guess: guessMap } = await readReportRemote(file);
-    pendingDocsRaw = rows;
-    if(!pendingDocsRaw.length){ pdFileStatus.textContent = 'El archivo no tiene filas de datos.'; return; }
-    pendingDocsHeaders = headers;
-    ['map_cuenta','map_tipo','map_nrodoc','map_moneda','map_saldoUsd','map_saldoPen','map_anexo','map_fecha','map_venc','map_nombre'].forEach(id => {
-      const sel = document.getElementById(id);
-      sel.innerHTML = '<option value="">(ninguna)</option>' + pendingDocsHeaders.map(h => `<option value="${escapeHtml(h)}">${escapeHtml(h)}</option>`).join('');
-      const guess = (guessMap || {})[id];
-      if(guess) sel.value = guess;
-    });
-    pdMappingBox.style.display = 'block';
-    pdFileStatus.textContent = `${file.name}: encabezados detectados en la fila ${headerRowIdx + 1}, ${pendingDocsRaw.length} filas de datos le\u00eddas. Revisa el mapeo de columnas abajo.`;
-  }catch(err){
-    pdFileStatus.textContent = 'Error leyendo el Excel: ' + err.message;
-  }
-}
-
-pdConfirmMapBtn.addEventListener('click', async () => {
-  const val = id => document.getElementById(id).value;
-  const mapping = { cuenta: val('map_cuenta'), tipo: val('map_tipo'), nrodoc: val('map_nrodoc'), moneda: val('map_moneda'), saldoUsd: val('map_saldoUsd'), saldoPen: val('map_saldoPen'), anexo: val('map_anexo'), fecha: val('map_fecha'), venc: val('map_venc'), nombre: val('map_nombre') };
-  try{
-    const d = await EC.call('buildDocs', { raw: pendingDocsRaw, mapping }, { heavy: true, label: 'Leyendo los documentos pendientes…', btn: pdConfirmMapBtn });
-    pendingDocs = d.docs || [];
-  }catch(e){ ecFail(e); return; }
-  pdFileStatus.textContent = `Columnas confirmadas: ${pendingDocs.length} documentos pendientes con saldo distinto de cero.`;
-  document.getElementById('pdDocsBox').style.display = 'block';
-  renderPdDocsTable();
-  setPdBtns();
-});
-
-function renderPdDocsTable(){
-  const body = document.getElementById('pdDocsBody');
-  body.innerHTML = '';
-  pendingDocs.forEach((d, i) => {
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td contenteditable="true" data-field="cuenta">${escapeHtml(d.cuenta)}</td>
-      <td contenteditable="true" data-field="tipo">${escapeHtml(d.tipo)}</td>
-      <td contenteditable="true" data-field="nrodoc">${escapeHtml(d.nrodoc)}</td>
-      <td contenteditable="true" data-field="moneda">${escapeHtml(d.moneda)}</td>
-      <td contenteditable="true" data-field="saldoUsd" class="num">${d.saldoUsd ? d.saldoUsd.toFixed(2) : ''}</td>
-      <td contenteditable="true" data-field="saldoPen" class="num">${d.saldoPen ? d.saldoPen.toFixed(2) : ''}</td>
-      <td contenteditable="true" data-field="anexo">${escapeHtml(d.anexo)}</td>
-      <td contenteditable="true" data-field="fecha">${escapeHtml(d.fecha || '')}</td>
-      <td contenteditable="true" data-field="nombre">${escapeHtml(d.nombre || '')}</td>
-      <td class="row-actions"><span data-i="${i}" class="delDocRow">\u2715</span></td>
-    `;
-    body.appendChild(tr);
-  });
-  body.querySelectorAll('[contenteditable]').forEach(cell => {
-    cell.addEventListener('blur', e => {
-      const tr = e.target.closest('tr');
-      const idx = Array.from(body.children).indexOf(tr);
-      const field = e.target.dataset.field;
-      let val = e.target.textContent.trim();
-      if(field === 'saldoUsd' || field === 'saldoPen') val = parseFloat(val.replace(/,/g,'')) || 0;
-      if(field === 'moneda') val = normalizeMoneda(val);
-      pendingDocs[idx][field] = val;
-    });
-  });
-  body.querySelectorAll('.delDocRow').forEach(el => {
-    el.addEventListener('click', () => {
-      pendingDocs.splice(parseInt(el.dataset.i), 1);
-      renderPdDocsTable();
-    });
-  });
-  document.getElementById('pdDocsCount').textContent = `${pendingDocs.length} documentos`;
-  document.getElementById('pdStep2').classList.toggle('step-done', pendingDocs.length > 0);
-  setPdBtns();
-}
 
 document.getElementById('pdAddDocBtn').addEventListener('click', () => {
-  pendingDocs.push({ cuenta: '', tipo: '', nrodoc: '', moneda: 'PEN', saldoUsd: 0, saldoPen: 0, anexo: '', fecha: '', venc: '', nombre: '', used: false });
+  pendingDocs.push({ cuenta: '', tipo: '', nrodoc: '', moneda: 'PEN', saldoUsd: 0, saldoPen: 0, anexo: '', fecha: '', venc: '', nombre: '', used: false, fuente: 'Manual' });
   document.getElementById('pdDocsBox').style.display = 'block';
   renderPdDocsTable();
 });
@@ -4768,9 +4780,19 @@ function renderPdTable(){
       const tr = e.target.closest('tr');
       const idx = parseInt(tr.dataset.i, 10);
       const field = e.target.dataset.field;
-      const val = e.target.textContent.trim();
+      let val = e.target.textContent.trim();
       const antes = pdResults[idx][field];
+      if(field === 'docTipo' && val){
+        val = val.toUpperCase();
+        const er = docTipoCheck(pdResults[idx].cuentaContable, val);
+        if(er){ toast(er, 'warn'); e.target.textContent = antes || ''; return; }
+        e.target.textContent = val;
+      }
       pdResults[idx][field] = val;
+      if(field === 'cuentaContable'){
+        const nt = docTipoAuto(val, pdResults[idx].docTipo);
+        if(nt !== (pdResults[idx].docTipo || '')){ pdResults[idx].docTipo = nt; const tt = tr.querySelector('td[data-field="docTipo"]'); if(tt) tt.textContent = nt; }
+      }
       // si se corrige a mano una fila que venia del cruce sugerido/forzado, deja de ser una sugerencia
       if((antes || '') !== val && (pdResults[idx].sugNivel || pdResults[idx].docMontos)){
         const r0 = pdResults[idx];
@@ -4896,7 +4918,7 @@ cgTemplateBtn.addEventListener('click', () => {
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws1, 'Formato Cargo-Abono');
   XLSX.utils.book_append_sheet(wb, ws2, 'Formato Monto (alternativo)');
-  XLSX.writeFile(wb, 'plantilla_movimientos_concar.xlsx');
+  XLSX.writeFile(wb, 'plantilla_movimientos.xlsx');
 });
 
 /* Normaliza el texto de "Tipo de Banco" de un movimiento (que puede venir de los parsers
@@ -5120,7 +5142,7 @@ function renderCgTable(flaggedCount, opts){
   flush();
   cgBody.innerHTML = parts.join('');
   cgExportBtn.disabled = cgRows.length === 0;
-  if(!cgRows.length){ cgEmptyMsg.textContent = 'Configura las cuentas y presiona "Generar formato CONCAR".'; cgEmptyMsg.style.display = 'block'; }
+  if(!cgRows.length){ cgEmptyMsg.textContent = 'Configura las cuentas y presiona "Generar asientos".'; cgEmptyMsg.style.display = 'block'; }
   else if(!visibles){ cgEmptyMsg.textContent = 'Ningún asiento cumple este filtro. ✓'; cgEmptyMsg.style.display = 'block'; }
   else cgEmptyMsg.style.display = 'none';
   cgActualizarResumen();
@@ -5252,8 +5274,10 @@ function cgAplicarCelda(td){
   } else {
     nuevo = f === 'anexo' ? cleanAnexo(txt) : (f === 'tipo' ? txt.toUpperCase() : txt);
     if(nuevo === String(r[campo] == null ? '' : r[campo])) return false;
+    if(f === 'tipo' && nuevo){ const er = docTipoCheck(r['Cuenta Contable'], nuevo); if(er){ toast(er, 'bad'); return false; } }
   }
   r[campo] = nuevo;
+  if(f === 'cuenta'){ const nt = docTipoAuto(nuevo, r['Tipo de Documento']); if(nt !== String(r['Tipo de Documento'] || '')) r['Tipo de Documento'] = nt; }
   cgMarcarEditado(key);
   return true;
 }
@@ -5388,7 +5412,7 @@ cgExportBtn.addEventListener('click', () => {
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, 'CONCAR');
   const today = new Date().toISOString().slice(0,10);
-  XLSX.writeFile(wb, `formato_concar_${today}.xlsx`);
+  XLSX.writeFile(wb, `asientos_contables_${today}.xlsx`);
 });
 
 /* ============================================================
@@ -5990,7 +6014,7 @@ async function fxHandleFile(file){
     if(!r || !r.rows || !r.rows.length){ st.textContent = 'El archivo no tiene filas de datos.'; return; }
     const g = r.guess || {};
     const faltan = [['map_cuenta', 'Cuenta'], ['map_nrodoc', 'N° Documento'], ['map_moneda', 'Moneda'], ['map_saldoUsd', 'Saldo Dólares'], ['map_saldoPen', 'Saldo Soles']].filter(x => !g[x[0]]).map(x => x[1]);
-    if(faltan.length){ st.textContent = 'No se reconocieron estas columnas del reporte: ' + faltan.join(', ') + '. Usa el reporte de documentos pendientes de CONCAR tal como sale del sistema.'; return; }
+    if(faltan.length){ st.textContent = 'No se reconocieron estas columnas del reporte: ' + faltan.join(', ') + '. Usa el reporte de documentos pendientes de tu sistema contable con la cuenta, el documento, la moneda y los saldos.'; return; }
     const mapping = { cuenta: g.map_cuenta, tipo: g.map_tipo, nrodoc: g.map_nrodoc, moneda: g.map_moneda, saldoUsd: g.map_saldoUsd, saldoPen: g.map_saldoPen, anexo: g.map_anexo, fecha: g.map_fecha, venc: g.map_venc, nombre: g.map_nombre };
     const b = await EC.call('buildDocs', { raw: r.rows, mapping }, { heavy: true, label: 'Leyendo los documentos pendientes…' });
     await fxCargarDocs(b.docs || [], r.corte || '', r.empresa || '');
@@ -6133,8 +6157,9 @@ function fxExportar(){
   dz.addEventListener('drop', e => { e.preventDefault(); dz.classList.remove('drag'); const f = e.dataTransfer.files[0]; if(f) fxHandleFile(f); });
   inp.addEventListener('change', e => { const f = e.target.files[0]; if(f) fxHandleFile(f); inp.value = ''; });
   fxEl('fxUseTab2Btn').addEventListener('click', async () => {
-    if(!pendingDocs.length){ fxEl('fxFileStatus').textContent = 'La Pestaña 2 aún no tiene documentos pendientes.'; return; }
-    try{ await fxCargarDocs(pendingDocs, '', ''); fxEl('fxFileStatus').textContent = 'Pestaña 2: ' + fxResumenCarga(); }catch(e){ ecFail(e); }
+    const pdRep = pendingDocs.filter(docsDeReporte);
+    if(!pdRep.length){ fxEl('fxFileStatus').textContent = pendingDocs.length ? 'La Pestaña 2 solo tiene documentos del SIRE o de RH, que no traen saldos reales: sube aquí el reporte de pendientes de tu sistema contable.' : 'La Pestaña 2 aún no tiene documentos pendientes.'; return; }
+    try{ await fxCargarDocs(pdRep, '', ''); fxEl('fxFileStatus').textContent = 'Pestaña 2: ' + fxResumenCarga(); }catch(e){ ecFail(e); }
   });
   fxEl('fxBody').addEventListener('change', e => {
     const c = e.target.closest('.fx-chk'); if(!c) return;
@@ -6199,10 +6224,10 @@ let diaFolderOn = false;
 let diaEffCache = null;
 let diaCierres = [];        // cierres del día: {id, hasta, at, ids, abierto, n}
 let diaLockCache = null;
-let diaSaldos = {};         // saldo inicial por cuenta: 'BANCO|MONEDA' -> {fecha, monto}
+let diaSaldos = {};         // saldo inicial por cuenta y mes: 'BANCO|MONEDA' -> { 'AAAAMM': {fecha, monto} }
 let diaCatCfg = { custom: [], ren: {}, grp: {} };   // categorías propias, nombres cambiados y grupos cambiados
 let diaRS = [];             // base de razones sociales: [{ruc, nombre, alias}]
-let diaColF = { fecha: '', desc: '', op: '', ent: '', sal: '', cta: '', tipo: '', nro: '', anexo: '', com: '', _ent: null, _sal: null };   // filtros del encabezado
+let diaColV = {};           // filtros del encabezado (tipo Excel): columna -> conjunto de valores elegidos
 let diaSavedAt = 0, diaIdbOk = null, diaPersistOk = null, diaIdbAt = null;
 /* Proyección de caja (Pestaña 6 › Flujo de caja › Proyección): lo cargado y el último cálculo */
 const PY_MONEY = ['saldo', 'minimo', 'linea'];   // montos: uno por moneda (cada moneda tiene su propia caja)
@@ -6243,7 +6268,7 @@ function diaWeekday(f){
 function diaCats(){ return FLOW_CATS; }
 function diaCatT(k){ const c = diaCats().find(x => x.k === k); return c ? c.t : (k || ''); }
 function diaDocs(){ return diaDocsSrc === 'tab2' ? pendingDocs : (diaDocsSrc === 'own' ? diaDocsOwn : []); }
-const diaLeanDoc = d => ({ cuenta: d.cuenta, tipo: d.tipo, nrodoc: d.nrodoc, moneda: d.moneda, saldoUsd: d.saldoUsd, saldoPen: d.saldoPen, anexo: d.anexo, fecha: d.fecha, venc: d.venc, nombre: d.nombre });
+const diaLeanDoc = d => ({ cuenta: d.cuenta, tipo: d.tipo, nrodoc: d.nrodoc, moneda: d.moneda, saldoUsd: d.saldoUsd, saldoPen: d.saldoPen, anexo: d.anexo, fecha: d.fecha, venc: d.venc, nombre: d.nombre, fuente: d.fuente });
 function diaInvalidate(){ diaEffCache = null; diaLockCache = null; }
 function diaHasData(){ return !!(diaFiles.length || diaManual.length || proy.items.length); }
 
@@ -6270,7 +6295,7 @@ function diaEff(){
     const cat = ed.cat || ((cta || nro) && v && v.cat) || m.cat;
     const cerrado = L.locked.has(m.id);
     const tarde = !cerrado && !omit && L.max > 0 && !L.known.has(m.id) && diaKey(m.fecha) <= L.max;
-    out.push(Object.assign({}, m, { _i: i, omit, cta, tipo: ed.tipo || '', nro, anexo: ed.anexo || '', nota: ed.nota || '', com: ed.com === '1', auto: ed.auto || '', catEff: cat, catUser: !!ed.cat, val: v, cerrado, tarde,
+    out.push(Object.assign({}, m, { _i: i, omit, cta, tipo: ed.tipo || '', nro, anexo: ed.anexo || '', nota: ed.nota || '', com: ed.com === '1', comMonto: (ed.com === '1' && m.monto < 0) ? diaComFeeOf(ed.comm, m.monto) : 0, auto: ed.auto || '', catEff: cat, catUser: !!ed.cat, val: v, cerrado, tarde,
       revisar: tarde ? (m.revisar || []).concat('tarde') : m.revisar, flag: flagged.has(m.id) || tarde }));
   });
   diaEffCache = out;
@@ -6305,16 +6330,18 @@ function diaAgg(list){
   const days = new Map(), cats = new Map(), cell = new Map();
   let totIn = 0, totOut = 0, pIn = 0, pOut = 0, n = 0;
   list.forEach(m => {
-    const c = diaCents(m.monto), k = m.catEff;
-    if(k === 'propias'){ if(c > 0) pIn += c; else pOut += -c; return; }
-    n++;
-    const d = days.get(m.fecha) || { key: diaKey(m.fecha), f: m.fecha, in: 0, out: 0, n: 0 };
-    const ct = cats.get(k) || { k, t: diaCatT(k), in: 0, out: 0, n: 0 };
-    if(c > 0){ d.in += c; ct.in += c; totIn += c; } else { d.out += -c; ct.out += -c; totOut += -c; }
-    d.n++; ct.n++;
-    days.set(m.fecha, d); cats.set(k, ct);
-    const ck = k + '|' + m.fecha + '|' + (c > 0 ? 'i' : 'o');
-    cell.set(ck, (cell.get(ck) || 0) + Math.abs(c));
+    let contado = false;
+    diaParts(m).forEach(([k, c]) => {
+      if(k === 'propias'){ if(c > 0) pIn += c; else pOut += -c; return; }
+      const d = days.get(m.fecha) || { key: diaKey(m.fecha), f: m.fecha, in: 0, out: 0, n: 0 };
+      const ct = cats.get(k) || { k, t: diaCatT(k), in: 0, out: 0, n: 0 };
+      if(c > 0){ d.in += c; ct.in += c; totIn += c; } else { d.out += -c; ct.out += -c; totOut += -c; }
+      if(!contado){ n++; d.n++; contado = true; }
+      ct.n++;
+      days.set(m.fecha, d); cats.set(k, ct);
+      const ck = k + '|' + m.fecha + '|' + (c > 0 ? 'i' : 'o');
+      cell.set(ck, (cell.get(ck) || 0) + Math.abs(c));
+    });
   });
   // los traspasos entre cuentas propias no suman, pero el día debe aparecer si solo tuvo eso
   list.forEach(m => { if(m.catEff === 'propias' && !days.has(m.fecha)) days.set(m.fecha, { key: diaKey(m.fecha), f: m.fecha, in: 0, out: 0, n: 0 }); });
@@ -6420,7 +6447,7 @@ async function diaRemerge(){
 
 /* ---------------- validar lo anotado contra los documentos pendientes ---------------- */
 let diaValTimer = null, diaValSeq = 0;
-function diaMovPayload(m){ return { id: m.id, fecha: m.fecha, descripcion: m.descripcion, operacion: m.operacion, monto: m.monto, moneda: m.moneda, banco: m.banco, cuentaContable: m.cta, docTipo: m.tipo, docNroDoc: m.nro, docAnexo: m.anexo }; }
+function diaMovPayload(m, neto){ return { id: m.id, fecha: m.fecha, descripcion: m.descripcion, operacion: m.operacion, monto: (neto && m.comMonto > 0) ? Math.round((m.monto + m.comMonto) * 100) / 100 : m.monto, moneda: m.moneda, banco: m.banco, cuentaContable: m.cta, docTipo: m.tipo, docNroDoc: m.nro, docAnexo: m.anexo }; }
 function diaRevalidateSoon(ms){ clearTimeout(diaValTimer); diaValTimer = setTimeout(diaRevalidate, ms === undefined ? 700 : ms); }
 async function diaRevalidate(){
   if(!diaMerged) return;
@@ -6429,7 +6456,7 @@ async function diaRevalidate(){
   if(!touched && !Object.keys(diaVal).length){ return; }
   const seq = ++diaValSeq;
   try{
-    const d = await EC.call('dayValidate', { movs: eff.map(diaMovPayload), docs: diaDocs().map(diaLeanDoc) }, { silent: true, quiet: true });
+    const d = await EC.call('dayValidate', { movs: eff.map(m => diaMovPayload(m, true)), docs: diaDocs().map(diaLeanDoc) }, { silent: true, quiet: true });
     if(seq !== diaValSeq) return;
     // solo se guardan los movimientos con algo que decir (el resto no ocupa espacio)
     const base = new Map(((diaMerged && diaMerged.movs) || []).map(m => [m.id, m.cat]));
@@ -6442,21 +6469,6 @@ async function diaRevalidate(){
 }
 
 /* ---------------- documentos pendientes ---------------- */
-async function diaLoadDocsFile(file){
-  const st = dEl('diaDocsStatus');
-  try{
-    st.textContent = 'Leyendo ' + file.name + '…';
-    const r = await readReportRemote(file);
-    if(!r || !r.rows || !r.rows.length){ st.textContent = 'El archivo no tiene filas de datos.'; return; }
-    const g = r.guess || {};
-    const faltan = [['map_cuenta', 'Cuenta'], ['map_nrodoc', 'N° Documento'], ['map_moneda', 'Moneda'], ['map_saldoUsd', 'Saldo Dólares'], ['map_saldoPen', 'Saldo Soles']].filter(x => !g[x[0]]).map(x => x[1]);
-    if(faltan.length){ st.textContent = 'No se reconocieron estas columnas del reporte: ' + faltan.join(', ') + '. Usa el reporte de documentos pendientes de CONCAR tal como sale del sistema.'; return; }
-    const mapping = { cuenta: g.map_cuenta, tipo: g.map_tipo, nrodoc: g.map_nrodoc, moneda: g.map_moneda, saldoUsd: g.map_saldoUsd, saldoPen: g.map_saldoPen, anexo: g.map_anexo, fecha: g.map_fecha, venc: g.map_venc, nombre: g.map_nombre };
-    const b = await EC.call('buildDocs', { raw: r.rows, mapping }, { heavy: true, label: 'Leyendo los documentos pendientes…' });
-    diaDocsOwn = (b.docs || []).map(diaLeanDoc); diaDocsSrc = 'own'; diaDocsName = file.name;
-    diaDocsChanged();
-  }catch(e){ st.textContent = 'No se pudo leer el reporte.'; ecFail(e); }
-}
 function diaDocsChanged(){
   renderTab6(); scheduleExtSave();
   if(diaMerged) diaRevalidateSoon(0);
@@ -6857,35 +6869,82 @@ function diaCuentas(){
 }
 const diaCtaLabel = c => c.banco + ' · ' + (c.mon === 'USD' ? 'dólares' : 'soles');
 const diaSaldoOk = b => !!(b && diaKey(b.fecha) && isFinite(Number(b.monto)));
-/* saldo (en centavos) de una cuenta al INICIO del día `dayKey`, a partir de su saldo base; incluye los traspasos propios */
-function diaBalanceAt(acct, b, dayKey, eff){
-  const bk = diaKey(b.fecha);
-  let c = diaCents(b.monto);
-  eff.forEach(m => {
-    if(m.banco + '|' + m.moneda !== acct) return;
-    const k = diaKey(m.fecha);
-    if(dayKey >= bk){ if(k >= bk && k < dayKey) c += diaCents(m.monto); }
-    else if(k >= dayKey && k < bk) c -= diaCents(m.monto);
+/* ----- saldo inicial POR MES: cada cuenta puede tener un saldo escrito por mes ({ 'AAAAMM': {fecha, monto} }); ese saldo
+   se toma como cierto y reinicia el arrastre. Si un mes no tiene saldo escrito, arrastra el final del anterior. ----- */
+const diaYM = k => Math.floor(k / 100);
+const diaYMLabel = ym => DIA_MESES[(ym % 100) - 1] + ' ' + Math.floor(ym / 100);
+const diaYMFirst = ym => { const t = String(ym); return '01/' + t.slice(4, 6) + '/' + t.slice(0, 4); };
+const diaYMNext = ym => (ym % 100 === 12 ? ym + 89 : ym + 1);
+/* saldo escrito (número, admite negativos y coma decimal); NaN si no es un número */
+function diaSaldoParse(t){
+  let s = String(t == null ? '' : t).replace(/s\/|us\$|\s/gi, '');
+  if(s === '') return NaN;
+  if(s.indexOf(',') >= 0 && s.indexOf('.') < 0) s = s.replace(',', '.'); else s = s.replace(/,/g, '');
+  return /^-?\d+(\.\d+)?$/.test(s) ? Math.round(parseFloat(s) * 100) / 100 : NaN;
+}
+/* saldos escritos de una cuenta → anclas ordenadas por fecha: { ym, k (AAAAMMDD), c (centavos) } */
+function diaAnchorsFrom(map){
+  return Object.keys(map || {}).map(ym => { const b = map[ym]; return (diaSaldoOk(b) && b.monto !== '' && b.monto !== null) ? { ym: +ym, k: diaKey(b.fecha), c: diaCents(b.monto) } : null; }).filter(Boolean).sort((x, y) => x.k - y.k);
+}
+const diaAnchorsOf = acct => diaAnchorsFrom((diaSaldos || {})[acct]);
+/* lo guardado antes (un solo saldo por cuenta: {fecha, monto}) pasa a ser el saldo de su mes */
+function diaSaldosNorm(raw){
+  const out = {};
+  if(!raw || typeof raw !== 'object' || Array.isArray(raw)) return out;
+  Object.keys(raw).forEach(acct => {
+    const b = raw[acct]; if(!b || typeof b !== 'object') return;
+    if(b.fecha !== undefined || b.monto !== undefined){
+      if(diaSaldoOk(b)) out[acct] = { [String(diaYM(diaKey(b.fecha)))]: { fecha: b.fecha, monto: Number(b.monto) } };
+      return;
+    }
+    const mm = {};
+    Object.keys(b).forEach(ym => { const e = b[ym]; if(/^\d{6}$/.test(ym) && e && diaSaldoOk(e) && e.monto !== '' && e.monto !== null) mm[ym] = { fecha: e.fecha, monto: Number(e.monto) }; });
+    if(Object.keys(mm).length) out[acct] = mm;
   });
+  return out;
+}
+/* saldo (en centavos) de una cuenta al INICIO del día `dayKey`: parte del saldo escrito más cercano anterior y suma los
+   movimientos (traspasos propios incluidos); si todos los saldos escritos son posteriores, retrocede desde el primero. null si no hay ninguno */
+function diaBalanceAt(acct, anchors, dayKey, eff){
+  if(!anchors.length) return null;
+  let a = null;
+  for(let i = 0; i < anchors.length; i++){ if(anchors[i].k <= dayKey) a = anchors[i]; else break; }
+  let c;
+  if(a){
+    c = a.c;
+    eff.forEach(m => { if(m.banco + '|' + m.moneda !== acct) return; const k = diaKey(m.fecha); if(k >= a.k && k < dayKey) c += diaCents(m.monto); });
+  } else {
+    a = anchors[0]; c = a.c;
+    eff.forEach(m => { if(m.banco + '|' + m.moneda !== acct) return; const k = diaKey(m.fecha); if(k >= dayKey && k < a.k) c -= diaCents(m.monto); });
+  }
   return c;
 }
-/* saldo inicial y final de lo que se está viendo (moneda y banco elegidos); null si no hay movimientos */
+/* saldo inicial y final de lo que se está viendo (moneda y banco elegidos); null si no hay movimientos.
+   `saltos`: meses cuyo saldo escrito no coincide con lo que arrastraba el mes anterior */
 function diaSaldoCalc(list, mon, banco, startKey){
   const keys = list.map(m => diaKey(m.fecha)).filter(Boolean);
   if(!keys.length) return null;
-  const start = startKey || Math.min.apply(null, keys);
+  const start = startKey || Math.min.apply(null, keys), last = Math.max.apply(null, keys);
   const cuentas = diaCuentas().filter(c => c.mon === mon && (banco === 'all' || c.banco === banco));
   const eff = diaEff().filter(m => !m.omit);
-  const con = new Set(), falta = [];
-  let ini = 0;
+  const con = new Set(), falta = [], saltos = [];
+  let ini = 0, fin = 0;
   cuentas.forEach(c => {
-    const b = diaSaldos[c.k];
-    if(!diaSaldoOk(b)){ falta.push(c); return; }
-    con.add(c.k); ini += diaBalanceAt(c.k, b, start, eff);
+    const an = diaAnchorsOf(c.k);
+    if(!an.length){ falta.push(c); return; }
+    con.add(c.k);
+    let cur = diaBalanceAt(c.k, an, start, eff);
+    ini += cur;
+    const ms = list.filter(m => m.banco + '|' + m.moneda === c.k).map(m => [diaKey(m.fecha), diaCents(m.monto)]).sort((x, y) => x[0] - y[0]);
+    let ai = an.findIndex(x => x.k > start);
+    const reset = lim => { while(ai >= 0 && ai < an.length && an[ai].k <= lim){ if(Math.abs(an[ai].c - cur) >= 1) saltos.push({ acct: c.k, ym: an[ai].ym, dif: (an[ai].c - cur) / 100 }); cur = an[ai].c; ai++; } };
+    ms.forEach(x => { reset(x[0]); cur += x[1]; });
+    reset(last);
+    fin += cur;
   });
   let net = 0;
   list.forEach(m => { if(con.has(m.banco + '|' + m.moneda)) net += diaCents(m.monto); });
-  return { n: con.size, con, falta, start, ini: ini / 100, fin: (ini + net) / 100, net: net / 100 };
+  return { n: con.size, con, falta, saltos, start, last, ini: ini / 100, fin: fin / 100, net: net / 100 };
 }
 /* saldo final de todas las cuentas de una moneda (para arrancar la proyección); solo si todas tienen saldo inicial */
 function diaSaldoFinalAll(mon){
@@ -6894,24 +6953,34 @@ function diaSaldoFinalAll(mon){
   const S = diaSaldoCalc(eff, mon, 'all');
   return (S && S.n && !S.falta.length) ? S : null;
 }
-/* filas «Saldo inicial» y «Saldo final» del flujo de caja: cada columna empieza con lo que terminó la anterior */
+/* filas «Saldo inicial» y «Saldo final» del flujo de caja: cada columna empieza con lo que terminó la anterior,
+   salvo donde escribiste el saldo de un mes (ahí el arrastre se reinicia con tu saldo) */
 function flowSaldoRows(list, per, mon, banco, a){
   const S = diaSaldoCalc(list, mon, banco);
   if(!S || !S.n) return null;
-  const mk = list.filter(m => S.con.has(m.banco + '|' + m.moneda)).map(m => [diaKey(m.fecha), diaCents(m.monto)]).sort((x, y) => x[0] - y[0]);
-  const first = per.map(p => Math.min.apply(null, p.fs.map(diaKey)));
-  const ini = [], fin = [];
-  let cur = Math.round(S.ini * 100), j = 0;
-  for(let i = 0; i < per.length; i++){
-    const limite = i + 1 < per.length ? first[i + 1] : Infinity;
-    while(j < mk.length && mk[j][0] < first[i]){ cur += mk[j][1]; j++; }
-    ini.push(cur / 100);
-    while(j < mk.length && mk[j][0] < limite){ cur += mk[j][1]; j++; }
-    fin.push(cur / 100);
-  }
+  const eff = diaEff().filter(m => !m.omit);
+  const first = per.map(p => Math.min.apply(null, p.fs.map(diaKey))), last = per.map(p => Math.max.apply(null, p.fs.map(diaKey)));
+  const ini = per.map(() => 0), fin = per.map(() => 0);
+  S.con.forEach(acct => {
+    const an = diaAnchorsOf(acct);
+    const mk = list.filter(m => m.banco + '|' + m.moneda === acct).map(m => [diaKey(m.fecha), diaCents(m.monto)]).sort((x, y) => x[0] - y[0]);
+    let cur = diaBalanceAt(acct, an, S.start, eff), j = 0, ai = an.findIndex(x => x.k > S.start);
+    // incl = false: hasta antes de la fecha lim (para el saldo inicial de una columna); true: hasta el final de ese día (saldo final de la columna)
+    const adv = (lim, incl) => {
+      for(;;){
+        const nm = j < mk.length ? mk[j][0] : Infinity, na = (ai >= 0 && ai < an.length && an[ai].k <= S.last) ? an[ai].k : Infinity, nx = Math.min(nm, na);
+        if(nx === Infinity || (incl ? nx > lim : nx >= lim)) break;
+        if(na <= nm){ cur = an[ai].c; ai++; } else { cur += mk[j][1]; j++; }
+      }
+    };
+    for(let i = 0; i < per.length; i++){
+      adv(first[i], false); ini[i] += cur;
+      adv(last[i], true); fin[i] += cur;
+    }
+  });
   const falta = S.falta.map(diaCtaLabel);
-  const nota = falta.length ? ' (sin saldo inicial de: ' + falta.join(', ') + ')' : '';
-  return { S, ini: { k: 'ini', l: 'Saldo inicial' + nota, v: ini, t: ini[0] }, fin: { k: 'fin', l: 'Saldo final' + ((a.pIn || a.pOut) ? ' (con los traspasos propios)' : ''), v: fin, t: fin[fin.length - 1] } };
+  const nota = (falta.length ? ' (sin saldo inicial de: ' + falta.join(', ') + ')' : '') + (S.saltos.length ? ' (⚠ ' + S.saltos.length + ' salto' + (S.saltos.length === 1 ? '' : 's') + ' entre meses)' : '');
+  return { S, ini: { k: 'ini', l: 'Saldo inicial' + nota, v: ini.map(x => x / 100), t: ini[0] / 100 }, fin: { k: 'fin', l: 'Saldo final' + ((a.pIn || a.pOut) ? ' (con los traspasos propios)' : ''), v: fin.map(x => x / 100), t: fin[fin.length - 1] / 100 } };
 }
 /* tarjeta «Saldo final calculado» del panel */
 function diaKpiSaldoHtml(sb){
@@ -6921,7 +6990,7 @@ function diaKpiSaldoHtml(sb){
   const fmt = k => { const f = String(k); return f.slice(6, 8) + '/' + f.slice(4, 6); };
   const head = '<button type="button" class="dia-kpi clickable sal" id="diaKpiSaldo" title="Escribe o cambia el saldo inicial de tus cuentas">';
   if(!S || !S.n){
-    const hay = diaCuentas().some(c => c.mon === diaMon && diaSaldoOk(diaSaldos[c.k]));
+    const hay = diaCuentas().some(c => c.mon === diaMon && diaAnchorsOf(c.k).length);
     return head + `<span class="l">Saldo final calculado</span><span class="v">—</span><span class="s">${hay ? 'Sin movimientos en este período' : 'Haz clic y escribe el saldo inicial de tus cuentas'}</span></button>`;
   }
   let s = `<span class="s">Inicial <b>${diaMoney(S.ini, diaMon)}</b> al ${fmt(S.start)}</span>`;
@@ -6930,6 +6999,7 @@ function diaKpiSaldoHtml(sb){
     const dif = Math.round((S.fin - sb.total) * 100) / 100;
     s += Math.abs(dif) < 0.005 ? '<span class="s">✓ Cuadra con el saldo del banco</span>' : `<span class="s warn">Difiere del saldo del banco en ${diaMoney(dif, diaMon)}</span>`;
   }
+  if(S.saltos.length) s += `<span class="s warn">El saldo escrito de ${escapeHtml(Array.from(new Set(S.saltos.map(x => diaYMLabel(x.ym)))).join(', '))} no coincide con lo que arrastra el mes anterior</span>`;
   return head + `<span class="l">Saldo final calculado</span><span class="v">${diaMoney(S.fin, diaMon)}</span>${s}</button>`;
 }
 /* glosa que se ve bajo la descripción */
@@ -6969,37 +7039,123 @@ function diaSaldosOpen(){
   diaSaldosRender();
   if(!dlg.open) dlg.showModal();
 }
+/* tabla mes a mes de una cuenta. `map` = saldos escritos {ym:{fecha,monto}} (por defecto, los guardados). Todo en centavos. */
+function diaMesesTabla(acct, map){
+  const eff = diaEff().filter(m => !m.omit);
+  const movs = eff.filter(m => m.banco + '|' + m.moneda === acct);
+  const an = diaAnchorsFrom(map || (diaSaldos || {})[acct]);
+  const set = new Set(an.map(x => x.ym));
+  movs.forEach(m => { const k = diaKey(m.fecha); if(k) set.add(diaYM(k)); });
+  if(!set.size) return [];
+  const arr = Array.from(set), lo = Math.min.apply(null, arr), hi = Math.max.apply(null, arr), p = acct.split('|');
+  const tw = f => /tarde/i.test(f.turno || '') ? 1 : 0;
+  const fl = ((diaMerged && diaMerged.files) || []).filter(f => !f.manual && f.banco === p[0] && f.moneda === p[1] && f.saldo !== null && f.saldo !== undefined && isFinite(Number(f.saldo)) && diaKey(f.fecha));
+  const out = [];
+  let prev = null;
+  for(let ym = lo; ym <= hi; ym = diaYMNext(ym)){
+    const ms = movs.filter(m => diaYM(diaKey(m.fecha)) === ym);
+    let ent = 0, sal = 0; ms.forEach(m => { const c = diaCents(m.monto); if(c > 0) ent += c; else sal -= c; });
+    const own = an.find(x => x.ym === ym) || null, start = ym * 100 + 1;
+    const iniOwn = own ? own.c - ms.reduce((q, m) => diaKey(m.fecha) < own.k ? q + diaCents(m.monto) : q, 0) : null;
+    const iniAuto = diaBalanceAt(acct, an, start, eff);
+    const ini = own ? iniOwn : iniAuto;
+    const fin = ini === null ? null : ini + ent - sal;
+    const back = !own && ini !== null && !an.some(x => x.k <= start);     // calculado hacia atrás desde un saldo posterior
+    const fm = fl.filter(f => diaYM(diaKey(f.fecha)) === ym).sort((x, y) => (diaKey(x.fecha) - diaKey(y.fecha)) || (tw(x) - tw(y)));
+    const bf = fm.length ? fm[fm.length - 1] : null;
+    let calcAt = null, dif = null;
+    if(bf && ini !== null){ const bk = diaKey(bf.fecha); calcAt = ini + ms.reduce((q, m) => diaKey(m.fecha) <= bk ? q + diaCents(m.monto) : q, 0); dif = calcAt - diaCents(bf.saldo); }
+    out.push({ ym, label: diaYMLabel(ym), own, manual: !!own, ini, ent, sal, fin, back,
+      prevLabel: prev ? prev.label : '', prevFin: prev ? prev.fin : null,
+      salto: (own && prev && prev.fin !== null && !prev.back) ? iniOwn - prev.fin : null,
+      bf, calcAt, dif });
+    prev = out[out.length - 1];
+  }
+  return out;
+}
+/* qué mostrar bajo cada mes: movimientos, final calculado, comparación con el mes anterior y con el banco */
+function diaSbStatus(r, mon){
+  if(r.ini === null) return '<span class="warn">Sin saldo inicial: escribe el de este mes (o el de un mes posterior).</span>';
+  const mny = c => diaMoney(c / 100, mon), t = [];
+  t.push(`Entradas ${diaNum(r.ent / 100)} · Salidas ${diaNum(r.sal / 100)} · Final calculado <b>${mny(r.fin)}</b>`);
+  if(r.manual && r.salto !== null){
+    t.push(Math.abs(r.salto) < 1 ? `<span class="ok">✓ coincide con el final de ${r.prevLabel}</span>`
+      : `<span class="warn">No coincide con el final de ${r.prevLabel} (${mny(r.prevFin)}): diferencia ${mny(r.salto)}. Falta o sobra algo en ${r.prevLabel}.</span>`);
+  } else if(!r.manual && r.prevLabel && !r.back) t.push(`Arrastra ${mny(r.ini)} del final de ${r.prevLabel}`);
+  else if(r.back) t.push('Calculado hacia atrás desde el saldo de un mes posterior');
+  if(r.bf) t.push(`Banco al ${diaDM(r.bf.fecha)}: ${mny(diaCents(r.bf.saldo))}` + (r.dif === null ? '' : (Math.abs(r.dif) < 1 ? ' · <span class="ok">✓ cuadra</span>' : ` · <span class="warn">difiere ${mny(r.dif)}</span>`)));
+  return t.join('<br>');
+}
+const diaSbPh = r => r.ini === null || r.manual ? '0.00' : (r.back ? 'hacia atrás ' : 'arrastra ') + diaNum(r.ini / 100);
+function diaSbMonthHtml(c, r){
+  const own = r.own ? (diaSaldos[c.k] || {})[r.ym] : null;
+  const ph = diaSbPh(r);
+  const lab = diaCtaLabel(c) + ', ' + r.label;
+  return `<div class="sb-m" data-ym="${r.ym}">
+    <div class="sb-f"><div class="sb-mes"><b>${escapeHtml(r.label)}</b></div>
+      <div><label>Al inicio del día</label><input type="text" data-sb="fecha" value="${own ? escapeHtml(own.fecha) : ''}" placeholder="${escapeHtml(diaYMFirst(r.ym))}" autocomplete="off" aria-label="Fecha del saldo inicial de ${escapeHtml(lab)}"></div>
+      <div><label>Saldo inicial (${c.mon === 'USD' ? 'US$' : 'S/'})</label><input type="text" data-sb="monto" value="${own && own.monto !== undefined && own.monto !== '' ? escapeHtml(String(own.monto)) : ''}" placeholder="${escapeHtml(ph)}" inputmode="decimal" autocomplete="off" aria-label="Saldo inicial de ${escapeHtml(lab)}"></div>
+      <button type="button" class="ghost sm" data-sb-clear="${r.ym}">Quitar</button></div>
+    <div class="sb-st">${diaSbStatus(r, c.mon)}</div></div>`;
+}
 function diaSaldosRender(){
   const cs = diaCuentas();
   dEl('sbList').innerHTML = cs.map((c, i) => {
-    const b = diaSaldos[c.k] || {};
+    const rows = diaMesesTabla(c.k);
     const sg = diaSaldoSugerido(c);
     return `<div class="sb-row" data-k="${escapeHtml(c.k)}">
-      <div class="sb-h"><b>${escapeHtml(diaCtaLabel(c))}</b>${sg ? `<span>Sugerido para cuadrar con el banco: <b>${diaNum(sg.monto)}</b> al ${escapeHtml(sg.fecha)} <button type="button" class="secondary sm" data-sb-use="${i}">Usar</button></span>` : '<span>Las descargas de esta cuenta no traen saldo.</span>'}</div>
-      <div class="sb-f"><div><label>Saldo al inicio del día</label><input type="text" data-sb="fecha" value="${escapeHtml(b.fecha || '')}" placeholder="${escapeHtml(diaSaldoPrimerDia(c) || 'dd/mm/aaaa')}" autocomplete="off" aria-label="Fecha del saldo inicial de ${escapeHtml(diaCtaLabel(c))}"></div>
-      <div><label>Saldo inicial (${c.mon === 'USD' ? 'US$' : 'S/'})</label><input type="text" data-sb="monto" value="${b.monto === undefined || b.monto === '' ? '' : escapeHtml(String(b.monto))}" placeholder="0.00" inputmode="decimal" autocomplete="off" aria-label="Saldo inicial de ${escapeHtml(diaCtaLabel(c))}"></div>
-      <button type="button" class="ghost sm" data-sb-clear="${escapeHtml(c.k)}">Quitar</button></div></div>`;
+      <div class="sb-h"><b>${escapeHtml(diaCtaLabel(c))}</b>${sg ? `<span>Atajo: el saldo que cuadra con el banco al ${escapeHtml(sg.fecha)} es <b>${diaNum(sg.monto)}</b> <button type="button" class="secondary sm" data-sb-use="${i}" title="Usarlo hace que el primer mes siempre cuadre con el banco y no detecta movimientos que falten">Usar</button></span>` : '<span>Las descargas de esta cuenta no traen saldo.</span>'}</div>
+      ${rows.map(r => diaSbMonthHtml(c, r)).join('') || '<div class="hint">Esta cuenta aún no tiene movimientos.</div>'}</div>`;
   }).join('') || '<div class="hint">Aún no hay cuentas.</div>';
   dEl('sbList')._cs = cs;
+}
+/* lee los saldos escritos de una cuenta tal como están en pantalla (solo los válidos) */
+function diaSbRead(row){
+  const map = {};
+  row.querySelectorAll('.sb-m').forEach(el => {
+    const ym = +el.dataset.ym, num = diaSaldoParse(el.querySelector('[data-sb="monto"]').value), f = el.querySelector('[data-sb="fecha"]').value.trim();
+    if(!isFinite(num)) return;
+    const mt = /^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{4})$/.exec(f);
+    const ok = mt && (+mt[3]) * 100 + (+mt[2]) === ym && +mt[1] >= 1 && +mt[1] <= 31;
+    map[ym] = { fecha: ok ? String(+mt[1]).padStart(2, '0') + '/' + String(+mt[2]).padStart(2, '0') + '/' + mt[3] : diaYMFirst(ym), monto: num };
+  });
+  return map;
+}
+/* al escribir, se actualiza al instante lo que cada mes arrastra y cómo cuadra */
+function diaSbRefresh(row){
+  const acct = row.dataset.k, mon = acct.split('|')[1];
+  diaMesesTabla(acct, diaSbRead(row)).forEach(r => {
+    const el = row.querySelector(`.sb-m[data-ym="${r.ym}"]`); if(!el) return;
+    el.querySelector('.sb-st').innerHTML = diaSbStatus(r, mon);
+    el.querySelector('[data-sb="monto"]').placeholder = diaSbPh(r);
+  });
 }
 function diaSaldosSave(){
   const out = {};
   let bad = '';
   document.querySelectorAll('#sbList .sb-row').forEach(r => {
-    const k = r.dataset.k;
-    const f = r.querySelector('[data-sb="fecha"]').value.trim(), m = r.querySelector('[data-sb="monto"]').value.trim();
-    if(!f && !m) return;
-    const mt = /^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{4})$/.exec(f);
-    const num = parseFloat(m.replace(/,/g, ''));
-    if(!mt && !bad) bad = 'La fecha de «' + k.replace('|', ' ') + '» debe ser dd/mm/aaaa.';
-    else if(!isFinite(num) && !bad) bad = 'El saldo de «' + k.replace('|', ' ') + '» no es un número.';
-    if(mt && isFinite(num)) out[k] = { fecha: String(+mt[1]).padStart(2, '0') + '/' + String(+mt[2]).padStart(2, '0') + '/' + mt[3], monto: Math.round(num * 100) / 100 };
+    const k = r.dataset.k, nm = k.replace('|', ' ');
+    r.querySelectorAll('.sb-m').forEach(el => {
+      const ym = +el.dataset.ym, f = el.querySelector('[data-sb="fecha"]').value.trim(), m = el.querySelector('[data-sb="monto"]').value.trim();
+      if(!f && !m) return;
+      const num = diaSaldoParse(m);
+      if(!isFinite(num)){ if(!bad) bad = m ? 'El saldo de «' + nm + '» en ' + diaYMLabel(ym) + ' no es un número.' : 'Falta el saldo de «' + nm + '» en ' + diaYMLabel(ym) + '.'; return; }
+      let fecha = diaYMFirst(ym);
+      if(f){
+        const mt = /^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{4})$/.exec(f);
+        if(!mt){ if(!bad) bad = 'La fecha de «' + nm + '» en ' + diaYMLabel(ym) + ' debe ser dd/mm/aaaa.'; return; }
+        if((+mt[3]) * 100 + (+mt[2]) !== ym || +mt[1] < 1 || +mt[1] > 31){ if(!bad) bad = 'La fecha de «' + nm + '» debe estar dentro de ' + diaYMLabel(ym) + '.'; return; }
+        fecha = String(+mt[1]).padStart(2, '0') + '/' + String(+mt[2]).padStart(2, '0') + '/' + mt[3];
+      }
+      (out[k] = out[k] || {})[String(ym)] = { fecha, monto: num };
+    });
   });
   if(bad){ toast(bad, 'warn'); return false; }
   diaSaldos = out;
   dEl('sbDlg').close();
   diaInvalidate(); renderTab6(); scheduleExtSave();
-  toast(Object.keys(out).length ? 'Saldos iniciales guardados: el flujo ya arrastra el saldo de un período al siguiente.' : 'Se quitaron los saldos iniciales.', 'ok');
+  const n = Object.keys(out).reduce((q, k) => q + Object.keys(out[k]).length, 0);
+  toast(n ? 'Saldos iniciales guardados (' + n + (n === 1 ? ' mes' : ' meses') + '): cada mes parte de su saldo y el resto arrastra el final del anterior.' : 'Se quitaron los saldos iniciales.', 'ok');
   return true;
 }
 
@@ -7065,7 +7221,7 @@ function diaCatsRender(){
 function diaCatsChanged(){
   diaCatsApply();
   diaCatsRender();
-  diaFillCatSelects(); diaColFillCats();
+  diaFillCatSelects();
   diaInvalidate(); renderTab6(); renderProyAfterCats(); scheduleExtSave();
 }
 function renderProyAfterCats(){ try{ if(typeof renderProy === 'function' && proy && proy.items && proy.items.length) renderProy(); }catch(e){} }
@@ -7232,58 +7388,6 @@ function diaRSExport(){
   XLSX.writeFile(wb, `razones_sociales_${projectSlug()}.xlsx`);
 }
 
-/* ---------------- 5) filtros por columna ---------------- */
-const DIA_COLN = { fecha: 'Fecha', desc: 'Descripción', op: 'N° Op.', ent: 'Entrada', sal: 'Salida', cta: 'Cuenta', tipo: 'Tipo', nro: 'N° Doc.', anexo: 'Anexo/RUC', com: 'Comisión' };
-const diaColVacio = () => ({ fecha: '', desc: '', op: '', ent: '', sal: '', cta: '', tipo: '', nro: '', anexo: '', com: '', _ent: null, _sal: null });
-function diaColActive(){ return Object.keys(diaColF).filter(k => k.charAt(0) !== '_' && diaColF[k] !== '' && diaColF[k] !== null); }
-function diaNumPred(txt){
-  const t = String(txt).trim().replace(/,/g, '').replace(/^s\/\s*/i, '');
-  let m;
-  if((m = /^(>=|<=|>|<|=)\s*(-?\d+(?:\.\d+)?)$/.exec(t))){
-    const v = parseFloat(m[2]);
-    return { '>': x => x > v, '<': x => x < v, '>=': x => x >= v - 0.0049, '<=': x => x <= v + 0.0049, '=': x => Math.abs(x - v) < 0.005 }[m[1]];
-  }
-  if((m = /^(\d+(?:\.\d+)?)\s*(?:-|a)\s*(\d+(?:\.\d+)?)$/.exec(t))){ const a = parseFloat(m[1]), b = parseFloat(m[2]); return x => x >= Math.min(a, b) - 0.0049 && x <= Math.max(a, b) + 0.0049; }
-  return x => String(x.toFixed(2)).indexOf(t) >= 0;
-}
-function diaColMatch(m){
-  const f = diaColF, lc = s => String(s == null ? '' : s).toLowerCase();
-  if(f.fecha && lc(m.fecha).indexOf(f.fecha.toLowerCase()) < 0) return false;
-  if(f.desc && lc(m.descripcion + ' ' + diaGlosaOf(m)).indexOf(f.desc.toLowerCase()) < 0) return false;
-  if(f.op && lc(m.operacion).indexOf(f.op.toLowerCase()) < 0) return false;
-  if(f.ent && !(m.monto > 0 && f._ent(m.monto))) return false;
-  if(f.sal && !(m.monto < 0 && f._sal(-m.monto))) return false;
-  if(f.cta && lc(m.cta).indexOf(f.cta.toLowerCase()) < 0) return false;
-  if(f.tipo && lc(m.tipo).indexOf(f.tipo.toLowerCase()) < 0) return false;
-  if(f.nro && lc(m.nro).indexOf(f.nro.toLowerCase()) < 0) return false;
-  if(f.anexo && lc(m.anexo + ' ' + diaRSName(m.anexo)).indexOf(f.anexo.toLowerCase()) < 0) return false;
-  if(f.com === '1' && !m.com) return false;
-  if(f.com === '0' && m.com) return false;
-  return true;
-}
-function diaColPrep(){
-  diaColF._ent = diaColF.ent ? diaNumPred(diaColF.ent) : null;
-  diaColF._sal = diaColF.sal ? diaNumPred(diaColF.sal) : null;
-}
-function diaColFillCats(){
-  const s = dEl('diaCfCat'); if(!s) return;
-  const sig = '<option value="all">Todas</option>' + (window._diaCatOpts || '');
-  if(s.dataset.sig !== sig){ s.innerHTML = sig; s.dataset.sig = sig; }
-}
-function diaColSync(){
-  document.querySelectorAll('#diaColF [data-cf]').forEach(el => {
-    const k = el.dataset.cf;
-    const v = k === 'cat' ? diaFilt.cat : (k === 'est' ? diaFilt.est : diaColF[k]);
-    if(el !== document.activeElement && el.value !== v) el.value = v;
-    el.classList.toggle('on', v !== '' && v !== 'all');
-  });
-}
-function diaColClear(){
-  diaColF = diaColVacio();
-  diaFilt.cat = 'all'; diaFilt.est = 'all';
-  dEl('diaCatFilter').value = 'all'; dEl('diaEstFilter').value = 'all';
-}
-
 /* ---------------- arranque ---------------- */
 (function wireDia17(){
   const on = (id, ev, fn) => { const e = dEl(id); if(e) e.addEventListener(ev, fn); };
@@ -7297,12 +7401,16 @@ function diaColClear(){
     if(u){
       const cs = dEl('sbList')._cs || [], cu = cs[+u.dataset.sbUse]; if(!cu) return;
       const sg = diaSaldoSugerido(cu); if(!sg) return;
-      const row = u.closest('.sb-row');
-      row.querySelector('[data-sb="fecha"]').value = sg.fecha; row.querySelector('[data-sb="monto"]').value = String(Math.round(sg.monto * 100) / 100);
+      const row = u.closest('.sb-row'), mt = /^\d{2}\/(\d{2})\/(\d{4})$/.exec(sg.fecha), el = mt && row.querySelector(`.sb-m[data-ym="${(+mt[2]) * 100 + (+mt[1])}"]`);
+      if(!el) return;
+      el.querySelector('[data-sb="fecha"]').value = sg.fecha; el.querySelector('[data-sb="monto"]').value = String(Math.round(sg.monto * 100) / 100);
+      diaSbRefresh(row);
     } else if(c){
-      const row = c.closest('.sb-row'); row.querySelector('[data-sb="fecha"]').value = ''; row.querySelector('[data-sb="monto"]').value = '';
+      const el = c.closest('.sb-m'); el.querySelector('[data-sb="fecha"]').value = ''; el.querySelector('[data-sb="monto"]').value = '';
+      diaSbRefresh(c.closest('.sb-row'));
     }
   });
+  on('sbList', 'input', e => { const row = e.target.closest('.sb-row'); if(row && e.target.dataset.sb) diaSbRefresh(row); });
   on('diaKpis', 'click', e => { if(e.target.closest('#diaKpiSaldo')) diaSaldosOpen(); });
   // categorías
   on('diaCatsBtn', 'click', diaCatsOpen);
@@ -7341,33 +7449,6 @@ function diaColClear(){
     const d = e.target.closest('[data-rs-del]'); if(!d) return;
     diaRS.splice(+d.dataset.rsDel, 1); diaRSChanged(); diaRSRender();
   });
-  // comisión bancaria en bloque
-  on('diaBulkComBtn', 'click', () => { diaSetEdit(Array.from(diaSel), { com: '1' }); diaCatChanged(); renderDiaMov(); });
-  on('diaBulkNoComBtn', 'click', () => { diaSetEdit(Array.from(diaSel), { com: '' }); diaCatChanged(); renderDiaMov(); });
-  on('diaMovBody', 'change', e => {
-    const t = e.target; if(!t.classList || !t.classList.contains('dia-com')) return;
-    diaSetEdit([t.dataset.id], { com: t.checked ? '1' : '' });
-    diaCatChanged();
-  });
-  // filtros por columna
-  const bar = dEl('diaColF');
-  const ce = dEl('diaCfEst'), es = dEl('diaEstFilter');
-  if(ce && es){ ce.innerHTML = es.innerHTML; if(ce.options.length) ce.options[0].textContent = 'Todos'; }
-  on('diaColClearBtn', 'click', () => { diaColClear(); diaLimit = 300; renderDiaMov(); });
-  on('diaFilterLabel', 'click', e => { if(e.target.closest('[data-act="clearf"]') && diaColActive().length){ diaColF = diaColVacio(); renderDiaMov(); } });
-  if(bar){
-    let timer = null;
-    const apply = el => {
-      const k = el.dataset.cf, v = el.value;
-      if(k === 'cat'){ diaFilt.cat = v || 'all'; dEl('diaCatFilter').value = diaFilt.cat; diaFilt.sign = ''; }
-      else if(k === 'est'){ diaFilt.est = v || 'all'; dEl('diaEstFilter').value = diaFilt.est; }
-      else diaColF[k] = v.trim();
-      diaLimit = 300; renderDiaMov();
-    };
-    bar.addEventListener('input', e => { const el = e.target.closest('[data-cf]'); if(!el || el.tagName === 'SELECT') return; clearTimeout(timer); timer = setTimeout(() => apply(el), 160); });
-    bar.addEventListener('change', e => { const el = e.target.closest('[data-cf]'); if(el && el.tagName === 'SELECT') apply(el); });
-    bar.addEventListener('keydown', e => { if(e.key === 'Escape'){ const el = e.target.closest('[data-cf]'); if(el && el.tagName === 'INPUT' && el.value){ el.value = ''; apply(el); } } });
-  }
 })();
 
 /* ============================================================
@@ -7388,6 +7469,7 @@ function diaDedupOps(){
   const L = diaLocks();
   const worked = id => { const e = diaEdits[id]; return !!(e && (e.cta || e.nro || e.tipo || e.anexo || e.cat)); };
   const score = m => L.locked.has(m.id) ? 2 : (worked(m.id) ? 1 : 0);
+  const pre0 = new Map(movs.map(m => [m.id, (m.fuentes || []).slice()])), merges = [];   // descargas de cada movimiento ANTES de juntar, y cada unión hecha
   const G = new Map();
   movs.forEach(m => {
     const k = diaOpKey(m.operacion); if(!k || m.omitido) return;
@@ -7408,6 +7490,7 @@ function diaDedupOps(){
       if(sa === sb && sa > 0){ kept.push(b); return; }          // los dos ya están trabajados: que lo decida la persona
       const keep = sb > sa ? b : twin, drop = keep === b ? twin : b;
       if(keep === b) kept[kept.indexOf(twin)] = b;
+      merges.push({ keep: keep.id, drop: drop.id });
       drop.omitido = true; drop.omitMotivo = 'op-repetida'; drop.repetidoDe = keep.id;
       keep.fuentes = Array.from(new Set((keep.fuentes || []).concat(drop.fuentes || [])));
       touched.add(keep.id); touched.add(drop.id); dropped.push(drop);
@@ -7419,6 +7502,7 @@ function diaDedupOps(){
   dropped.forEach(d => { (d.fuentes || []).forEach(fid => { const f = fmap.get(fid); if(f && f.nuevos > 0){ f.nuevos--; f.duplicados = (f.duplicados || 0) + 1; } }); });
   const byId = new Map(movs.map(m => [m.id, m]));
   touched.forEach(id => { const m = byId.get(id); if(m) m.revisar = (m.revisar || []).filter(x => x !== 'op-fecha' && x !== 'desaparecido'); });
+  diaFixCuadre(merges, pre0, byId);
   diaMerged.alertas = (diaMerged.alertas || []).filter(a => {
     if(a.tipo === 'op-fecha'){ const act = (a.ids || []).filter(id => byId.get(id) && !byId.get(id).omitido); if(act.length <= 1) return false; a.ids = act; return true; }
     if(a.tipo === 'desaparecido'){
@@ -7434,6 +7518,41 @@ function diaDedupOps(){
   diaRewriteAlerts();
   return dropped.length;
 }
+/* El servidor contó la copia con otra fecha como «nuevo» (y a veces la original como «desaparecido»), así que el saldo
+   entre dos descargas parecía no cuadrar. Al juntarlas como una sola operación, se recalcula ese cuadre. */
+function diaFixCuadre(merges, pre0, byId){
+  const files = diaMerged.files || [];
+  if(!merges.length || !files.some(f => f.cuadre)) return;
+  const fid = new Map(files.map(f => [f.id, f]));
+  const minF = new Map();                                         // fecha más antigua que cubre cada descarga (como hace el servidor)
+  pre0.forEach((fu, id) => { const m = byId.get(id); if(!m) return; const k = diaKey(m.fecha); fu.forEach(f => { if(!minF.has(f) || k < minF.get(f)) minF.set(f, k); }); });
+  const cur = new Map(pre0), delta = new Map();
+  merges.forEach(({ keep, drop }) => {
+    const K = byId.get(keep), D = byId.get(drop); if(!K || !D) return;
+    const fk = cur.get(keep) || [], fd = cur.get(drop) || [], uni = Array.from(new Set(fk.concat(fd))), c = diaCents(K.monto);
+    files.forEach(B => {
+      const cu = B.cuadre, A = cu && fid.get(cu.de); if(!A) return;
+      const mb = minF.get(B.id);
+      const nuevo = s => (s.indexOf(B.id) >= 0 && s.indexOf(A.id) < 0) ? c : 0;                              // está en la descarga nueva y no estaba en la anterior
+      const desap = (s, f) => (s.indexOf(A.id) >= 0 && s.indexOf(B.id) < 0 && mb !== undefined && diaKey(f) >= mb) ? c : 0;   // estaba en la anterior y ya no está, en fechas que la nueva cubre
+      const antes = nuevo(fk) + nuevo(fd) - desap(fk, K.fecha) - desap(fd, D.fecha);
+      const desp = nuevo(uni) - desap(uni, K.fecha);
+      delta.set(B.id, (delta.get(B.id) || 0) + (desp - antes));
+    });
+    cur.set(keep, uni); cur.delete(drop);
+  });
+  delta.forEach((d, bid) => {
+    if(!d) return;
+    const B = fid.get(bid), cu = B.cuadre, A = fid.get(cu.de), mon = B.moneda;
+    const esp = Math.round(cu.esperado * 100) + d, real = Math.round(cu.real * 100), dif = real - esp;
+    cu.esperado = esp / 100; cu.dif = dif / 100; cu.ok = dif === 0;
+    const idx = (diaMerged.alertas || []).findIndex(a => a.tipo === 'cuadre' && (a.archivos || [])[0] === A.id && (a.archivos || [])[1] === B.id);
+    if(idx < 0) return;
+    if(cu.ok){ diaMerged.alertas.splice(idx, 1); return; }
+    const al = diaMerged.alertas[idx], M = n => diaMoney(Math.abs(n), mon), i0 = al.detalle.indexOf(' el saldo cambió ');
+    if(i0 >= 0) al.detalle = al.detalle.slice(0, i0) + ' el saldo cambió ' + (real < 0 ? '-' : '') + M(real / 100) + ', pero los movimientos nuevos suman ' + M(esp / 100) + ' (diferencia ' + M(dif / 100) + '). Puede faltar un movimiento (o una descarga intermedia), o haber uno de más.';
+  });
+}
 /* en los avisos, «omitir» pasa a «eliminar» (así se llama ahora el botón) */
 function diaRewriteAlerts(){
   ((diaMerged && diaMerged.alertas) || []).forEach(a => { if(a.detalle) a.detalle = a.detalle.replace(/\bu omite una\b/g, 'o elimina una').replace(/\bomite (una|uno)\b/g, 'elimina $1'); });
@@ -7442,7 +7561,7 @@ function diaRewriteAlerts(){
 function diaOmitLabels(){
   const n = diaMerged ? diaEff().filter(m => m.omit).length : 0;
   const t = 'Eliminados o excluidos' + (n ? ' (' + n + ')' : '');
-  ['diaEstFilter', 'diaCfEst'].forEach(id => { const o = document.querySelector('#' + id + ' option[value="omit"]'); if(o && o.textContent !== t) o.textContent = t; });
+  ['diaEstFilter'].forEach(id => { const o = document.querySelector('#' + id + ' option[value="omit"]'); if(o && o.textContent !== t) o.textContent = t; });
 }
 const diaOmitWhy = m => m.omitMotivo === 'op-repetida' ? 'Es la misma operación (mismo N° y mismo importe) que otro movimiento que llegó con otra fecha en otra descarga: se cuenta una sola vez.'
   : (m.omitMotivo === 'itf-reemplazado' ? 'ITF de ese día reemplazado por el de una descarga más reciente: no suma en los totales.' : 'Eliminado: no suma en los totales y el programa no lo vuelve a traer.');
@@ -7481,6 +7600,1104 @@ function diaTopScrollInit(sel){
   ['#diaV-mov .tablewrap', '#diaFlowReal .tablewrap'].forEach(diaTopScrollInit);
 })();
 
+/* ============================================================
+   v1.7.2: comisión bancaria separada, filtro tipo Excel en cada encabezado
+   ============================================================ */
+
+/* ---------------- comisión bancaria: se separa del pago ---------------- */
+/* El check «Comisión» dice que el cargo incluye una comisión del banco; el importe se escribe en la misma celda.
+   Esa parte sale de la categoría del movimiento y va a «ITF y comisiones» (flujo, totales, Excel) y, al enviar a las
+   Pestañas 2 y 3, como línea aparte al gasto 639101. Se propone el último importe que escribiste en ese banco
+   (en el BCP, la primera vez, la comisión interbancaria de S/ 4.80). */
+const DIA_COM_BCP = 4.80;
+let diaComLast = {};
+function diaComParse(t){
+  let s = String(t == null ? '' : t).replace(/s\/|us\$|\s/gi, '');
+  if(s.indexOf(',') >= 0 && s.indexOf('.') < 0) s = s.replace(',', '.'); else s = s.replace(/,/g, '');
+  const x = parseFloat(s);
+  return isFinite(x) && x > 0 ? Math.round(x * 100) / 100 : 0;
+}
+/* importe válido: mayor que cero y menor que el cargo */
+const diaComFeeOf = (txt, monto) => { const x = diaComParse(txt); return x > 0 && x < Math.abs(monto) - 0.004 ? x : 0; };
+const diaComCents = m => (m.com && m.monto < 0 && m.comMonto > 0) ? Math.round(m.comMonto * 100) : 0;
+/* cómo se reparte un movimiento al sumar: [categoría, centavos con signo] (la comisión sale de la categoría y va a «bancarios») */
+const diaParts = m => { const c = diaCents(m.monto), f = diaComCents(m); return f ? [[m.catEff, c + f], ['bancarios', -f]] : [[m.catEff, c]]; };
+function diaComDefault(m){
+  if(!(m.monto < 0)) return 0;
+  const x = diaComLast[m.banco] > 0 ? diaComLast[m.banco] : (m.banco === 'BCP' ? DIA_COM_BCP : 0);
+  return x > 0 && x < Math.abs(m.monto) - 0.004 ? x : 0;
+}
+/* marca o quita la comisión; devuelve cuántas salidas quedaron sin importe */
+function diaComSet(ids, on){
+  ids = diaUnlocked(ids);
+  const byId = new Map(diaEff().map(m => [m.id, m]));
+  let sin = 0;
+  ids.forEach(id => {
+    const m = byId.get(id); if(!m) return;
+    if(!on){ diaSetEdit([id], { com: '', comm: '' }); return; }
+    const ya = diaComFeeOf((diaEdits[id] || {}).comm, m.monto), d = ya || diaComDefault(m);
+    diaSetEdit([id], { com: '1', comm: d ? d.toFixed(2) : '' });
+    if(m.monto < 0 && !d) sin++;
+  });
+  return sin;
+}
+function diaComCell(m, id){
+  const dis = m.cerrado ? ' disabled' : '', sal = m.monto < 0;
+  const amt = (m.com && sal) ? `<input type="text" class="dia-comm" data-id="${id}" inputmode="decimal" autocomplete="off" value="${m.comMonto > 0 ? m.comMonto.toFixed(2) : ''}" placeholder="0.00" title="Importe de la comisión bancaria: se separa del pago y va a «ITF y comisiones»" aria-label="Importe de la comisión bancaria"${dis}>` : '';
+  return `<td class="c-com" data-sig="${(m.com ? 1 : 0) + '' + (sal ? 1 : 0) + (m.cerrado ? 1 : 0)}"><span class="com-wrap"><input type="checkbox" class="dia-com" data-id="${id}" ${m.com ? 'checked' : ''} aria-label="Tiene comisión bancaria"${sal ? '' : ' title="En las entradas la marca solo sirve para filtrar: la comisión se separa en las salidas."'}${dis}>${amt}</span></td>`;
+}
+function diaComPatch(tr, m){
+  const td = tr.querySelector('td.c-com'); if(!td) return;
+  const sig = (m.com ? 1 : 0) + '' + (m.monto < 0 ? 1 : 0) + (m.cerrado ? 1 : 0), id = escapeHtml(m.id);
+  if(td.dataset.sig !== sig){ const t = document.createElement('tbody'); t.innerHTML = '<tr>' + diaComCell(m, id) + '</tr>'; td.replaceWith(t.firstChild.firstChild); return; }
+  const cb = td.querySelector('input.dia-com'); if(cb){ cb.checked = !!m.com; cb.disabled = !!m.cerrado; }
+  const ci = td.querySelector('input.dia-comm');
+  if(ci && document.activeElement !== ci){ const v = m.comMonto > 0 ? m.comMonto.toFixed(2) : ''; if(ci.value !== v) ci.value = v; ci.disabled = !!m.cerrado; }
+}
+function diaComChanged(){
+  diaCatChanged(); diaRevalidateSoon();
+}
+
+/* ---------------- filtro tipo Excel en cada encabezado ---------------- */
+const DIA_COLN = { fecha: 'Fecha', desc: 'Descripción', op: 'N° Op.', ent: 'Entrada', sal: 'Salida', cat: 'Categoría', cta: 'Cuenta', tipo: 'Tipo', nro: 'N° Doc.', anexo: 'Anexo/RUC', com: 'Comisión', est: 'Estado' };
+const DIA_VACIO = '(Vacías)';
+const FX_MAX = 250;
+const fxNorm = s => String(s == null ? '' : s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+const diaColKey = v => String(v == null ? '' : v).trim();
+function diaEstadoTags(m){
+  const t = [];
+  if(m.cerrado) t.push('Cerrado');
+  if(m.tarde) t.push('Nuevo tras el cierre');
+  if(m.omit){ const manual = diaEdits[m.id] && diaEdits[m.id].omit !== undefined; t.push(manual || !m.omitMotivo ? 'Eliminado' : 'Excluido'); }
+  if((m.fuentes || []).length > 1) t.push('En varias descargas');
+  if(m.com && m.monto < 0) t.push(m.comMonto > 0 ? 'Comisión separada' : 'Comisión sin importe');
+  if(diaTipoErr(m)) t.push('Tipo no válido');
+  if(m.flag) t.push('Revisar');
+  if(m.itf) t.push(m.itf.estado === 'cuadra' ? 'ITF cuadra' : (m.itf.estado === 'no-cuadra' ? 'ITF distinto' : 'ITF'));
+  if(m.auto) t.push(m.auto === 'Exacto' ? 'Cruce exacto' : 'Cruce sugerido');
+  const v = m.val;
+  if(v && v.msgs && v.msgs.length){ const lvl = v.nivel || 'ok'; t.push(lvl === 'bad' ? 'Comprobante ✗' : (lvl === 'warn' ? 'Revisar comprobante' : 'Comprobante ✓')); }
+  if(!t.length) t.push('Sin novedad');
+  return t;
+}
+const DIA_COLS = {
+  fecha: { get: m => [m.fecha], cmp: (a, b) => diaKey(b.v) - diaKey(a.v) },
+  desc:  { get: m => [m.descripcion] },
+  op:    { get: m => [m.operacion] },
+  ent:   { get: m => [m.monto > 0 ? diaNum(m.monto) : ''], num: true },
+  sal:   { get: m => [m.monto < 0 ? diaNum(-m.monto) : ''], num: true },
+  cat:   { get: m => [diaCatT(m.catEff)] },
+  cta:   { get: m => [m.cta] },
+  tipo:  { get: m => [m.tipo] },
+  nro:   { get: m => [m.nro] },
+  anexo: { get: m => [m.anexo], label: v => { const n = diaRSName(v); return n ? v + ' — ' + n : v; } },
+  com:   { get: m => [m.com ? 'Con comisión' : 'Sin comisión'] },
+  est:   { get: diaEstadoTags }
+};
+const diaColActive = () => Object.keys(diaColV).filter(k => diaColV[k]);
+function diaColMatch(m, skip){
+  for(const k in diaColV){
+    if(k === skip) continue;
+    const set = diaColV[k], def = DIA_COLS[k]; if(!set || !def) continue;
+    if(!def.get(m).some(v => set.has(diaColKey(v)))) return false;
+  }
+  return true;
+}
+/* los movimientos eliminados o excluidos solo entran si se pide «Eliminado» o «Excluido» en la columna Estado */
+function diaColAdmitsOmit(skip){
+  if(skip === 'est') return true;
+  const s = diaColV.est; return !!(s && (s.has('Eliminado') || s.has('Excluido')));
+}
+function diaNumPred(txt){
+  const t = String(txt).trim().replace(/,/g, '').replace(/^s\/\s*/i, '');
+  let m;
+  if((m = /^(>=|<=|>|<|=)\s*(-?\d+(?:\.\d+)?)$/.exec(t))){
+    const v = parseFloat(m[2]);
+    return { '>': x => x > v, '<': x => x < v, '>=': x => x >= v - 0.0049, '<=': x => x <= v + 0.0049, '=': x => Math.abs(x - v) < 0.005 }[m[1]];
+  }
+  if((m = /^(\d+(?:\.\d+)?)\s*(?:-|a)\s*(\d+(?:\.\d+)?)$/.exec(t))){ const a = parseFloat(m[1]), b = parseFloat(m[2]); return x => x >= Math.min(a, b) - 0.0049 && x <= Math.max(a, b) + 0.0049; }
+  return x => String(x.toFixed(2)).indexOf(t) >= 0;
+}
+
+let fx = null;   // filtro abierto: { k, btn, items: [{v, n, label, low}], sel: Set, q, backup, t0 }
+/* valores que tiene la columna, con cuántos movimientos hay de cada uno (los que dejan pasar los demás filtros) */
+function diaFxItems(k){
+  const def = DIA_COLS[k], cnt = new Map();
+  diaFiltered(k).forEach(m => def.get(m).forEach(v => { v = diaColKey(v); cnt.set(v, (cnt.get(v) || 0) + 1); }));
+  const arr = Array.from(cnt, ([v, n]) => ({ v, n, label: v === '' ? DIA_VACIO : (def.label ? def.label(v) : v) }));
+  arr.forEach(x => { x.low = fxNorm(x.label + ' ' + x.v); });
+  const vac = (a, b) => a.v === '' ? 1 : (b.v === '' ? -1 : 0);
+  const num = x => parseFloat(x.v.replace(/,/g, ''));
+  arr.sort(def.cmp ? def.cmp : (def.num ? (a, b) => vac(a, b) || num(a) - num(b) : (a, b) => vac(a, b) || a.label.localeCompare(b.label, 'es', { numeric: true, sensitivity: 'base' })));
+  return arr;
+}
+function fxMatch(it, q, isNum){
+  const t = fxNorm(q).trim(); if(!t) return true;
+  if(isNum){
+    if(it.v === '') return false;
+    const x = parseFloat(it.v.replace(/,/g, ''));
+    if(/^(>=|<=|>|<|=)\s*-?\d/.test(t) || /^\d+(\.\d+)?\s*(-|a)\s*\d/.test(t)) return diaNumPred(t)(x);
+    return it.v.replace(/,/g, '').indexOf(t.replace(/,/g, '')) >= 0;
+  }
+  return it.low.indexOf(t) >= 0;
+}
+const diaFxVisible = () => fx.items.filter(it => fxMatch(it, fx.q, !!DIA_COLS[fx.k].num));
+function diaFxEnsure(){
+  let p = dEl('diaFxPop'); if(p) return p;
+  p = document.createElement('div'); p.id = 'diaFxPop'; p.className = 'fx-pop'; p.hidden = true;
+  p.setAttribute('role', 'dialog'); p.setAttribute('aria-labelledby', 'fxTitle');
+  p.innerHTML = `<div class="fx-head"><b id="fxTitle"></b><button type="button" class="ghost sm" id="fxClose" aria-label="Cerrar el filtro">✕</button></div>
+    <input type="search" id="fxQ" autocomplete="off" aria-label="Escribe para buscar entre los valores de la columna">
+    <label class="fx-it fx-all"><input type="checkbox" id="fxAll"><span id="fxAllT">(Seleccionar todo)</span><small id="fxN"></small></label>
+    <div class="fx-list" id="fxList" role="group" aria-label="Valores de la columna"></div>
+    <div class="fx-foot" id="fxFoot"></div>
+    <div class="fx-act"><button type="button" class="ghost sm" id="fxClear">Quitar filtro</button><span class="sp"></span><button type="button" class="secondary sm" id="fxCancel">Cancelar</button><button type="button" class="sm" id="fxOk">Aceptar</button></div>`;
+  document.body.appendChild(p);
+  const q = dEl('fxQ');
+  q.addEventListener('input', () => {
+    if(!fx) return;
+    const v = q.value;
+    if(v && !fx.q) fx.backup = new Set(fx.sel);
+    fx.q = v;
+    if(v) fx.sel = new Set(diaFxVisible().map(it => it.v));           // como en Excel: al escribir quedan marcados los que coinciden
+    else if(fx.backup){ fx.sel = fx.backup; fx.backup = null; }
+    diaFxRender();
+  });
+  q.addEventListener('keydown', e => { if(e.key === 'Enter'){ e.preventDefault(); diaFxApply(); } });
+  dEl('fxAll').addEventListener('change', e => {
+    if(!fx) return;
+    diaFxVisible().forEach(it => { if(e.target.checked) fx.sel.add(it.v); else fx.sel.delete(it.v); });
+    diaFxRender(true);
+  });
+  dEl('fxList').addEventListener('change', e => {
+    const t = e.target; if(!fx || t.dataset.v === undefined) return;
+    const it = dEl('fxList')._shown[+t.dataset.v]; if(!it) return;
+    if(t.checked) fx.sel.add(it.v); else fx.sel.delete(it.v);
+    diaFxStats();
+  });
+  dEl('fxOk').addEventListener('click', diaFxApply);
+  dEl('fxClear').addEventListener('click', () => { if(!fx) return; const k = fx.k; delete diaColV[k]; diaFxClose(true); diaLimit = 300; renderDiaMov(); });
+  dEl('fxCancel').addEventListener('click', () => diaFxClose(true));
+  dEl('fxClose').addEventListener('click', () => diaFxClose(true));
+  p.addEventListener('keydown', e => { if(e.key === 'Escape'){ e.preventDefault(); e.stopPropagation(); diaFxClose(true); } });
+  return p;
+}
+function diaFxStats(){
+  const vis = diaFxVisible(), nSel = vis.filter(it => fx.sel.has(it.v)).length, all = dEl('fxAll');
+  all.checked = vis.length > 0 && nSel === vis.length; all.indeterminate = nSel > 0 && nSel < vis.length; all.disabled = !vis.length;
+  dEl('fxN').textContent = `${fx.sel.size} de ${fx.items.length}`;
+  dEl('fxOk').disabled = fx.sel.size === 0;
+  dEl('fxOk').title = fx.sel.size === 0 ? 'Marca al menos un valor' : '';
+}
+function diaFxRender(keepScroll){
+  const list = dEl('fxList'), top = list.scrollTop;
+  const vis = diaFxVisible(), shown = vis.slice(0, FX_MAX);
+  list.innerHTML = shown.length
+    ? shown.map((it, i) => `<label class="fx-it"><input type="checkbox" data-v="${i}"${fx.sel.has(it.v) ? ' checked' : ''}><span>${escapeHtml(it.label)}</span><small>${it.n}</small></label>`).join('')
+    : '<div class="fx-none">Ningún valor coincide.</div>';
+  list._shown = shown;
+  if(keepScroll) list.scrollTop = top;
+  dEl('fxAllT').textContent = fx.q ? '(Seleccionar los resultados)' : '(Seleccionar todo)';
+  dEl('fxFoot').textContent = vis.length > FX_MAX ? `Se muestran ${FX_MAX} de ${vis.length}: escribe para acotar.` : '';
+  diaFxStats();
+}
+function diaFxPlace(){
+  const p = dEl('diaFxPop'), list = dEl('fxList'), r = fx.btn.getBoundingClientRect();
+  const vw = document.documentElement.clientWidth, vh = window.innerHeight;
+  p.style.left = '0px'; p.style.top = '0px'; list.style.maxHeight = '300px';
+  const w = p.offsetWidth, chrome = p.offsetHeight - list.offsetHeight;
+  p.style.left = Math.min(Math.max(8, r.left), Math.max(8, vw - w - 8)) + 'px';
+  const abajo = vh - r.bottom - 12, arriba = r.top - 12;
+  if(abajo < chrome + 130 && arriba > abajo){
+    list.style.maxHeight = Math.max(110, Math.min(300, arriba - chrome - 8)) + 'px';
+    p.style.top = Math.max(8, r.top - 4 - p.offsetHeight) + 'px';
+  } else {
+    list.style.maxHeight = Math.max(110, Math.min(300, abajo - chrome - 8)) + 'px';
+    p.style.top = (r.bottom + 4) + 'px';
+  }
+}
+function diaFxOpen(k, btn){
+  if(fx && fx.k === k){ diaFxClose(true); return; }
+  if(fx) diaFxClose(false);
+  const def = DIA_COLS[k]; if(!def) return;
+  const items = diaFxItems(k), cur = diaColV[k];
+  let sel = new Set(items.filter(it => !cur || cur.has(it.v)).map(it => it.v));
+  if(cur && !sel.size) sel = new Set(items.map(it => it.v));
+  fx = { k, btn, items, sel, q: '', backup: null, t0: Date.now() };
+  const p = diaFxEnsure();
+  dEl('fxTitle').textContent = 'Filtrar ' + DIA_COLN[k];
+  const q = dEl('fxQ'); q.value = ''; q.placeholder = def.num ? 'Buscar… (>1000, 100-300)' : 'Buscar o escribir…';
+  p.hidden = false; btn.setAttribute('aria-expanded', 'true');
+  diaFxRender(); diaFxPlace();
+  q.focus({ preventScroll: true });
+}
+function diaFxClose(refocus){
+  const p = dEl('diaFxPop');
+  if(p) p.hidden = true;
+  if(fx){ fx.btn.setAttribute('aria-expanded', 'false'); if(refocus) try{ fx.btn.focus({ preventScroll: true }); }catch(e){} }
+  fx = null;
+}
+function diaFxApply(){
+  if(!fx || !fx.sel.size) return;
+  const todo = fx.items.every(it => fx.sel.has(it.v));
+  if(todo) delete diaColV[fx.k]; else diaColV[fx.k] = new Set(fx.sel);
+  diaFxClose(true); diaLimit = 300; renderDiaMov();
+}
+function diaFxSync(){
+  document.querySelectorAll('#diaMovTable .fx-btn').forEach(b => {
+    const k = b.dataset.fx, s = diaColV[k], on = !!s, nm = DIA_COLN[k] || k;
+    b.classList.toggle('on', on);
+    const t = on ? `Filtro activo en ${nm}: ${s.size} valor${s.size === 1 ? '' : 'es'}. Clic para cambiarlo.` : 'Filtrar ' + nm;
+    b.title = t; b.setAttribute('aria-label', on ? `Filtrar ${nm} (filtro activo)` : 'Filtrar ' + nm);
+    const th = b.closest('th'); if(th) th.classList.toggle('fx-on', on);
+  });
+}
+
+/* ---------------- conexión ---------------- */
+(function wireDia172(){
+  const on = (id, ev, fn) => { const e = dEl(id); if(e) e.addEventListener(ev, fn); };
+  // comisión: en bloque y fila por fila
+  on('diaBulkComBtn', 'click', () => {
+    const sin = diaComSet(Array.from(diaSel), true); diaComChanged(); renderDiaMov();
+    if(sin) toast(`${sin} salida${sin === 1 ? '' : 's'} sin importe de comisión: escríbelo en la columna Comisión para separarla.`, 'warn');
+  });
+  on('diaBulkNoComBtn', 'click', () => { diaComSet(Array.from(diaSel), false); diaComChanged(); renderDiaMov(); });
+  on('diaMovBody', 'change', e => {
+    const t = e.target; if(!t.classList) return;
+    if(t.classList.contains('dia-com')){
+      const tr = t.closest('tr');   // antes de repintar: la celda se reemplaza y el check viejo queda suelto
+      const sin = diaComSet([t.dataset.id], t.checked); diaComChanged();
+      const ci = tr && tr.querySelector('input.dia-comm');
+      if(ci && sin){ ci.focus(); toast('Escribe el importe de la comisión para separarla del pago.', 'warn'); }
+      return;
+    }
+    if(t.classList.contains('dia-comm')){
+      const id = t.dataset.id, m = diaEff().find(x => x.id === id); if(!m) return;
+      const txt = t.value.trim();
+      if(txt === ''){ diaSetEdit([id], { comm: '' }); diaComChanged(); return; }
+      const x = diaComFeeOf(txt, m.monto);
+      if(!x){ toast('La comisión debe ser mayor que cero y menor que el cargo (' + diaNum(-m.monto) + ').', 'warn'); t.value = m.comMonto > 0 ? m.comMonto.toFixed(2) : ''; return; }
+      diaComLast[m.banco] = x; t.value = x.toFixed(2);
+      diaSetEdit([id], { comm: x.toFixed(2) }); diaComChanged();
+    }
+  });
+  on('diaMovBody', 'keydown', e => { if(e.key === 'Enter' && e.target.classList && e.target.classList.contains('dia-comm')){ e.preventDefault(); e.target.blur(); } });
+  // filtros del encabezado
+  const th = document.querySelector('#diaMovTable thead');
+  if(th) th.addEventListener('click', e => { const b = e.target.closest('.fx-btn'); if(!b) return; e.preventDefault(); e.stopPropagation(); diaFxOpen(b.dataset.fx, b); });
+  document.addEventListener('pointerdown', e => {
+    if(!fx) return;
+    const p = dEl('diaFxPop');
+    if(p && (p.contains(e.target) || e.target.closest('.fx-btn'))) return;
+    diaFxClose(false);
+  }, true);
+  document.addEventListener('scroll', e => {
+    if(!fx || Date.now() - fx.t0 < 250) return;
+    const p = dEl('diaFxPop'); if(p && e.target instanceof Node && p.contains(e.target)) return;
+    diaFxClose(false);
+  }, true);
+  window.addEventListener('resize', () => { if(fx) diaFxClose(false); });
+  on('diaFilterLabel', 'click', e => { if(e.target.closest('[data-act="clearf"]') && diaColActive().length){ diaColV = {}; diaFxClose(false); renderDiaMov(); } });
+})();
+/* ============================================================
+   v1.7.3: tipo de documento según la cuenta contable (autollenado, menú y validación)
+   ============================================================ */
+
+/* Qué tipos de documento admite cada cuenta. Para agregar otra cuenta basta una línea más en esta tabla
+   (el primer tipo de la lista es el que se llena solo). */
+const DOC_TIPO_REGLAS = {
+  '421201': ['FT', 'CN', 'BP', 'RL'], '421202': ['FT', 'CN', 'BP', 'RL'],
+  '424101': ['RH'],
+  '411101': ['PL'], '141201': ['PL']
+};
+/* «|» separa varios anexos, comprobantes, tipos o cuentas; cada posición va con su par */
+const docSplit = s => String(s == null ? '' : s).split('|').map(x => x.trim());
+const docTiposDe = cta => DOC_TIPO_REGLAS[String(cta || '').trim()] || null;
+const docListaTxt = a => a.length === 1 ? a[0] : a.slice(0, -1).join(', ') + ' o ' + a[a.length - 1];
+/* '' si el tipo (o los tipos separados por «|») corresponde a la cuenta (o cuentas); si no, el motivo.
+   Un solo tipo con varias cuentas vale para todas; con varios tipos cada uno va con la cuenta de su posición. */
+function docTipoCheck(cta, tipo){
+  const tt = String(tipo == null ? '' : tipo).trim();
+  if(!tt) return '';
+  const cs = docSplit(cta), ts = docSplit(tt).map(x => x.toUpperCase());
+  const uno = cs.length <= 1;
+  for(let j = 0; j < ts.length; j++){
+    if(!ts[j]) continue;
+    const cand = uno ? [cs[0]] : (ts.length === 1 ? cs : [cs[Math.min(j, cs.length - 1)]]);
+    for(let q = 0; q < cand.length; q++){
+      const r = docTiposDe(cand[q]);
+      if(r && r.indexOf(ts[j]) < 0) return 'El tipo «' + ts[j] + '» no corresponde a la cuenta ' + cand[q] + ': solo admite ' + docListaTxt(r) + '.';
+    }
+  }
+  return '';
+}
+/* tipo que corresponde cuando cambia la cuenta: lo vacío se llena con el primero de la lista; lo que no sirve para la
+   nueva cuenta se cambia por el primero; lo que sí sirve se respeta */
+function docTipoAuto(cta, tipo){
+  const tstr = String(tipo == null ? '' : tipo).trim(), cs = docSplit(cta);
+  if(!cs.some(c => docTiposDe(c))) return tstr;
+  const ts = tstr === '' ? [] : docSplit(tstr).map(x => x.toUpperCase());
+  if(cs.length === 1){
+    const r = docTiposDe(cs[0]);
+    return (ts.length ? ts : ['']).map(t => r.indexOf(t) >= 0 ? t : r[0]).join('|');
+  }
+  const okFor = (t, c) => { const r = docTiposDe(c); return !r || r.indexOf(t) >= 0; };
+  if(ts.length === 1 && ts[0] && cs.every(c => okFor(ts[0], c))) return ts[0];
+  return cs.map((c, i) => {
+    const t = ts.length === cs.length ? ts[i] : (ts.length === 1 ? ts[0] : ''), r = docTiposDe(c);
+    return r ? (r.indexOf(t) >= 0 ? t : r[0]) : (t || '');
+  }).join('|');
+}
+/* opciones del menú ▾: solo cuando la cuenta es una sola con regla y el tipo es uno solo (con varios comprobantes se escribe con «|») */
+function diaTipoOpts(m){
+  if(m.cerrado) return null;
+  const cs = docSplit(m.cta);
+  if(cs.length !== 1) return null;
+  const r = docTiposDe(cs[0]);
+  if(!r || docSplit(m.tipo).length > 1) return null;
+  return r;
+}
+const diaTipoErr = m => docTipoCheck(m.cta, m.tipo);
+const DIA_HINT = {
+  cta: 'Con varias cuentas, sepáralas con | (ej. 421201|424101)',
+  tipo: 'Con varios comprobantes, sepáralos con | (ej. FT|RH)',
+  nro: 'Con varios comprobantes, sepáralos con | (ej. F001-10|F001-11)',
+  anexo: 'Con varios anexos o RUC, sepáralos con | (ej. 20123456789|10456789012)'
+};
+function diaTipoTitle(m){
+  const cs = docSplit(m.cta), r = cs.length === 1 ? docTiposDe(cs[0]) : null;
+  const e = diaTipoErr(m);
+  return (e ? e + ' ' : '') + (r ? 'Para la cuenta ' + cs[0] + ': ' + docListaTxt(r) + '. ' : '') + DIA_HINT.tipo;
+}
+/* celda «Tipo»: el cuadro de texto (admite «|») y, si la cuenta tiene regla, el menú ▾ con las opciones válidas */
+function diaTipoCell(m, id){
+  const dis = m.cerrado ? ' disabled' : '', opts = diaTipoOpts(m), err = diaTipoErr(m);
+  return `<span class="tp-wrap"><input type="text" class="dia-in tipo${err ? ' bad' : ''}" data-id="${id}" data-f="tipo" value="${escapeHtml(m.tipo)}" placeholder="—" aria-label="Tipo de documento" title="${escapeHtml(diaTipoTitle(m))}" autocomplete="off"${dis}>`
+    + `<button type="button" class="dia-tp" data-id="${id}" aria-haspopup="menu" aria-expanded="false" aria-label="Elegir el tipo de documento" title="Tipos válidos para esta cuenta"${dis}${opts ? '' : ' hidden'}>▾</button></span>`;
+}
+/* actualiza la celda en su sitio (sin reemplazarla, para no perder el foco al pasar de una celda a otra) */
+function diaTipoSync(tr, m){
+  if(!tr) return;
+  const inp = tr.querySelector('input.dia-in.tipo'), btn = tr.querySelector('button.dia-tp'); if(!inp) return;
+  if(document.activeElement !== inp && inp.value !== m.tipo) inp.value = m.tipo;
+  const err = diaTipoErr(m);
+  inp.classList.toggle('bad', !!err); inp.title = diaTipoTitle(m);
+  if(btn){ btn.hidden = !diaTipoOpts(m); btn.disabled = !!m.cerrado; }
+}
+/* antes de guardar lo escrito en «Tipo»: en mayúsculas y solo si corresponde a la cuenta; si no, avisa y vuelve al valor anterior */
+function diaTipoGuard(t){
+  if(t.dataset.f !== 'tipo') return true;
+  const m = diaEff().find(x => x.id === t.dataset.id); if(!m) return true;
+  const v = t.value.trim().toUpperCase(), e = docTipoCheck(m.cta, v);
+  if(!e){ if(t.value !== v) t.value = v; return true; }
+  toast(e, 'warn'); t.value = m.tipo; return false;
+}
+/* al poner o cambiar la cuenta de un movimiento, el tipo se llena o se corrige solo; devuelve el tipo anterior si lo tuvo que cambiar */
+function diaTipoAutoEdit(id){
+  const ed = diaEdits[id]; if(!ed || !ed.cta) return null;
+  const antes = ed.tipo || '', nt = docTipoAuto(ed.cta, antes);
+  if(nt === antes) return null;
+  if(nt) ed.tipo = nt; else delete ed.tipo;
+  return antes;
+}
+function diaTipoAutoToast(cambios, ejemplo){
+  if(!cambios) return;
+  toast(cambios === 1 ? 'El tipo de documento «' + ejemplo.antes + '» no corresponde a la cuenta ' + ejemplo.cta + ': se cambió a «' + ejemplo.ahora + '» (' + docListaTxt(docTiposDe(ejemplo.cta.split('|')[0]) || [ejemplo.ahora]) + ').'
+    : cambios + ' tipos de documento no correspondían a su cuenta y se cambiaron al primero que admite.', 'warn');
+}
+
+/* ---------------- menú ▾ de tipos válidos ---------------- */
+let diaTp = null;
+function diaTpEnsure(){
+  let p = dEl('diaTpPop');
+  if(p) return p;
+  p = document.createElement('div'); p.id = 'diaTpPop'; p.className = 'tp-pop'; p.hidden = true; p.setAttribute('role', 'menu');
+  document.body.appendChild(p);
+  p.addEventListener('click', e => {
+    const b = e.target.closest('[data-tp]'); if(!b || !diaTp) return;
+    diaTpPick(diaTp.id, b.dataset.tp);
+  });
+  p.addEventListener('keydown', e => {
+    const its = Array.from(p.querySelectorAll('[data-tp]')), i = its.indexOf(document.activeElement);
+    if(e.key === 'ArrowDown'){ e.preventDefault(); its[(i + 1) % its.length].focus(); }
+    else if(e.key === 'ArrowUp'){ e.preventDefault(); its[(i - 1 + its.length) % its.length].focus(); }
+    else if(e.key === 'Escape'){ e.preventDefault(); e.stopPropagation(); diaTpClose(true); }
+    else if(e.key === 'Tab'){ diaTpClose(true); }
+  });
+  return p;
+}
+function diaTpOpen(btn){
+  const id = btn.dataset.id, m = diaEff().find(x => x.id === id), opts = m && diaTipoOpts(m); if(!opts) return;
+  if(diaTp && diaTp.id === id){ diaTpClose(true); return; }
+  diaTpClose(false);
+  const p = diaTpEnsure(), cur = String(m.tipo || '').trim().toUpperCase();
+  p.innerHTML = `<div class="tp-h">Tipo para la cuenta ${escapeHtml(m.cta)}</div>` + opts.map(t => `<button type="button" role="menuitemradio" aria-checked="${t === cur}" class="tp-it${t === cur ? ' on' : ''}" data-tp="${escapeHtml(t)}">${escapeHtml(t)}</button>`).join('') + `<div class="tp-f">Con varios comprobantes escribe los tipos separados por <b>|</b> en la celda.</div>`;
+  p.hidden = false;
+  const r = btn.getBoundingClientRect(), w = p.offsetWidth, h = p.offsetHeight;
+  p.style.left = Math.max(8, Math.min(r.left, window.innerWidth - w - 8)) + 'px';
+  p.style.top = (r.bottom + h + 8 > window.innerHeight && r.top - h - 4 > 8 ? r.top - h - 4 : r.bottom + 4) + 'px';
+  btn.setAttribute('aria-expanded', 'true');
+  diaTp = { id, btn, t0: Date.now() };
+  const f = p.querySelector('.tp-it.on') || p.querySelector('.tp-it'); if(f) f.focus();
+}
+function diaTpClose(refocus){
+  const p = dEl('diaTpPop'); if(p) p.hidden = true;
+  if(diaTp){ diaTp.btn.setAttribute('aria-expanded', 'false'); if(refocus && diaTp.btn.isConnected && !diaTp.btn.hidden) diaTp.btn.focus(); }
+  diaTp = null;
+}
+function diaTpPick(id, tipo){
+  const btn = diaTp && diaTp.btn;
+  diaTpClose(false);
+  if(diaLocked(id)){ diaUnlocked([id]); renderDiaMov(); return; }
+  diaEditField(id, 'tipo', tipo);
+  const m = diaEff().find(x => x.id === id), tr = document.querySelector(`#diaMovBody tr[data-id="${id}"]`);
+  if(m && tr){
+    diaTipoSync(tr, m);
+    const est = tr.querySelector('td.est'); if(est) est.innerHTML = diaEstadoHtml(m);
+    const gl = tr.querySelector('td.desc'); if(gl) diaPatchGlosa(gl, m);
+  }
+  if(btn && btn.isConnected && !btn.hidden) btn.focus();
+}
+(function wireDia173(){
+  const body = dEl('diaMovBody'); if(!body) return;
+  body.addEventListener('click', e => { const b = e.target.closest('button.dia-tp'); if(b){ e.preventDefault(); diaTpOpen(b); } });
+  // flecha abajo en la celda abre el menú (como una lista desplegable)
+  body.addEventListener('keydown', e => {
+    if(e.key !== 'ArrowDown' || !e.target.classList || !e.target.classList.contains('tipo')) return;
+    const b = e.target.parentElement && e.target.parentElement.querySelector('button.dia-tp');
+    if(b && !b.hidden){ e.preventDefault(); diaTpOpen(b); }
+  });
+  document.addEventListener('pointerdown', e => {
+    if(!diaTp) return;
+    const p = dEl('diaTpPop');
+    if((p && p.contains(e.target)) || e.target.closest('button.dia-tp')) return;
+    diaTpClose(false);
+  }, true);
+  document.addEventListener('scroll', e => {
+    if(!diaTp || Date.now() - diaTp.t0 < 250) return;
+    const p = dEl('diaTpPop'); if(p && e.target instanceof Node && p.contains(e.target)) return;
+    diaTpClose(false);
+  }, true);
+  window.addEventListener('resize', () => { if(diaTp) diaTpClose(false); });
+})();
+
+/* ============================================================
+   v1.7.4 · Documentos pendientes de cualquier origen
+   - Reporte de pendientes de cualquier sistema contable (Excel o CSV)
+   - ZIP / TXT / Excel del SIRE: Registro de Compras (RCE) y de Ventas (RVIE)
+   - Recibos por honorarios (RH) del año
+   Todo se convierte a la misma lista de documentos que ya usan la Pestaña 2, la 6 y el flujo.
+   ============================================================ */
+let docsIncBol = false;        // incluir boletas y tickets del SIRE al cargar
+let pdGenQueue = [];           // reportes genéricos que esperan que confirmes las columnas
+const dnorm = s => String(s == null ? '' : s).normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+const DOCS_ARCH = /\.(xlsx|xlsm|xlsb|xls|ods|csv|txt|tsv|dat|zip)$/i;
+
+/* ---------- números y fechas ---------- */
+function docsNum(v){
+  if(typeof v === 'number') return isFinite(v) ? v : 0;
+  let s = String(v == null ? '' : v).trim();
+  if(!s || s === '-') return 0;
+  let neg = /^\(.*\)$/.test(s) || /-/.test(s);
+  s = s.replace(/[^\d,.]/g, '');
+  const c = s.lastIndexOf(','), p = s.lastIndexOf('.');
+  if(c >= 0 && p >= 0) s = c > p ? s.replace(/\./g, '').replace(',', '.') : s.replace(/,/g, '');
+  else if(c >= 0) s = (s.match(/,/g) || []).length === 1 && /,\d{1,2}$/.test(s) ? s.replace(',', '.') : s.replace(/,/g, '');
+  else if((s.match(/\./g) || []).length > 1) s = s.replace(/\./g, '');
+  const n = parseFloat(s);
+  return isFinite(n) ? (neg ? -n : n) : 0;
+}
+function docsFecha(v){
+  if(v === null || v === undefined || v === '') return '';
+  let d = null;
+  if(v instanceof Date){ if(!isNaN(v)) d = [v.getDate(), v.getMonth() + 1, v.getFullYear()]; }
+  else if(typeof v === 'number'){
+    if(v > 30000 && v < 80000){ const t = new Date(Math.round((v - 25569) * 86400000)); d = [t.getUTCDate(), t.getUTCMonth() + 1, t.getUTCFullYear()]; }
+  } else {
+    const s = String(v).trim();
+    let m = s.match(/^(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{2,4})/);
+    if(m) d = [+m[1], +m[2], m[3].length === 2 ? 2000 + (+m[3]) : +m[3]];
+    else if((m = s.match(/^(\d{4})[\-\/](\d{1,2})[\-\/](\d{1,2})/))) d = [+m[3], +m[2], +m[1]];
+    else if((m = s.match(/^(\d{4})(\d{2})(\d{2})$/))) d = [+m[3], +m[2], +m[1]];
+  }
+  if(!d || d[1] < 1 || d[1] > 12 || d[0] < 1 || d[0] > 31) return '';
+  return String(d[0]).padStart(2, '0') + '/' + String(d[1]).padStart(2, '0') + '/' + d[2];
+}
+const docsStr = v => v == null ? '' : (typeof v === 'number' ? String(v) : String(v)).trim();
+
+/* ---------- ZIP (sin librerías: central directory + DecompressionStream) ---------- */
+async function docsZipEntries(u8){
+  const dv = new DataView(u8.buffer, u8.byteOffset, u8.byteLength);
+  let e = -1;
+  for(let i = u8.length - 22; i >= Math.max(0, u8.length - 66000); i--){ if(dv.getUint32(i, true) === 0x06054b50){ e = i; break; } }
+  if(e < 0) throw new Error('el ZIP está dañado o no es un ZIP');
+  const total = dv.getUint16(e + 10, true);
+  let p = dv.getUint32(e + 16, true);
+  const out = [];
+  for(let n = 0; n < total; n++){
+    if(p + 46 > u8.length || dv.getUint32(p, true) !== 0x02014b50) break;
+    const flag = dv.getUint16(p + 8, true), method = dv.getUint16(p + 10, true);
+    const csize = dv.getUint32(p + 20, true);
+    const nl = dv.getUint16(p + 28, true), el = dv.getUint16(p + 30, true), cl = dv.getUint16(p + 32, true);
+    const off = dv.getUint32(p + 42, true);
+    const name = new TextDecoder('utf-8').decode(u8.subarray(p + 46, p + 46 + nl));
+    p += 46 + nl + el + cl;
+    if(/\/$/.test(name)) continue;
+    if(csize === 0xFFFFFFFF || off === 0xFFFFFFFF) throw new Error('ZIP demasiado grande (ZIP64)');
+    const start = off + 30 + dv.getUint16(off + 26, true) + dv.getUint16(off + 28, true);
+    out.push({ name, method, flag, raw: u8.subarray(start, start + csize) });
+  }
+  return out;
+}
+async function docsInflate(raw){
+  if(typeof DecompressionStream === 'undefined') throw new Error('este navegador no puede abrir ZIP: descomprímelos y sube los .txt o .xlsx');
+  const stream = new Blob([raw]).stream().pipeThrough(new DecompressionStream('deflate-raw'));
+  return new Uint8Array(await new Response(stream).arrayBuffer());
+}
+function docsDecode(u8){
+  let t;
+  try{ t = new TextDecoder('utf-8', { fatal: true }).decode(u8); }catch(e){ t = new TextDecoder('windows-1252').decode(u8); }
+  return t.replace(/^﻿/, '');
+}
+function docsDelim(text){
+  const lines = text.split(/\r?\n/).filter(l => l.trim()).slice(0, 6);
+  let best = ',', bn = -1;
+  ['|', '\t', ';', ','].forEach(d => { const n = Math.max.apply(null, lines.map(l => l.split(d).length - 1).concat([0])); if(n > bn){ bn = n; best = d; } });
+  return best;
+}
+function docsCsv(text, d){
+  const rows = []; let row = [], cur = '', q = false;
+  for(let i = 0; i < text.length; i++){
+    const c = text[i];
+    if(q){
+      if(c === '"'){ if(text[i + 1] === '"'){ cur += '"'; i++; } else q = false; }
+      else cur += c;
+    } else if(c === '"' && cur === ''){ q = true; }
+    else if(c === d){ row.push(cur); cur = ''; }
+    else if(c === '\n' || c === '\r'){ if(c === '\r' && text[i + 1] === '\n') i++; row.push(cur); cur = ''; rows.push(row); row = []; }
+    else cur += c;
+  }
+  if(cur !== '' || row.length){ row.push(cur); rows.push(row); }
+  return rows.filter(r => r.some(x => String(x).trim() !== '')).map(r => r.map(x => String(x).trim()));
+}
+/* un archivo → una o varias tablas (matriz de celdas) */
+async function docsTables(label, u8, depth){
+  const ext = (/\.([a-z0-9]+)$/i.exec(label) || [, ''])[1].toLowerCase();
+  const hint = label.split(/[\/›]/).pop().trim();
+  if(ext === 'zip'){
+    if(depth > 2) return [];
+    const out = [];
+    for(const e of await docsZipEntries(u8)){
+      if(/(^|\/)(__MACOSX\/|\.)/.test(e.name)) continue;
+      if(e.flag & 1) throw new Error('el ZIP tiene contraseña');
+      const bytes = e.method === 0 ? e.raw : (e.method === 8 ? await docsInflate(e.raw) : null);
+      if(!bytes) continue;
+      (await docsTables(label + ' › ' + e.name.split('/').pop(), bytes, depth + 1)).forEach(t => out.push(t));
+    }
+    return out;
+  }
+  if(/^(xlsx|xlsm|xlsb|xls|ods)$/.test(ext)){
+    const wb = XLSX.read(u8, { type: 'array' });
+    return wb.SheetNames.map(sn => ({ file: label, hint, sheet: sn, aoa: XLSX.utils.sheet_to_json(wb.Sheets[sn], { header: 1, defval: '', blankrows: true, raw: true }) })).filter(t => t.aoa.length > 1);
+  }
+  if(ext === '' || /^(csv|txt|tsv|dat|prn)$/.test(ext)){
+    const text = docsDecode(u8);
+    const aoa = docsCsv(text, docsDelim(text));
+    return aoa.length > 1 ? [{ file: label, hint, sheet: '', aoa }] : [];
+  }
+  return [];
+}
+
+/* ---------- qué clase de archivo es ---------- */
+function docsColIdx(h, re, from, not){
+  for(let i = from || 0; i < h.length; i++) if(re.test(h[i]) && !(not && not.test(h[i]))) return i;
+  return -1;
+}
+function docsClassify(t){
+  const aoa = t.aoa, lim = Math.min(aoa.length, 40), nom = (t.hint || '') + ' ' + (t.file || '');
+  for(let i = 0; i < lim; i++){
+    const h = (aoa[i] || []).map(dnorm);
+    if(h.filter(Boolean).length < 4) continue;
+    const has = re => h.some(x => re.test(x));
+    if(has(/^tipo cp( doc)?$/) && has(/^serie del c/) && has(/total cp/)){
+      const ven = has(/mto exonerado|bi gravada|valor facturado|dscto bi|bi grav ivap|mto inafecto|valor fob/);
+      const com = has(/bi gravado dg|igv ipm dg|valor adq|clasif de bienes|car orig|otros trib/);
+      const kind = ven && !com ? 'ventas' : (com && !ven ? 'compras' : (/venta|rvie|(^|[^a-z])rv([^a-z]|$)/i.test(nom) ? 'ventas' : 'compras'));
+      return { kind, idx: i, headers: aoa[i] };
+    }
+    const rhA = has(/recibo/) && has(/renta|bruto|bruta|neto|neta|honorario|importe|monto|total/);
+    const rhB = has(/renta bruta|monto bruto|importe bruto/) && has(/renta neta|monto neto|importe neto|neto/);
+    const rhC = /(^|[^a-z])(rh|rhe)([^a-z]|$)|honorario/i.test(nom) && has(/fecha/) && has(/numero|nro|recibo|comprobante|serie/) && has(/bruto|neto|monto|importe|total|honorario/);
+    if(rhA || rhB || rhC) return { kind: 'rh', idx: i, headers: aoa[i] };
+  }
+  return { kind: 'generico' };
+}
+
+/* ---------- SIRE: compras (RCE) y ventas (RVIE) ---------- */
+const DOCS_SIRE_TIPO = { '01': 'FT', '02': 'RH', '03': 'BV', '07': 'CN', '08': 'ND', '12': 'TK', '14': 'RL' };
+const DOCS_SIRE_CAJA = { '03': 1, '12': 1 };       // boletas y tickets: se pagan en caja, no quedan «pendientes»
+function docsSire(cl, aoa){
+  const h = cl.headers.map(dnorm), kind = cl.kind;
+  const ix = {
+    fecha: docsColIdx(h, /^fecha (de )?emision/, 0, /modific/),
+    venc: docsColIdx(h, /^fecha (de )?(vcto|vencimiento)|^fecha vcto/),
+    tipo: docsColIdx(h, /^tipo cp( doc)?$/),
+    serie: docsColIdx(h, /^serie del c/, 0, /modific/),
+    nro: docsColIdx(h, /^nro cp o doc/, 0, /modific|final/),
+    ident: docsColIdx(h, /identidad/, 0, /tipo/),
+    total: docsColIdx(h, /^total cp/),
+    mon: docsColIdx(h, /^moneda/),
+    tc: docsColIdx(h, /^tipo (de )?cambio/)
+  };
+  if(ix.nro < 0) ix.nro = docsColIdx(h, /^nro (inicial|cp)|^numero/, 0, /modific|final/);
+  ix.nombre = -1; h.forEach((x, i) => { if(/^apellidos|^razon social/.test(x)) ix.nombre = i; });
+  const docs = [], fuente = kind === 'compras' ? 'SIRE compras' : 'SIRE ventas';
+  let omit = 0, dmin = 0, dmax = 0;
+  for(let r = cl.idx + 1; r < aoa.length; r++){
+    const row = aoa[r]; if(!row || !row.length) continue;
+    const raw = docsStr(row[ix.tipo]);
+    if(!/^\d{1,2}$/.test(raw)) continue;
+    const cp = raw.padStart(2, '0');
+    if(DOCS_SIRE_CAJA[cp] && !docsIncBol){ omit++; continue; }
+    const total = Math.round(Math.abs(docsNum(row[ix.total])) * 100) / 100;
+    if(!total) continue;
+    const serie = docsStr(row[ix.serie]).replace(/^-$/, ''), numero = docsStr(row[ix.nro]).replace(/^-$/, '');
+    const nrodoc = serie && numero ? serie + '-' + numero : (numero || serie);
+    if(!nrodoc) continue;
+    let mon = ix.mon >= 0 && /usd|d[oó]lar|^us/i.test(docsStr(row[ix.mon])) ? 'USD' : 'PEN';
+    const tcam = ix.tc >= 0 ? docsNum(row[ix.tc]) : 0;
+    if(mon === 'USD' && !(tcam > 0)) mon = 'PEN';
+    const nc = cp === '07', pagar = kind === 'compras';
+    const cuenta = pagar ? (cp === '02' ? (mon === 'USD' ? '424102' : '424101') : (mon === 'USD' ? '421202' : '421201')) : (mon === 'USD' ? '121202' : '121201');
+    const sg = (pagar ? -1 : 1) * (nc ? -1 : 1);
+    const fecha = docsFecha(row[ix.fecha]);
+    if(fecha){ const k = +fecha.slice(6) * 10000 + +fecha.slice(3, 5) * 100 + +fecha.slice(0, 2); if(!dmin || k < dmin) dmin = k; if(k > dmax) dmax = k; }
+    docs.push({
+      cuenta, tipo: DOCS_SIRE_TIPO[cp] || cp, nrodoc, moneda: mon,
+      saldoUsd: mon === 'USD' ? Math.round(total / tcam * 100) / 100 * sg : 0,
+      saldoPen: total * sg,
+      anexo: ix.ident >= 0 ? docsStr(row[ix.ident]) : '', fecha, venc: ix.venc >= 0 ? docsFecha(row[ix.venc]) : '',
+      nombre: ix.nombre >= 0 ? docsStr(row[ix.nombre]) : '', used: false, fuente
+    });
+  }
+  return { docs, omit, dmin, dmax, fuente };
+}
+
+/* ---------- recibos por honorarios ---------- */
+function docsRh(cl, aoa){
+  const h = cl.headers.map(dnorm), f = (re, not) => docsColIdx(h, re, 0, not);
+  const ix = {
+    nro: f(/^(nro|numero|n) ?(de )?(recibo|rh|rhe)|^recibo|^serie y numero|^serie numero|^comprobante|^numero$|^nro$/),
+    fecha: f(/^fecha (de )?emision|^fec emision|^fecha$/),
+    est: f(/^estado/),
+    mon: f(/^moneda/),
+    pend: f(/pendiente/),
+    neto: f(/renta neta|monto neto|importe neto|neto a pagar|^neto/),
+    bruto: f(/renta bruta|monto bruto|importe bruto|^honorarios|^total honorarios|^importe$|^monto$|^total$|^valor/),
+    ret: f(/retencion|impuesto a la renta|^ir( |$)|renta 4/, /bruta|neta/),
+    ident: f(/^(nro|numero|n) ?(de )?(doc|ruc|dni)|^ruc|^dni|doc.*identidad|^documento$/, /recibo|tipo/),
+    nombre: f(/^(apellidos|nombres?|razon|prestador|emisor|contribuyente|proveedor)/)
+  };
+  const docs = []; let dmin = 0, dmax = 0;
+  for(let r = cl.idx + 1; r < aoa.length; r++){
+    const row = aoa[r]; if(!row || !row.length) continue;
+    const nrodoc = ix.nro >= 0 ? docsStr(row[ix.nro]) : '';
+    if(!nrodoc || !/\d/.test(nrodoc)) continue;
+    if(ix.est >= 0 && /anul|baja|extorn|deshech/i.test(docsStr(row[ix.est]))) continue;
+    let monto = 0;
+    if(ix.pend >= 0 && docsStr(row[ix.pend]) !== '') monto = docsNum(row[ix.pend]);
+    else if(ix.neto >= 0 && docsStr(row[ix.neto]) !== '') monto = docsNum(row[ix.neto]);
+    else if(ix.bruto >= 0) monto = docsNum(row[ix.bruto]) - (ix.ret >= 0 ? Math.abs(docsNum(row[ix.ret])) : 0);
+    monto = Math.round(Math.abs(monto) * 100) / 100;
+    if(!monto) continue;
+    const mon = ix.mon >= 0 && /usd|d[oó]lar|^us/i.test(docsStr(row[ix.mon])) ? 'USD' : 'PEN';
+    const fecha = ix.fecha >= 0 ? docsFecha(row[ix.fecha]) : '';
+    if(fecha){ const k = +fecha.slice(6) * 10000 + +fecha.slice(3, 5) * 100 + +fecha.slice(0, 2); if(!dmin || k < dmin) dmin = k; if(k > dmax) dmax = k; }
+    docs.push({
+      cuenta: mon === 'USD' ? '424102' : '424101', tipo: 'RH', nrodoc, moneda: mon,
+      saldoUsd: mon === 'USD' ? -monto : 0, saldoPen: mon === 'USD' ? 0 : -monto,
+      anexo: ix.ident >= 0 ? docsStr(row[ix.ident]) : '', fecha, venc: '',
+      nombre: ix.nombre >= 0 ? docsStr(row[ix.nombre]) : '', used: false, fuente: 'RH'
+    });
+  }
+  return { docs, omit: 0, dmin, dmax, fuente: 'RH' };
+}
+
+/* ---------- reporte de otro sistema contable ---------- */
+const DOCS_ALIAS = {
+  map_cuenta: ['cuenta contable', 'cuenta', 'cta contable', 'cod cuenta', 'codigo cuenta', 'cta'],
+  map_tipo: ['tipo documento', 'tipo doc', 'tipo comprobante', 'tipo de comprobante', 'tipo de documento', 'tipo cp', 'td', 't doc', 'tipo'],
+  map_nrodoc: ['numero documento', 'nro documento', 'n documento', 'numero de documento', 'nro doc', 'n doc', 'num doc', 'comprobante', 'numero', 'nro', 'documento', 'factura'],
+  map_moneda: ['moneda', 'mon', 'divisa'],
+  map_saldoUsd: ['saldo dolares', 'saldo usd', 'saldo me', 'saldo moneda extranjera', 'saldo extranjera', 'pendiente usd', 'pendiente me', 'importe me', 'sal dolares'],
+  map_saldoPen: ['saldo soles', 'saldo mn', 'saldo moneda nacional', 'pendiente soles', 'pendiente mn', 'importe mn', 'sal m nacional'],
+  map_anexo: ['ruc', 'nro documento identidad', 'numero de documento de identidad', 'dni', 'codigo anexo', 'cod anexo', 'anexo', 'nro ruc'],
+  map_nombre: ['razon social', 'proveedor', 'cliente', 'nombre', 'nombres', 'descripcion anexo', 'beneficiario'],
+  map_venc: ['fecha vencimiento', 'fecha de vencimiento', 'fec vencimiento', 'fec venc', 'vencimiento', 'fecha vcto', 'vcto'],
+  map_fecha: ['fecha emision', 'fecha de emision', 'fecha documento', 'fecha de documento', 'fec emision', 'fec doc', 'fecha']
+};
+const DOCS_ALIAS_ORDER = ['map_cuenta', 'map_tipo', 'map_nrodoc', 'map_moneda', 'map_saldoUsd', 'map_saldoPen', 'map_anexo', 'map_venc', 'map_fecha', 'map_nombre'];
+/* completa lo que el servidor no reconoció; agrega «serie aparte» y «saldo en una sola columna» */
+function docsGuess(headers, g0, rows){
+  const g = Object.assign({}, g0 || {}), H = headers.map(dnorm), used = new Set();
+  const find = (aliases) => {
+    for(const a of aliases){ const i = H.findIndex((x, j) => x === a && !used.has(headers[j])); if(i >= 0) return headers[i]; }
+    for(const a of aliases){ if(a.length < 4) continue; const re = new RegExp('(^| )' + a + '( |$)'); const i = H.findIndex((x, j) => re.test(x) && !used.has(headers[j])); if(i >= 0) return headers[i]; }
+    return '';
+  };
+  DOCS_ALIAS_ORDER.forEach(k => { if(g[k] && used.has(g[k])) g[k] = ''; if(!g[k]) g[k] = find(DOCS_ALIAS[k]); if(g[k]) used.add(g[k]); });
+  /* una columna de «saldo» que no dice soles ni dólares (p. ej. «Saldo pendiente») es un saldo único: la moneda va en otra columna */
+  g.map_saldo = g.map_saldo || '';
+  if(g.map_saldoPen && !g.map_saldoUsd && !/soles|(^| )mn( |$)|nacional|(^| )pen( |$)|(^| )s( |$)/.test(dnorm(g.map_saldoPen))){ g.map_saldo = g.map_saldoPen; g.map_saldoPen = ''; }
+  if(g.map_saldoUsd && !g.map_saldoPen && !g.map_saldo && !/dolar|usd|(^| )me( |$)|extranjera|\$/.test(dnorm(g.map_saldoUsd))){ g.map_saldo = g.map_saldoUsd; g.map_saldoUsd = ''; }
+  if(!g.map_saldo && !g.map_saldoPen && !g.map_saldoUsd) g.map_saldo = find(['saldo pendiente', 'saldo', 'pendiente', 'importe pendiente', 'monto pendiente', 'saldo actual', 'por pagar', 'por cobrar', 'deuda']);
+  g.map_serie = g.map_serie || find(['serie', 'serie documento', 'serie doc', 'serie comprobante']);
+  /* «anexo» es un código (RUC, DNI) y «nombre» un texto: si salieron al revés, se cambian mirando los datos */
+  if(rows && rows.length && g.map_anexo && g.map_nombre){
+    const num = h => { const v = rows.slice(0, 40).map(r => docsStr(r[h])).filter(Boolean); return v.length ? v.filter(x => /^[0-9\-]{6,}$/.test(x)).length / v.length : 0; };
+    if(num(g.map_anexo) < 0.5 && num(g.map_nombre) >= 0.5){ const t = g.map_anexo; g.map_anexo = g.map_nombre; g.map_nombre = t; }
+  }
+  return g;
+}
+const docsEsConcar = headers => { const H = headers.map(dnorm); return H.some(x => /^sal dolares$/.test(x)) && H.some(x => /^sal m nacional$/.test(x)); };
+function docsTipoNorm(v){
+  const raw = docsStr(v), s = dnorm(raw);
+  if(!s) return '';
+  if(/^(1|01|ft|factura.*)$/.test(s)) return 'FT';
+  if(/^(3|03|bv|boleta.*)$/.test(s)) return 'BV';
+  if(/^(2|02|rh|rhe|recibo (por )?honorarios.*)$/.test(s)) return 'RH';
+  if(/^(7|07|nc|cn|nota (de )?credito.*)$/.test(s)) return 'CN';
+  if(/^(8|08|nd|nota (de )?debito.*)$/.test(s)) return 'ND';
+  return raw.length <= 3 ? raw.toUpperCase() : raw;
+}
+const docsFlujoHint = nom => /cobrar|cliente|venta|rvie|ingreso/i.test(nom || '') ? 'cobrar' : (/pagar|proveedor|compra|rce|egreso/i.test(nom || '') ? 'pagar' : '');
+async function docsDetect(aoa){ return await EC.call('detectReport', { aoa }, { heavy: true, label: 'Buscando la tabla en el reporte…' }); }
+/* rep = { rows, headers }, map = { cuenta, tipo, nrodoc, moneda, saldoUsd, saldoPen, anexo, fecha, venc, nombre }, ctl = { serie, saldo, flujo } */
+async function docsBuildGeneric(rep, map, ctl){
+  ctl = ctl || {};
+  const rows = rep.rows || [];
+  if(docsEsConcar(rep.headers || []) && !ctl.serie && !ctl.saldo && !ctl.flujo){
+    const d = await EC.call('buildDocs', { raw: rows, mapping: map }, { heavy: true, label: 'Leyendo los documentos pendientes…' });
+    return d.docs || [];
+  }
+  const rowsC = rows.map(r => {
+    const mon = map.moneda ? normalizeMoneda(r[map.moneda]) : 'PEN';
+    let nro = docsStr(map.nrodoc ? r[map.nrodoc] : '');
+    const serie = ctl.serie ? docsStr(r[ctl.serie]) : '';
+    if(serie) nro = nro ? (/-/.test(nro) ? nro : serie + '-' + nro) : serie;
+    let pen = 0, usd = 0;
+    if(ctl.saldo){ const v = docsNum(r[ctl.saldo]); if(mon === 'USD') usd = v; else pen = v; }
+    else { pen = map.saldoPen ? docsNum(r[map.saldoPen]) : 0; usd = map.saldoUsd ? docsNum(r[map.saldoUsd]) : 0; }
+    let cta = docsStr(map.cuenta ? r[map.cuenta] : '');
+    if(!cta && ctl.flujo) cta = (ctl.flujo === 'cobrar' ? '1212' : '4212') + (mon === 'USD' ? '02' : '01');
+    return { cta, tipo: docsTipoNorm(map.tipo ? r[map.tipo] : ''), nro, mon, pen, usd,
+      anexo: docsStr(map.anexo ? r[map.anexo] : ''), fecha: map.fecha ? r[map.fecha] : '', venc: map.venc ? r[map.venc] : '', nombre: docsStr(map.nombre ? r[map.nombre] : '') };
+  });
+  /* ¿el reporte ya viene con signo (por pagar en negativo, como el de CONCAR)? entonces no se toca */
+  const p4 = rowsC.filter(x => /^4/.test(x.cta));
+  const firmado = docsEsConcar(rep.headers || []) || (p4.length >= 3 && p4.filter(x => (x.pen || x.usd) < 0).length / p4.length >= 0.5);
+  const out = rowsC.map(x => {
+    const flip = !firmado && /^4/.test(x.cta) ? -1 : 1;
+    return { 'Cuenta': x.cta, 'Tipo': x.tipo, 'Nro': x.nro, 'Moneda': x.mon, 'USD': x.usd * flip, 'PEN': x.pen * flip, 'Anexo': x.anexo, 'Fecha': x.fecha, 'Venc': x.venc, 'Nombre': x.nombre };
+  });
+  const m2 = { cuenta: 'Cuenta', tipo: 'Tipo', nrodoc: 'Nro', moneda: 'Moneda', saldoUsd: 'USD', saldoPen: 'PEN', anexo: 'Anexo', fecha: 'Fecha', venc: 'Venc', nombre: 'Nombre' };
+  const d = await EC.call('buildDocs', { raw: out, mapping: m2 }, { heavy: true, label: 'Leyendo los documentos pendientes…' });
+  return d.docs || [];
+}
+/* sin mapeo a mano: solo si todo se reconoce (Pestaña 6 y Proyección) */
+async function docsAutoGeneric(rep, nombre){
+  const g = docsGuess(rep.headers, rep.guess, rep.rows);
+  const map = { cuenta: g.map_cuenta, tipo: g.map_tipo, nrodoc: g.map_nrodoc, moneda: g.map_moneda, saldoUsd: g.map_saldoUsd, saldoPen: g.map_saldoPen, anexo: g.map_anexo, fecha: g.map_fecha, venc: g.map_venc, nombre: g.map_nombre };
+  const ctl = { serie: g.map_serie && !/-/.test(docsStr((rep.rows[0] || {})[g.map_nrodoc])) ? g.map_serie : '', saldo: g.map_saldo || '', flujo: '' };
+  const faltan = [];
+  if(!map.nrodoc) faltan.push('N° Documento');
+  if(!(map.saldoPen || map.saldoUsd || ctl.saldo)) faltan.push('Saldo');
+  if(!map.cuenta){ ctl.flujo = docsFlujoHint(nombre); if(!ctl.flujo) faltan.push('Cuenta (o si es por pagar o por cobrar)'); }
+  if(faltan.length) return { error: nombre + ': no se reconocieron estas columnas del reporte: ' + faltan.join(', ') + '. Súbelo en la Pestaña 2 para indicar las columnas a mano.' };
+  const docs = await docsBuildGeneric(rep, map, ctl);
+  if(!docs.length) return { error: nombre + ': no encontré documentos con saldo.' };
+  return { docs };
+}
+
+/* ---------- cargar uno o varios archivos ---------- */
+async function docsLoad(files){
+  const out = { sources: [], generic: [], skipped: [], errors: [] };
+  for(const file of files){
+    let tables;
+    try{ tables = await docsTables(file.name, new Uint8Array(await file.arrayBuffer()), 0); }
+    catch(e){ out.errors.push(file.name + ': ' + (e && e.message || e)); continue; }
+    if(!tables.length){ out.skipped.push(file.name); continue; }
+    const hechos = [], gen = [];
+    for(const t of tables){
+      const cl = docsClassify(t);
+      if(cl.kind === 'compras' || cl.kind === 'ventas') hechos.push(Object.assign({ file: t.file }, docsSire(cl, t.aoa)));
+      else if(cl.kind === 'rh') hechos.push(Object.assign({ file: t.file }, docsRh(cl, t.aoa)));
+      else gen.push(t);
+    }
+    hechos.forEach(s => out.sources.push(s));
+    if(!hechos.length && gen.length){
+      const t = gen[0];
+      const rep = await docsDetect(t.aoa);
+      if(rep && rep.rows && rep.rows.length) out.generic.push({ file: t.file, rep, headerRowIdx: rep.headerRowIdx });
+      else out.skipped.push(file.name);
+    }
+  }
+  return out;
+}
+
+/* ---------- unir con lo ya cargado (sin repetir comprobantes) ---------- */
+function docsNroKey(s){
+  const t = String(s == null ? '' : s).toUpperCase().replace(/\s+/g, '');
+  const m = /^([A-Z0-9]+)-0*(\d+)$/.exec(t);
+  return m ? m[1] + '-' + m[2] : t;
+}
+const docsKey = d => [String(d.cuenta || '').trim(), String(d.tipo || '').trim().toUpperCase(), docsNroKey(d.nrodoc), String(d.anexo || '').trim()].join('|');
+/* el reporte del sistema contable trae el saldo real (con pagos parciales): gana sobre el SIRE y el RH si el comprobante está en los dos */
+const docsDeReporte = d => !d.fuente || d.fuente === 'Reporte' || d.fuente === 'Manual';
+function docsMerge(base, nuevos){
+  const pos = new Map(), list = base.slice();
+  list.forEach((d, i) => pos.set(docsKey(d), i));
+  let add = 0, dup = 0, repl = 0; const porFuente = {};
+  nuevos.forEach(d => {
+    const k = docsKey(d), f = d.fuente || 'Reporte';
+    if(pos.has(k)){
+      const i = pos.get(k);
+      if(docsDeReporte(d) && !docsDeReporte(list[i])){ list[i] = d; repl++; porFuente[f] = (porFuente[f] || 0) + 1; }
+      else dup++;
+      return;
+    }
+    pos.set(k, list.length); list.push(d); add++; porFuente[f] = (porFuente[f] || 0) + 1;
+  });
+  return { list, add, dup, repl, porFuente };
+}
+function docsGroups(list){ const m = new Map(); list.forEach(d => { const k = d.fuente || 'Reporte'; m.set(k, (m.get(k) || 0) + 1); }); return m; }
+function docsChipsRender(id, list, attr){
+  const el = document.getElementById(id); if(!el) return;
+  const g = docsGroups(list);
+  el.innerHTML = Array.from(g.entries()).map(([k, n]) => `<span class="src-chip"><b>${escapeHtml(k)}</b> · ${n.toLocaleString('en-US')} doc.<button type="button" class="src-x" ${attr}="${escapeHtml(k)}" title="Quitar estos documentos" aria-label="Quitar ${escapeHtml(k)}">✕</button></span>`).join('');
+}
+function docsPeriodoTxt(s){
+  if(!s.dmin) return '';
+  const f = k => String(k % 100).padStart(2, '0') + '/' + String(Math.floor(k / 100) % 100).padStart(2, '0') + '/' + Math.floor(k / 10000);
+  return f(s.dmin) + ' al ' + f(s.dmax);
+}
+/* resumen en una frase de lo que dejó la carga */
+function docsResumen(r, mg){
+  const p = [];
+  const porFuente = {};
+  if(mg && mg.porFuente) Object.assign(porFuente, mg.porFuente);
+  else r.sources.forEach(s => { porFuente[s.fuente] = (porFuente[s.fuente] || 0) + s.docs.length; });
+  Object.keys(porFuente).forEach(k => p.push(k + ': ' + porFuente[k].toLocaleString('en-US')));
+  const omit = r.sources.reduce((a, s) => a + (s.omit || 0), 0);
+  let t = p.length ? 'Cargado → ' + p.join(' · ') + '.' : '';
+  if(mg && mg.dup) t += ` ${mg.dup.toLocaleString('en-US')} repetido(s) no se volvieron a agregar.`;
+  if(mg && mg.repl) t += ` ${mg.repl.toLocaleString('en-US')} comprobante(s) del SIRE se reemplazaron por el reporte, que trae el saldo real.`;
+  if(omit) t += ` Omití ${omit.toLocaleString('en-US')} boleta(s) y ticket(s) (marca «Incluir boletas y tickets» y vuelve a subir si los necesitas).`;
+  if(r.skipped.length) t += ' Sin tabla reconocible: ' + r.skipped.join(', ') + '.';
+  if(r.errors.length) t += ' ' + r.errors.join(' ');
+  return t.trim();
+}
+
+/* ---------- plantilla para cualquier sistema ---------- */
+function docsTemplate(){
+  const head = ['Cuenta Contable', 'Tipo Doc.', 'N° Documento', 'Moneda', 'Saldo Soles', 'Saldo Dólares', 'RUC / Anexo', 'Nombre o Razón social', 'Fecha emisión', 'Fecha vencimiento'];
+  const ej = [
+    ['421201', 'FT', 'F001-123', 'PEN', 1180, '', '20123456789', 'PROVEEDOR EJEMPLO SAC', '05/11/2026', '05/12/2026'],
+    ['121201', 'FT', 'E001-45', 'PEN', 2360, '', '20987654321', 'CLIENTE EJEMPLO SAC', '10/11/2026', ''],
+    ['424101', 'RH', 'E001-8', 'PEN', 920, '', '10456789012', 'JUAN PEREZ', '12/11/2026', ''],
+    ['421202', 'FT', 'F002-9', 'USD', '', 500, '20111222333', 'PROVEEDOR USD SAC', '03/11/2026', ''],
+    ['421201', 'CN', 'F001-124', 'PEN', -118, '', '20123456789', 'PROVEEDOR EJEMPLO SAC', '06/11/2026', '']
+  ];
+  const ins = [
+    ['Cómo llenar la hoja «Documentos pendientes»'],
+    [''],
+    ['• Una fila por comprobante que todavía no se cancela. Solo se lee la primera hoja.'],
+    ['• Cuenta Contable: 4212xx / 4241xx si es por pagar; 1212xx si es por cobrar. Si tu reporte no la trae, déjala vacía y en el programa indicas si es por pagar o por cobrar.'],
+    ['• Saldo: siempre en positivo. Una nota de crédito va en negativo. Usa «Saldo Soles» o «Saldo Dólares» según la moneda.'],
+    ['• N° Documento: serie y número juntos (F001-123). Si los tienes separados, súbelos así y el programa los une.'],
+    ['• Tipo Doc.: FT, BV, RH, CN (nota de crédito), ND… Para las cuentas 421201/421202 solo FT, CN, BP y RL; 424101 solo RH.'],
+    ['• Fechas: dd/mm/aaaa. La fecha de emisión ayuda a sugerir qué documento cancela cada pago.'],
+    ['• No hace falta usar esta plantilla: también puedes subir el reporte de tu sistema, los ZIP del SIRE y los RH del año.']
+  ];
+  const ws1 = XLSX.utils.aoa_to_sheet([head]);
+  ws1['!cols'] = [14, 10, 16, 8, 13, 14, 14, 30, 14, 16].map(w => ({ wch: w }));
+  const ws2 = XLSX.utils.aoa_to_sheet([['EJEMPLO (no se carga). Copia el estilo en la hoja «Documentos pendientes».'], head].concat(ej));
+  ws2['!cols'] = ws1['!cols'];
+  const ws3 = XLSX.utils.aoa_to_sheet(ins); ws3['!cols'] = [{ wch: 130 }];
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws1, 'Documentos pendientes');
+  XLSX.utils.book_append_sheet(wb, ws2, 'Ejemplo');
+  XLSX.utils.book_append_sheet(wb, ws3, 'Instrucciones');
+  XLSX.writeFile(wb, 'plantilla_documentos_pendientes.xlsx');
+}
+
+/* ---------- Pestaña 2 ---------- */
+let pdDocsFiltro = '';
+const PD_DOCS_MAX = 300;
+async function handlePdFiles(files){
+  files = Array.from(files || []).filter(Boolean);
+  if(!files.length) return;
+  pdFileStatus.textContent = files.length === 1 ? 'Leyendo ' + files[0].name + '…' : 'Leyendo ' + files.length + ' archivos…';
+  let r;
+  try{ r = await docsLoad(files); }
+  catch(err){ pdFileStatus.textContent = 'Error leyendo los archivos: ' + (err && err.message || err); return; }
+  let mg = null;
+  if(r.sources.length){
+    mg = docsMerge(pendingDocs, [].concat.apply([], r.sources.map(s => s.docs)));
+    pendingDocs = mg.list;
+    document.getElementById('pdDocsBox').style.display = 'block';
+  }
+  pdGenQueue = r.generic.slice();
+  const resumen = docsResumen(r, mg);
+  if(pdGenQueue.length){ pdOpenMapping(pdGenQueue.shift(), resumen); }
+  else {
+    pdFileStatus.textContent = resumen || 'No encontré documentos en ' + (files.length === 1 ? files[0].name : 'los archivos') + '.';
+    if(!r.sources.length) pdMappingBox.style.display = pendingDocsRaw.length ? pdMappingBox.style.display : 'none';
+  }
+  renderPdDocsTable();
+  if(r.sources.length) scheduleExtSave();
+}
+async function handlePdFile(file){ return handlePdFiles([file]); }
+function pdOpenMapping(item, prefijo){
+  const rep = item.rep;
+  pendingDocsRaw = rep.rows; pendingDocsHeaders = rep.headers;
+  const g = docsGuess(rep.headers, rep.guess, rep.rows);
+  ['map_cuenta', 'map_tipo', 'map_nrodoc', 'map_moneda', 'map_saldoUsd', 'map_saldoPen', 'map_anexo', 'map_fecha', 'map_venc', 'map_nombre', 'map_serie', 'map_saldo'].forEach(id => {
+    const sel = document.getElementById(id); if(!sel) return;
+    sel.innerHTML = '<option value="">(ninguna)</option>' + rep.headers.map(h => `<option value="${escapeHtml(h)}">${escapeHtml(h)}</option>`).join('');
+    const v = g[id];
+    if(v && !(id === 'map_serie' && /-/.test(docsStr((rep.rows[0] || {})[g.map_nrodoc])))) sel.value = v;
+  });
+  const fl = document.getElementById('map_flujo');
+  if(fl) fl.value = g.map_cuenta ? '' : docsFlujoHint(item.file);
+  pdMappingBox.style.display = 'block';
+  pdFileStatus.textContent = (prefijo ? prefijo + ' ' : '') + `${item.file}: encabezados detectados en la fila ${(item.headerRowIdx || 0) + 1}, ${pendingDocsRaw.length} filas de datos leídas. Revisa el mapeo de columnas abajo.` + (pdGenQueue.length ? ` (Faltan ${pdGenQueue.length} reporte(s) más.)` : '');
+}
+pdConfirmMapBtn.addEventListener('click', async () => {
+  const val = id => { const e = document.getElementById(id); return e ? e.value : ''; };
+  const mapping = { cuenta: val('map_cuenta'), tipo: val('map_tipo'), nrodoc: val('map_nrodoc'), moneda: val('map_moneda'), saldoUsd: val('map_saldoUsd'), saldoPen: val('map_saldoPen'), anexo: val('map_anexo'), fecha: val('map_fecha'), venc: val('map_venc'), nombre: val('map_nombre') };
+  const ctl = { serie: val('map_serie'), saldo: val('map_saldo'), flujo: val('map_flujo') };
+  if(!mapping.nrodoc){ toast('Indica la columna del N° de documento.', 'warn'); return; }
+  if(!(mapping.saldoPen || mapping.saldoUsd || ctl.saldo)){ toast('Indica la columna del saldo (soles, dólares o una sola).', 'warn'); return; }
+  if(!mapping.cuenta && !ctl.flujo){ toast('El reporte no trae cuenta: elige si es «por pagar» o «por cobrar».', 'warn'); return; }
+  let docs;
+  try{ docs = await docsBuildGeneric({ rows: pendingDocsRaw, headers: pendingDocsHeaders }, mapping, ctl); }
+  catch(e){ ecFail(e); return; }
+  docs.forEach(d => { d.fuente = 'Reporte'; });
+  const mgR = docsMerge(pendingDocs.filter(d => d.fuente && d.fuente !== 'Reporte'), docs);
+  pendingDocs = mgR.list;
+  pdFileStatus.textContent = `Columnas confirmadas: ${docs.length} documentos pendientes con saldo distinto de cero.` + (mgR.repl ? ` ${mgR.repl} comprobante(s) del SIRE se reemplazaron por el reporte, que trae el saldo real.` : '');
+  document.getElementById('pdDocsBox').style.display = 'block';
+  if(pdGenQueue.length){ pdOpenMapping(pdGenQueue.shift(), pdFileStatus.textContent); }
+  else { pendingDocsRaw = []; pdMappingBox.style.display = 'none'; }
+  renderPdDocsTable();
+  setPdBtns();
+  scheduleExtSave();
+});
+
+/* ---------- Pestaña 6 / Proyección ---------- */
+async function diaLoadDocsFile(file){ return diaLoadDocsFiles([file]); }
+async function diaLoadDocsFiles(files){
+  files = Array.from(files || []).filter(Boolean);
+  if(!files.length) return;
+  const st = dEl('diaDocsStatus');
+  try{
+    st.textContent = files.length === 1 ? 'Leyendo ' + files[0].name + '…' : 'Leyendo ' + files.length + ' archivos…';
+    const r = await docsLoad(files);
+    const nuevos = [].concat.apply([], r.sources.map(s => s.docs));
+    const errs = r.errors.slice();
+    for(const g of r.generic){
+      const a = await docsAutoGeneric(g.rep, g.file);
+      if(a.docs){ a.docs.forEach(d => { d.fuente = 'Reporte'; }); nuevos.push.apply(nuevos, a.docs); } else errs.push(a.error);
+    }
+    if(!nuevos.length){ st.textContent = (errs.join(' ') || docsResumen(r, null) || 'No encontré documentos en los archivos.').trim(); return; }
+    const hayRep = nuevos.some(d => d.fuente === 'Reporte');
+    const base = diaDocsSrc === 'own' ? diaDocsOwn.filter(d => !hayRep || (d.fuente && d.fuente !== 'Reporte')) : [];
+    const mg = docsMerge(base, nuevos);
+    diaDocsOwn = mg.list.map(diaLeanDoc); diaDocsSrc = 'own';
+    diaDocsName = Array.from(docsGroups(diaDocsOwn).keys()).join(' + ');
+    diaDocsChanged();
+    const msg = docsResumen(r, mg) + (errs.length ? ' ' + errs.join(' ') : '');
+    if(msg) toast(msg, errs.length ? 'warn' : 'ok');
+  }catch(e){ st.textContent = 'No se pudo leer el reporte.'; ecFail(e); }
+}
+
+
+function renderPdDocsTable(){
+  const body = document.getElementById('pdDocsBody');
+  body.innerHTML = '';
+  const q = dnorm(pdDocsFiltro);
+  let shown = 0, total = 0;
+  const frag = document.createDocumentFragment();
+  pendingDocs.forEach((d, i) => {
+    if(q && !dnorm([d.cuenta, d.tipo, d.nrodoc, d.anexo, d.nombre, d.fuente].join(' ')).includes(q)) return;
+    total++;
+    if(shown >= PD_DOCS_MAX) return;
+    shown++;
+    const tr = document.createElement('tr');
+    tr.dataset.i = i;
+    tr.innerHTML = `
+      <td contenteditable="true" data-field="cuenta">${escapeHtml(d.cuenta)}</td>
+      <td contenteditable="true" data-field="tipo">${escapeHtml(d.tipo)}</td>
+      <td contenteditable="true" data-field="nrodoc">${escapeHtml(d.nrodoc)}</td>
+      <td contenteditable="true" data-field="moneda">${escapeHtml(d.moneda)}</td>
+      <td contenteditable="true" data-field="saldoUsd" class="num">${d.saldoUsd ? d.saldoUsd.toFixed(2) : ''}</td>
+      <td contenteditable="true" data-field="saldoPen" class="num">${d.saldoPen ? d.saldoPen.toFixed(2) : ''}</td>
+      <td contenteditable="true" data-field="anexo">${escapeHtml(d.anexo)}</td>
+      <td contenteditable="true" data-field="fecha">${escapeHtml(d.fecha || '')}</td>
+      <td contenteditable="true" data-field="nombre">${escapeHtml(d.nombre || '')}</td>
+      <td class="row-actions"><span data-i="${i}" class="delDocRow">✕</span></td>
+    `;
+    frag.appendChild(tr);
+  });
+  body.appendChild(frag);
+  document.getElementById('pdDocsCount').textContent = `${pendingDocs.length} documentos` + (total > shown ? ` · mostrando ${shown} de ${total}: usa el buscador` : '');
+  document.getElementById('pdStep2').classList.toggle('step-done', pendingDocs.length > 0);
+  docsChipsRender('pdSrcList', pendingDocs, 'data-pd-src');
+  setPdBtns();
+}
+
+/* controles comunes */
+(function wireDocs174(){
+  const bol = (a, b) => { const x = document.getElementById(a), y = document.getElementById(b); [x, y].forEach(el => { if(el) el.addEventListener('change', () => { docsIncBol = el.checked; if(x) x.checked = docsIncBol; if(y) y.checked = docsIncBol; }); }); };
+  bol('pdIncBol', 'diaIncBol');
+  ['pdTplBtn', 'diaTplBtn'].forEach(id => { const b = document.getElementById(id); if(b) b.addEventListener('click', docsTemplate); });
+  const fl = document.getElementById('pdDocsFilter');
+  if(fl) fl.addEventListener('input', () => { pdDocsFiltro = fl.value; renderPdDocsTable(); });
+  const l2 = document.getElementById('pdSrcList');
+  if(l2) l2.addEventListener('click', e => {
+    const b = e.target.closest('[data-pd-src]'); if(!b) return;
+    const k = b.dataset.pdSrc;
+    pendingDocs = pendingDocs.filter(d => (d.fuente || 'Reporte') !== k);
+    renderPdDocsTable(); setPdBtns(); scheduleExtSave();
+    pdFileStatus.textContent = pendingDocs.length ? `${pendingDocs.length} documentos pendientes cargados.` : '';
+  });
+  const l6 = document.getElementById('diaSrcList');
+  if(l6) l6.addEventListener('click', e => {
+    const b = e.target.closest('[data-dia-src]'); if(!b) return;
+    const k = b.dataset.diaSrc;
+    diaDocsOwn = diaDocsOwn.filter(d => (d.fuente || 'Reporte') !== k);
+    if(!diaDocsOwn.length){ diaDocsSrc = ''; diaDocsName = ''; } else diaDocsName = Array.from(docsGroups(diaDocsOwn).keys()).join(' + ');
+    diaDocsChanged();
+  });
+  const body = document.getElementById('pdDocsBody');
+  if(body){
+    body.addEventListener('focusout', e => {
+      const cell = e.target.closest ? e.target.closest('[contenteditable]') : null; if(!cell) return;
+      const tr = cell.closest('tr'), idx = parseInt(tr.dataset.i, 10), field = cell.dataset.field;
+      if(!(idx >= 0) || !pendingDocs[idx] || !field) return;
+      let val = cell.textContent.trim();
+      if(field === 'saldoUsd' || field === 'saldoPen') val = parseFloat(val.replace(/,/g, '')) || 0;
+      if(field === 'moneda') val = normalizeMoneda(val);
+      pendingDocs[idx][field] = val;
+    });
+    body.addEventListener('click', e => {
+      const el = e.target.closest ? e.target.closest('.delDocRow') : null; if(!el) return;
+      pendingDocs.splice(parseInt(el.dataset.i, 10), 1);
+      renderPdDocsTable();
+    });
+  }
+})();
 /* ---------------- carpeta compartida (File System Access API) ---------------- */
 const diaFS = { handle: null, timer: null, busy: false, last: null, found: 0 };
 const diaIDB = {
@@ -7588,7 +8805,8 @@ function diaReviewCounts(){
   const sinclas = eff.filter(m => m.catEff === 'sinclas').length;
   const obs = eff.filter(m => m.val && (m.val.nivel === 'warn' || m.val.nivel === 'bad')).length;
   const bad = alertas.some(a => a.nivel === 'bad') || eff.some(m => m.val && m.val.nivel === 'bad');
-  return { alertas: alertas.length, sinclas, obs, bad, n: new Set(eff.filter(m => m.flag || (m.val && (m.val.nivel === 'warn' || m.val.nivel === 'bad'))).map(m => m.id)).size };
+  const tipos = eff.filter(m => diaTipoErr(m)).length;
+  return { alertas: alertas.length, sinclas, obs, tipos, bad, n: new Set(eff.filter(m => m.flag || diaTipoErr(m) || (m.val && (m.val.nivel === 'warn' || m.val.nivel === 'bad'))).map(m => m.id)).size };
 }
 function renderDiaKpis(){
   const box = dEl('diaKpis');
@@ -7676,6 +8894,7 @@ function renderDiaLeft(){
   dEl('diaDocsStatus').textContent = docs.length
     ? (diaDocsSrc === 'tab2' ? 'Pestaña 2' : (diaDocsName || 'Reporte cargado')) + `: ${docs.length.toLocaleString('en-US')} documentos pendientes.`
     : (diaDocsSrc === 'tab2' ? 'La Pestaña 2 aún no tiene documentos pendientes.' : 'Sin documentos pendientes: no se podrán validar los comprobantes.');
+  docsChipsRender('diaSrcList', diaDocsSrc === 'own' ? diaDocsOwn : [], 'data-dia-src');
   const eff = diaEff();
   const hasMerged = !!diaMerged;
   dEl('diaCrossBtn').disabled = !(hasMerged && docs.length);
@@ -7725,7 +8944,6 @@ function diaFillCatSelects(){
   const sigB = '<option value="">Categoría…</option>' + html;
   if(b.dataset.sig !== sigB){ b.innerHTML = sigB; b.dataset.sig = sigB; }
   window._diaCatOpts = html;
-  diaColFillCats();
 }
 
 /* ---------------- Panel: gráficos ---------------- */
@@ -7813,8 +9031,8 @@ function renderDiaPanel(){
   dEl('diaPanelTabla').hidden = diaPanelMode !== 'tabla';
   const list = diaScope();
   const a = diaAgg(list);
-  const inRows = a.cats.filter(c => c.in).map(c => ({ k: c.k, t: c.t, v: c.in, n: list.filter(m => m.catEff === c.k && m.monto > 0).length })).sort((x, y) => y.v - x.v);
-  const outRows = a.cats.filter(c => c.out).map(c => ({ k: c.k, t: c.t, v: c.out, n: list.filter(m => m.catEff === c.k && m.monto < 0).length })).sort((x, y) => y.v - x.v);
+  const inRows = a.cats.filter(c => c.in).map(c => ({ k: c.k, t: c.t, v: c.in, n: list.filter(m => diaParts(m).some(([k, x]) => k === c.k && x > 0)).length })).sort((x, y) => y.v - x.v);
+  const outRows = a.cats.filter(c => c.out).map(c => ({ k: c.k, t: c.t, v: c.out, n: list.filter(m => diaParts(m).some(([k, x]) => k === c.k && x < 0)).length })).sort((x, y) => y.v - x.v);
   const rcSin = a.cats.find(c => c.k === 'sinclas');
   dEl('diaPanelNote').innerHTML = (a.pIn || a.pOut ? `Los traspasos entre cuentas propias (+${diaNum(a.pIn / 100)} / −${diaNum(a.pOut / 100)}) no se cuentan como entradas ni salidas. ` : '')
     + (rcSin ? `<b>${diaMoney(rcSin.out / 100, diaMon)}</b> de salidas siguen «por clasificar»: asígnales categoría en <u data-go="mov" style="cursor:pointer;">Movimientos</u>.` : '')
@@ -7833,15 +9051,14 @@ function renderDiaPanel(){
 }
 
 /* ---------------- Movimientos: tabla editable ---------------- */
-function diaFiltered(){
+function diaFiltered(skip){
   const q = diaFilt.q.trim().toLowerCase();
-  diaColPrep();
   const rg = diaPeriodoRange(diaEff().filter(m => !m.omit));
   return diaEff().filter(m => {
     if(m.moneda !== diaMon) return false;
     if(diaBanco !== 'all' && m.banco !== diaBanco) return false;
     if(rg && !(diaKey(m.fecha) >= rg[0] && diaKey(m.fecha) <= rg[1])) return false;
-    if(m.omit && diaFilt.est !== 'omit' && !diaFilt.ids) return false;
+    if(m.omit && diaFilt.est !== 'omit' && !diaFilt.ids && !diaColAdmitsOmit(skip)) return false;
     if(diaFilt.ids && !diaFilt.ids.has(m.id)) return false;
     if(diaFilt.dia && m.fecha !== diaFilt.dia) return false;
     if(diaFilt.cat !== 'all' && m.catEff !== diaFilt.cat) return false;
@@ -7856,7 +9073,7 @@ function diaFiltered(){
     if(e === 'omit' && !m.omit) return false;
     if(e === 'tarde' && !m.tarde) return false;
     if(e === 'cerrado' && !m.cerrado) return false;
-    if(!diaColMatch(m)) return false;
+    if(!diaColMatch(m, skip)) return false;
     if(q && ![m.descripcion, m.operacion, m.nro, m.cta, m.anexo, m.fecha, diaCatT(m.catEff), diaGlosaOf(m)].join(' ').toLowerCase().includes(q)) return false;
     return true;
   }).sort((a, b) => (diaKey(b.fecha) - diaKey(a.fecha)) || (a._i - b._i));
@@ -7870,6 +9087,10 @@ function diaEstadoHtml(m){
     pills.push(`<span class="badge pill-sinmatch" title="${escapeHtml(manual ? diaOmitWhy({}) : diaOmitWhy(m))}">${manual || !m.omitMotivo ? 'Eliminado' : 'Excluido'}</span>`);
   }
   if((m.fuentes || []).length > 1) pills.push(`<span class="badge" title="Aparece en ${m.fuentes.length} descargas y se cuenta una sola vez.">En ${m.fuentes.length} descargas</span>`);
+  if(m.com && m.monto < 0) pills.push(m.comMonto > 0
+    ? `<span class="badge pill-noaplica" title="Comisión bancaria de ${diaNum(m.comMonto)} separada del pago: va a «ITF y comisiones» en el flujo y al gasto 639101 en el asiento.">Comisión ${diaNum(m.comMonto)}</span>`
+    : `<span class="badge pill-sugerencia" title="Marcaste comisión bancaria pero falta el importe: escríbelo en la columna Comisión para separarla del pago.">Falta importe de comisión</span>`);
+  { const te = diaTipoErr(m); if(te) pills.push(`<span class="badge pill-bad" title="${escapeHtml(te)}">Tipo no válido</span>`); }
   if(m.flag){
     const why = (m.revisar || []).map(c => DIA_REVISAR[c] || c).join(' ');
     pills.push(`<span class="badge pill-bad" title="${escapeHtml(why || 'Tiene una alerta sin revisar.')}">Revisar</span>`);
@@ -7896,7 +9117,7 @@ function diaRowHtml(m){
   const cls = ['', m.omit ? 'dia-omit' : '', m.flag ? 'dia-flag' : '', m.cerrado ? 'dia-lock' : '', diaSel.has(m.id) ? 'dia-sel' : ''].filter(Boolean).join(' ');
   const id = escapeHtml(m.id);
   const cat = `<select class="dia-cat" data-id="${id}" aria-label="Categoría"${m.cerrado ? ' disabled' : ''}>${window._diaCatOpts.replace(`value="${m.catEff}"`, `value="${m.catEff}" selected`)}</select>`;
-  const inp = (f, c, v, ph, lab) => `<input type="text" class="dia-in ${c}" data-id="${id}" data-f="${f}" value="${escapeHtml(v)}" placeholder="${ph}" aria-label="${lab}" autocomplete="off"${m.cerrado ? ' disabled' : ''}>`;
+  const inp = (f, c, v, ph, lab) => `<input type="text" class="dia-in ${c}" data-id="${id}" data-f="${f}" value="${escapeHtml(v)}" placeholder="${ph}" aria-label="${lab}" autocomplete="off" title="${escapeHtml(DIA_HINT[f] || '')}"${m.cerrado ? ' disabled' : ''}>`;
   const acts = [];
   if(m.catUser) acts.push(`<button type="button" data-act="catauto" title="Volver a la categoría automática">↺</button>`);
   if(m.auto) acts.push(`<button type="button" data-act="ok" title="Aceptar este cruce">✓</button>`);
@@ -7912,10 +9133,10 @@ function diaRowHtml(m){
     <td class="num out">${m.monto < 0 ? diaNum(-m.monto) : ''}</td>
     <td class="c-cat">${cat}</td>
     <td>${inp('cta', 'cta', m.cta, '—', 'Cuenta contable')}</td>
-    <td>${inp('tipo', 'tipo', m.tipo, '—', 'Tipo de documento')}</td>
+    <td class="c-tipo">${diaTipoCell(m, id)}</td>
     <td>${inp('nro', 'nro', m.nro, '—', 'Número de documento')}</td>
     <td>${inp('anexo', 'anx', m.anexo, '—', 'Anexo o RUC')}</td>
-    <td class="c-com"><input type="checkbox" class="dia-com" data-id="${id}" ${m.com ? 'checked' : ''} aria-label="Tiene comisión bancaria"${m.cerrado ? ' disabled' : ''}></td>
+    ${diaComCell(m, id)}
     <td class="est">${diaEstadoHtml(m)}</td>
     <td class="acts">${acts.join('')}</td></tr>`;
 }
@@ -7939,7 +9160,7 @@ function renderDiaMov(){
   const all = dEl('diaChkAll');
   const nSel = show.filter(m => diaSel.has(m.id)).length;
   all.checked = show.length > 0 && nSel === show.length; all.indeterminate = nSel > 0 && nSel < show.length;
-  diaColSync();
+  diaFxSync();
   diaOmitLabels();
   renderDiaBulk();
 }
@@ -7955,7 +9176,8 @@ function diaPatchRows(){
     const m = byId.get(tr.dataset.id); if(!m) return;
     const est = tr.querySelector('td.est'); if(est) est.innerHTML = diaEstadoHtml(m);
     const gl = tr.querySelector('td.desc'); if(gl) diaPatchGlosa(gl, m);
-    const cb = tr.querySelector('input.dia-com'); if(cb){ cb.checked = !!m.com; cb.disabled = !!m.cerrado; }
+    diaComPatch(tr, m);
+    diaTipoSync(tr, m);
     const sel = tr.querySelector('select.dia-cat'); if(sel && document.activeElement !== sel) sel.value = m.catEff;
     tr.classList.toggle('dia-flag', !!m.flag); tr.classList.toggle('dia-omit', !!m.omit); tr.classList.toggle('dia-lock', !!m.cerrado);
     const acts = tr.querySelector('td.acts');
@@ -8224,7 +9446,7 @@ function flowRealRows(list, grp, o){
     }
   }
   if(a.pIn || a.pOut){
-    const pv = per.map(p => { let v = 0; list.forEach(m => { if(m.catEff === 'propias' && p.fs.indexOf(m.fecha) >= 0) v += diaCents(m.monto); }); return r2(v / 100); });
+    const pv = per.map(p => { let v = 0; list.forEach(m => { if(p.fs.indexOf(m.fecha) < 0) return; diaParts(m).forEach(([k, c]) => { if(k === 'propias') v += c; }); }); return r2(v / 100); });
     rows.push({ k: 'memo', l: 'Traspasos entre cuentas propias (no suman)', v: pv, t: sum(pv) });
   }
   return { per, rows, a, tin: T.tin, tout: T.tout, net };
@@ -9123,8 +10345,8 @@ async function proyFromTab2(){
     proyChanged(true);
   }catch(e){ ecFail(e); }
 }
-async function proyUploadDocs(file){
-  await diaLoadDocsFile(file);
+async function proyUploadDocs(files){
+  await diaLoadDocsFiles(Array.isArray(files) ? files : [files]);
   if(proyDocs().length) await proyFromTab2();
 }
 function proyDownloadTpl(){
@@ -9271,7 +10493,7 @@ function proyApply(s){
   dz.addEventListener('drop', e => { e.preventDefault(); dz.classList.remove('drag'); proyIngest(e.dataTransfer.files); });
   dEl('pyTab2Btn').addEventListener('click', proyFromTab2);
   dEl('pyDocsUpBtn').addEventListener('click', () => dEl('pyDocsInput').click());
-  dEl('pyDocsInput').addEventListener('change', e => { const f = e.target.files[0]; e.target.value = ''; if(f) proyUploadDocs(f); });
+  dEl('pyDocsInput').addEventListener('change', e => { const fs = Array.from(e.target.files); e.target.value = ''; if(fs.length) proyUploadDocs(fs); });
   dEl('pyXlsxBtn').addEventListener('click', proyExportXlsx);
   dEl('pyShareBtn').addEventListener('click', () => shOpen('proy'));
   dEl('pyDetSeg').addEventListener('click', e => { const b = e.target.closest('button[data-fd]'); if(!b) return; flowDet = b.dataset.fd === 'grp' ? 'grp' : 'det'; if(proy.res) renderProyMatrix(proy.res); renderDiaFlowCtl(); scheduleExtSave(); });
@@ -9387,8 +10609,8 @@ function renderDiaAlertas(){
   al.sort((x, y) => (!!diaAck[diaAlertKey(x)] - !!diaAck[diaAlertKey(y)]) || (rank[x.nivel] - rank[y.nivel]));
   const rc = diaMerged ? diaReviewCounts() : null;
   const cards = [];
-  if(rc && (rc.obs || rc.sinclas)){
-    cards.push(`<div class="dia-alert ${diaValResumen && diaValResumen.bad ? 'bad' : 'warn'}"><svg class="ico ic"><use href="#i-alert"/></svg><h4>Comprobantes y clasificación</h4><p>${rc.obs ? `<b>${rc.obs}</b> movimiento(s) con observaciones en el comprobante (no existe, está a nombre de otro, importe distinto…). ` : ''}${rc.sinclas ? `<b>${rc.sinclas}</b> movimiento(s) todavía «por clasificar».` : ''}</p><div class="ac">${rc.obs ? '<button class="secondary sm" data-go-est="obs">Ver los comprobantes con observaciones</button>' : ''}${rc.sinclas ? '<button class="secondary sm" data-go-est="sinclas">Ver los por clasificar</button>' : ''}</div></div>`);
+  if(rc && (rc.obs || rc.sinclas || rc.tipos)){
+    cards.push(`<div class="dia-alert ${diaValResumen && diaValResumen.bad ? 'bad' : 'warn'}"><svg class="ico ic"><use href="#i-alert"/></svg><h4>Comprobantes y clasificación</h4><p>${rc.obs ? `<b>${rc.obs}</b> movimiento(s) con observaciones en el comprobante (no existe, está a nombre de otro, importe distinto…). ` : ''}${rc.sinclas ? `<b>${rc.sinclas}</b> movimiento(s) todavía «por clasificar». ` : ''}${rc.tipos ? `<b>${rc.tipos}</b> movimiento(s) con un tipo de documento que no corresponde a su cuenta.` : ''}</p><div class="ac">${rc.obs ? '<button class="secondary sm" data-go-est="obs">Ver los comprobantes con observaciones</button>' : ''}${rc.sinclas ? '<button class="secondary sm" data-go-est="sinclas">Ver los por clasificar</button>' : ''}${rc.tipos ? '<button class="secondary sm" data-go-tipo="1">Ver los tipos no válidos</button>' : ''}</div></div>`);
   }
   const nTarde = diaMerged ? diaEff().filter(m => m.tarde).length : 0;
   if(nTarde) cards.push(`<div class="dia-alert warn"><svg class="ico ic"><use href="#i-alert"/></svg><h4>Movimientos nuevos tras el cierre del día</h4><p>Llegaron <b>${nTarde}</b> movimiento(s) con fecha de un día que ya cerraste (el banco los registró después de tu descarga). Se sumaron sin repetir los que ya tenías y sin tocar lo que identificaste. Identifícalos y vuelve a cerrar el día.</p><div class="ac"><button class="secondary sm" data-go-est="tarde">Ver los ${nTarde}</button></div></div>`);
@@ -9472,6 +10694,8 @@ function diaEditField(id, f, raw){
   if(f === 'tipo' || f === 'nro') v = v.toUpperCase();
   const key = f === 'anx' ? 'anexo' : f;
   if(v) ed[key] = v; else delete ed[key];
+  let tCambio = null;
+  if(key === 'cta' && v){ const a0 = diaTipoAutoEdit(id); if(a0) tCambio = { antes: a0, cta: v, ahora: ed.tipo || '' }; }
   delete diaVal[id];
   delete ed.auto; delete ed.nota;
   diaCleanEdit(id);
@@ -9479,6 +10703,7 @@ function diaEditField(id, f, raw){
   diaRevalidateSoon();
   renderDiaKpis(); renderDiaLeft();
   scheduleExtSave();
+  if(tCambio) diaTipoAutoToast(1, tCambio);
 }
 function diaCleanEdit(id){
   const ed = diaEdits[id];
@@ -9538,7 +10763,7 @@ function diaState(){
     docsSrc: diaDocsSrc, docsOwn: diaDocsOwn, docsName: diaDocsName, view: diaView, mon: diaMon, banco: diaBanco, periodo: diaPeriodo, panelMode: diaPanelMode,
     folder: { name: diaFolderName, on: diaFolderOn }, tol: (dEl('diaTol') || {}).value, proy: proyState(),
     cierres: diaCierres, savedAt: diaSavedAt,
-    saldos: diaSaldos, catCfg: diaCatCfg, rs: diaRS
+    saldos: diaSaldos, catCfg: diaCatCfg, rs: diaRS, comLast: diaComLast
   };
 }
 function diaApplyState(s){
@@ -9563,11 +10788,12 @@ function diaApplyState(s){
   const t = dEl('diaTol'); if(t && s.tol) t.value = s.tol;
   diaCierres = Array.isArray(s.cierres) ? s.cierres.filter(c => c && c.hasta && Array.isArray(c.ids)) : [];
   diaSavedAt = +s.savedAt || 0;
-  diaSaldos = (s.saldos && typeof s.saldos === 'object' && !Array.isArray(s.saldos)) ? s.saldos : {};
+  diaSaldos = diaSaldosNorm(s.saldos);
   const cc = (s.catCfg && typeof s.catCfg === 'object') ? s.catCfg : {};
   diaCatCfg = { custom: Array.isArray(cc.custom) ? cc.custom.filter(c => c && c.k && c.t) : [], ren: (cc.ren && typeof cc.ren === 'object') ? cc.ren : {}, grp: (cc.grp && typeof cc.grp === 'object') ? cc.grp : {} };
   diaRS = Array.isArray(s.rs) ? s.rs.filter(e => e && (e.ruc || e.nombre)).map(e => ({ ruc: String(e.ruc || ''), nombre: String(e.nombre || ''), alias: String(e.alias || '') })) : [];
   diaRSIdx = null; diaCatsApply();
+  diaComLast = (s.comLast && typeof s.comLast === 'object' && !Array.isArray(s.comLast)) ? s.comLast : {};
   proyApply(s.proy);
   diaSel = new Set(); diaCompare = null; diaInvalidate();
 }
@@ -9610,7 +10836,8 @@ function diaEstadoText(m){
   const t = [];
   if(m.cerrado) t.push('Cerrado.');
   if(m.tarde) t.push('Nuevo tras el cierre del día.');
-  if(m.com) t.push('Con comisión bancaria.');
+  if(m.com) t.push(m.comMonto > 0 ? 'Con comisión bancaria de ' + diaNum(m.comMonto) + ' (separada en «ITF y comisiones»).' : (m.monto < 0 ? 'Con comisión bancaria SIN importe: escríbelo para separarla.' : 'Con comisión bancaria.'));
+  if(diaTipoErr(m)) t.push(diaTipoErr(m));
   if(m.flag) t.push('Revisar: ' + (m.revisar || []).map(c => DIA_REVISAR[c] || c).join(' '));
   if(m.val) (m.val.msgs || []).filter(x => x.n !== 'ok').forEach(x => t.push(x.t));
   if(m.itf && m.itf.estado === 'no-cuadra') t.push('ITF distinto del esperado por las operaciones del día.');
@@ -9624,7 +10851,7 @@ function diaExportXlsx(){
   const rows = movs.map(m => ({
     Fecha: m.fecha, Banco: m.banco, Moneda: m.moneda, 'Descripción': m.descripcion, Glosa: diaGlosaOf(m), 'N° Operación': m.operacion,
     Entrada: m.monto > 0 ? m.monto : '', Salida: m.monto < 0 ? -m.monto : '', 'Categoría': diaCatT(m.catEff),
-    'Cuenta Contable': m.cta, 'Tipo Doc.': m.tipo, 'N° Doc.': m.nro, 'Anexo/RUC': m.anexo, 'Razón social': diaRSName(m.anexo), 'Comisión bancaria': m.com ? 'Sí' : '', Observaciones: diaEstadoText(m), 'Descargas': (m.fuentes || []).length
+    'Cuenta Contable': m.cta, 'Tipo Doc.': m.tipo, 'N° Doc.': m.nro, 'Anexo/RUC': m.anexo, 'Razón social': diaRSName(m.anexo), 'Comisión bancaria': m.comMonto > 0 ? m.comMonto : (m.com ? 'Sí' : ''), Observaciones: diaEstadoText(m), 'Descargas': (m.fuentes || []).length
   }));
   const ws = XLSX.utils.json_to_sheet(rows.length ? rows : [{ Fecha: '' }]);
   ws['!cols'] = [{ wch: 11 }, { wch: 11 }, { wch: 8 }, { wch: 40 }, { wch: 46 }, { wch: 12 }, { wch: 13 }, { wch: 13 }, { wch: 26 }, { wch: 14 }, { wch: 8 }, { wch: 14 }, { wch: 14 }, { wch: 36 }, { wch: 11 }, { wch: 50 }, { wch: 10 }];
@@ -9659,7 +10886,7 @@ function diaExportXlsx(){
 }
 function diaToCg(m){
   const gl = diaGlosaOf(m);
-  return { fecha: m.fecha, descripcion: gl || m.descripcion, descBanco: gl ? m.descripcion : '', comisionBancaria: m.com ? '1' : '', operacion: m.operacion, cargo: m.monto < 0 ? (-m.monto).toFixed(2) : '', abono: m.monto > 0 ? m.monto.toFixed(2) : '', saldo: '', banco: m.banco, ocrNota: '', cuentaContable: m.cta, docTipo: m.tipo, docNroDoc: m.nro, docAnexo: m.anexo, moneda: m.moneda };
+  return { fecha: m.fecha, descripcion: gl || m.descripcion, descBanco: gl ? m.descripcion : '', comisionBancaria: m.com ? '1' : '', docComision: m.comMonto > 0 ? m.comMonto.toFixed(2) : '', operacion: m.operacion, cargo: m.monto < 0 ? (-m.monto).toFixed(2) : '', abono: m.monto > 0 ? m.monto.toFixed(2) : '', saldo: '', banco: m.banco, ocrNota: '', cuentaContable: m.cta, docTipo: m.tipo, docNroDoc: m.nro, docAnexo: m.anexo, moneda: m.moneda };
 }
 async function diaSendTo(n){
   if(!diaMerged){ return; }
@@ -9705,7 +10932,7 @@ async function diaSendTo(n){
     diaDocsSrc = 'tab2'; diaDocsChanged();
   });
   dEl('diaDocsUpBtn').addEventListener('click', () => dEl('diaDocsInput').click());
-  dEl('diaDocsInput').addEventListener('change', e => { const f = e.target.files[0]; e.target.value = ''; if(f) diaLoadDocsFile(f); });
+  dEl('diaDocsInput').addEventListener('change', e => { const fs = Array.from(e.target.files); e.target.value = ''; if(fs.length) diaLoadDocsFiles(fs); });
   dEl('diaCrossBtn').addEventListener('click', diaCross);
   dEl('diaAcceptBtn').addEventListener('click', () => {
     let n = 0;
@@ -9765,7 +10992,7 @@ async function diaSendTo(n){
   const body = dEl('diaMovBody');
   body.addEventListener('change', e => {
     const t = e.target;
-    if(t.classList.contains('dia-in')){ diaEditField(t.dataset.id, t.dataset.f, t.value); const m = diaEff().find(x => x.id === t.dataset.id); if(m){ const tr = t.closest('tr'); const est = tr && tr.querySelector('td.est'); if(est) est.innerHTML = diaEstadoHtml(m); const gl = tr && tr.querySelector('td.desc'); if(gl) diaPatchGlosa(gl, m); } return; }
+    if(t.classList.contains('dia-in')){ if(!diaTipoGuard(t)) return; diaEditField(t.dataset.id, t.dataset.f, t.value); const m = diaEff().find(x => x.id === t.dataset.id); if(m){ const tr = t.closest('tr'); const est = tr && tr.querySelector('td.est'); if(est) est.innerHTML = diaEstadoHtml(m); const gl = tr && tr.querySelector('td.desc'); if(gl) diaPatchGlosa(gl, m); diaTipoSync(tr, m); } return; }
     if(t.classList.contains('dia-cat')){ diaSetEdit([t.dataset.id], { cat: t.value }); diaCatChanged(); return; }
     if(t.classList.contains('dia-chk')){
       if(t.checked) diaSel.add(t.dataset.id); else diaSel.delete(t.dataset.id);
@@ -9811,8 +11038,11 @@ async function diaSendTo(n){
     if(!c && !a){ toast('Escribe la cuenta o el anexo.', 'warn'); return; }
     const p = {}; if(c) p.cta = c; if(a) p.anexo = a;
     diaSetEdit(selIds(), p); selIds().forEach(id => { if(diaEdits[id]){ delete diaEdits[id].auto; delete diaEdits[id].nota; } });
+    let nch = 0, ej = null;
+    if(c) selIds().forEach(id => { const a0 = diaTipoAutoEdit(id); if(a0){ nch++; ej = { antes: a0, cta: c, ahora: diaEdits[id].tipo || '' }; } });
     dEl('diaBulkCta').value = ''; dEl('diaBulkAnx').value = '';
     diaInvalidate(); renderTab6(); diaRevalidateSoon(); scheduleExtSave();
+    diaTipoAutoToast(nch, ej);
   });
   dEl('diaBulkOmitBtn').addEventListener('click', diaBulkDelete);
   dEl('diaBulkRestBtn').addEventListener('click', () => { diaOmit(selIds(), false); });
@@ -9821,6 +11051,7 @@ async function diaSendTo(n){
   // alertas
   dEl('diaAlertList').addEventListener('click', e => {
     const see = e.target.closest('[data-al-see]'), ack = e.target.closest('[data-al-ack]'), go = e.target.closest('[data-go-est]');
+    if(e.target.closest('[data-go-tipo]')){ diaFilt = { q: '', cat: 'all', sign: '', est: 'all', ids: null, idsLabel: '', dia: '' }; dEl('diaEstFilter').value = 'all'; dEl('diaSearch').value = ''; diaColV = { est: new Set(['Tipo no válido']) }; diaLimit = 300; diaSetView('mov'); return; }
     if(go){ diaFilt = { q: '', cat: 'all', sign: '', est: go.dataset.goEst, ids: null, idsLabel: '', dia: '' }; dEl('diaEstFilter').value = diaFilt.est; dEl('diaSearch').value = ''; diaLimit = 300; diaSetView('mov'); return; }
     const a = see ? window._diaAlertsSorted[+see.dataset.alSee] : (ack ? window._diaAlertsSorted[+ack.dataset.alAck] : null);
     if(!a) return;
@@ -9899,7 +11130,7 @@ function diaReset(){
   diaCierres = []; diaSaldos = {}; diaFiles = []; diaManual = []; diaMerged = null; diaEdits = {}; diaVal = {}; diaValResumen = null; diaAck = {};
   diaDocsSrc = ''; diaDocsOwn = []; diaDocsName = ''; diaCompare = null;
   diaView = 'panel'; diaMon = 'PEN'; diaBanco = 'all'; diaPeriodo = 'all'; diaPanelMode = 'graf';
-  diaFilt = { q: '', cat: 'all', sign: '', est: 'all', ids: null, idsLabel: '', dia: '' }; diaColF = diaColVacio();
+  diaFilt = { q: '', cat: 'all', sign: '', est: 'all', ids: null, idsLabel: '', dia: '' }; diaColV = {}; diaFxClose(false); diaFxSync();
   diaLimit = 300; diaSel = new Set(); diaInvalidate(); proyReset();
   ['diaFileStatus', 'diaCrossResumen', 'diaSendStatus'].forEach(id => { const e = dEl(id); if(e) e.textContent = ''; });
   const s = dEl('diaSearch'); if(s) s.value = '';
@@ -9953,8 +11184,8 @@ const TAB_CLEAR = {
        text: 'Se borran los PDF cargados, los movimientos, la verificación mensual y las cuentas que asignaste en esta pestaña. Las otras pestañas y tus reglas no se tocan.' },
   2: { name: 'Pestaña 2 (Documentos pendientes)', has: () => pdMovements.length > 0 || pendingDocs.length > 0 || pdResults.length > 0,
        text: 'Se borran los movimientos, los documentos pendientes y el resultado del cruce de esta pestaña. La Pestaña 1 no se toca.' },
-  3: { name: 'Pestaña 3 (Formato CONCAR)', has: () => cgMovements.length > 0 || cgRows.length > 0,
-       text: 'Se borran los movimientos y el formato CONCAR generado en esta pestaña. La configuración contable se conserva.' },
+  3: { name: 'Pestaña 3 (Asientos contables)', has: () => cgMovements.length > 0 || cgRows.length > 0,
+       text: 'Se borran los movimientos y los asientos generados en esta pestaña. La configuración contable se conserva.' },
   4: { name: 'Pestaña 4 (Cruce con Tesorería)', has: () => tesMovimientos.length > 0 || tesoreriaMovimientos.length > 0 || tesResults.length > 0,
        text: 'Se borran tus movimientos, el archivo de Tesorería y el cruce de esta pestaña. La Pestaña 1 no se toca.' },
   5: { name: 'Pestaña 5 (Diferencia de cambio)', has: () => fxDocs.length > 0 || fxRows.length > 0,
@@ -10021,7 +11252,7 @@ function showRestoreBanner(){
   const parts = [];
   if(movements.length) parts.push(`${movements.length.toLocaleString('en-US')} movimientos`);
   if(pdResults.length || pendingDocs.length) parts.push('cruce de documentos');
-  if(cgRows.length) parts.push('formato CONCAR');
+  if(cgRows.length) parts.push('asientos generados');
   if(tesResults.length) parts.push('cruce con Tesorería');
   if(fxDocs.length) parts.push('diferencia de cambio');
   if(diaHasData()) parts.push('trabajo diario');
