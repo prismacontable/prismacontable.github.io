@@ -79,7 +79,7 @@ nav button{background:transparent;color:#8FA3C4;border-radius:0;padding:9px 15px
 .nav-sep{width:1px;height:18px;background:#ffffff22;margin:0 6px;align-self:center}
 nav button.nav-grp{margin-left:14px;padding-left:15px;border-left:1px solid #ffffff22}
 nav button.active{color:#fff;border-bottom-color:var(--teal2);background:#312E81}
-main{padding:14px 18px;max-width:1780px;margin:0 auto}
+main{padding:14px 24px;max-width:min(100%,2400px);margin:0 auto}
 .panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--shadow-card);margin-bottom:12px;overflow:hidden}
 .ph{padding:11px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;background:var(--surface2);flex-wrap:wrap}
 .ph h2{font-size:14px;font-weight:700;color:var(--tit)}
@@ -142,6 +142,18 @@ td select{padding:2px 3px;font-size:11px}
 th.gi{background:var(--teal);color:#fff}th.gd{background:#6D28D9;color:#fff}th.gt{background:var(--indigo2);color:#fff}
 .rh-row td{background:var(--rh)}.rh-row:hover td{background:var(--rh2)}
 .es-min{background:var(--min)!important;font-weight:700}
+.vistas{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
+.vistas .vs{font:inherit;font-size:12px;font-weight:600;padding:6px 14px;border-radius:7px;border:1px solid var(--border2);background:transparent;color:var(--ink2);cursor:pointer}
+.vistas .vs:hover{color:var(--tit);border-color:var(--ink3)}
+.vistas .vs.on{background:var(--tit);color:var(--bg,#fff);border-color:var(--tit)}
+.vistas .vs-nota{margin-left:6px}
+details.val-det{margin:0 0 14px;border:1px solid var(--border);border-radius:8px;background:var(--surface2)}
+details.val-det>summary{cursor:pointer;list-style:none;padding:9px 14px;font-size:12.5px;font-weight:600;color:var(--ink2)}
+details.val-det>summary::-webkit-details-marker{display:none}
+details.val-det>summary.ok{color:var(--tealtx,#0F766E)}
+details.val-det>summary.warn{color:var(--amber2,#B45309)}
+details.val-det>summary.err{color:var(--red2,#B91C1C)}
+details.val-det>div{padding:4px 14px 12px}
 .chips{display:flex;gap:8px;flex-wrap:wrap;padding:10px 14px;border-top:1px solid var(--border);background:var(--surface2)}
 .chip{display:flex;align-items:center;gap:5px;font-size:11px;padding:3px 9px;border-radius:20px;border:1px solid var(--border);background:var(--surface)}
 .chip.ok{background:var(--green);border-color:#86EFAC;color:#166534}
@@ -209,7 +221,7 @@ select.pill-cesado{background:var(--red);color:#991B1B;border-color:#FCA5A5}
 
 /* ---- MODULOS PLAME EMBEBIDOS ---- */
 #mod-p4,#mod-p5{display:block;margin:-14px -18px;padding:0}
-#mod-p4 main,#mod-p5 main{max-width:1780px}
+#mod-p4 main,#mod-p5 main{max-width:min(100%,2400px)!important}
 /* ---- ACCESO PROTEGIDO (shell) ---- */
 #loginOverlay{position:fixed;inset:0;background:#060911F2;display:flex;align-items:center;justify-content:center;z-index:200;padding:20px}
 #loginOverlay.oculto{display:none}
@@ -257,7 +269,7 @@ body.bloqueado header,body.bloqueado nav,body.bloqueado main,body.bloqueado #bar
     line-height:1.5;
   }#mod-p4 h1, #mod-p4 h2, #mod-p4 h3{font-family:'Space Grotesk',sans-serif; margin:0; letter-spacing:-0.01em;}#mod-p4 .mono{font-family:'JetBrains Mono',monospace;}
 
-  /* ---------- layout ---------- */#mod-p4 main{max-width:1180px; margin:0 auto; padding:24px 32px 64px;}#mod-p4 .card{
+  /* ---------- layout ---------- */#mod-p4 main{max-width:min(100%,2400px); margin:0 auto; padding:24px 32px 64px;}#mod-p4 .card{
     background:var(--paper);
     border:1px solid var(--line);
     border-radius:var(--radius);
@@ -667,9 +679,11 @@ body::after{content:"";position:fixed;left:50%;top:54%;width:min(62vw,760px);asp
     </select>
     <select id="selAnio" onchange="cambioPeriodo()"><option>2025</option><option selected>2026</option><option>2027</option></select>
     <label>Cálculo</label>
-    <select id="selModo" onchange="cambiarModo(this.value)">
+    <select id="selModo" onchange="cambiarModo(this.value)" title="Modalidad de pago (se configura por empresa en la pestaña Empresa)">
       <option value="QUINCENAL">Quincenal</option>
+      <option value="ADELANTO">Mensual + adelanto</option>
       <option value="MENSUAL">Mensualizado</option>
+      <option value="SEMANAL">Semanal (construcción)</option>
     </select>
     <button class="bo ico" id="btnTema" onclick="tema()"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M19 5l-1.5 1.5M6.5 17.5L5 19"/></svg><span>Tema</span></button>
     <button class="bd ico" onclick="limpiarTodo()"><svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 14h10l1-14"/></svg><span>Vaciar el periodo</span></button>
@@ -680,19 +694,17 @@ body::after{content:"";position:fixed;left:50%;top:54%;width:min(62vw,760px);asp
      asientos contables) 4) declaraciones a SUNAT (PLAME). Cada grupo lleva un
      separador visual sutil (clase nav-grp) para que se note el corte. -->
 <nav>
+  <button class="active" data-t="cuentas" onclick="T(this)" title="Datos base de la empresa: RUC, razón social, modalidad de pago, plan de cuentas">Empresa</button>
   <button data-t="personal" onclick="T(this)">Personal</button>
-  <button data-t="cuentas" onclick="T(this)">Cuentas</button>
+  <button data-t="tareo" onclick="T(this)" title="Tareo, faltas, tardanzas, vacaciones y horas extra en un solo lugar">Asistencia</button>
+  <button data-t="semanal" onclick="T(this)" style="display:none" title="Planilla semanal de construcción civil">Semanal</button>
   <button class="nav-grp" data-t="q1" onclick="T(this)">1ra Quincena</button>
   <button data-t="q2" onclick="T(this)">2da Quincena</button>
-  <button class="active" data-t="mensual" onclick="T(this)">Mensual</button>
+  <button data-t="mensual" onclick="T(this)">Mensual</button>
   <button data-t="beneficios" onclick="T(this)">Beneficios</button>
   <button data-t="renta5" onclick="T(this)">Renta 5ta</button>
   <button class="nav-grp" data-t="boletas" onclick="T(this)">Boletas</button>
-  <button data-t="asientos" onclick="T(this)">Asientos</button>
-  <button class="nav-grp" data-t="p5" onclick="T(this)">PLAME 5ta</button>
-  <button data-t="p4" onclick="T(this)">PLAME 4ta</button>
-  <button class="nav-grp" data-t="tareo" onclick="T(this)">Tareo</button>
-  <button data-t="reportes" onclick="T(this)">Incidencias</button>
+  <button data-t="decl" onclick="T(this)" title="Asientos CONCAR, PLAME 5ta y PLAME 4ta en un solo lugar">Declaraciones</button>
 </nav>
 <div id="barDatos">
   <span class="bd-lbl">Datos</span>
@@ -746,11 +758,17 @@ body::after{content:"";position:fixed;left:50%;top:54%;width:min(62vw,760px);asp
     <div class="tw" id="wPers"></div></div>
 </div>
 <div id="p-q1" class="tp" style="display:none">
-  <div class="nota">Solo en modalidad quincenal. Días 1 al 15. Campos ambar editables. Las <b>horas extras se escriben en formato hh:mm</b> (3:30 = tres horas y media). Las filas naranjas son recibos por honorarios: se manejan aqui mismo pero sin aportes.</div>
-  <div class="panel"><div class="ph"><h2>Primera Quincena</h2><div class="act">
+  <div class="nota" id="notaAdelanto" style="display:none">Adelanto quincenal: se paga el día 15 un porcentaje del sueldo <b>sin descuentos</b>. El mes completo, con todos sus descuentos, se calcula en la pestaña <b>Mensual</b> y ahí se resta lo adelantado. Puedes ajustar el importe de cada persona; el % se define en la pestaña <b>Empresa</b>. <button class="bo2" onclick="adqRestablecer()" style="margin-left:6px">Recalcular todos</button></div>
+  <div class="nota" id="notaQ1">Solo en modalidad quincenal. Días 1 al 15. Campos ambar editables. Las <b>horas extras se escriben en formato hh:mm</b> (3:30 = tres horas y media). Las filas naranjas son recibos por honorarios: se manejan aqui mismo pero sin aportes.</div>
+  <div class="panel"><div class="ph"><h2>Primera Quincena</h2><div class="act" id="actQ1">
     <button class="bo" style="border-color:var(--border2);color:var(--ink2)" onclick="limpiarHE()">Borrar solo H.Extras</button>
     <button class="bd" onclick="limpiarQna(1)">Vaciar modulo</button></div></div>
     <div class="tw" id="wQ1"></div><div class="chips" id="sQ1"></div></div>
+</div>
+<div id="p-semanal" class="tp" style="display:none">
+  <div class="nota">Planilla semanal de <b>construcción civil</b>. Cada semana (lunes a domingo, recortada al mes) se calcula con el jornal y la BUC de la categoría, dominical, movilidad, vacaciones, CTS y gratificación; descuenta CONAFOVICER, ONP/AFP, cuota sindical y adelantos. Las semanas se suman en el mes: ahí salen los asientos, las boletas y el PLAME. Jornales, BUC y porcentajes se ajustan en la pestaña <b>Empresa</b>.</div>
+  <div class="vistas" id="semBar" style="margin:0 0 10px"></div>
+  <div class="panel"><div class="ph"><h2>Planilla de la semana</h2></div><div class="tw" id="wSem"></div><div class="chips" id="sSem"></div></div>
 </div>
 <div id="p-q2" class="tp" style="display:none">
   <div class="nota">Días 16 al cierre. La retención de 5ta se aplica aqui. Las <b>horas extras se escriben en formato hh:mm</b> (3:30 = tres horas y media).</div>
@@ -759,7 +777,7 @@ body::after{content:"";position:fixed;left:50%;top:54%;width:min(62vw,760px);asp
     <button class="bd" onclick="limpiarQna(2)">Vaciar modulo</button></div></div>
     <div class="tw" id="wQ2"></div><div class="chips" id="sQ2"></div></div>
 </div>
-<div id="p-mensual" class="tp">
+<div id="p-mensual" class="tp" style="display:none">
   <div class="kpis" id="kpis"></div>
   <div class="panel" style="margin-bottom:14px"><div class="ph"><h2>Costo por centro de costo</h2></div>
     <div class="mk-b" id="kpiCC" style="padding:10px 14px"></div></div>
@@ -793,15 +811,20 @@ body::after{content:"";position:fixed;left:50%;top:54%;width:min(62vw,760px);asp
   </div>
   <div id="wBol"></div>
 </div>
+<div id="declBar" class="vistas" style="display:none;padding:10px 18px 0;max-width:2400px;margin:0 auto">
+  <button type="button" class="vs on" data-v="asientos" onclick="irDecl_('asientos')" title="Asientos contables de la planilla y archivo CONCAR">Asientos CONCAR</button>
+  <button type="button" class="vs" data-v="p5" onclick="irDecl_('p5')" title="Planilla electrónica: .jor, .rem y AFPnet">PLAME 5ta</button>
+  <button type="button" class="vs" data-v="p4" onclick="irDecl_('p4')" title="Honorarios: .ps4, .4ta y CONCAR de 4ta">PLAME 4ta</button>
+</div>
 <div id="p-asientos" class="tp" style="display:none">
   <div class="nota">Asiento 1 planilla con centros de costo, asiento 2 provisión mensual de vacaciones, gratificación y CTS, asiento 3 honorarios. El CONCAR sale en Excel con las 40 columnas del formato.</div>
   <div class="panel"><div class="ph"><h2>Asientos contables</h2><div class="act">
     <button class="bt" id="btnConcar" onclick="expConcar()" title="Genera el archivo de importacion para CONCAR">Exportar a CONCAR</button></div></div>
     <div class="pb" id="wAsi"></div></div>
 </div>
-<div id="p-cuentas" class="tp" style="display:none">
-  <div class="nota">Plan de cuentas del periodo. Se graba con la planilla y se arrastra al mes siguiente, asi cada cliente mantiene el suyo. Si cambias un codigo de centro de costo, el personal asignado se actualiza solo.</div>
-  <div class="panel"><div class="ph"><h2>Cuentas contables</h2><div class="act">
+<div id="p-cuentas" class="tp">
+  <div class="nota">Datos base de la empresa. Todo lo de esta pestaña <b>viaja con el RUC</b>: razón social, domicilio fiscal, modalidad de pago, plan de cuentas y parámetros. Se graba con la planilla y se arrastra al mes siguiente; con <b>Guardar perfil de la empresa</b> queda además en el servidor, y se trae solo al escribir el RUC.</div>
+  <div class="panel"><div class="ph"><h2>Empresa y cuentas contables</h2><div class="act">
     <button class="bt" onclick="addCC()">+ Centro de costo</button>
     <button class="bd" onclick="restaurarPlan()">Restaurar por defecto</button></div></div>
     <div id="wCtas"></div></div>
@@ -836,10 +859,16 @@ body::after{content:"";position:fixed;left:50%;top:54%;width:min(62vw,760px);asp
           <span>Archivo REM: <b id="p5-fnREM">—</b></span>
         </div>
       </div>
+      <div class="toolbar" style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+        <span style="font-size:12px;color:var(--ink2)">Los trabajadores llegan desde la planilla (<b>Enviar a PLAME 5ta</b>). Si necesitas cargar otros a mano:</span>
+        <label class="btn-outline btn-sm" for="p5-fileTrab">Importar Excel/CSV</label>
+        <button class="btn-outline btn-sm" type="button" onclick="document.getElementById('p5-btnDownloadTemplate').click()">📥 Descargar plantilla</button>
+        <button class="btn-danger-outline btn-sm" type="button" onclick="document.getElementById('p5-btnClearAll').click()">🗑 Limpiar todo</button>
+      </div>
     </div>
   </section>
 
-  <section class="card">
+  <section class="card solo-prisma" style="display:none">
     <div class="card-head">
       <div>
         <h2><span class="step">2</span> Trabajadores</h2>
@@ -873,7 +902,7 @@ body::after{content:"";position:fixed;left:50%;top:54%;width:min(62vw,760px);asp
     </div>
   </section>
 
-  <section class="card">
+  <section class="card solo-prisma" style="display:none">
     <div class="card-head">
       <div>
         <h2><span class="step">3</span> Conceptos (ingresos y descuentos)</h2>
@@ -904,13 +933,9 @@ body::after{content:"";position:fixed;left:50%;top:54%;width:min(62vw,760px);asp
     </div>
   </section>
 
-  <section class="card">
-    <div class="card-head"><h2><span class="step">4</span> Validación</h2>
-      <button class="btn-outline btn-sm" onclick="toggleColapsable_('p5-validationBody',this)">Mostrar ▸</button></div>
-    <div class="card-body" id="p5-validationBody" style="display:none"><div class="validation-ok">✓ Aún no hay datos para validar</div></div>
-  </section>
+  
 
-  <section class="card">
+  <section class="card solo-prisma" style="display:none">
     <div class="card-head"><h2><span class="step">5</span> Vista previa de archivos</h2>
       <button class="btn-outline btn-sm" id="p5-togglePreview" style="display:none" onclick="toggleColapsable_('p5-previewBody',this)">Mostrar ▸</button></div>
     <div class="card-body" id="p5-previewBody" style="display:none">
@@ -928,8 +953,9 @@ body::after{content:"";position:fixed;left:50%;top:54%;width:min(62vw,760px);asp
   </section>
 
   <section class="card">
-    <div class="card-head"><h2><span class="step">6</span> Descargar</h2></div>
+    <div class="card-head"><h2><span class="step">2</span> Descargar</h2></div>
     <div class="card-body">
+      <details class="val-det" id="p5-valDet"><summary id="p5-valSum">&#10003; Aún no hay datos para validar</summary><div id="p5-validationBody"><div class="validation-ok">&#10003; Aún no hay datos para validar</div></div></details>
       <div class="downloads">
         <div class="dl-card">
           <div class="name" id="p5-dlNameJOR">—.jor</div>
@@ -997,11 +1023,15 @@ body::after{content:"";position:fixed;left:50%;top:54%;width:min(62vw,760px);asp
           <span>Archivo 4TA: <b id="p4-fn4TA">—</b></span>
         </div>
       </div>
+      <div class="toolbar" style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+        <span style="font-size:12px;color:var(--ink2)">Carga el reporte de recibos por honorarios (SUNAT): de un solo archivo salen los prestadores <b>y</b> los recibos.</span>
+        <label class="btn-teal btn-sm" for="p4-fileRec" style="cursor:pointer" title="TXT, Excel o CSV; puedes elegir varios archivos (uno por periodo)">Importar recibos (TXT / Excel / CSV)</label>
+      </div>
     </div>
   </section>
 
   <!-- ===== PROVEEDORES ===== -->
-  <section class="card">
+  <section class="card solo-prisma" style="display:none">
     <div class="card-head">
       <div>
         <h2><span class="step">2</span> Prestadores de servicios (4ta categoría)</h2>
@@ -1029,7 +1059,7 @@ body::after{content:"";position:fixed;left:50%;top:54%;width:min(62vw,760px);asp
               <th style="width:100px">Domiciliado</th>
               <th style="width:110px">Doble conv.</th>
               <th style="width:110px" title="Va en la columna Código de Centro de Costo del CONCAR, en la línea de gasto (Gasto honorarios). Déjalo vacío si no aplica.">C. Costo (CONCAR)</th>
-              <th style="width:120px" title="Cuenta contable de gasto para ESTE proveedor en el CONCAR. Vacío = usa la cuenta general 'Gasto honorarios (4ta)' configurada en la pestaña Cuentas.">Cta. Gasto (CONCAR)</th>
+              <th style="width:120px" title="Cuenta contable de gasto para ESTE proveedor en el CONCAR. Vacío = usa la cuenta general 'Gasto honorarios (4ta)' configurada en la pestaña Empresa.">Cta. Gasto (CONCAR)</th>
               <th class="col-narrow"></th>
             </tr>
           </thead>
@@ -1040,7 +1070,7 @@ body::after{content:"";position:fixed;left:50%;top:54%;width:min(62vw,760px);asp
   </section>
 
   <!-- ===== RECIBOS ===== -->
-  <section class="card">
+  <section class="card solo-prisma" style="display:none">
     <div class="card-head">
       <div>
         <h2><span class="step">3</span> Recibos por honorarios</h2>
@@ -1077,19 +1107,10 @@ body::after{content:"";position:fixed;left:50%;top:54%;width:min(62vw,760px);asp
     </div>
   </section>
 
-  <!-- ===== VALIDACIÓN ===== -->
-  <section class="card">
-    <div class="card-head">
-      <h2><span class="step">4</span> Validación</h2>
-      <button class="btn-outline btn-sm" onclick="toggleColapsable_('p4-validationBody',this)">Mostrar ▸</button>
-    </div>
-    <div class="card-body" id="p4-validationBody" style="display:none">
-      <div class="validation-ok">✓ Aún no hay datos para validar</div>
-    </div>
-  </section>
+  
 
   <!-- ===== VISTA PREVIA ===== -->
-  <section class="card">
+  <section class="card solo-prisma" style="display:none">
     <div class="card-head">
       <h2><span class="step">5</span> Vista previa de archivos</h2>
       <button class="btn-outline btn-sm" id="p4-togglePreview" style="display:none" onclick="toggleColapsable_('p4-previewBody',this)">Mostrar ▸</button>
@@ -1115,9 +1136,10 @@ body::after{content:"";position:fixed;left:50%;top:54%;width:min(62vw,760px);asp
   <!-- ===== DESCARGAS ===== -->
   <section class="card">
     <div class="card-head">
-      <h2><span class="step">6</span> Descargar</h2>
+      <h2><span class="step">2</span> Descargar</h2>
     </div>
     <div class="card-body">
+      <details class="val-det" id="p4-valDet"><summary id="p4-valSum">&#10003; Aún no hay datos para validar</summary><div id="p4-validationBody"><div class="validation-ok">&#10003; Aún no hay datos para validar</div></div></details>
       <div class="downloads">
         <div class="dl-card">
           <div class="name" id="p4-dlNamePS4">—.ps4</div>
@@ -1158,20 +1180,19 @@ body::after{content:"";position:fixed;left:50%;top:54%;width:min(62vw,760px);asp
     <div class="tw" id="wRenta5Detalle"></div></div>
 </div>
 <div id="p-tareo" class="tp" style="display:none">
-  <div class="nota">Marca aquí la asistencia día a día: un click en la celda del día cambia el estado (Asistió → Falta → Tardanza → Vacación gozada → Dominical → Asistió). Queda guardado en la quincena (o el mes, si es mensualizado) que le toque según la fecha -no hay que moverlo a mano-, y es el mismo dato que ya usa Incidencias: el monto exacto de la tardanza y las horas extra por fecha se completan con los botones "Detalle"/"H.Extra" de cada fila, o desde la pestaña Incidencias.</div>
-  <div class="panel"><div class="ph"><h2>Tareo del mes</h2><div class="act" style="font-size:11px;color:var(--ink2);display:flex;gap:14px;align-items:center;flex-wrap:wrap">
+  <div class="vistas" id="asisVistas" role="tablist"><button type="button" class="vs on" data-v="cal" onclick="setAsisVista('cal')" title="Marca día por día: falta, tardanza, vacación, dominical">Calendario</button><button type="button" class="vs" data-v="ctrl" onclick="setAsisVista('ctrl')" title="Tabla por quincena: faltas, tardanzas, vacaciones y horas extra; se pega desde Excel">Control del periodo</button><button type="button" class="vs" data-v="hist" onclick="setAsisVista('hist')" title="Reporte de vacaciones, faltas y tardanzas en un rango de meses">Historial</button><span class="vs-nota" id="asisNota"></span></div>
+  <div id="asis-cal"><div class="nota">Marca aquí la asistencia día a día: un click en la celda del día cambia el estado (Asistió → Falta → Tardanza → Vacación gozada → Dominical → Asistió). Queda guardado en la quincena (o el mes, si es mensualizado) que le toque según la fecha -no hay que moverlo a mano-, y es el mismo dato de la vista <b>Control del periodo</b>: el monto exacto de la tardanza y las horas extra por fecha se completan con los botones "Detalle"/"H.Extra" de cada fila.</div>
+  <div class="panel"><div class="ph"><h2>Calendario del mes</h2><div class="act" style="font-size:11px;color:var(--ink2);display:flex;gap:14px;align-items:center;flex-wrap:wrap">
     <span style="display:inline-flex;align-items:center;gap:5px"><span class="tar-cell tar-f" style="width:20px;height:20px;display:inline-flex">F</span>Falta</span>
     <span style="display:inline-flex;align-items:center;gap:5px"><span class="tar-cell tar-t" style="width:20px;height:20px;display:inline-flex">T</span>Tardanza</span>
     <span style="display:inline-flex;align-items:center;gap:5px"><span class="tar-cell tar-v" style="width:20px;height:20px;display:inline-flex">V</span>Vacación</span>
     <span style="display:inline-flex;align-items:center;gap:5px" title="Trabajó su día de descanso semanal (domingo) sin descanso sustitutorio: se paga con sobretasa, igual que el feriado"><span class="tar-cell tar-d" style="width:20px;height:20px;display:inline-flex">D</span>Dominical</span>
     <span style="display:inline-flex;align-items:center;gap:5px"><span class="tar-cell" style="width:20px;height:20px;display:inline-flex;border:1px dashed var(--border2)"></span>Asistió</span>
   </div></div>
-    <div class="tw" id="wTareo"></div></div>
-</div>
-<div id="p-reportes" class="tp" style="display:none">
-  <div class="nota">Control de incidencias: escribe o pega (desde Excel) las faltas, tardanzas y vacaciones directo en la tabla, o usa el "+" para cargarlas por fecha exacta -esa fecha reubica sola la incidencia a la quincena que corresponda (o al bloque unico en modalidad mensualizada). Mas abajo, el historial de rango de meses sigue disponible para consultas.</div>
-  <div class="panel"><div class="ph"><h2>Control de incidencias · periodo en pantalla</h2></div><div class="tw" id="wIncCtrl"></div></div>
-  <div class="panel">
+    <div class="tw" id="wTareo"></div></div></div>
+  <div id="asis-ctrl" style="display:none"><div class="nota">Control de incidencias: escribe o pega (desde Excel) las faltas, tardanzas y vacaciones directo en la tabla, o usa el "+" para cargarlas por fecha exacta -esa fecha reubica sola la incidencia a la quincena que corresponda (o al bloque unico en modalidad mensualizada). Mas abajo, el historial de rango de meses sigue disponible para consultas.</div>
+  <div class="panel"><div class="ph"><h2>Control por periodo</h2></div><div class="tw" id="wIncCtrl"></div></div></div>
+  <div id="asis-hist" style="display:none"><div class="panel">
     <div class="ph"><h2>Historial (rango de meses)</h2></div>
     <div class="pb" style="display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end">
       <div><label style="display:block;font-size:10.5px;font-weight:700;color:var(--tit);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px">Trabajador</label>
@@ -1183,8 +1204,10 @@ body::after{content:"";position:fixed;left:50%;top:54%;width:min(62vw,760px);asp
       <button class="bp" onclick="calcularReporte()">Generar reporte</button>
     </div>
   </div>
-  <div class="panel"><div class="ph"><h2>Resultado</h2></div><div class="tw" id="wRep"></div></div>
+  <div class="panel"><div class="ph"><h2>Resultado</h2></div><div class="tw" id="wRep"></div></div></div>
 </div>
+</div>
+
 </main>
 <script>
 /* Hallazgo de auditoria: no habia ningun logging centralizado de errores -ni
@@ -1213,7 +1236,7 @@ window.addEventListener('unhandledrejection',function(ev){
 /* CONFIG */
 const CFG={RMV:1130,UIT:5500,DM:30,JOR:8,T_ONP:.13,PRIMA:.0137,
   T4:.08,MIN4:1500,MIN4D:0,HE25:.25,HE35:.35,TOPE:2,T_ES:.09,VL:5.8333,VAC_DIAS:15,FER:2,
-  ES_MIN_PROPORCIONAL:false,REG_DEF:'MICRO',
+  ES_MIN_PROPORCIONAL:false,REG_DEF:'MICRO',SIS:15,
   EMP:'EMPRESA DE EJEMPLO S.A.C.',RUC:'20100000001',
   DOM:'AV. EJEMPLO NRO. 123 - LIMA'};
 // JUBILADO: quien ya esta pensionado y sigue en planilla no vuelve a aportar
@@ -1420,6 +1443,27 @@ function calcQuincena_(p,m,topeDias,cfg){
       faltaImp,
       base4:base,onp:0,ap:0,pr:0,apc:0,r5:0,ret4,tar,ade,pre,des,neto:r2(ing-des)};
   }
+  // CONSTRUCCION CIVIL: el calculo semanal (jornal, dominical, BUC, movilidad,
+  // vacaciones/CTS/gratificacion y CONAFOVICER) ya viene sumado del mes en m.ob
+  // -ver obraAgg_()-. Aqui solo se arma el resultado con la MISMA forma de
+  // siempre, para que boleta, asientos y PLAME lo lean sin cambios:
+  // sue = jornales + dominical + BUC; com incluye "otras bonif. afectas" (ext);
+  // bon incluye movilidad; gra/cts/liq llevan gratificacion/CTS/vacaciones 10%.
+  if(p.reg==='CONSTRUCCION'&&m.ob){
+    const o=m.ob,tar=+m.tar||0,ade=+m.ade||0,pre=+m.pre||0,r5=+m.r5||0;
+    const sue=r2((+o.jb||0)+(+o.domD||0)+(+o.buc||0)),dom=r2(+o.dom||0),fer=dom;
+    const com=r2((+m.com||0)+(+o.ext||0)),bon=r2((+m.bon||0)+(+o.mov||0));
+    const gra=r2(+o.gra||0),cts=r2(+o.cts||0),liq=r2(+o.vac||0),noAfecto=r2(gra+cts+liq);
+    const conaf=r2(+o.conaf||0),cuota=r2(+o.cuota||0);
+    const ing=r2(sue+fer+com+bon+noAfecto);
+    const base=r2(sue+fer+com-tar);
+    const{onp,ap,pr,apc}=aportesPlanilla_(base,p,cfg);
+    const des=r2(onp+ap+pr+apc+tar+ade+pre+r5+conaf+cuota);
+    return {rh:false,obra:true,dias:+m.d||0,f:+m.f||0,vd:0,vvd:0,fd:0,dd:+o.ds||0,dom,dmd:0,sue,af:0,vac:0,vv:0,dm:0,fer,he25:0,he35:0,com,bon,hon:0,ing,base,baseSal:base,
+      gra,bge:0,cts,liq,vtr:0,noAfecto,faltaImp:0,
+      onp,ap,pr,apc,r5,ret4:0,tar,ade,pre,des,neto:r2(ing-des),
+      buc:r2(+o.buc||0),domD:r2(+o.domD||0),mov:r2(+o.mov||0),ext:r2(+o.ext||0),conaf,cuota};
+  }
   const d=+m.d||0,vd=+m.v||0,vvd=+m.vv||0,fd=+m.fer||0,domd=+m.dom||0,dmd=+m.dm||0,fFalt=+m.f||0,faltaHoras=+m.faltaHoras||0;
   const jornal=p.sue/cfg.DM;
   // "Dias" es lo que la persona realmente vino a trabajar -asi lo llena quien
@@ -1504,12 +1548,24 @@ function calcQuincena_(p,m,topeDias,cfg){
     onp,ap,pr,apc,r5,ret4:0,tar,ade,pre,des,neto:r2(ing-des)};
 }
 function calc(p,q){return calcQuincena_(p,mv(p.dni,q),TOPE_DIAS(q),CFG);}
+/* SALUD DEL EMPLEADOR. Regimen general y pequeña empresa: EsSalud 9% (con minimo
+   RMV). MICROEMPRESA inscrita en REMYPE: puede asegurar al trabajador en el SIS
+   (aporte del empleador S/ 15 por trabajador al mes, el Estado pone otro tanto)
+   o seguir en EsSalud 9%. Se elige por persona en Personal (p.salud) y el
+   monto del SIS se edita en Empresa. Por defecto ESSALUD: nada cambia hasta
+   que se marque SIS. */
+const saludSIS_=p=>!!p&&p.salud==='SIS'&&(p.reg||'MICRO')==='MICRO'&&p.tipo==='PLANILLA';
+function saludPatronal_(p,cfg,baseSal,dias,rmv){
+  if(saludSIS_(p))return {es:r2(cfg.SIS!==undefined?cfg.SIS:15),baseES:0,minAp:false,sis:true};
+  const minimo=cfg.ES_MIN_PROPORCIONAL?r2(rmv*Math.min(cfg.DM,dias)/cfg.DM):rmv;
+  const baseES=r2(Math.max(baseSal,minimo));
+  return {es:r2(baseES*cfg.T_ES),baseES,minAp:baseES>baseSal+.005,sis:false};}
 function mes(p){
   const a=calc(p,1),b=calc(p,2);
   const dias=a.dias+b.dias,base=r2(a.base+b.base);
   const baseSal=r2(a.baseSal+b.baseSal);   // sin los dias subsidiados
   const dm=r2(a.dm+b.dm),dmd=(a.dmd||0)+(b.dmd||0);
-  let es=0,baseES=0,minAp=false;
+  let es=0,baseES=0,minAp=false,sis=false;
   if(!a.rh&&dias>0){
     // La RMV que corresponde a ESTE periodo (per().a/per().m) -no siempre la
     // de hoy-, para que reabrir un periodo ya guardado despues de que la RMV
@@ -1517,15 +1573,13 @@ function mes(p){
     // tasaDe_()/CFG.__hist; sin historial cargado, se comporta igual que
     // siempre (CFG.RMV de hoy).
     const pr_=per(),rmvPeriodo=tasaDe_(CFG,'RMV',pr_.a,pr_.m);
-    const minimo=CFG.ES_MIN_PROPORCIONAL?r2(rmvPeriodo*Math.min(CFG.DM,dias)/CFG.DM):rmvPeriodo;
-    baseES=r2(Math.max(baseSal,minimo));
-    minAp=baseES>baseSal+.005;
-    es=r2(baseES*CFG.T_ES);
+    const sa=saludPatronal_(p,CFG,baseSal,dias,rmvPeriodo);
+    baseES=sa.baseES;minAp=sa.minAp;es=sa.es;sis=sa.sis;
   }
   const vl=(!a.rh&&dias>0)?CFG.VL:0;
   const bs=(!a.rh)?benef(p,per().a,per().m):null;
   const vacProv=bs?bs.vac:0;
-  return {q1:a,q2:b,dias,base,baseES,minAp,es,vl,vacProv,bs,faltaImp:r2(a.faltaImp+b.faltaImp),
+  return {q1:a,q2:b,dias,base,baseES,minAp,es,sis,vl,vacProv,bs,faltaImp:r2(a.faltaImp+b.faltaImp),
     fer:r2(a.fer+b.fer),dom:r2((a.dom||0)+(b.dom||0)),vacGoz:r2(a.vac+b.vac),vv:r2((a.vv||0)+(b.vv||0)),vtr:r2(a.vtr+b.vtr),dm,dmd,baseSal,noAfecto:r2(a.noAfecto+b.noAfecto),
     ing:r2(a.ing+b.ing),des:r2(a.des+b.des),neto:r2(a.neto+b.neto),
     hon:r2(a.hon+b.hon),ret4:r2(a.ret4+b.ret4),
@@ -1845,7 +1899,7 @@ function heBtnCell(dni,q,mov){
   // mov.he siempre esta al dia (viene del archivo cargado o lo sincroniza
   // heDSync tras cada edicion en Incidencias): se muestra directo.
   const tot=+mov.he||0;
-  return '<td class="ctr" title="Horas extra de este periodo -se edita en la pestaña Incidencias" '+
+  return '<td class="ctr" title="Horas extra de este periodo -se edita en Asistencia" '+
     'style="color:var(--ink2);font-variant-numeric:tabular-nums">'+(tot>0?dec2hm(tot):'')+'</td>';}
 
 /* ================== INASISTENCIAS POR FECHA (punto 3) ==================
@@ -1929,7 +1983,7 @@ function saneaDni_(v){return String(v==null?'':v).replace(/[^A-Za-z0-9-]/g,'');}
 // sincronizados por incDSync o por icSetCell_ tras cada edicion).
 function incBtnCell(dni,q,mov,modo){
   const val=modo==='tar'?(mov.tar>0?f(mov.tar):''):(mov.f>0?String(mov.f):'');
-  return '<td class="ctr" title="'+(modo==='tar'?'Tardanza':'Faltas')+' de este periodo -se edita en la pestana Incidencias" '+
+  return '<td class="ctr" title="'+(modo==='tar'?'Tardanza':'Faltas')+' de este periodo -se edita en Asistencia" '+
     'style="color:var(--ink2);font-variant-numeric:tabular-nums">'+val+'</td>';}
 /* EDICION */
 function setP(id,c,v){const p=P.find(x=>x.id===id);if(!p)return;
@@ -1957,12 +2011,16 @@ const TOPE_DIAS=q=>esMensual()?CFG.DM:15;
 // ver setM e incDSync: asi se puede teclear directo sin perder lo marcado por fecha.
 function domCell_(dni,q,mov){
   const dom=+mov.dom||0,filas=incDTotales(mov.incD||[]).diasDom;
-  const tit='Dias de descanso semanal (domingo) trabajados sin descanso sustitutorio. Se puede teclear directo'+(filas>0?' ('+filas+' marcado(s) por fecha en Tareo/Incidencias; lo que teclees queda como total del periodo)':'');
+  const tit='Dias de descanso semanal (domingo) trabajados sin descanso sustitutorio. Se puede teclear directo'+(filas>0?' ('+filas+' marcado(s) por fecha en Asistencia; lo que teclees queda como total del periodo)':'');
   return '<td class="ctr"><input data-f="dom" class="w45" type="number" min="0" max="'+TOPE_DIAS(q)+'" step="1" value="'+dom+'" title="'+tit+'" onchange="setM(\''+dni+'\','+q+',\'dom\',this.value)"></td>';}
-const TIT_DOM_='Pago ADICIONAL por dominical: dia de descanso semanal trabajado sin descanso sustitutorio (D.Leg. 713 art. 6). El dia ya viene incluido en el sueldo; se paga con el mismo factor del feriado (Cuentas).';
+const TIT_DOM_='Pago ADICIONAL por dominical: dia de descanso semanal trabajado sin descanso sustitutorio (D.Leg. 713 art. 6). El dia ya viene incluido en el sueldo; se paga con el mismo factor del feriado (Empresa).';
 function setM(dni,q,c,v){const m=mv(dni,q);
+  { const po=P.find(x=>x.dni===dni);
+    if(esObra_(po)&&esMensual()&&+q===2&&['d','f','fer','dom','bon','ade','he','v','vv','dm'].indexOf(c)>=0){
+      toast('Construcción civil: esto se carga por semana, en la pestaña Semanal','err');R();return;}}
   if(c==='sus'){m[c]=v;R();return;}
   if(c==='he'){m[c]=Math.max(0,hm2dec(String(v).replace('-','')));R();return;}
+  if(c==='ade'&&esAdelanto()&&+q===2)m.adeManual=true;   // el contador fijo otro importe
   let n=+v||0;
   if(n<0)n=0;                                   // sin negativos
   if(c==='dom'){
@@ -1977,7 +2035,11 @@ function setM(dni,q,c,v){const m=mv(dni,q);
     if(n>tope)n=tope;}
   m[c]=n;
   R();}
-function setReg(id,v){const p=P.find(x=>x.id===id);if(!p)return;p.reg=REG[v]?v:'MICRO';R();}
+function setReg(id,v){const p=P.find(x=>x.id===id);if(!p)return;p.reg=REG[v]?v:'MICRO';
+  if(p.reg!=='MICRO')p.salud='ESSALUD';   // solo la microempresa puede optar por el SIS
+  if(p.reg==='CONSTRUCCION')obraFicha_(p);
+  R();}
+function setSalud(id,v){const p=P.find(x=>x.id===id);if(!p)return;p.salud=(v==='SIS'&&(p.reg||'MICRO')==='MICRO')?'SIS':'ESSALUD';R();}
 function addTrab(){const id=Math.max(0,...P.map(p=>p.id))+1;
   const nuevo={id,dni:'',nom:'NUEVA PERSONA',car:'',cc:'94',tipo:'PLANILLA',afp:'AFP INTEGRA',
     sue:CFG.RMV,ing:new Date().toISOString().slice(0,10),ces:'',est:'ACTIVO',reg:'MICRO'};
@@ -2036,8 +2098,7 @@ function costoPeriodoDe_(lista,mapM,modoHist,cfg){
     let es=0,vl=0;
     if(dias>0){
       const baseSal=r2((a.baseSal||0)+(b.baseSal||0));
-      const minimo=cfg.ES_MIN_PROPORCIONAL?r2(cfg.RMV*Math.min(cfg.DM,dias)/cfg.DM):cfg.RMV;
-      es=r2(Math.max(baseSal,minimo)*cfg.T_ES);vl=cfg.VL;}
+      es=saludPatronal_(p,cfg,baseSal,dias,cfg.RMV).es;vl=cfg.VL;}
     return {p,costo:r2(ing+es+vl)};});
 }
 const costoActualItems_=()=>costoPeriodoDe_(act(),M,MODO);
@@ -2166,7 +2227,13 @@ function rPersonal(){
    '<td class="ctr"><select class="'+pillTipo_(p.tipo)+'" data-f="tipo" onchange="setP('+p.id+',\'tipo\',this.value)">'+
      TIPOS.map(x=>'<option'+(p.tipo===x?' selected':'')+'>'+x+'</option>').join('')+'</select></td>'+
    '<td class="ctr"><select data-f="reg" onchange="setReg('+p.id+',this.value)"'+(p.tipo!=='PLANILLA'?' disabled':'')+' title="Define vacaciones, gratificación y CTS">'+
-     Object.keys(REG).map(k=>'<option value="'+k+'"'+((p.reg||'MICRO')===k?' selected':'')+'>'+REG[k].nom+'</option>').join('')+'</select></td>'+
+     Object.keys(REG).map(k=>'<option value="'+k+'"'+((p.reg||'MICRO')===k?' selected':'')+'>'+REG[k].nom+'</option>').join('')+'</select>'+
+     (esObra_(p)?'<div style="margin-top:3px;display:flex;gap:4px;align-items:center;justify-content:center">'+
+       '<select data-f="cat" onchange="setCatObra('+p.id+',this.value)" style="font-size:10px" title="Categoría de obra: define jornal y BUC">'+
+       Object.keys(CAT_OBRA).map(k=>'<option value="'+k+'"'+(catObra_(p)===k?' selected':'')+'>'+CAT_OBRA[k]+'</option>').join('')+'</select>'+
+       '<input data-f="cuota" type="number" min="0" step=".01" class="w45" value="'+(+p.cuota||0)+'" onchange="setCuotaObra('+p.id+',this.value)" title="Cuota sindical por semana trabajada (S/)" style="width:58px"></div>':'')+'</td>'+
+   '<td class="ctr"><select data-f="salud" onchange="setSalud('+p.id+',this.value)"'+((p.tipo!=='PLANILLA'||(p.reg||'MICRO')!=='MICRO')?' disabled':'')+' title="Microempresa REMYPE: el empleador elige SIS (aporte fijo S/ '+f0(CFG.SIS)+' al mes) o EsSalud 9%. Pequeña y general: siempre EsSalud.">'+
+     '<option value="ESSALUD"'+(p.salud!=='SIS'?' selected':'')+'>EsSalud</option><option value="SIS"'+(p.salud==='SIS'?' selected':'')+'>SIS</option></select></td>'+
    '<td class="ctr"><select data-f="afp" onchange="setP('+p.id+',\'afp\',this.value)"'+(p.tipo!=='PLANILLA'?' disabled':'')+'>'+
      AFPS.map(a=>'<option'+(p.afp===a?' selected':'')+'>'+a+'</option>').join('')+'</select></td>'+
    '<td class="ctr"><select data-f="comAfp" onchange="setP('+p.id+',\'comAfp\',this.value)" title="Mixta: la AFP cobra su comision anual directo del fondo, no se descuenta por planilla. Flujo: se descuenta cada mes en la boleta -solo aplica a quien sigue en ese esquema desde antes de 2013."'+
@@ -2206,6 +2273,7 @@ function rPersonal(){
    celdaFiltroExcel_('wPers','cc','Centro Costo')+
    celdaFiltroExcel_('wPers','tipo','Tipo')+
    celdaFiltroExcel_('wPers','reg','Rég. Laboral',{title:'Régimen laboral: define vacaciones, gratificación y CTS'})+
+   '<th title="Seguro de salud del empleador. Solo la microempresa (REMYPE) puede elegir SIS en lugar de EsSalud">Salud</th>'+
    celdaFiltroExcel_('wPers','afp','Régimen Pens.')+
    '<th title="Solo para quien sigue en el esquema de comision por flujo (afiliados desde antes de feb-2013)">Comisión AFP</th>'+
    '<th title="Asignación familiar: S/ 102.50 (10% RMV) si tiene hijos">Asig. Familiar</th><th>Sueldo / Honor.</th>'+
@@ -2213,7 +2281,7 @@ function rPersonal(){
    celdaFiltroExcel_('wPers','est','Estado')+
    '<th title="Solo para quien tiene fecha de cese: define la liquidacion (antes vivia en Beneficios)">Motivo de cese</th><th></th></tr>'+
    '</thead><tbody>'+
-   (rows||'<tr><td colspan="17" style="text-align:center;padding:20px;color:var(--ink3)">Sin personal registrado.</td></tr>')+'</tbody></table>';
+   (rows||'<tr><td colspan="18" style="text-align:center;padding:20px;color:var(--ink3)">Sin personal registrado.</td></tr>')+'</tbody></table>';
   ordenarFilasDOM_('wPers');
 }
 /* QUINCENA */
@@ -2262,7 +2330,7 @@ function rQna(q){
       '<td colspan="4" class="ctr" style="color:var(--ink3);font-size:10px">sin beneficios de planilla</td>'+
       '<td class="num"><b>'+f(c.ing)+'</b></td>'+
       '<td class="num" title="Base de renta de 4ta">'+f(c.base4)+'</td>'+
-      '<td class="ctr" style="color:var(--ink3);font-size:10px">no afecto</td>'+
+      '<td colspan="2" class="ctr" style="color:var(--ink3);font-size:10px">no afecto</td>'+
       '<td class="ctr"><select data-f="sus" onchange="setM(\''+p.dni+'\','+q+',\'sus\',this.value)" style="width:56px" title="Suspensión de retención de 4ta">'+
         '<option'+(m.sus==='NO'?' selected':'')+'>NO</option><option'+(m.sus!=='NO'?' selected':'')+'>SI</option></select>'+
         '<div style="font-size:9px;color:var(--ink3)">susp. 4ta</div></td>'+
@@ -2281,7 +2349,8 @@ function rQna(q){
       '<td class="num" title="Subsidio por incapacidad temporal (código 0916). Los primeros 20 días los paga el empleador y desde el 21 EsSalud. Afecto a AFP y ONP, no a EsSalud ni a 5ta.">'+f(c.dm)+'</td>'+
       num(p.dni,'com',m.com,'w90')+feriado+he+noAf+
       '<td class="num"><b>'+f(c.ing)+'</b></td><td class="num">'+f(c.base)+'</td>'+
-      '<td class="num">'+f(c.onp+c.ap)+'</td><td class="num">'+f(c.pr)+'</td>'+
+      '<td class="num" title="Aporte obligatorio a la AFP (fondo de pensiones)">'+(c.ap>0?f(c.ap):'')+'</td>'+
+      '<td class="num" title="Aporte a la ONP (Sistema Nacional de Pensiones)">'+(c.onp>0?f(c.onp):'')+'</td><td class="num">'+f(c.pr)+'</td>'+
       '<td class="num" title="Comisión AFP (solo esquema Flujo)">'+(c.apc>0?f(c.apc):'')+'</td>'+
       num(p.dni,'r5',m.r5)+incBtnCell(p.dni,q,m,'tar')+num(p.dni,'ade',m.ade)+num(p.dni,'pre',m.pre)+
       '<td class="num"><b style="'+(c.neto<0?'color:var(--red2)':'')+'">'+f(c.neto)+'</b></td>'+btn;}).join('');
@@ -2294,7 +2363,7 @@ function rQna(q){
    '<th rowspan="2" title="Se calcula solo: dias del bloque menos faltas y vacaciones (gozadas o adelantadas) de este periodo. Editable a mano si hace falta un ajuste (ingreso/cese a mitad de periodo).">Días</th><th rowspan="2">Faltas</th><th rowspan="2">Inasistencia</th>'+
    '<th colspan="16" class="gi">INGRESOS AFECTOS A APORTES</th>'+
    '<th colspan="5" class="gt">NO AFECTOS A APORTES</th>'+
-   '<th colspan="2" class="gt">TOTALES</th><th colspan="7" class="gd">DESCUENTOS</th>'+
+   '<th colspan="2" class="gt">TOTALES</th><th colspan="8" class="gd">DESCUENTOS</th>'+
    '<th rowspan="2" class="gt">NETO</th><th rowspan="2"></th></tr>'+
    '<tr><th class="gi">Sueldo</th><th class="gi">Vac. días</th><th class="gi">Imp. Vacac.</th>'+
    '<th class="gi" title="Vacaciones vendidas (D.S. 012-92-TR): se pagan igual que un dia de vacacion, pero no restan Dias Laborados">Vac. vendidas</th>'+
@@ -2304,15 +2373,15 @@ function rQna(q){
    '<th class="gi" title="Subsidio por incapacidad temporal - código 0916">Imp. subsidio</th>'+
    '<th class="gi">Comisión</th>'+
    '<th class="gi">Feriado días</th><th class="gi">Imp. Feriado</th>'+
-   '<th class="gi" title="Domingo / día de descanso semanal trabajado sin descanso sustitutorio (D.Leg. 713 art. 6). Se marca con D en Tareo o se teclea aquí.">Dominical días</th><th class="gi" title="Mismo factor del feriado (Cuentas). Va a PLAME con el código 0107.">Imp. Dominical</th>'+
+   '<th class="gi" title="Domingo / día de descanso semanal trabajado sin descanso sustitutorio (D.Leg. 713 art. 6). Se marca con D en Asistencia o se teclea aquí.">Dominical días</th><th class="gi" title="Mismo factor del feriado (Empresa). Va a PLAME con el código 0107.">Imp. Dominical</th>'+
    '<th class="gi">H.Extras</th><th class="gi">Imp. 25%</th><th class="gi">Imp. 35%</th>'+
    '<th class="gt" title="Bono: canasta de bonos no remunerativos (productividad, movilidad, puntualidad, u otros similares) - no afecta aportes AFP/ONP/EsSalud">Bono</th>'+
    '<th class="gt">Gratificación</th><th class="gt">Bonif. 9%</th><th class="gt">CTS</th><th class="gt">Otros</th>'+
    '<th class="gt">Total Ing.</th><th class="gt">Base Afecta</th>'+
-   '<th class="gd">AFP/ONP</th><th class="gd">Prima</th><th class="gd" title="Comisión AFP - solo esquema Flujo">Comisión AFP</th><th class="gd">5ta / 4ta</th>'+
+   '<th class="gd" title="Aporte obligatorio a la AFP">AFP</th><th class="gd" title="Aporte a la ONP">ONP</th><th class="gd">Prima</th><th class="gd" title="Comisión AFP - solo esquema Flujo">Comisión AFP</th><th class="gd">5ta / 4ta</th>'+
    '<th class="gd">Tardanza</th><th class="gd">Adelanto</th><th class="gd">Préstamo</th></tr>'+
    '</thead><tbody>'+
-   (rows||'<tr><td colspan="39" style="text-align:center;padding:20px;color:var(--ink3)">Sin personal activo.</td></tr>')+
+   (rows||'<tr><td colspan="40" style="text-align:center;padding:20px;color:var(--ink3)">Sin personal activo.</td></tr>')+
    '</tbody><tfoot><tr class="total"><td colspan="6"><b>TOTALES</b></td>'+
    '<td class="num"><b>'+(t.falta>0?'-'+f(t.falta):'')+'</b></td>'+
    '<td class="num"><b>'+f(t.sue)+'</b></td><td></td><td class="num"><b>'+f(t.vac)+'</b></td>'+
@@ -2328,7 +2397,7 @@ function rQna(q){
    '<td class="num"><b>'+f(t.gra)+'</b></td><td class="num"><b>'+f(t.bge)+'</b></td>'+
    '<td class="num"><b>'+f(t.cts)+'</b></td><td class="num"><b>'+f(t.liq)+'</b></td>'+
    '<td class="num"><b>'+f(t.ing)+'</b></td><td class="num"><b>'+f(t.base)+'</b></td>'+
-   '<td class="num"><b>'+f(t.onp+t.ap)+'</b></td><td class="num"><b>'+f(t.pr)+'</b></td>'+
+   '<td class="num"><b>'+f(t.ap)+'</b></td><td class="num"><b>'+f(t.onp)+'</b></td><td class="num"><b>'+f(t.pr)+'</b></td>'+
    '<td class="num"><b>'+f(t.apc)+'</b></td>'+
    '<td class="num"><b>'+f(t.r4+t.r5)+'</b></td><td class="num"><b>'+f(t.tar)+'</b></td>'+
    '<td class="num"><b>'+f(t.ade)+'</b></td><td class="num"><b>'+f(t.pre)+'</b></td>'+
@@ -2338,6 +2407,8 @@ function rQna(q){
   document.getElementById('sQ'+q).innerHTML=
    '<div class="chip inf"><span class="dot"></span>Neto Q'+q+': <b>S/ '+f0(t.neto)+'</b></div>'+
    '<div class="chip '+(neg===0?'ok':'err')+'"><span class="dot"></span>Netos negativos: <b>'+(neg===0?'ninguno':neg)+'</b></div>'+
+   '<div class="chip inf" title="Aporte obligatorio a la AFP de este periodo (sin prima ni comisión)"><span class="dot"></span>AFP: <b>S/ '+f(t.ap)+'</b></div>'+
+   '<div class="chip inf" title="Aporte a la ONP de este periodo"><span class="dot"></span>ONP: <b>S/ '+f(t.onp)+'</b></div>'+
    '<div class="chip inf"><span class="dot"></span>Personas: <b>'+act().length+'</b></div>'+
    '<div class="chip inf"><span class="dot"></span>Horas extras: <b>'+(t.he>0?dec2hm(t.he)+' h':'ninguna')+'</b></div>'+
    (t.fer>0?'<div class="chip inf"><span class="dot"></span>Feriados: <b>S/ '+f0(t.fer)+'</b></div>':'')+
@@ -2381,7 +2452,7 @@ function rMensual(){
      '<td class="num"><b>'+f(m.ing)+'</b></td>'+
      '<td class="num">'+f(m.base)+'</td>'+
      '<td class="num'+(m.minAp?' es-min':'')+'" title="'+(m.minAp?'Ajustado al mínimo RMV':'')+'">'+f(m.baseES)+'</td>'+
-     '<td class="num">'+f(m.onp+m.ap)+'</td><td class="num">'+f(m.pr)+'</td>'+
+     '<td class="num" title="Aporte obligatorio a la AFP">'+(m.ap>0?f(m.ap):'')+'</td><td class="num" title="Aporte a la ONP">'+(m.onp>0?f(m.onp):'')+'</td><td class="num">'+f(m.pr)+'</td>'+
      '<td class="num" style="color:var(--tealtx);font-weight:600">'+f(m.es)+'</td>'+
      '<td class="num">'+f(m.ret4+m.r5)+'</td><td class="num">'+f(m.vl)+'</td>'+
      '<td class="num">'+f(m.vacProv)+'</td>'+
@@ -2396,10 +2467,10 @@ function rMensual(){
    '<th>Régimen</th><th>CUSPP</th><th>Días</th>'+
    '<th>Inasistencia</th>'+
    '<th>Sueldo/Hon.</th><th>Bono</th><th>Comisión</th><th>H.Extras</th><th>Imp. 25%</th><th>Imp. 35%</th><th>Total Ing.</th>'+
-   '<th>Base Afecta</th><th>Base EsSalud</th><th>AFP/ONP</th><th>Prima</th>'+
+   '<th>Base Afecta</th><th>Base EsSalud</th><th>AFP</th><th>ONP</th><th>Prima</th>'+
    '<th>EsSalud</th><th>Ret. 4ta/5ta</th><th>Vida Ley</th><th>Prov. Vac.</th>'+
    '<th>Neto Q1</th><th>Neto Q2</th><th>Neto Mes</th><th class="gt">Neto a pagar</th>'+
-   '</tr></thead><tbody>'+(rows||'<tr><td colspan="27" style="text-align:center;padding:20px;color:var(--ink3)">Sin datos. Agrega personal o trae el del mes anterior.</td></tr>')+
+   '</tr></thead><tbody>'+(rows||'<tr><td colspan="28" style="text-align:center;padding:20px;color:var(--ink3)">Sin datos. Agrega personal o trae el del mes anterior.</td></tr>')+
    '</tbody><tfoot><tr class="total"><td colspan="7"><b>TOTALES</b></td>'+
    '<td class="num"><b>'+(t.falta>0?'-'+f(t.falta):'')+'</b></td>'+
    '<td class="num"><b>'+f(t.sue)+'</b></td><td class="num"><b>'+f(t.bon)+'</b></td>'+
@@ -2408,7 +2479,7 @@ function rMensual(){
    '<td class="num"><b>'+f(t.he25)+'</b></td><td class="num"><b>'+f(t.he35)+'</b></td>'+
    '<td class="num"><b>'+f(t.ing)+'</b></td>'+
    '<td class="num"><b>'+f(t.base)+'</b></td><td></td>'+
-   '<td class="num"><b>'+f(t.onp+t.ap)+'</b></td><td class="num"><b>'+f(t.pr)+'</b></td>'+
+   '<td class="num"><b>'+f(t.ap)+'</b></td><td class="num"><b>'+f(t.onp)+'</b></td><td class="num"><b>'+f(t.pr)+'</b></td>'+
    '<td class="num"><b>'+f(t.es)+'</b></td><td class="num"><b>'+f(t.r4+t.r5)+'</b></td>'+
    '<td class="num"><b>'+f(t.vl)+'</b></td><td class="num"><b>'+f(t.vac)+'</b></td>'+
    '<td class="num"><b>'+f(t.q1)+'</b></td><td class="num"><b>'+f(t.q2)+'</b></td>'+
@@ -2755,8 +2826,11 @@ function rBeneficios(){
    ========================================================================== */
 const REG={
   GENERAL:{nom:'General 728',vac:30,grati:1,cts:1,bonif:true},
-  PEQUENA:{nom:'MYPE Pequena',vac:15,grati:.5,cts:.5,bonif:true},
-  MICRO:{nom:'MYPE Micro',vac:15,grati:0,cts:0,bonif:false},
+  PEQUENA:{nom:'REMYPE Pequeña',vac:15,grati:.5,cts:.5,bonif:true},
+  MICRO:{nom:'REMYPE Micro',vac:15,grati:0,cts:0,bonif:false},
+  // Construccion civil: vacaciones, CTS y gratificacion se pagan SEMANA A SEMANA
+  // dentro de la planilla semanal (no hay provision que devengar), por eso 0 aqui.
+  CONSTRUCCION:{nom:'Construcción civil',vac:0,grati:0,cts:0,bonif:false},
 };
 const regDe=p=>REG[p&&p.reg]||REG.MICRO;
 const BONIF_EXTRA=0.09;
@@ -3031,13 +3105,13 @@ function chipVerifR5_(p,sugeridoLocal){
 let PLB={clave:'',cargando:false,porDni:{}};
 function clavePlanilla(){
   const{a,m}=per();
-  return a+'-'+m+'|'+MODO+'|'+CFG.FER+'|'+act().map(p=>[p.dni,p.sue,p.afp,p.comAfp,p.asigFam?1:0,p.tipo].join(',')).join(';');}
+  return a+'-'+m+'|'+MODO+'|'+CFG.FER+'|'+act().map(p=>[p.dni,p.sue,p.afp,p.comAfp,p.asigFam?1:0,p.tipo,p.reg||'',p.cat||''].join(',')).join(';');}
 // Mismos campos que bl() (el movimiento crudo de una quincena): los que de
 // verdad usa calc()/calcQuincena_, sin arrastrar nada mas de mv().
 function movPlanillaPayload_(m){
   return {d:m.d,f:m.f,faltaHoras:m.faltaHoras,v:m.v,vv:m.vv,dm:m.dm,fer:m.fer,dom:m.dom,he:m.he,heD:m.heD,
     bon:m.bon,com:m.com,tar:m.tar,ade:m.ade,pre:m.pre,r5:m.r5,sus:m.sus,hon:m.hon,
-    gra:m.gra,bge:m.bge,cts:m.cts,vtr:m.vtr,liq:m.liq};}
+    gra:m.gra,bge:m.bge,cts:m.cts,vtr:m.vtr,liq:m.liq,ob:m.ob};}
 async function pedirPlanilla(forzar){
   const clave=clavePlanilla();
   if(!forzar&&PLB.clave===clave)return PLB;
@@ -3045,7 +3119,7 @@ async function pedirPlanilla(forzar){
   if(!haySesionSegura()){PLB.clave='';return PLB;}
   PLB.cargando=true;
   const r=await callBackend_('calcular_planilla',{ruc:CFG.RUC,modo:MODO,fer:CFG.FER,min4d:CFG.MIN4D,
-    trabajadores:act().map(p=>({dni:p.dni,sue:p.sue,afp:p.afp,comAfp:p.comAfp,asigFam:!!p.asigFam,tipo:p.tipo,
+    trabajadores:act().map(p=>({dni:p.dni,sue:p.sue,reg:p.reg,afp:p.afp,comAfp:p.comAfp,asigFam:!!p.asigFam,tipo:p.tipo,
       m1:movPlanillaPayload_(mv(p.dni,1)),m2:movPlanillaPayload_(mv(p.dni,2))}))});
   PLB.cargando=false;
   if(!r.ok){
@@ -3310,6 +3384,8 @@ function rIncCtrl(){
       cellNum('goz',vacDiasEnPeriodo_(p,ICQ,'GOZADA'),'Dias de vacaciones gozadas en este periodo -se aplican solos al Vac. dias de la quincena/mes',false)+
       cellNum('adel',vacDiasEnPeriodo_(p,ICQ,'ADELANTADA'),'Dias de vacaciones adelantadas en este periodo -se aplican solos al Vac. dias de la quincena/mes',false)+
       cellNum('vend',vacDiasEnPeriodo_(p,ICQ,'VENDIDA'),'Dias de vacaciones vendidas en este periodo -se pagan igual que un dia de vacacion, pero la persona sigue trabajando: NO restan de Dias Laborados',false)+
+      vacSaldoCelda_(p)+
+      '<td class="num"><input data-f="vacPrev" type="number" min="0" step=".5" class="w45" value="'+(+p.vacPrev||0)+'"'+(BLOQ?' disabled':'')+' title="Días de vacaciones que ya gozó ANTES de empezar a usar el sistema; se restan del saldo" onchange="setVacPrev(\''+p.dni+'\',this.value)"></td>'+
       '<td class="ctr"><button type="button" class="bs" style="padding:2px 9px" onclick="abrirHE(\''+p.dni+'\','+ICQ+')" title="Horas extra por fecha: coloca el total de horas de cada dia y el sistema separa solo cuanto va al 25% y al 35% (2 primeras horas del dia al 25%)">'+
         ((+mov.he||0)>0?dec2hm(mov.he):'+')+'</button></td>'+
       '</tr>';}).join('');
@@ -3320,8 +3396,10 @@ function rIncCtrl(){
     '<th>Faltas</th><th>S/ Tardanzas</th><th title="Dias de vacaciones gozadas de este periodo; se aplican solos al Vac. dias de la quincena/mes">Vac. gozadas</th>'+
     '<th title="Dias de vacaciones adelantadas de este periodo; se aplican solos al Vac. dias de la quincena/mes">Vac. adelantadas</th>'+
     '<th title="Dias de vacaciones vendidas (D.S. 012-92-TR): se pagan aparte, sin restar Dias Laborados -la persona sigue trabajando ese dia">Vac. vendidas</th>'+
+    '<th title="Vacaciones por gozar al cierre del periodo: devengadas − gozadas − adelantadas − vendidas − previas. Entre paréntesis: adelantadas que aún no se ganan.">Vac. por gozar</th>'+
+    '<th title="Días ya gozados antes de empezar a usar el sistema (saldo inicial)">Gozadas antes</th>'+
     '<th title="Horas extra de este periodo: coloca el total de horas de cada dia (no separes 25%/35% a mano, el sistema lo hace solo con el umbral de 2 horas por dia)">H. Extras</th></tr></thead><tbody>'+
-    (trs||'<tr><td colspan="11" style="text-align:center;padding:20px;color:var(--ink3)">No hay personal registrado.</td></tr>')+
+    (trs||'<tr><td colspan="13" style="text-align:center;padding:20px;color:var(--ink3)">No hay personal registrado.</td></tr>')+
     '</tbody></table>';}
 
 /* ================== REPORTERIA: vacaciones, inasistencias y tardanzas ==================
@@ -3517,12 +3595,16 @@ function setFinContrato(dni,v){const p=P.find(x=>x.dni===dni);if(!p)return;
 function lineasAsiento(){
   const {m,a}=per(),fecha=new Date(a,m,0),ct=PLAN.ctas;
   const cc={};PLAN.ccs.forEach(k=>{cc[k.cod]={rem:0,bon:0,com:0,es:0,vac:0,tar:0,gra:0,cts:0,falta:0};});
-  const afp={};let onp=0,r5=0;const q1=[],q2=[],adePreW=[];
+  const afp={};let onp=0,r5=0,conafT=0,cuotaT=0;const q1=[],q2=[],adePreW=[];
   pla().forEach(p=>{const mm=mes(p),c=cc[p.cc];if(!c)return;
     // Las vacaciones (gozadas o truncas), la CTS, la gratificacion y su
     // bonificacion NO son gasto del mes: ya se devengaron en su provision. Al
     // pagarlas se cargan contra esa provision, mas abajo.
     c.rem+=r2(mm.q1.sue+mm.q2.sue+mm.q1.af+mm.q2.af+mm.q1.dm+mm.q2.dm+mm.q1.he25+mm.q2.he25+mm.q1.he35+mm.q2.he35+mm.q1.fer+mm.q2.fer);
+    // Construccion civil: vacaciones (10%), CTS y gratificacion se pagan cada semana,
+    // sin provision previa -son gasto del mes, no cancelan ninguna provision-.
+    if(mm.q2.obra){c.rem+=r2(mm.q2.gra+mm.q2.cts+mm.q2.liq);
+      conafT=r2(conafT+mm.q2.conaf);cuotaT=r2(cuotaT+mm.q2.cuota);}
     c.bon+=r2(mm.q1.bon+mm.q2.bon);c.com+=r2(mm.q1.com+mm.q2.com);
     c.tar+=r2(mm.q1.tar+mm.q2.tar);
     // El sueldo (c.rem, arriba) sale integro segun los dias tecleados, sin
@@ -3563,10 +3645,12 @@ function lineasAsiento(){
   CS.forEach(k=>{const v=cc[k.cod];if(v.bon>0)A1.push({cta:k.rem,cc:k.cod,dh:'D',imp:r2(v.bon),g:k.gBon});});
   CS.forEach(k=>{const v=cc[k.cod];if(v.es>0)A1.push({cta:k.es,cc:k.cod,dh:'D',imp:r2(v.es),g:k.gEs});});
   const totES=r2(CS.reduce((t,k)=>t+cc[k.cod].es,0));
-  if(totES>0)A1.push({cta:ct.es,dh:'H',imp:totES,g:'ESSALUD'});
+  if(totES>0)A1.push({cta:ct.es,dh:'H',imp:totES,g:pla().some(saludSIS_)?'ESSALUD / SIS':'ESSALUD'});
   Object.keys(afp).forEach(k=>{if(afp[k]>0)A1.push({cta:ct.afp,anx:AFP_ANEXO_[k]||'',dh:'H',imp:r2(afp[k]),g:k.replace('AFP ','')});});
   if(onp>0)A1.push({cta:ct.onp,dh:'H',imp:r2(onp),g:'ONP'});
   if(r5>0)A1.push({cta:ct.r5,dh:'H',imp:r2(r5),g:'RENTA 5TA CATEGORIA'});
+  if(conafT>0)A1.push({cta:ct.conaf,dh:'H',imp:conafT,g:'CONAFOVICER'});
+  if(cuotaT>0)A1.push({cta:ct.cuotaSind,dh:'H',imp:cuotaT,g:'CUOTA SINDICAL'});
   CS.forEach(k=>{const v=cc[k.cod];if(v.tar>0)A1.push({cta:k.rem,cc:k.cod,dh:'H',imp:r2(v.tar),g:'DESCUENTO TARDANZAS'});});
   CS.forEach(k=>{const v=cc[k.cod];if(v.falta>0)A1.push({cta:k.rem,cc:k.cod,dh:'H',imp:r2(v.falta),g:'DESCUENTO INASISTENCIAS'});});
   // Antes: una sola linea agregada (cta:ct.ant, sin anexo) con la suma de
@@ -3582,6 +3666,7 @@ function lineasAsiento(){
   // del mes: cancelan la provision que ya se registro, por eso van al debe
   let pg={grati:0,cts:0,liq:0,vac:0};
   pla().forEach(p=>{const mm=mes(p);
+    if(mm.q2.obra)return;   // ya va como gasto (arriba)
     pg.grati=r2(pg.grati+mm.q1.gra+mm.q2.gra+mm.q1.bge+mm.q2.bge);
     pg.cts=r2(pg.cts+mm.q1.cts+mm.q2.cts);
     pg.liq=r2(pg.liq+mm.q1.liq+mm.q2.liq);
@@ -3956,8 +4041,8 @@ function boletaHTML(p,q,tag,cls){
   const rh=es4ta(p);
   const es=q==='M'?M2.es:r2(M2.es/2),vl=q==='M'?M2.vl:r2(M2.vl/2);
   const ing=[rh?['1001',(p.tipo==='DIETA'?'DIETA DE DIRECTORIO':'HONORARIOS PROFESIONALES'),g('hon'),'hon']
-              :['1001','REMUNERACION BASICA',g('sue'),'sue'],
-   ['1002','VACACIONES',g('vac'),'vac'],['1003','COMISIONES',g('com'),'com'],
+              :['1001','REMUNERACION BASICA',r2(g('sue')-g('buc')-g('domD')),'sue'],
+   ['1002','VACACIONES',g('vac'),'vac'],['1003','COMISIONES',r2(g('com')-g('ext')),'com'],
    ['1004','HORAS EXTRAS 25%',g('he25'),'he25'],['1005','HORAS EXTRAS 35%',g('he35'),'he35'],
    ['1006','TRABAJO EN FERIADO',r2(g('fer')-g('dom')),'fer'],['1007','VACACIONES TRUNCAS',g('vtr'),'vtr'],
    // Renombrado a pedido del usuario: el campo "bon" es una canasta que
@@ -3965,11 +4050,13 @@ function boletaHTML(p,q,tag,cls){
    // puntualidad, entre otros) segun como los use cada empresa, no solo
    // productividad -"BONO DE PRODUCTIVIDAD" quedaba corto/erroneo en la
    // boleta impresa para quien realmente cobra, por ej., bono de movilidad.
-   ['1008','BONO (PRODUCTIVIDAD / MOVILIDAD / PUNTUALIDAD / OTROS)',g('bon'),'bon'],['1009','GRATIFICACION',g('gra'),'gra'],
+   ['1008','BONO (PRODUCTIVIDAD / MOVILIDAD / PUNTUALIDAD / OTROS)',r2(g('bon')-g('mov')),'bon'],['1009','GRATIFICACION',g('gra'),'gra'],
    ['1010','BONIF. EXTRAORDINARIA 9%',g('bge'),'bge'],['1011','C.T.S.',g('cts'),'cts'],
-   ['1012','OTROS DE LIQUIDACION',g('liq'),'liq'],['1013','ASIGNACION FAMILIAR',g('af'),'af'],
+   [p.reg==='CONSTRUCCION'?'1012':'1012',p.reg==='CONSTRUCCION'?'COMPENSACION VACACIONAL (10%)':'OTROS DE LIQUIDACION',g('liq'),'liq'],['1013','ASIGNACION FAMILIAR',g('af'),'af'],
    ['1014','VACACIONES VENDIDAS',g('vv'),'vv'],
    ['1015','DOMINICAL (TRABAJO EN DIA DE DESCANSO)',g('dom'),'dom']]
+   .concat(p.reg==='CONSTRUCCION'?[['1016','DOMINICAL (DESCANSO SEMANAL)',g('domD'),'domD'],['1017','BONIF. UNIFICADA DE CONSTRUCCION (BUC)',g('buc'),'buc'],
+     ['1018','MOVILIDAD',g('mov'),'mov'],['1019','BONIF. ALTURA / OTROS AFECTOS',g('ext'),'ext']]:[])
    .filter(x=>x[2]>0||!(rh&&ING_NA_RH.has(x[3])));
   // 2009 INASISTENCIAS: el sueldo/honorario base (1001) sale integro segun los
   // dias tecleados -sin descontar-; el descuento por faltas va aca, detallado,
@@ -3982,8 +4069,9 @@ function boletaHTML(p,q,tag,cls){
    ['2005','RENTA 4TA CATEGORIA',g('ret4'),'ret4'],['2006','TARDANZAS',g('tar'),'tar'],
    ['2007','ADELANTO DE REMUNERACION',g('ade'),'ade'],['2008','DESCUENTO PRESTAMO',g('pre'),'pre'],
    ['2009','INASISTENCIAS',faltaImp,'faltaImp'],['2010','COMISION AFP',g('apc'),'apc']]
+   .concat(p.reg==='CONSTRUCCION'?[['2011','CONAFOVICER',g('conaf'),'conaf'],['2012','CUOTA SINDICAL',g('cuota'),'cuota']]:[])
    .filter(x=>x[2]>0||!((rh&&DES_NA_RH.has(x[3]))||(!rh&&DES_NA_PLANILLA.has(x[3]))||(x[3]==='apc'&&desNaComAfp_(p))));
-  const apo=rh?[]:[['3001','ESSALUD',es],['3002','SEGURO VIDA LEY',vl]];
+  const apo=rh?[]:[['3001',saludSIS_(p)?'SIS (MYPE)':'ESSALUD',es],['3002','SEGURO VIDA LEY',vl]];
   const tI=r2(ing.reduce((s,x)=>s+x[2],0)),tD=r2(des.reduce((s,x)=>s+x[2],0)),tA=r2(apo.reduce((s,x)=>s+x[2],0));
   const lab=q==='M'?'MES COMPLETO':(q==='1'?'1ra QUINCENA':'2da QUINCENA');
   const der=des.concat(apo);
@@ -4016,7 +4104,7 @@ function boletaHTML(p,q,tag,cls){
    '<tr><td class="n">'+(rh?'--':dias)+'</td><td class="n">'+(rh?'--':feriadosPeriodo)+'</td>'+
    '<td class="n">'+(rh?'--':fdTrab)+'</td><td class="n">'+(rh?'--':ddTrab)+'</td><td class="n">'+(rh?'--':fal)+'</td><td class="n">'+(rh?'--':f(faltaImp))+'</td></tr></table>'+
    '<table class="bol-t" style="margin-top:5px"><tr><th>SUELDO BASICO</th><th>REGIMEN PENSIONARIO</th><th>SEGURO</th></tr>'+
-   '<tr><td class="n">'+f(p.sue)+'</td><td>'+(rh?'--':p.afp)+'</td><td>'+(rh?'--':'ESSALUD')+'</td></tr></table>'+
+   '<tr><td class="n">'+f(p.sue)+'</td><td>'+(rh?'--':p.afp)+'</td><td>'+(rh?'--':(saludSIS_(p)?'SIS':'ESSALUD'))+'</td></tr></table>'+
    '<table class="bol-t" style="margin-top:5px">'+
    '<tr><th colspan="3" style="background:#0F7B6C;color:#fff">INGRESOS</th>'+
    '<th colspan="4" style="background:#6D28D9;color:#fff">DESCUENTOS Y APORTES</th></tr>'+
@@ -4448,13 +4536,31 @@ async function expConcar(){
   return true;
 }
 /* NAV */
+/* DECLARACIONES: Asientos, PLAME 5ta y PLAME 4ta comparten una sola pestaña con
+   tres vistas. Los tres paneles siguen siendo los de siempre (mismos ids), asi
+   que nada de su logica cambia: solo se muestra uno a la vez. */
+let DECL_V='asientos';
+const panelDe_=t=>(t==='decl')?DECL_V:t;
 function T(btn){
   document.querySelectorAll('.tp').forEach(x=>x.style.display='none');
   document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
-  document.getElementById('p-'+btn.dataset.t).style.display='';
+  const db=document.getElementById('declBar');if(db)db.style.display=(btn.dataset.t==='decl')?'':'none';
+  document.getElementById('p-'+panelDe_(btn.dataset.t)).style.display='';
+  if(btn.dataset.t==='decl')document.querySelectorAll('#declBar .vs').forEach(b=>b.classList.toggle('on',b.dataset.v===DECL_V));
   R();
 }
+function irDecl_(v){
+  DECL_V=(v==='p5'||v==='p4')?v:'asientos';
+  // Modulo todavia en blanco (sin RUC): se pre-llena con la empresa y el periodo en pantalla.
+  if(DECL_V!=='asientos'){
+    const ruc=document.getElementById(DECL_V+'-cfgRuc'),an=document.getElementById(DECL_V+'-cfgAnio'),ms=document.getElementById(DECL_V+'-cfgMes');
+    if(ruc&&!ruc.value&&/^\d{11}$/.test(String(CFG.RUC||''))){
+      const pr=per();
+      ruc.value=CFG.RUC;if(an)an.value=String(pr.a);if(ms)ms.value=String(pr.m).padStart(2,'0');
+      [ruc,an,ms].forEach(e=>{if(e)e.dispatchEvent(new Event('input',{bubbles:true}));});}}
+  const b=document.querySelector('nav button[data-t="decl"]');
+  if(b)T(b);}
 function R(){
   // Cierra el menu de filtro estilo Excel si estaba abierto: cualquier rXxx()
   // de abajo reconstruye su tabla entera con innerHTML, asi que el boton que
@@ -4463,17 +4569,19 @@ function R(){
   if(typeof cerrarMenuFiltro==='function')cerrarMenuFiltro();
   const t=document.querySelector('nav button.active');
   const id=t?t.dataset.t:'mensual';
+  if(esAdelanto())adqAplicar_();
+  if(esMensual())obraSync_();
   rKpis();
   if(id==='personal')rPersonal();
-  else if(id==='q1')rQna(1);
+  else if(id==='q1')(esAdelanto()?rAdelanto():rQna(1));
   else if(id==='q2')rQna(2);
   else if(id==='mensual')rMensual();
   else if(id==='boletas')renderBoletas();
-  else if(id==='asientos')rAsientos();
+  else if(id==='decl'&&DECL_V==='asientos')rAsientos();
   else if(id==='beneficios')rBeneficios();
   else if(id==='renta5')rRenta5();
-  else if(id==='reportes'){rIncCtrl();rReportes();}
-  else if(id==='tareo')rTareo();
+  else if(id==='tareo')rAsistencia();
+  else if(id==='semanal')rSemanal();
   // Reaplica el buscador de filas (ver "BUSCADOR DE FILAS" mas abajo, bug #2
   // de BUSINESS-RULES.md seccion 40): cada rXxx() de arriba reconstruye el
   // <tbody> entero con innerHTML, lo que borra el display:none que
@@ -5161,7 +5269,11 @@ function vacSyncMovV_(dni){
    ajuste manual dura hasta la proxima incidencia que se cargue. */
 function diasAutoDelPeriodo_(dni,q){
   const p=P.find(x=>x.dni===dni);if(!p)return;
-  const mov=mv(dni,q),tope=TOPE_DIAS(q);
+  const mov=mv(dni,q),per_=per();
+  // Tope = dias del trabajador en el periodo (mes comercial de 30, ver
+  // diasComercialesPeriodo_): respeta el ingreso/cese a mitad de periodo en vez
+  // de volver a 15/30 completos al cargar una falta o una vacacion.
+  const tope=Math.min(TOPE_DIAS(q),(p.ing||p.ces)?diasComercialesPeriodo_(per_.a,per_.m,q,p):TOPE_DIAS(q));
   mov.d=Math.max(0,Math.min(tope,tope-(+mov.f||0)-vacDiasEnPeriodo_(p,q)));}
 // Fecha "ancla" para la celda rapida del control: un dia representativo
 // dentro del periodo elegido (ICQ), para que periodoDeFecha_ lo ubique en el
@@ -5388,6 +5500,50 @@ function tarCicloDia_(dni,fechaISO){
   rTareo();R();
 }
 const TAR_DOW_=['D','L','M','X','J','V','S']; // Date.getDay(): 0=domingo
+/* ===== ASISTENCIA: Tareo + Incidencias en un solo modulo =====
+   Los dos ya compartian el mismo dato (mov.incD, via incDSync), asi que unirlos
+   no toca ninguna cifra: solo cambia donde se ven. Tres vistas del mismo dato:
+   Calendario (dia por dia), Control del periodo (tabla por quincena, pegado
+   desde Excel) e Historial (reporte por rango de meses). */
+let ASIS_V='cal';
+function setAsisVista(v){ASIS_V=(v==='ctrl'||v==='hist')?v:'cal';rAsistencia();}
+function rAsistencia(){
+  ['cal','ctrl','hist'].forEach(k=>{const el=document.getElementById('asis-'+k);if(el)el.style.display=(k===ASIS_V)?'':'none';});
+  document.querySelectorAll('#asisVistas .vs').forEach(b=>b.classList.toggle('on',b.dataset.v===ASIS_V));
+  if(ASIS_V==='cal')rTareo();
+  else if(ASIS_V==='ctrl')rIncCtrl();
+  else rReportes();
+  const nt=document.getElementById('asisNota');
+  if(nt){const pend=pla().filter(p=>{const v=vacSaldo_(p);return v&&v.saldo<-0.005;}).length;
+    nt.innerHTML=pend?'<span class="chip warn" style="display:inline-flex"><span class="dot"></span>'+pend+' con vacaciones adelantadas por compensar</span>':'';}}
+/* VACACIONES POR GOZAR (saldo al fin del periodo en pantalla). Devengadas por
+   dias de servicio (mes comercial de 30; 15 o 30 dias por año segun regimen)
+   MENOS lo ya usado: gozadas + adelantadas + vendidas, todo lo de p.vacHist
+   hasta el cierre del periodo, MENOS p.vacPrev (dias gozados antes de empezar a
+   usar el sistema -editable-). Saldo negativo = vacaciones adelantadas que aun
+   no se ganaron. Es una guia de control; la fecha limite y la indemnizacion
+   las sigue calculando Beneficios en el servidor. */
+function vacSaldo_(p){
+  if(!p||p.tipo!=='PLANILLA'||!fecha(p.ing))return null;
+  const pr=per(),hasta=ultimoDia(pr.a,pr.m);
+  const dias=diasEnTramo(p,fecha(p.ing),hasta);
+  if(dias<=0)return {dev:0,goz:0,adel:0,vend:0,prev:+p.vacPrev||0,saldo:0,vac:regDe(p).vac};
+  const R_=regDe(p),dev=r2(dias*R_.vac/360);
+  let goz=0,adel=0,vend=0;
+  (Array.isArray(p.vacHist)?p.vacHist:[]).forEach(x=>{
+    if(!x)return;const fx=fecha(x.f);if(!fx||fx>hasta)return;
+    const d=+x.dias||0;
+    if(x.tipo==='ADELANTADA')adel+=d;else if(x.tipo==='VENDIDA')vend+=d;else goz+=d;});
+  const prev=Math.max(0,+p.vacPrev||0);
+  return {dev,goz:r2(goz),adel:r2(adel),vend:r2(vend),prev,saldo:r2(dev-goz-adel-vend-prev),vac:R_.vac};}
+function vacSaldoCelda_(p,conAjuste){
+  const v=vacSaldo_(p);
+  if(!v)return '<td class="ctr" style="color:var(--ink3)">--</td>';
+  const tit='Devengadas '+v.dev+' (régimen de '+v.vac+' días/año) − gozadas '+v.goz+' − adelantadas '+v.adel+' − vendidas '+v.vend+(v.prev?' − previas '+v.prev:'')+' = '+v.saldo;
+  const neg=v.saldo<-0.005;
+  return '<td class="num" title="'+tit+'" style="font-weight:600;color:'+(neg?'var(--amber2)':'var(--tit)')+'">'+
+    (neg?'('+Math.abs(v.saldo).toFixed(2)+') adel.':v.saldo.toFixed(2))+'</td>';}
+function setVacPrev(dni,v){const p=P.find(x=>x.dni===dni);if(!p||BLOQ)return;p.vacPrev=Math.max(0,+v||0);R();}
 function rTareo(){
   const w=document.getElementById('wTareo');if(!w)return;
   const{a,m}=per(),nDias=ultimoDia(a,m).getDate();
@@ -5430,6 +5586,7 @@ function rTareo(){
       '<td class="num">'+(t.diasDom>0?t.diasDom:'')+'</td>'+
       '<td class="num">'+(t.tardMonto>0?f(t.tardMonto):'')+'</td>'+
       '<td class="ctr">'+(t.he>0?dec2hm(t.he):'')+'</td>'+
+      vacSaldoCelda_(p)+
       '<td class="ctr" style="white-space:nowrap">'+
       '<button type="button" class="bs" style="padding:2px 8px" onclick="abrirInc(\''+p.dni+'\','+qDet+')" title="Ver o ajustar el detalle: monto exacto de la tardanza, justificacion, o vacacion adelantada/vendida">Detalle</button> '+
       '<button type="button" class="bs" style="padding:2px 8px" onclick="abrirHE(\''+p.dni+'\','+qDet+')" title="Horas extra por fecha, con su reparto 25%/35%">H.Extra</button></td>'+
@@ -5437,9 +5594,9 @@ function rTareo(){
   }).join('');
   w.innerHTML='<table><thead><tr><th rowspan="2" class="left">Nombre</th><th rowspan="2">Documento</th><th rowspan="2">Estado</th>'+
     theadDias+
-    '<th rowspan="2">Faltas<br>(mes)</th><th rowspan="2" title="Dias de descanso semanal trabajados (marca D)">Dominic.<br>(mes)</th><th rowspan="2">S/ Tardanzas<br>(mes)</th><th rowspan="2">H.Extras<br>(mes)</th><th rowspan="2"></th></tr>'+
+    '<th rowspan="2">Faltas<br>(mes)</th><th rowspan="2" title="Dias de descanso semanal trabajados (marca D)">Dominic.<br>(mes)</th><th rowspan="2">S/ Tardanzas<br>(mes)</th><th rowspan="2">H.Extras<br>(mes)</th><th rowspan="2" title="Vacaciones por gozar al cierre del periodo: devengadas − gozadas − adelantadas − vendidas. Entre paréntesis: adelantadas que aún no se ganan.">Vac. por<br>gozar</th><th rowspan="2"></th></tr>'+
     '<tr>'+theadDow+'</tr></thead><tbody>'+
-    (trs||'<tr><td colspan="'+(nDias+8)+'" style="text-align:center;padding:20px;color:var(--ink3)">No hay personal registrado.</td></tr>')+
+    (trs||'<tr><td colspan="'+(nDias+9)+'" style="text-align:center;padding:20px;color:var(--ink3)">No hay personal registrado.</td></tr>')+
     '</tbody></table>';
   ordenarIgualQuePersonal_('wTareo');
 }
@@ -5464,7 +5621,7 @@ const PLAN_DEF={
     gRem:'SUELDO DE VENTAS',gCom:'COMISIONES',gBon:'BONOS VENTAS',gVac:'VACACIONES VENTAS',gEs:'ESSALUD VENTAS',gGra:'GRATIFICACION VENTAS',gCts:'CTS VENTAS'}],
   ctas:{es:'403101',afp:'417101',onp:'403201',r5:'401701',r4:'401702',ant:'141201',
         pagoRem:'411101',pagoVac:'411501',pagoHon:'424101',gHon:'632101',
-        gDieta:'632102',pagoDieta:'424102'},
+        gDieta:'632102',pagoDieta:'424102',conaf:'403901',cuotaSind:'419101'},
   concar:{sub:'35',tdoc:'PL',area:'060',medio:'002'},
   // Parametros del export CONCAR del modulo PLAME 4ta (recibos por
   // honorarios): subdiario propio (15 por defecto), independiente del 35 de
@@ -5476,7 +5633,16 @@ const PLAN_DEF={
          he25:'0105',he35:'0106',feriado:'0107',subsidio:'0916',asigFam:'0201',
          grati:'0406',gratiTrunca:'0405',bonifExtra:'0312',cts:'0904',indemnizacion:'0501',
          adelanto:'0701',tardanza:'0704',inasistencia:'0705',otros:'0706',
-         afpAporte:'0608',afpPrima:'0606',afpComision:'0601',r5:'0605',onp:'0607'}};
+         afpAporte:'0608',afpPrima:'0606',afpComision:'0601',r5:'0605',onp:'0607',
+         buc:'0311',domD:'0115',mov:'0909',ext:'0303',vacComp:'0117',conaf:'0602',cuota:'0702'},
+  // Perfil de la empresa (se guarda POR RUC junto con el plan, en el servidor):
+  // modalidad de pago, % del adelanto quincenal y parametros de calculo.
+  perfil:{modalidad:'QUINCENAL',adqPct:50,fer:2,min4d:0,regDef:'MICRO',sis:15,emp:'',dom:'',
+    // Construccion civil (convenio CAPECO-FTCCP 2026, RM 197-2025-TR): jornal basico
+    // diario y BUC por categoria; movilidad por dia laborado; vacaciones 10%, CTS 15%
+    // y gratificacion sobre la remuneracion de la semana; CONAFOVICER 2% al trabajador.
+    obra:{jornal:{OPERARIO:89.30,OFICIAL:69.75,PEON:62.80},buc:{OPERARIO:32,OFICIAL:30,PEON:30},
+          mov:8.60,vac:10,cts:15,gra:19.05,conaf:2}}};
 const PLAME_LBL={basica:'0121 Remuneración o jornal basico',vacaciones:'0118 Remuneración vacacional',
   vacTruncas:'0114 Vacaciones truncas',comision:'0103 Comisiones o destajo',
   bono:'0902 Bono de productividad',he25:'0105 Horas extra 25%',he35:'0106 Horas extra 35%',
@@ -5496,17 +5662,24 @@ const PLAME_LBL={basica:'0121 Remuneración o jornal basico',vacaciones:'0118 Re
   inasistencia:'0705 Inasistencias',otros:'0706 Otros descuentos',
   afpAporte:'0608 Aporte obligatorio AFP',afpPrima:'0606 Prima de seguro AFP',
   afpComision:'0601 Comisión porcentual AFP (obligatorio)',
-  r5:'0605 Retención renta 5ta (obligatorio)',onp:'0607 Descuento ONP (obligatorio)'};
+  r5:'0605 Retención renta 5ta (obligatorio)',onp:'0607 Descuento ONP (obligatorio)',
+  buc:'0311 Bonificación unificada de construcción (BUC)',domD:'0115 Remuneración día de descanso (dominical)',
+  mov:'0909 Movilidad supeditada a asistencia',ext:'0303 Bonificación por producción, altura, turno',
+  vacComp:'0117 Compensación vacacional (10% construcción)',
+  conaf:'0602 CONAFOVICER (aporte construcción)',cuota:'0702 Cuota sindical'};
 function setPlame(k,v){PLAN.plame[k]=String(v).trim();R();}
-function setFeriado(v){const n=+v;CFG.FER=(n===0||n===1||n===2)?n:2;R();}
-function setMin4D(v){CFG.MIN4D=Math.max(0,+v||0);R();}
+function setFeriado(v){const n=+v;PLAN.perfil.fer=(n===0||n===1||n===2)?n:2;aplicarPerfil_();R();}
+function setSIS(v){PLAN.perfil.sis=Math.max(0,+v||0);aplicarPerfil_();R();}
+function setRegDef(v){if(REG[v]){PLAN.perfil.regDef=v;aplicarPerfil_();R();}}
+function setMin4D(v){PLAN.perfil.min4d=Math.max(0,+v||0);aplicarPerfil_();R();}
 const PAGOS_LBL={grati:'Gratificaciones por pagar',cts:'CTS por pagar',liq:'Beneficios sociales por pagar (liquidación)'};
 function setPago(k,v){PLAN.pagos[k]=String(v).trim();R();}
 const CTA_LBL={es:'EsSalud por pagar',afp:'AFP por pagar',onp:'ONP por pagar',
   r5:'Renta 5ta por pagar',r4:'Renta 4ta por pagar',ant:'Anticipos y prestamos al personal',
   pagoRem:'Remuneraciones por pagar',pagoVac:'Vacaciones por pagar',
   pagoHon:'Honorarios por pagar',gHon:'Gasto honorarios (4ta)',
-  gDieta:'Gasto dietas de directorio',pagoDieta:'Dietas por pagar'};
+  gDieta:'Gasto dietas de directorio',pagoDieta:'Dietas por pagar',
+  conaf:'CONAFOVICER por pagar (construcción)',cuotaSind:'Cuota sindical por pagar (construcción)'};
 let PLAN=JSON.parse(JSON.stringify(PLAN_DEF));
 
 function normPlan(p){
@@ -5524,14 +5697,50 @@ function normPlan(p){
   n.concar4ta=Object.assign({},n.concar4ta,p.concar4ta||{});
   n.plame=Object.assign({},n.plame,p.plame||{});
   n.pagos=Object.assign({},n.pagos,p.pagos||{});
+  n.perfil=normPerfil_(p.perfil);
   return n;}
+/* PERFIL DE LA EMPRESA. Todo lo que es "de la empresa" y no del periodo viaja
+   con el RUC: razon social, domicilio fiscal, modalidad de pago (quincenal /
+   mensual con adelanto quincenal / mensualizado), % del adelanto, factor de
+   feriado/dominical, minimo de 4ta para dietas y regimen laboral por defecto.
+   Va dentro del plan (PLAN.perfil), asi que se graba con cada periodo Y en el
+   servidor por RUC (plan_set/plan_get, sin cambios en el backend). */
+const MODALIDADES={QUINCENAL:'Quincenal (cada quincena con sus descuentos)',
+  ADELANTO:'Mensual con adelanto quincenal (sin descuentos)',MENSUAL:'Mensual (un solo pago)',
+  SEMANAL:'Semanal (construcción civil)'};
+function normPerfil_(x){
+  const d=JSON.parse(JSON.stringify(PLAN_DEF.perfil));
+  if(!x||typeof x!=='object')return d;
+  if(MODALIDADES[x.modalidad])d.modalidad=x.modalidad;
+  const pct=+x.adqPct;if(pct>0&&pct<=100)d.adqPct=Math.round(pct*100)/100;
+  if(x.fer===0||x.fer===1||x.fer===2)d.fer=x.fer;
+  if(+x.min4d>=0)d.min4d=+x.min4d;
+  if(typeof REG!=='undefined'&&REG[x.regDef])d.regDef=x.regDef;
+  if(x.sis!==undefined&&+x.sis>=0)d.sis=+x.sis;
+  if(x.obra&&typeof x.obra==='object'){
+    const o=d.obra,n=x.obra,num=(v,def)=>(isFinite(+v)&&+v>=0&&v!==''&&v!==null)?+v:def;
+    ['OPERARIO','OFICIAL','PEON'].forEach(k=>{
+      o.jornal[k]=num(n.jornal&&n.jornal[k],o.jornal[k]);o.buc[k]=num(n.buc&&n.buc[k],o.buc[k]);});
+    ['mov','vac','cts','gra','conaf'].forEach(k=>{o[k]=num(n[k],o[k]);});}
+  d.emp=String(x.emp||'');d.dom=String(x.dom||'');
+  return d;}
+// Pasa los parametros del perfil a CFG (lo que usa el motor de calculo).
+function aplicarPerfil_(){
+  const f=PLAN.perfil;if(!f)return;
+  CFG.FER=f.fer;CFG.MIN4D=f.min4d;CFG.REG_DEF=f.regDef;CFG.SIS=(f.sis!==undefined)?f.sis:15;CFG.OBRA=f.obra;}
+const esAdelanto=()=>esMensual()&&!!PLAN.perfil&&PLAN.perfil.modalidad==='ADELANTO';
+const esSemanal=()=>esMensual()&&!!PLAN.perfil&&PLAN.perfil.modalidad==='SEMANAL';
+// modalidad "de mes completo" que corresponde al estado actual (para reconciliar archivo/perfil)
+const modalMensual_=()=>PLAN.perfil.modalidad==='ADELANTO'?'ADELANTO':(PLAN.perfil.modalidad==='SEMANAL'?'SEMANAL':'MENSUAL');
+const esAdelanto_=esAdelanto;
 function aplicarPlan(){
   Object.keys(CCS).forEach(k=>delete CCS[k]);
   Object.keys(CTA).forEach(k=>delete CTA[k]);
   PLAN.ccs.forEach(c=>{
     CCS[c.cod]=c.cod+' '+c.nom;
     CTA[c.cod]={rem:c.rem,vac:c.vac,es:c.es,com:c.com,gra:c.gra,cts:c.cts,
-      gRem:c.gRem,gVac:c.gVac,gEs:c.gEs,gBon:c.gBon,gCom:c.gCom,gGra:c.gGra,gCts:c.gCts};});}
+      gRem:c.gRem,gVac:c.gVac,gEs:c.gEs,gBon:c.gBon,gCom:c.gCom,gGra:c.gGra,gCts:c.gCts};});
+  aplicarPerfil_();}
 const ccPlan=cod=>PLAN.ccs.find(c=>c.cod===cod)||PLAN.ccs[0];
 const ccHuerfanos=()=>P.filter(p=>!PLAN.ccs.some(c=>c.cod===p.cc));
 
@@ -5561,7 +5770,8 @@ function delCC(i){
   PLAN.ccs.splice(i,1);aplicarPlan();R();}
 function restaurarPlan(){
   if(!confirm('Volver al plan de cuentas por defecto? Se pierde lo que hayas configurado en este periodo.'))return;
-  PLAN=JSON.parse(JSON.stringify(PLAN_DEF));aplicarPlan();R();}
+  const perfilActual=PLAN.perfil;                      // el perfil de la empresa NO se restaura
+  PLAN=JSON.parse(JSON.stringify(PLAN_DEF));PLAN.perfil=perfilActual;aplicarPlan();R();}
 
 /* --- empresa del periodo ---------------------------------------------
    El RUC ya no esta fijo en el archivo: se guarda con el periodo y se
@@ -5591,8 +5801,11 @@ function setEmpresa(c,v){
   }
   else if(c==='nom')CFG.EMP=v.toUpperCase();
   else if(c==='dom')CFG.DOM=v;
+  if(c==='nom')PLAN.perfil.emp=CFG.EMP;
+  if(c==='dom')PLAN.perfil.dom=CFG.DOM;
   pintarEmpresa();R();
-  if(c==='ruc')cargarLogoEmpresa();}
+  if(c==='ruc'){cargarLogoEmpresa();
+    if(haySesion())cargarPlanServidor().then(ok=>{if(ok)toast('Perfil del RUC '+CFG.RUC+' traido del servidor','ok');});}}
 /* El logo de cada empresa se lee de  <raiz>\<RUC>\LOGO\  (el primer archivo de
    imagen que encuentre). No se guarda dentro del JSON del periodo: se lee del
    disco al conectar y al cambiar de empresa, para no inflar cada archivo del mes. */
@@ -5814,10 +6027,7 @@ function rCuentas(){
       '<input value="'+CFG.DOM+'" onchange="setEmpresa(\'dom\',this.value)" style="width:100%;text-align:left"></div>'+
     '<div style="flex-basis:100%;font-size:10.5px;color:var(--ink2)">'+notaRuc()+'</div>'+
     '<div style="flex-basis:100%;display:flex;gap:8px;align-items:center;font-size:10.5px;color:var(--ink2)">'+
-      '<button class="bo2" onclick="guardarPlanServidor()" title="Deja este plan como el oficial de la empresa">Guardar plan en el servidor</button>'+
-      '<button class="bo2" onclick="cargarPlanServidor()" title="Trae el plan oficial de la empresa">Traer del servidor</button>'+
-      '<span>Plan de cuentas: <b>'+((typeof PLAN_SRV!=='undefined'&&PLAN_SRV.origen)||'archivo')+'</b>'+
-      ((typeof PLAN_SRV!=='undefined'&&PLAN_SRV.fecha)?(' · '+fFecha(PLAN_SRV.fecha)):'')+'</span></div>'+
+      '<button class="bo2" onclick="cargarPlanServidor()" title="Trae el perfil guardado de esta empresa (razón social, domicilio, modalidad, plan de cuentas)">Traer perfil guardado</button></div>'+
     '<div style="flex-basis:100%;font-size:10.5px;color:var(--ink2)">Tasas y topes de HOY (servidor): <b>'+
       ((typeof SESION!=='undefined'&&SESION.tasasOrigen)||'archivo')+'</b> &middot; RMV S/ '+f0(CFG.RMV)+
       ' &middot; UIT S/ '+f0(CFG.UIT)+' &middot; EsSalud '+(CFG.T_ES*100).toFixed(0)+'% &middot; 4ta '+
@@ -5835,6 +6045,56 @@ function rCuentas(){
       '. Se toma de <b>'+(ROOT?ROOT.name:'(raiz)')+(raizEsEmpresa()?'':'\\'+CFG.RUC)+'\\LOGO</b>'+
       ' y se relee cada vez que pulsas Sincronizar.</span></div>'+
    '</div>'+
+   (function(){
+    const pf=PLAN.perfil,lb='display:block;font-size:10.5px;font-weight:700;color:var(--tit);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px';
+    const regOps=Object.keys(REG).map(k=>'<option value="'+k+'"'+(pf.regDef===k?' selected':'')+'>'+REG[k].nom+'</option>').join('');
+    const ades=pf.modalidad==='ADELANTO';
+    return '<div class="pb" style="border-bottom:1px solid var(--border)">'+
+     '<p style="font-size:11.5px;font-weight:700;color:var(--tit);margin-bottom:8px">Modalidad de pago y parámetros de esta empresa</p>'+
+     '<div style="display:flex;gap:16px;flex-wrap:wrap;align-items:flex-end">'+
+      '<div style="min-width:280px"><label style="'+lb+'">Modalidad de pago</label>'+
+       '<select onchange="cambiarModo(this.value)" style="width:100%">'+
+        Object.keys(MODALIDADES).map(k=>'<option value="'+k+'"'+(pf.modalidad===k?' selected':'')+'>'+MODALIDADES[k]+'</option>').join('')+
+       '</select></div>'+
+      (ades?'<div><label style="'+lb+'" title="Porcentaje del sueldo que se adelanta el dia 15, sin descuentos. Se puede cambiar por cliente (50%, 40%...).">% adelanto del 15</label>'+
+        '<input type="number" min="1" max="100" step="1" value="'+pf.adqPct+'" onchange="setAdqPct(this.value)" style="width:90px"> <span style="font-size:11.5px">% del sueldo</span></div>':'')+
+      '<div><label style="'+lb+'">Régimen laboral por defecto</label>'+
+       '<select onchange="setRegDef(this.value)" style="min-width:170px">'+regOps+'</select></div>'+
+      '<div><label style="'+lb+'">Feriado / dominical laborado</label>'+
+       '<select onchange="setFeriado(this.value)" style="min-width:250px">'+
+         '<option value="2"'+(pf.fer===2?' selected':'')+'>2 jornales · sin descanso sustitutorio</option>'+
+         '<option value="1"'+(pf.fer===1?' selected':'')+'>1 jornal · criterio de pago doble</option>'+
+         '<option value="0"'+(pf.fer===0?' selected':'')+'>0 · se compensa con descanso</option></select></div>'+
+      '<div><label style="'+lb+'" title="Aporte mensual del empleador por trabajador de microempresa asegurado en el SIS (REMYPE)">Aporte SIS microempresa S/ al mes</label>'+
+       '<input type="number" step="0.5" min="0" value="'+pf.sis+'" onchange="setSIS(this.value)" style="width:90px"></div>'+
+      '<div><label style="'+lb+'" title="0 = retiene 4ta desde el primer sol">Mínimo para retener 4ta en dietas</label>'+
+       '<input type="number" step="1" min="0" value="'+pf.min4d+'" onchange="setMin4D(this.value)" style="width:90px"></div>'+
+     '</div>'+
+     (function(){
+      const O=pf.obra,n=(k,sub,w)=>'<input type="number" min="0" step=".01" value="'+(sub?O[k][sub]:O[k])+'" onchange="setObraCfg(\''+k+'\','+(sub?'\''+sub+'\'':'null')+',this.value)" style="width:'+(w||78)+'px">';
+      const cat=['OPERARIO','OFICIAL','PEON'];
+      return '<details style="margin-top:12px"'+(pf.modalidad==='SEMANAL'||hayObra_()?' open':'')+'><summary style="cursor:pointer;font-size:11.5px;font-weight:700;color:var(--tit)">Construcción civil · jornales y porcentajes (convenio 2026)</summary>'+
+       '<div style="display:flex;gap:18px;flex-wrap:wrap;margin-top:8px;align-items:flex-start">'+
+        '<table><thead><tr><th class="left">Categoría</th><th>Jornal diario S/</th><th>BUC %</th></tr></thead><tbody>'+
+         cat.map(k=>'<tr><td>'+CAT_OBRA[k]+'</td><td class="ctr">'+n('jornal',k)+'</td><td class="ctr">'+n('buc',k,60)+'</td></tr>').join('')+'</tbody></table>'+
+        '<table><thead><tr><th class="left">Concepto</th><th>Valor</th></tr></thead><tbody>'+
+         '<tr><td>Movilidad por día laborado (S/)</td><td class="ctr">'+n('mov')+'</td></tr>'+
+         '<tr><td>Vacaciones (compensación) %</td><td class="ctr">'+n('vac',null,60)+'</td></tr>'+
+         '<tr><td>CTS %</td><td class="ctr">'+n('cts',null,60)+'</td></tr>'+
+         '<tr><td>Gratificación %</td><td class="ctr">'+n('gra',null,60)+'</td></tr>'+
+         '<tr><td>CONAFOVICER % (trabajador)</td><td class="ctr">'+n('conaf',null,60)+'</td></tr></tbody></table>'+
+        '<div style="max-width:380px;font-size:10.5px;color:var(--ink2)">Vacaciones, CTS y gratificación se calculan sobre <b>jornales + dominical + BUC</b> de cada semana y se pagan con ella. CONAFOVICER sobre jornales + dominical. Para usar esto: modalidad <b>Semanal</b>, y en Personal elige el régimen <b>Construcción civil</b> y la categoría de cada obrero.</div>'+
+       '</div></details>';})()+
+     '<div style="margin-top:8px;font-size:10.5px;color:var(--ink2)">'+
+      (pf.modalidad==='QUINCENAL'?'Cada quincena se paga con sus descuentos (AFP/ONP/5ta). Si un cliente prefiere adelantar un % sin descuentos, elige <b>Mensual con adelanto quincenal</b>.':
+       pf.modalidad==='SEMANAL'?'Se paga cada <b>semana</b> (pestaña <b>Semanal</b>). El mes suma sus semanas y de ahí salen asientos, boletas y PLAME.':
+       ades?'El día 15 se adelanta el <b>'+pf.adqPct+'%</b> del sueldo <b>sin descuentos</b> (pestaña <b>Adelanto 15</b>); el mes completo, con todos sus descuentos, se calcula en <b>Mensual</b> y ahí se resta lo adelantado. Puedes ajustar el importe de cada persona.':
+       'Un solo pago por mes, con todos los descuentos; se calcula en la pestaña <b>Mensual</b>.')+'</div>'+
+     '<div style="margin-top:10px;display:flex;gap:8px;align-items:center;flex-wrap:wrap">'+
+      '<button class="bp" onclick="guardarPlanServidor()" title="Guarda razón social, domicilio, modalidad, % de adelanto, plan de cuentas y parámetros de esta empresa en el servidor">Guardar perfil de la empresa</button>'+
+      '<span style="font-size:10.5px;color:var(--ink2)">Perfil: <b>'+((typeof PLAN_SRV!=='undefined'&&PLAN_SRV.origen)||'archivo')+'</b>'+
+      ((typeof PLAN_SRV!=='undefined'&&PLAN_SRV.fecha)?(' · '+fFecha(PLAN_SRV.fecha)):'')+'</span></div>'+
+    '</div>';})()+
    '<div class="pb" style="display:flex;gap:16px;flex-wrap:wrap;align-items:center;border-bottom:1px solid var(--border)">'+
     '<label style="font-size:11.5px;font-weight:600">Centro de costo en la cuenta:</label>'+
     '<select onchange="setPlan(\'modoCC\',this.value)" style="min-width:330px">'+
@@ -5872,14 +6132,6 @@ function rCuentas(){
        '<tr><td>Tipo de documento</td><td class="ctr"><input value="'+PLAN.concar.tdoc+'" onchange="setPlan(\'concar.tdoc\',this.value)" style="width:70px"></td></tr>'+
        '<tr><td>Código de area</td><td class="ctr"><input value="'+PLAN.concar.area+'" onchange="setPlan(\'concar.area\',this.value)" style="width:70px"></td></tr>'+
        '<tr><td>Medio de pago</td><td class="ctr"><input value="'+PLAN.concar.medio+'" onchange="setPlan(\'concar.medio\',this.value)" style="width:70px"></td></tr>'+
-       '<tr><td>Mínimo para retener 4ta en dietas<div style="font-size:9.5px;color:var(--ink3)">0 = retiene desde el primer sol</div></td>'+
-       '<td class="ctr"><input type="number" step="1" value="'+CFG.MIN4D+'" onchange="setMin4D(this.value)" style="width:80px"></td></tr>'+
-       '<tr><td>Feriado laborado<div style="font-size:9.5px;color:var(--ink3)">El día ya está pagado dentro del sueldo; esto es lo adicional</div></td>'+
-       '<td class="ctr"><select onchange="setFeriado(this.value)" style="width:100%">'+
-         '<option value="2"'+(CFG.FER===2?' selected':'')+'>2 jornales · sin descanso sustitutorio</option>'+
-         '<option value="1"'+(CFG.FER===1?' selected':'')+'>1 jornal · criterio de pago doble</option>'+
-         '<option value="0"'+(CFG.FER===0?' selected':'')+'>0 · se compensa con descanso</option>'+
-       '</select></td></tr>'+
       '</tbody></table></div>'+
      '<div><p style="font-size:11.5px;font-weight:700;color:var(--tit);margin-bottom:6px">Parametros del CONCAR (4ta — recibos por honorarios)</p>'+
       '<table><tbody>'+
@@ -5916,6 +6168,31 @@ function limitesPeriodoQna_(a,m,q){
   const mm=String(m).padStart(2,'0'),ultimo=String(new Date(a,m,0).getDate()).padStart(2,'0');
   if(esMensual())return (+q===2)?{desde:a+'-'+mm+'-01',hasta:a+'-'+mm+'-'+ultimo}:null;
   return (+q===1)?{desde:a+'-'+mm+'-01',hasta:a+'-'+mm+'-15'}:{desde:a+'-'+mm+'-16',hasta:a+'-'+mm+'-'+ultimo};
+}
+/* MES COMERCIAL DE 30 DIAS. La remuneracion mensual se paga siempre por 30 dias
+   (sueldo/30 por dia), sea febrero (28/29) o un mes de 31: en practica laboral
+   todos los meses "tienen 30 dias" -no es una norma escrita, es el criterio
+   comun y el que ya usan jornal=sue/CFG.DM, las faltas y los beneficios-.
+   Antes blq() contaba dias CALENDARIO, asi que en febrero la 2da quincena
+   (16-28) salia con 13 dias y el mes con 28, pagando de menos a todos. Ahora:
+   1ra quincena = dias 1-15, 2da = 16-30 y mes = 1-30 SIEMPRE; el ultimo dia del
+   mes (28, 29 o 31) cuenta como 30, y ingreso/cese a mitad de periodo se miden
+   con el numero de dia (ingreso el 21 de febrero = 10 dias: del 21 al 30). */
+function diasComercialesPeriodo_(a,m,q,p,mensualForzado){
+  const mensual=(mensualForzado===undefined)?esMensual():!!mensualForzado;
+  const lo=mensual?1:(+q===1?1:16),hi=mensual?30:(+q===1?15:30);
+  const ultimo=new Date(a,m,0).getDate();
+  let s=lo,e=hi;
+  const ing=fecha(p&&p.ing),ces=fecha(p&&p.ces);
+  if(ing){
+    const ya=ing.getFullYear(),ma=ing.getMonth()+1;
+    if(ya>a||(ya===a&&ma>m))return 0;                    // todavia no ingresaba
+    if(ya===a&&ma===m)s=Math.max(s,Math.min(ing.getDate(),30));}
+  if(ces){
+    const yc=ces.getFullYear(),mc=ces.getMonth()+1;
+    if(yc<a||(yc===a&&mc<m))return 0;                    // ya habia cesado
+    if(yc===a&&mc===m)e=Math.min(e,ces.getDate()>=ultimo?30:Math.min(ces.getDate(),30));}
+  return e>=s?e-s+1:0;
 }
 // Dias calendario reales que el trabajador coincide con ese rango (ingreso y/o
 // cese acotan el tramo si caen adentro). A diferencia de diasEnTramo() (que
@@ -6002,12 +6279,11 @@ function aplicarAbonoPrestamos_(A,Mn){
 function blq(q,p){
   const b=bl();
   b.d=esMensual()?(+q===2?CFG.DM:0):15;
-  if(p&&p.ing){
-    const per_=per(),lim=limitesPeriodoQna_(per_.a,per_.m,q);
-    if(lim){
-      const dReal=diasCalendarioEnRango_(lim,p);
-      if(dReal<b.d)b.d=Math.max(0,dReal);
-    }
+  if(p&&(p.ing||p.ces)){
+    // Mes comercial de 30 dias (ver diasComercialesPeriodo_): febrero y los meses
+    // de 31 ya no recortan los dias de quien estuvo todo el periodo.
+    const per_=per(),dCom=diasComercialesPeriodo_(per_.a,per_.m,q,p);
+    if(dCom<b.d)b.d=Math.max(0,dCom);
   }
   if(p&&p.prest&&+p.prest.monto>0&&prestamoAplicaEnQuincena_(p.prest,q)){
     const saldo=saldoPrestamo(p);
@@ -6047,7 +6323,7 @@ function consolidarQ1(){
     const heD=(a.heD||[]).concat(b.heD||[]);
     const incD=(a.incD||[]).concat(b.incD||[]);
     const incT=incD.length?incDTotales(incD):null;
-    x.q2=Object.assign({},b,{d:Math.min(31,(+a.d||0)+(+b.d||0)),
+    x.q2=Object.assign({},b,{d:Math.min(CFG.DM,(+a.d||0)+(+b.d||0)),
       f:incT?incT.faltas:((+a.f||0)+(+b.f||0)),
       faltaHoras:incT?incT.faltaHoras:r2((+a.faltaHoras||0)+(+b.faltaHoras||0)),
       v:su('v'),vv:su('vv'),
@@ -6059,25 +6335,58 @@ function consolidarQ1(){
       sus:(a.sus==='SI'||b.sus==='SI')?'SI':'NO'});
     x.q1=Object.assign(bl(),{d:0});});}
 function cambiarModo(v){
+  // 3 modalidades: QUINCENAL (cada quincena con sus descuentos), ADELANTO
+  // (mensualizado con adelanto quincenal SIN descuentos) y MENSUAL (un solo pago).
+  // El motor de calculo solo conoce 2 (MODO): ADELANTO y MENSUAL calculan el mes
+  // completo en el bloque unico; ADELANTO ademas arma el adelanto de la 1ra quincena.
   const sel=document.getElementById('selModo');
-  if(v===MODO){R();return;}
-  if(v==='MENSUAL'){
+  const mod=MODALIDADES[v]?v:'QUINCENAL';
+  const objetivo=(mod==='QUINCENAL')?'QUINCENAL':'MENSUAL';
+  if(objetivo===MODO){PLAN.perfil.modalidad=mod;if(esAdelanto())adqAplicar_(true);R();return;}
+  if(objetivo==='MENSUAL'){
     if(hayMovQ1()){
       if(!confirm('Hay movimientos cargados en la 1ra quincena.\n\nAceptar: se suman a los del mes y la 1ra quincena queda en cero.\nCancelar: no se cambia la modalidad.')){
-        if(sel)sel.value=MODO;return;}
+        if(sel)sel.value=PLAN.perfil.modalidad;return;}
       consolidarQ1();
     }else{
       Object.keys(M).forEach(d=>{if(M[d])M[d].q1=Object.assign(bl(),{d:0});});
       Object.keys(M).forEach(d=>{const b=M[d]&&M[d].q2;if(b&&+b.d===15)b.d=CFG.DM;});
     }
-    MODO='MENSUAL';
-    toast('Modalidad mensualizada · quincenas bloqueadas');
+    MODO='MENSUAL';PLAN.perfil.modalidad=mod;
+    if(esAdelanto())adqAplicar_(true);
+    toast(mod==='ADELANTO'?'Mensualizado con adelanto quincenal del '+PLAN.perfil.adqPct+'%':
+          mod==='SEMANAL'?'Planilla semanal de construcción civil':'Modalidad mensualizada · quincenas bloqueadas');
   }else{
     if(!confirm('Volver a cálculo quincenal.\n\nLo cargado en el mes queda en la 2da quincena y la 1ra se habilita vacia. Continuar?')){
-      if(sel)sel.value=MODO;return;}
-    MODO='QUINCENAL';
+      if(sel)sel.value=PLAN.perfil.modalidad;return;}
+    MODO='QUINCENAL';PLAN.perfil.modalidad='QUINCENAL';
     toast('Modalidad quincenal');
   }
+  R();}
+/* ADELANTO QUINCENAL (modalidad ADELANTO). La 1ra quincena es un adelanto de X%
+   del sueldo, SIN descuentos de AFP/ONP/5ta; el mes completo se calcula en el
+   bloque unico con todos los descuentos y se le resta lo adelantado, que viaja
+   en el mismo campo "Adelanto" (ade) de siempre -asi la boleta, el asiento y
+   el PLAME no cambian-. mov.q1.adq = adelanto del trabajador (editable en la
+   pestaña "Adelanto 15"); se recalcula solo (sueldo x % x dias/15) mientras
+   nadie lo haya tecleado a mano (adqManual). */
+function adelantoSugerido_(p){
+  const per_=per(),d15=diasComercialesPeriodo_(per_.a,per_.m,1,p,false);
+  return r2((+p.sue||0)*(PLAN.perfil.adqPct/100)*d15/15);}
+function adqAplicar_(forzar){
+  if(!esAdelanto()||BLOQ)return;
+  pla().forEach(p=>{
+    const m1=mv(p.dni,1),m2=mv(p.dni,2);
+    if(forzar){m1.adqManual=false;m2.adeManual=false;}
+    if(!m1.adqManual){const v=adelantoSugerido_(p);if(m1.adq!==v)m1.adq=v;}
+    if(!m2.adeManual){const v=+m1.adq||0;if(m2.ade!==v)m2.ade=v;}});}
+function setAdq(dni,v){
+  if(BLOQ)return;
+  const m1=mv(dni,1);m1.adq=Math.max(0,r2(+v||0));m1.adqManual=true;R();}
+function setAdqPct(v){
+  const n=Math.min(100,Math.max(1,+v||50));
+  PLAN.perfil.adqPct=Math.round(n*100)/100;
+  if(esAdelanto())adqAplicar_();   // respeta los importes fijados a mano
   R();}
 function pintarModo(){
   // Auditoria de UI: antes las pestañas "1ra/2da Quincena" solo se
@@ -6088,20 +6397,31 @@ function pintarModo(){
   // deja visible en modo QUINCENAL a proposito -en ese modo no es una
   // pestaña "vacia": rMensual() muestra un resumen de solo lectura con las
   // dos quincenas ya sumadas, un reporte que se sigue usando-.
-  const men=esMensual(),sel=document.getElementById('selModo');
-  if(sel)sel.value=MODO;
+  const men=esMensual(),adel=esAdelanto(),sel=document.getElementById('selModo');
+  if(sel)sel.value=PLAN.perfil.modalidad;
   const bMen=document.querySelector('nav button[data-t="mensual"]');
   document.querySelectorAll('nav button[data-t="q1"],nav button[data-t="q2"]').forEach(b=>{
-    b.disabled=men;b.style.display=men?'none':'';
-    b.title=men?'Bloqueado: el periodo esta en cálculo mensualizado':'';});
+    // En ADELANTO la pestaña de la 1ra quincena SI se usa: es el adelanto del 15.
+    const oculto=men&&!(adel&&b.dataset.t==='q1');
+    b.disabled=oculto;b.style.display=oculto?'none':'';
+    b.title=oculto?'Bloqueado: el periodo esta en cálculo mensualizado':(adel&&b.dataset.t==='q1'?'Adelanto quincenal sin descuentos':'');});
+  const bq1=document.querySelector('nav button[data-t="q1"]');
+  if(bq1)bq1.textContent=adel?'Adelanto 15':'1ra Quincena';
+  const bSem=document.querySelector('nav button[data-t="semanal"]');
+  if(bSem)bSem.style.display=esSemanal()?'':'none';
+  const nA=document.getElementById('notaAdelanto'),nQ=document.getElementById('notaQ1'),hQ=document.querySelector('#p-q1 .ph h2');
+  if(nA)nA.style.display=adel?'':'none';
+  if(nQ)nQ.style.display=adel?'none':'';
+  if(hQ)hQ.textContent=adel?'Adelanto quincenal':'Primera Quincena';
+  const aQ=document.getElementById('actQ1');if(aQ)aQ.style.display=adel?'none':'';
   // El separador visual (clase nav-grp) vivia en "1ra Quincena"; si se oculta,
   // se pasa a "Mensual" para que el corte entre grupos de pestañas se siga
   // viendo en el mismo lugar.
   const bQ1=document.querySelector('nav button[data-t="q1"]');
-  if(bQ1&&bMen){if(men){bQ1.classList.remove('nav-grp');bMen.classList.add('nav-grp');}
+  if(bQ1&&bMen){if(men&&!adel){bQ1.classList.remove('nav-grp');bMen.classList.add('nav-grp');}
     else{bMen.classList.remove('nav-grp');bQ1.classList.add('nav-grp');}}
   const act_=document.querySelector('nav button.active');
-  if(men&&act_&&(act_.dataset.t==='q1'||act_.dataset.t==='q2')){
+  if((men&&act_&&((act_.dataset.t==='q1'&&!adel)||act_.dataset.t==='q2'))||(act_&&act_.dataset.t==='semanal'&&!esSemanal())){
     document.querySelectorAll('.tp').forEach(x=>x.style.display='none');
     document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
     const bm=document.querySelector('nav button[data-t="mensual"]');
@@ -6110,6 +6430,190 @@ function pintarModo(){
   const bq=document.getElementById('bolQna');
   if(bq){Array.prototype.forEach.call(bq.options,o=>{if(o.value!=='M'){o.disabled=men;o.hidden=men;}});
     if(men&&bq.value!=='M')bq.value='M';}}
+
+
+/* ================== CONSTRUCCION CIVIL · PLANILLA SEMANAL ==================
+   Regimen especial de obra (convenio colectivo CAPECO-FTCCP). Se paga por SEMANA
+   (lunes a domingo). El mes se arma con sus semanas: la que cruza de mes se parte
+   por dias -lo que cae en cada mes se paga y declara en ese mes-. Todo lo que
+   sigue el mes (asientos, boletas, PLAME) lee el mismo resultado de siempre: las
+   semanas se suman en el bloque unico del mes (mv(dni,2).ob) y calcQuincena_ lo
+   convierte en sue/com/bon/gra/cts/liq/... ver su rama "CONSTRUCCION".
+   Por cada dia trabajado (lun-sab): jornal basico + 1/6 de dominical (se gana por
+   dia, asi una semana completa paga 1 jornal de dominical y una incompleta,
+   proporcional) + BUC (% del jornal basico, solo dias trabajados) + movilidad.
+   Remuneracion de la semana = jornales + dominical + BUC; sobre ella: vacaciones
+   (compensacion) 10%, CTS 15% y gratificacion (% editable, 19.05%). El trabajador
+   aporta CONAFOVICER 2% sobre jornales + dominical, mas ONP/AFP sobre lo afecto
+   (jornales + dominical + BUC + domingo/feriado trabajado + otros afectos). */
+const CAT_OBRA={OPERARIO:'Operario',OFICIAL:'Oficial',PEON:'Peón'};
+const esObra_=p=>!!p&&p.tipo==='PLANILLA'&&p.reg==='CONSTRUCCION';
+const catObra_=p=>CAT_OBRA[p&&p.cat]?p.cat:'OFICIAL';
+const obraCfg_=()=>CFG.OBRA||PLAN_DEF.perfil.obra;
+const jornalObra_=p=>+obraCfg_().jornal[catObra_(p)]||0;
+const hayObra_=()=>P.some(esObra_);
+function isoDia_(a,m,d){return a+'-'+String(m).padStart(2,'0')+'-'+String(d).padStart(2,'0');}
+// Semanas del mes: tramos lunes-domingo recortados al mes. [{k,ini,fin,n}] n = dias lun-sab.
+function semanasMes_(a,m){
+  const n=ultimoDia(a,m).getDate(),out=[];let ini=1;
+  for(let d=1;d<=n;d++){
+    const dow=new Date(a,m-1,d).getDay();
+    if(dow===0||d===n){
+      let hab=0;for(let x=ini;x<=d;x++){if(new Date(a,m-1,x).getDay()!==0)hab++;}
+      out.push({k:isoDia_(a,m,ini),ini,fin:d,n:hab});ini=d+1;}}
+  return out;}
+// dias lun-sab de la semana dentro de la relacion laboral de la persona
+function habSemanaP_(p,a,m,s){
+  let n=0;
+  for(let x=s.ini;x<=s.fin;x++){
+    if(new Date(a,m-1,x).getDay()===0)continue;
+    if(tarDiaHabil_(p,isoDia_(a,m,x)))n++;}
+  return n;}
+function semBlk_(dni,k){
+  if(!M[dni])mv(dni,2);
+  M[dni].sem=M[dni].sem||{};
+  return M[dni].sem[k]||(M[dni].sem[k]={});}
+function obraSemana_(p,blk,s,a,m){
+  const O=obraCfg_(),cat=catObra_(p),jr=jornalObra_(p),pct=(+O.buc[cat]||0)/100;
+  const hab=habSemanaP_(p,a,m,s);
+  const d=(blk&&blk.d!==undefined&&blk.d!=='')?Math.max(0,Math.min(+blk.d||0,hab)):hab;
+  const ds=Math.max(0,+(blk&&blk.ds)||0);
+  const jb=r2(jr*d),domD=r2(jr*d/6),buc=r2(jr*pct*d);
+  const dom=r2(jr*ds*CFG.FER);
+  const mov=r2((+O.mov||0)*(d+ds));
+  const ext=r2(+(blk&&blk.ext)||0),bon=r2(+(blk&&blk.bon)||0);
+  const R_=jb+domD+buc;
+  const vac=r2(R_*(+O.vac||0)/100),cts=r2(R_*(+O.cts||0)/100),gra=r2(R_*(+O.gra||0)/100);
+  const conaf=r2((jb+domD)*(+O.conaf||0)/100);
+  const cuota=(blk&&blk.cuota!==undefined&&blk.cuota!=='')?r2(+blk.cuota||0):(d>0?r2(+p.cuota||0):0);
+  const ade=r2(+(blk&&blk.ade)||0);
+  const afecto=r2(jb+domD+buc+dom+ext);
+  const ap=aportesPlanilla_(afecto,p,CFG);
+  const aportes=r2(ap.onp+ap.ap+ap.pr+(ap.apc||0));
+  const bruto=r2(jb+domD+buc+dom+mov+ext+bon+vac+cts+gra);
+  return {hab,d,ds,jr,jb,domD,buc,dom,mov,ext,bon,vac,cts,gra,conaf,cuota,ade,afecto,aportes,bruto,
+          neto:r2(bruto-aportes-conaf-cuota-ade)};}
+// Suma de todas las semanas del mes de una persona -> lo que viaja a mv(dni,2).ob
+function obraAgg_(p){
+  const {a,m}=per(),ag={jb:0,domD:0,buc:0,dom:0,mov:0,ext:0,vac:0,cts:0,gra:0,conaf:0,cuota:0,ds:0};
+  let d=0,falta=0,ade=0,bon=0;
+  semanasMes_(a,m).forEach(s=>{
+    const blk=(M[p.dni]&&M[p.dni].sem&&M[p.dni].sem[s.k])||{};
+    const w=obraSemana_(p,blk,s,a,m);
+    ['jb','domD','buc','dom','mov','ext','vac','cts','gra','conaf','cuota','ds'].forEach(k=>{ag[k]=r2(ag[k]+w[k]);});
+    d+=w.d;falta+=Math.max(0,w.hab-w.d);ade+=w.ade;bon+=w.bon;});
+  Object.keys(ag).forEach(k=>{ag[k]=r2(ag[k]);});
+  // dias que declara PLAME: trabajados + descansos dominicales pagados (d/6 por semana), tope 30
+  const dias=Math.min(CFG.DM,Math.round(d+d/6));
+  return {ob:ag,d:dias,f:falta,ade:r2(ade),bon:r2(bon)};}
+function obraSync_(){
+  if(!esMensual()||BLOQ)return;
+  P.filter(esObra_).forEach(p=>{
+    const m=mv(p.dni,2),x=obraAgg_(p);
+    m.ob=x.ob;m.d=x.d;m.f=x.f;m.ade=x.ade;m.bon=x.bon;});}
+// La ficha de construccion paga por jornal: el "sueldo" de la ficha es solo la referencia mensual (jornal x 30).
+function obraFicha_(p){
+  if(!esObra_(p))return;
+  if(!CAT_OBRA[p.cat])p.cat='OFICIAL';
+  p.sue=r2(jornalObra_(p)*CFG.DM);}
+function setCatObra(id,v){const p=P.find(x=>x.id===id);if(!p)return;p.cat=CAT_OBRA[v]?v:'OFICIAL';obraFicha_(p);R();}
+function setCuotaObra(id,v){const p=P.find(x=>x.id===id);if(!p)return;p.cuota=Math.max(0,+v||0);R();}
+function setObraCfg(k,sub,v){
+  const O=PLAN.perfil.obra,n=Math.max(0,+v||0);
+  if(sub)O[k][sub]=n;else O[k]=n;
+  aplicarPerfil_();P.filter(esObra_).forEach(obraFicha_);R();}
+let SEM_K='';
+function semActual_(){
+  const {a,m}=per(),ss=semanasMes_(a,m);
+  return ss.find(x=>x.k===SEM_K)||ss[0];}
+function setSemana(k){SEM_K=k;rSemanal();}
+function setSem(dni,k,c,v){
+  if(BLOQ)return;
+  const b=semBlk_(dni,k);
+  if(v===''||v===null){delete b[c];}
+  else b[c]=Math.max(0,+v||0);
+  R();}
+function rSemanal(){
+  const w=document.getElementById('wSem');if(!w)return;
+  const {a,m}=per(),ss=semanasMes_(a,m),cur=semActual_();SEM_K=cur.k;
+  const gente=pla().filter(esObra_);
+  document.getElementById('semBar').innerHTML=ss.map((s,i)=>
+    '<button type="button" class="vs'+(s.k===cur.k?' on':'')+'" onclick="setSemana(\''+s.k+'\')" title="Del '+s.ini+' al '+s.fin+' de '+MES[m]+'">Semana '+(i+1)+
+    ' <span style="font-weight:400;opacity:.75">('+s.ini+(s.fin>s.ini?'–'+s.fin:'')+')</span></button>').join('');
+  const tot={bruto:0,aportes:0,conaf:0,cuota:0,ade:0,neto:0};
+  const nm=(dni,c,v,w_,ph,step)=>'<td class="num"><input data-f="'+c+'" type="number" min="0" step="'+(step||'.01')+'" class="'+(w_||'w90')+'" value="'+(v===undefined||v===''?'':v)+'"'+(ph!==undefined?' placeholder="'+ph+'"':'')+(BLOQ?' disabled':'')+
+    ' onchange="setSem(\''+dni+'\',\''+cur.k+'\',\''+c+'\',this.value)"></td>';
+  const rows=gente.map(p=>{
+    const blk=(M[p.dni]&&M[p.dni].sem&&M[p.dni].sem[cur.k])||{};
+    const x=obraSemana_(p,blk,cur,a,m);
+    ['bruto','aportes','conaf','cuota','ade','neto'].forEach(k=>{tot[k]=r2(tot[k]+x[k]);});
+    return '<tr>'+
+      '<td data-col="nom">'+escAttr_(p.nom)+'</td>'+
+      '<td class="ctr" data-col="dni" style="font-size:10.5px;font-variant-numeric:tabular-nums">'+p.dni+'</td>'+
+      '<td class="ctr">'+CAT_OBRA[catObra_(p)]+'</td>'+
+      '<td class="num">'+f(x.jr)+'</td>'+
+      '<td class="ctr" title="Dias lun-sab de esta semana dentro de su relacion laboral">'+x.hab+'</td>'+
+      '<td class="ctr"><input data-f="d" type="number" min="0" max="'+x.hab+'" step="1" class="w45" value="'+x.d+'"'+(BLOQ?' disabled':'')+' title="Dias trabajados (lo que falte es falta; baja el dominical)" onchange="setSem(\''+p.dni+'\',\''+cur.k+'\',\'d\',this.value)"></td>'+
+      '<td class="ctr"><input data-f="ds" type="number" min="0" max="7" step="1" class="w45" value="'+(x.ds||0)+'"'+(BLOQ?' disabled':'')+' title="Domingos o feriados trabajados (se pagan con el factor de la pestaña Empresa)" onchange="setSem(\''+p.dni+'\',\''+cur.k+'\',\'ds\',this.value)"></td>'+
+      '<td class="num">'+f(x.jb)+'</td><td class="num" title="1/6 del jornal por dia trabajado">'+f(x.domD)+'</td><td class="num">'+f(x.buc)+'</td>'+
+      '<td class="num">'+(x.dom?f(x.dom):'')+'</td><td class="num">'+f(x.mov)+'</td>'+
+      nm(p.dni,'ext',blk.ext,'w90','0.00')+nm(p.dni,'bon',blk.bon,'w90','0.00')+
+      '<td class="num" title="Compensacion vacacional">'+f(x.vac)+'</td><td class="num">'+f(x.cts)+'</td><td class="num">'+f(x.gra)+'</td>'+
+      '<td class="num"><b>'+f(x.bruto)+'</b></td>'+
+      '<td class="num" title="ONP/AFP de la semana (referencial: el mes se calcula sobre el total)">'+f(x.aportes)+'</td>'+
+      '<td class="num">'+f(x.conaf)+'</td>'+
+      nm(p.dni,'cuota',blk.cuota,'w90',f(x.cuota))+
+      nm(p.dni,'ade',blk.ade,'w90','0.00')+
+      '<td class="num"><b style="color:var(--tit)">'+f(x.neto)+'</b></td></tr>';}).join('');
+  w.innerHTML='<table><thead><tr>'+
+    '<th class="left">Nombre</th><th>Documento</th><th>Categoría</th><th>Jornal</th><th title="Lunes a sábado de la semana">Días hábiles</th><th>Días trab.</th><th title="Domingos o feriados trabajados">Dom./fer. trab.</th>'+
+    '<th class="gi">Jornales</th><th class="gi" title="1/6 del jornal por día trabajado">Dominical</th><th class="gi">BUC</th><th class="gi">Dom./fer. pago</th><th class="gi" title="No afecta aportes">Movilidad</th>'+
+    '<th class="gi" title="Altura, horas extra, BAE u otros que SÍ afectan aportes (código 0303)">Otros afectos</th><th class="gi" title="Otros bonos que no afectan aportes">Otros no afectos</th>'+
+    '<th class="gi" title="'+PLAN.perfil.obra.vac+'% de jornales + dominical + BUC">Vacac.</th><th class="gi" title="'+PLAN.perfil.obra.cts+'%">CTS</th><th class="gi" title="'+PLAN.perfil.obra.gra+'%">Gratif.</th>'+
+    '<th class="gt">Bruto</th><th class="gd">ONP/AFP</th><th class="gd" title="'+PLAN.perfil.obra.conaf+'% de jornales + dominical">CONAFOVICER</th><th class="gd" title="Por defecto la de la ficha (Personal)">Cuota sind.</th><th class="gd">Adelanto</th><th class="gt">Neto semana</th></tr></thead><tbody>'+
+    (rows||'<tr><td colspan="23" style="text-align:center;padding:20px;color:var(--ink3)">No hay personal con régimen Construcción civil. En Personal, elige ese régimen y su categoría.</td></tr>')+
+    '</tbody><tfoot><tr class="total"><td colspan="17"><b>TOTAL SEMANA</b></td><td class="num"><b>'+f(tot.bruto)+'</b></td><td class="num"><b>'+f(tot.aportes)+'</b></td><td class="num"><b>'+f(tot.conaf)+'</b></td><td class="num"><b>'+f(tot.cuota)+'</b></td><td class="num"><b>'+f(tot.ade)+'</b></td><td class="num"><b>'+f(tot.neto)+'</b></td></tr></tfoot></table>';
+  const mesNeto=r2(gente.reduce((t,p)=>t+mes(p).neto,0));
+  document.getElementById('sSem').innerHTML=
+    '<div class="chip inf"><span class="dot"></span>Semana del '+cur.ini+' al '+cur.fin+': neto <b>S/ '+f(tot.neto)+'</b></div>'+
+    '<div class="chip inf"><span class="dot"></span>Neto del mes (todas las semanas): <b>S/ '+f(mesNeto)+'</b></div>'+
+    '<div class="chip warn" title="Los aportes definitivos del mes se calculan sobre el total de todas las semanas"><span class="dot"></span>ONP/AFP semanal es referencial</div>';
+}
+
+/* ---- ADELANTO QUINCENAL: la pestaña de la 1ra quincena en modalidad ADELANTO ---- */
+function rAdelanto(){
+  const pct=PLAN.perfil.adqPct,filas=pla().map(p=>{
+    const m1=mv(p.dni,1),m2=mv(p.dni,2),per_=per();
+    const d15=diasComercialesPeriodo_(per_.a,per_.m,1,p,false);
+    const sug=adelantoSugerido_(p),man=!!m1.adqManual;
+    return {p,m1,m2,d15,sug,man,adq:+m1.adq||0};});
+  const tot=r2(filas.reduce((s,x)=>s+x.adq,0));
+  const rows=filas.map(x=>'<tr>'+
+    '<td data-col="nom">'+escAttr_(x.p.nom)+'</td>'+
+    '<td class="ctr" data-col="dni" style="font-size:10.5px;font-variant-numeric:tabular-nums">'+x.p.dni+'</td>'+
+    '<td class="ctr" data-col="cc">'+bcc(x.p.cc)+'</td>'+
+    '<td class="num">'+f(x.p.sue)+'</td>'+
+    '<td class="ctr" title="Dias de la 1ra quincena en que estuvo en planilla (mes comercial)">'+x.d15+'</td>'+
+    '<td class="ctr">'+pct+'%</td>'+
+    '<td class="num"><input data-f="adq" class="w90" type="number" min="0" step=".01" value="'+x.adq.toFixed(2)+'" onchange="setAdq(\''+x.p.dni+'\',this.value)"'+(BLOQ?' disabled':'')+
+      ' title="'+(x.man?'Importe fijado a mano (sugerido: '+f(x.sug)+')':'Calculado: sueldo x '+pct+'% x dias/15')+'"></td>'+
+    '<td class="ctr" style="font-size:10.5px;color:var(--ink3)">'+(x.man?'<span class="chip warn" style="display:inline-flex" title="Fijado a mano; el sugerido es S/ '+f(x.sug)+'"><span class="dot"></span>manual</span>':'auto')+'</td>'+
+    '</tr>').join('');
+  document.getElementById('wQ1').innerHTML='<table><thead><tr>'+
+    '<th class="left">Nombre</th><th>Documento</th><th>CC</th><th>Sueldo mensual</th><th>Días 1Q</th><th>% adelanto</th>'+
+    '<th class="gt" title="Se paga el dia 15 sin descuentos de AFP/ONP/5ta; se resta del neto del mes en la planilla mensual">Adelanto S/</th><th></th></tr></thead><tbody>'+
+    (rows||'<tr><td colspan="8" style="text-align:center;padding:20px;color:var(--ink3)">Sin personal en planilla.</td></tr>')+
+    '</tbody><tfoot><tr class="total"><td colspan="6"><b>TOTAL ADELANTOS</b></td><td class="num"><b>'+f(tot)+'</b></td><td></td></tr></tfoot></table>';
+  document.getElementById('sQ1').innerHTML=
+    '<div class="chip inf"><span class="dot"></span>Adelanto: <b>'+pct+'% del sueldo</b>, sin descuentos</div>'+
+    '<div class="chip inf"><span class="dot"></span>Total a pagar el 15: <b>S/ '+f(tot)+'</b></div>'+
+    '<div class="chip inf"><span class="dot"></span>Personas: <b>'+filas.length+'</b></div>'+
+    '<div class="chip warn" title="El % se cambia en la pestaña Empresa"><span class="dot"></span>Se descuenta en la pestaña Mensual (columna Adelanto)</div>';
+}
+function adqRestablecer(){
+  if(BLOQ)return;
+  if(!confirm('Volver a calcular todos los adelantos con el '+PLAN.perfil.adqPct+'% del sueldo? Se pierden los importes fijados a mano.'))return;
+  adqAplicar_(true);R();}
 
 /* ---- Consolidado mensual EDITABLE (solo en modalidad mensualizada) ---- */
 function rMensualEd(){
@@ -6157,7 +6661,7 @@ function rMensualEd(){
       '<td colspan="4" class="ctr" style="color:var(--ink3);font-size:10px">sin beneficios de planilla</td>'+
       '<td class="num"><b>'+f(m.ing)+'</b></td>'+
       '<td class="num" title="Base de renta de 4ta">'+f(m.q2.base4)+'</td>'+
-      '<td colspan="3" class="ctr" style="color:var(--ink3);font-size:10px">no afecto a aportes ni EsSalud</td>'+
+      '<td colspan="4" class="ctr" style="color:var(--ink3);font-size:10px">no afecto a aportes ni EsSalud</td>'+
       '<td class="num" style="color:var(--ink3)">--</td>'+
       '<td class="ctr"><select data-f="sus" onchange="setM(\''+p.dni+'\',2,\'sus\',this.value)" style="width:56px" title="Suspensión de retención de 4ta">'+
         '<option'+(b.sus==='NO'?' selected':'')+'>NO</option><option'+(b.sus!=='NO'?' selected':'')+'>SI</option></select>'+
@@ -6179,7 +6683,7 @@ function rMensualEd(){
       inp(p.dni,'bge',b.bge||0,'w90')+inp(p.dni,'cts',b.cts||0,'w90')+inp(p.dni,'liq',b.liq||0,'w90')+
       '<td class="num"><b>'+f(m.ing)+'</b></td><td class="num">'+f(m.base)+'</td>'+
       '<td class="num'+(m.minAp?' es-min':'')+'" title="'+(m.minAp?'Ajustado al mínimo RMV':'')+'">'+f(m.baseES)+'</td>'+
-      '<td class="num">'+f(m.onp+m.ap)+'</td><td class="num">'+f(m.pr)+'</td>'+
+      '<td class="num" title="Aporte obligatorio a la AFP">'+(m.ap>0?f(m.ap):'')+'</td><td class="num" title="Aporte a la ONP">'+(m.onp>0?f(m.onp):'')+'</td><td class="num">'+f(m.pr)+'</td>'+
       '<td class="num" title="Comisión AFP (solo esquema Flujo)">'+(m.apc>0?f(m.apc):'')+'</td>'+
       '<td class="num" style="color:var(--tealtx);font-weight:600">'+f(m.es)+'</td>'+
       inp(p.dni,'r5',b.r5)+incBtnCell(p.dni,2,b,'tar')+inp(p.dni,'ade',b.ade)+inp(p.dni,'pre',b.pre)+
@@ -6196,7 +6700,7 @@ function rMensualEd(){
    '<th rowspan="2" title="Se calcula solo: dias del bloque menos faltas y vacaciones (gozadas o adelantadas) de este periodo. Editable a mano si hace falta un ajuste (ingreso/cese a mitad de periodo).">Días</th><th rowspan="2">Faltas</th><th rowspan="2">Inasistencia</th>'+
    '<th colspan="16" class="gi">INGRESOS AFECTOS A APORTES</th>'+
    '<th colspan="5" class="gt">NO AFECTOS A APORTES</th>'+
-   '<th colspan="2" class="gt">TOTALES</th><th colspan="5" class="gd">APORTES</th>'+
+   '<th colspan="2" class="gt">TOTALES</th><th colspan="6" class="gd">APORTES</th>'+
    '<th colspan="4" class="gd">DESCUENTOS</th><th rowspan="2" class="gi">Prov. Vac.</th>'+
    '<th rowspan="2" class="gt">NETO MES</th><th rowspan="2" class="gt">NETO A PAGAR</th><th rowspan="2">Verificación</th><th rowspan="2"></th></tr>'+
    '<tr><th class="gi">Sueldo/Hon.</th><th class="gi">Vac. días</th><th class="gi">Imp. Vacac.</th>'+
@@ -6207,15 +6711,15 @@ function rMensualEd(){
    '<th class="gi" title="Subsidio por incapacidad temporal - código 0916">Imp. subsidio</th>'+
    '<th class="gi">Comisión</th>'+
    '<th class="gi">Feriado días</th><th class="gi">Imp. Feriado</th>'+
-   '<th class="gi" title="Domingo / día de descanso semanal trabajado sin descanso sustitutorio (D.Leg. 713 art. 6). Se marca con D en Tareo o se teclea aquí.">Dominical días</th><th class="gi" title="Mismo factor del feriado (Cuentas). Va a PLAME con el código 0107.">Imp. Dominical</th>'+
+   '<th class="gi" title="Domingo / día de descanso semanal trabajado sin descanso sustitutorio (D.Leg. 713 art. 6). Se marca con D en Asistencia o se teclea aquí.">Dominical días</th><th class="gi" title="Mismo factor del feriado (Empresa). Va a PLAME con el código 0107.">Imp. Dominical</th>'+
    '<th class="gi">H.Extras</th><th class="gi">Imp. 25%</th><th class="gi">Imp. 35%</th>'+
    '<th class="gt" title="Bono: canasta de bonos no remunerativos (productividad, movilidad, puntualidad, u otros similares) - no afecta aportes">Bono</th>'+
    '<th class="gt">Gratificación</th><th class="gt">Bonif. 9%</th><th class="gt">CTS</th><th class="gt">Otros</th>'+
    '<th class="gt">Total Ing.</th><th class="gt">Base Afecta</th>'+
-   '<th class="gd">Base EsSalud</th><th class="gd">AFP/ONP</th><th class="gd">Prima</th><th class="gd" title="Comisión AFP - solo esquema Flujo">Comisión AFP</th><th class="gd">EsSalud</th>'+
+   '<th class="gd">Base EsSalud</th><th class="gd" title="Aporte obligatorio a la AFP">AFP</th><th class="gd" title="Aporte a la ONP">ONP</th><th class="gd">Prima</th><th class="gd" title="Comisión AFP - solo esquema Flujo">Comisión AFP</th><th class="gd">EsSalud</th>'+
    '<th class="gd">5ta / 4ta</th><th class="gd">Tardanza</th><th class="gd">Adelanto</th><th class="gd">Préstamo</th></tr>'+
    '</thead><tbody>'+
-   (rows||'<tr><td colspan="44" style="text-align:center;padding:20px;color:var(--ink3)">Sin personal activo.</td></tr>')+
+   (rows||'<tr><td colspan="45" style="text-align:center;padding:20px;color:var(--ink3)">Sin personal activo.</td></tr>')+
    '</tbody><tfoot><tr class="total"><td colspan="6"><b>TOTALES</b></td>'+
    '<td class="num"><b>'+(t.falta>0?'-'+f(t.falta):'')+'</b></td>'+
    '<td class="num"><b>'+f(t.sue)+'</b></td><td></td><td class="num"><b>'+f(t.vac)+'</b></td>'+
@@ -6231,7 +6735,7 @@ function rMensualEd(){
    '<td class="num"><b>'+f(t.bge)+'</b></td><td class="num"><b>'+f(t.cts)+'</b></td>'+
    '<td class="num"><b>'+f(t.liq)+'</b></td>'+
    '<td class="num"><b>'+f(t.ing)+'</b></td><td class="num"><b>'+f(t.base)+'</b></td><td></td>'+
-   '<td class="num"><b>'+f(t.onp+t.ap)+'</b></td><td class="num"><b>'+f(t.pr)+'</b></td>'+
+   '<td class="num"><b>'+f(t.ap)+'</b></td><td class="num"><b>'+f(t.onp)+'</b></td><td class="num"><b>'+f(t.pr)+'</b></td>'+
    '<td class="num"><b>'+f(t.apc)+'</b></td>'+
    '<td class="num"><b>'+f(t.es)+'</b></td><td class="num"><b>'+f(t.r4+t.r5)+'</b></td>'+
    '<td class="num"><b>'+f(t.tar)+'</b></td><td class="num"><b>'+f(t.ade)+'</b></td>'+
@@ -6346,7 +6850,11 @@ function paquete(a,m){
     resumen:{personas:act().length,netoQ1:r2(n1),netoQ2:r2(n2),netoMes:r2(nt)},P:P,M:M};}
 function aplicar(d,pendiente){
   MODO=(d.modo==='MENSUAL')?'MENSUAL':'QUINCENAL';
-  PLAN=normPlan(d.plan);aplicarPlan();
+  PLAN=normPlan(d.plan);
+  // El archivo manda sobre el perfil: un periodo guardado quincenal sigue quincenal
+  // aunque el perfil de la empresa diga otra cosa (y al reves).
+  PLAN.perfil.modalidad=(MODO==='QUINCENAL')?'QUINCENAL':modalMensual_();
+  aplicarPlan();
   BLOQ=!!d.bloqueado;LOG=Array.isArray(d.log)?d.log:[];
   const rucAnt=CFG.RUC;
   if(d.empresa&&d.empresa.ruc){CFG.RUC=d.empresa.ruc;CFG.EMP=d.empresa.nombre||CFG.EMP;
@@ -6360,7 +6868,7 @@ function aplicar(d,pendiente){
   // concatenacion en las tablas de Personal/Quincenas/Mensual.
   P.forEach(p=>{p.dni=saneaDni_(p.dni);});
   M=(d.M&&typeof d.M==='object')?d.M:{};
-  Object.keys(M).forEach(k=>{const x=M[k]||{};M[k]={q1:Object.assign(bl(),x.q1||{}),q2:Object.assign(bl(),x.q2||{})};});
+  Object.keys(M).forEach(k=>{const x=M[k]||{};M[k]={q1:Object.assign(bl(),x.q1||{}),q2:Object.assign(bl(),x.q2||{})};if(x.sem)M[k].sem=x.sem;});
   EST.huella=pendiente?null:huella();
   EST.huellaBase=huella();
   EST.guardado=pendiente?null:d.guardado;
@@ -6373,7 +6881,7 @@ async function guardar(a,m){
   const{a:aa,m:mm}=per(),A=a||aa,Mn=m||mm,pp=periodoStr(A,Mn),nom=nomArchivo(A,Mn);
   if(raizEsOtraEmpresa()){
     alert('La carpeta conectada es de la empresa '+ROOT.name+' y estas trabajando con el RUC '+CFG.RUC+'.\n\n'+
-      'Conecta la carpeta raiz (por ejemplo C:\\PLANILLA) para llevar varias empresas, o cambia el RUC en la pestaña Cuentas.');
+      'Conecta la carpeta raiz (por ejemplo C:\\PLANILLA) para llevar varias empresas, o cambia el RUC en la pestaña Empresa.');
     return false;}
   try{
     const dir=await dirPeriodo(true,A,Mn);
@@ -6632,7 +7140,7 @@ function recuperarDraft(){
   MODO=(d.modo==='MENSUAL')?'MENSUAL':'QUINCENAL';
   BLOQ=!!d.bloqueado;
   M=(d.M&&typeof d.M==='object')?d.M:{};
-  Object.keys(M).forEach(k=>{const x=M[k]||{};M[k]={q1:Object.assign(bl(),x.q1||{}),q2:Object.assign(bl(),x.q2||{})};});
+  Object.keys(M).forEach(k=>{const x=M[k]||{};M[k]={q1:Object.assign(bl(),x.q1||{}),q2:Object.assign(bl(),x.q2||{})};if(x.sem)M[k].sem=x.sem;});
   EST.huella=null;EST.guardado=null;EST.archivo=null;
   EST.draft=null;R();toast('Borrador recuperado · pendiente de guardar');}
 function descartarDraft(){localStorage.removeItem('planilla_draft_'+periodoStr());EST.draft=null;R();}
@@ -7456,10 +7964,15 @@ function enviarA5ta(silencioso){
       // recalcular el neto (mismo motor que calcular_planilla, candidato 3)
       // antes de generar el .jor/.rem oficial -no se usa para armar el
       // archivo en si, solo para la verificacion no bloqueante-.
-      sue:p.sue,afp:p.afp,comAfp:p.comAfp,asigFam:!!p.asigFam,tipo:p.tipo,
+      sue:p.sue,reg:p.reg,afp:p.afp,comAfp:p.comAfp,asigFam:!!p.asigFam,tipo:p.tipo,
       m1:movPlanillaPayload_(mv(p.dni,1)),m2:movPlanillaPayload_(mv(p.dni,2))});
     const add=(c,v)=>{if(c&&r2(v)>0)conc.push({__ref:ref,codigo:c,monto:r2(v)});};
-    add(cod.basica,m.q1.sue+m.q2.sue);
+    const sq=k=>r2((m.q1[k]||0)+(m.q2[k]||0));   // suma de un campo en ambos bloques
+    add(cod.basica,sq('sue')-sq('buc')-sq('domD'));
+    // Construccion civil: BUC, dominical (descanso semanal), movilidad, otros afectos,
+    // compensacion vacacional 10%, CONAFOVICER y cuota sindical, cada uno con su codigo.
+    add(cod.buc,sq('buc'));add(cod.domD,sq('domD'));add(cod.mov,sq('mov'));add(cod.ext,sq('ext'));
+    add(cod.conaf,sq('conaf'));add(cod.cuota,sq('cuota'));
     // Vacaciones vendidas (D.S. 012-92-TR, campo "vv": el trabajador cede
     // hasta 15 dias de su periodo vacacional, cobra por esos dias pero
     // sigue trabajando -distinto de vacaciones TRUNCAS, cod.vacTruncas/
@@ -7472,8 +7985,8 @@ function enviarA5ta(silencioso){
     // vacacional, solo cambia si el trabajador goza el descanso o no.
     add(cod.vacaciones,m.q1.vac+m.q2.vac+(m.q1.vv||0)+(m.q2.vv||0));
     add(cod.vacTruncas,m.q1.vtr+m.q2.vtr);
-    add(cod.comision,m.q1.com+m.q2.com);
-    add(cod.bono,m.q1.bon+m.q2.bon);
+    add(cod.comision,sq('com')-sq('ext'));
+    add(cod.bono,sq('bon')-sq('mov'));
     add(cod.he25,m.q1.he25+m.q2.he25);
     add(cod.he35,m.q1.he35+m.q2.he35);
     add(cod.feriado,m.q1.fer+m.q2.fer);
@@ -7482,7 +7995,7 @@ function enviarA5ta(silencioso){
     add(cod.grati,m.q1.gra+m.q2.gra);
     add(cod.bonifExtra,m.q1.bge+m.q2.bge);
     add(cod.cts,m.q1.cts+m.q2.cts);
-    add(cod.indemnizacion,m.q1.liq+m.q2.liq);
+    add(m.q2.obra?cod.vacComp:cod.indemnizacion,m.q1.liq+m.q2.liq);
     add(cod.adelanto,m.q1.neto+m.q1.ade+m.q2.ade);
     add(cod.tardanza,m.q1.tar+m.q2.tar);
     // la basica (cod.basica, arriba) ahora sale integra segun los dias
@@ -7513,12 +8026,12 @@ function enviarA5ta(silencioso){
   });
   if(!window.P5){avisar('El modulo de 5ta no esta disponible.','err');return;}
   const res=P5.cargar(trab,conc,datPeriodo());
-  const b=document.querySelector('nav button[data-t="p5"]');if(b)T(b);
+  irDecl_('p5');
   let msg='Enviado a PLAME 5ta: '+res.trabajadores+' trabajadores y '+res.conceptos+' conceptos.';
   if(excluidosCuspp.length)msg+='\n\nSe excluyeron '+excluidosCuspp.length+
     ' trabajador(es) por aportar a AFP y no tener CUSPP (completa el dato en Personal y vuelve a enviar):\n'+excluidosCuspp.join('\n');
   const faltan=['r5','afpComision','onp'].filter(k=>!cod[k]);
-  if(faltan.length)msg+='\n\nOJO: hay codigos obligatorios vacios en la pestaña Cuentas ('+faltan.join(', ')+'); esos conceptos no se enviaron.';
+  if(faltan.length)msg+='\n\nOJO: hay codigos obligatorios vacios en la pestaña Empresa ('+faltan.join(', ')+'); esos conceptos no se enviaron.';
   avisar(msg,(excluidosCuspp.length||faltan.length)?'err':'ok');}
 
 /* ---- cuadre cruzado planilla vs PLAME 5ta ---- */
@@ -7564,7 +8077,7 @@ function enviarA4ta(){
   if(!provs.length){alert('No hay honorarios con importe en este periodo.');return;}
   if(!window.P4){alert('El modulo de 4ta no esta disponible.');return;}
   const res=P4.cargar(provs,recs,datPeriodo());
-  const b=document.querySelector('nav button[data-t="p4"]');if(b)T(b);
+  irDecl_('p4');
   alert('Enviado a PLAME 4ta: '+res.proveedores+' proveedores y '+res.recibos+' recibos.\n\nFalta completar el numero de cada recibo (serie-numero); la fecha quedo al cierre del mes.');}
 
 /* ================== DETALLES DE INTERFAZ ================== */
@@ -7579,7 +8092,7 @@ document.addEventListener('keydown',ev=>{
    PLAME, donde cada generador tiene sus propias descargas. */
 function pintarContexto(){
   const t=document.querySelector('nav button.active');
-  const esPlame=t&&(t.dataset.t==='p5'||t.dataset.t==='p4');
+  const esPlame=t&&t.dataset.t==='decl'&&(DECL_V==='p5'||DECL_V==='p4');
   const b=document.getElementById('barDatos');
   if(b)b.style.display=esPlame?'none':'';
   const c=document.getElementById('ctxPlame');
@@ -7601,23 +8114,45 @@ async function cargarPlanServidor(){
   const r=await callBackend_('plan_get',{ruc:CFG.RUC});
   if(!r.ok||!r.plan){PLAN_SRV={origen:'archivo',fecha:null};return false;}
   PLAN=normPlan(r.plan);aplicarPlan();
+  // el perfil trae razon social y domicilio: "viajan con el RUC"
+  if(PLAN.perfil.emp)CFG.EMP=PLAN.perfil.emp;
+  if(PLAN.perfil.dom)CFG.DOM=PLAN.perfil.dom;
+  if(typeof pintarEmpresa==='function')pintarEmpresa();
+  // la modalidad de pago del perfil manda: si el periodo estaba en otra, se
+  // cambia con las mismas confirmaciones de siempre (no se pisan movimientos).
+  const modo=PLAN.perfil.modalidad;PLAN.perfil.modalidad=(MODO==='QUINCENAL')?'QUINCENAL':modalMensual_();
   PLAN_SRV={origen:'servidor',fecha:r.fecha||null};
-  R();
+  if(modo!==PLAN.perfil.modalidad)cambiarModo(modo);else R();
   return true;}
 async function guardarPlanServidor(){
   if(!haySesion()){requireLogin_();return;}
   if(!/^\d{11}$/.test(String(CFG.RUC))){alert('Falta el RUC de la empresa.');return;}
-  if(!confirm('Guardar este plan de cuentas como el oficial del RUC '+CFG.RUC+'?\n\n'+
+  if(!confirm('Guardar el perfil de la empresa del RUC '+CFG.RUC+'?\n\n'+
+    'Incluye razon social, domicilio, modalidad de pago, % de adelanto, plan de cuentas y parametros. '+
     'Se usara al abrir periodos nuevos de esta empresa en cualquier equipo.'))return;
+  PLAN.perfil.emp=CFG.EMP;PLAN.perfil.dom=CFG.DOM;
   const r=await callBackend_('plan_set',{ruc:CFG.RUC,plan:PLAN,empresa:CFG.EMP});
   if(!r.ok){alert(r.message||'No se pudo guardar.');return;}
   PLAN_SRV={origen:'servidor',fecha:r.fecha||new Date().toISOString()};
-  toast('Plan de cuentas guardado en el servidor','ok');R();}
+  toast('Perfil de la empresa guardado en el servidor','ok');R();}
 
 /* Secciones "Validación" y "Vista previa de archivos" de PLAME 5ta/4ta: quedan
    plegadas por defecto (son detalle tecnico, no lo primero que hay que ver) y
    se abren con el boton de su cabecera. Una sola funcion generica porque
    ambos modulos repiten exactamente la misma estructura de tarjeta. */
+/* Resumen de la validacion en una linea, dentro de "Descargar": todo en orden
+   se ve de un vistazo y las observaciones se despliegan solo si hay. */
+function resumenValidacion_(p, issues, vacio){
+  const det = document.getElementById(p+'-valDet'), sum = document.getElementById(p+'-valSum');
+  if(!det || !sum) return;
+  const err = issues.filter(i=>i.type==='err'||i.type==='error').length;
+  if(vacio){ sum.innerHTML = '&#10003; Aún no hay datos para validar'; sum.className=''; det.open = false; return; }
+  if(!issues.length){ sum.innerHTML = '&#10003; Todo en orden: los archivos están listos para descargar'; sum.className='ok'; det.open = false; return; }
+  sum.innerHTML = (err?'&#9888; ':'&#9432; ')+issues.length+' observación(es)'+(err?' &middot; '+err+' con error':'')+' &mdash; ver detalle';
+  sum.className = err ? 'err' : 'warn';
+  if(err) det.open = true;
+}
+
 function toggleColapsable_(bodyId,btn){
   const el=document.getElementById(bodyId);if(!el)return;
   const abierto=el.style.display!=='none';
@@ -7650,6 +8185,9 @@ const IDS_ACCESO_RESTRINGIDO_=[
   {btn:'p4-togglePreview',body:'p4-previewBody'}];
 function actualizarAccesoRestringido_(){
   const ok=esUsuarioPrisma_();
+  // Las secciones tecnicas (trabajadores, conceptos, prestadores, recibos y vista
+  // previa) solo las ve el titular; el resto trabaja con "Datos" y "Descargar".
+  document.querySelectorAll('.solo-prisma').forEach(function(c){c.style.display=ok?'':'none';});
   IDS_ACCESO_RESTRINGIDO_.forEach(function(x){
     const btn=document.getElementById(x.btn);
     if(btn)btn.style.display=ok?'':'none';
@@ -7672,6 +8210,13 @@ function normalizeTipoDoc(v){
 // Catálogo de referencia para autocompletar (NO limita qué códigos se pueden usar).
 const CATALOGO_CONCEPTOS = [
   { codigo:'0103', label:'Comisión o Destajo', tipo:'ingreso' },
+  { codigo:'0311', label:'Bonificación Unificada de Construcción (BUC)', tipo:'ingreso' },
+  { codigo:'0115', label:'Remuneración Día de Descanso (dominical)', tipo:'ingreso' },
+  { codigo:'0909', label:'Movilidad supeditada a asistencia', tipo:'ingreso' },
+  { codigo:'0303', label:'Bonificación por Producción, Altura, Turno', tipo:'ingreso' },
+  { codigo:'0117', label:'Compensación Vacacional', tipo:'ingreso' },
+  { codigo:'0602', label:'CONAFOVICER (construcción)', tipo:'descuento' },
+  { codigo:'0702', label:'Cuota Sindical', tipo:'descuento' },
   { codigo:'0121', label:'Remuneración Básica', tipo:'ingreso' },
   { codigo:'0201', label:'Asignación Familiar', tipo:'ingreso' },
   { codigo:'0114', label:'Vacaciones Truncas', tipo:'ingreso' },
@@ -7984,6 +8529,7 @@ function renderValidation(){
   const box = document.getElementById('p5-validationBody');
   const issues = validate();
   if(advertenciaServidor_) issues.push({type:'warn', msg: advertenciaServidor_});
+  resumenValidacion_('p5', issues, trabajadores.length===0 && conceptos.length===0);
   if(trabajadores.length===0 && conceptos.length===0){ box.innerHTML = '<div class="validation-ok">✓ Aún no hay datos para validar</div>'; return; }
   if(issues.length===0){ box.innerHTML = '<div class="validation-ok">✓ Todo en orden. Los archivos están listos para descargar.</div>'; return; }
   box.innerHTML = `<ul class="val-list">${issues.map(it => `<li class="val-item ${it.type}"><span class="dot"></span><span style="white-space:pre-wrap">${esc(it.msg)}</span></li>`).join('')}</ul>`;
@@ -8778,6 +9324,7 @@ function renderValidation(){
   if(advertenciaServidor_) issues.push({type:'warn', msg: advertenciaServidor_});
   if(advertenciaServidorConcar_ && advertenciaServidorConcar_ !== advertenciaServidor_)
     issues.push({type:'warn', msg: advertenciaServidorConcar_});
+  resumenValidacion_('p4', issues, proveedores.length===0 && recibos.length===0);
   if(proveedores.length===0 && recibos.length===0){
     box.innerHTML = '<div class="validation-ok">✓ Aún no hay datos para validar</div>';
     return;
