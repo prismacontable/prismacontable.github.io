@@ -673,6 +673,15 @@
   .docs-chk{display:inline-flex; align-items:center; gap:6px; margin:0; font-size:12px; color:var(--muted); cursor:pointer;}
   .docs-chk input{width:auto; margin:0;}
   #pdDocsFilter{flex:1 1 180px; max-width:280px; margin:0; padding:6px 9px; font-size:13px;}
+  /* ---------- v1.7.6: vista previa de movimientos (Pestaña 3) ---------- */
+  .cg-prev{margin:0 0 12px; border:1px solid var(--border); border-radius:10px; background:var(--panel2); padding:8px 12px 10px;}
+  .cg-prev[hidden]{display:none;}
+  .cg-prev > summary{cursor:pointer; font-weight:600; font-size:13px;}
+  .cg-prev > summary span{font-weight:400; color:var(--muted);}
+  .cg-prev-chips{display:flex; flex-wrap:wrap; gap:6px; margin:8px 0;}
+  .cg-prev .tablewrap{max-height:340px; margin-top:8px;}
+  .cg-prev table td, .cg-prev table th{white-space:nowrap;}
+  #cgPrevFilter{flex:1 1 180px; max-width:280px; margin:0; padding:6px 9px; font-size:13px;}
   /* ---------- v1.5: flujo por rubros y enlace de solo lectura ---------- */
   #diaFlowTable tr.act td, #pyMatrixT tr.act td{background:var(--panel3); color:var(--text); font-weight:700; letter-spacing:.03em; font-size:12px; text-transform:uppercase; border-top:1px solid var(--border);}
   #diaFlowTable tr.grp td, #pyMatrixT tr.grp td{font-weight:700; background:var(--panel2);}
@@ -1172,7 +1181,6 @@ dialog.dlg::backdrop{background:rgba(8,14,10,.6);}
 .kbd-list dd{margin:0; color:var(--muted); text-align:right;}
 kbd{font-family:var(--f-ui); font-size:12px; font-weight:700; background:var(--panel2); border:1px solid var(--border); border-bottom-width:2px; border-radius:5px; padding:1px 7px; color:var(--text);}
 .svc-banner{border-radius:0; margin:0; border-width:0 0 1px; padding:9px 20px; text-align:center;}
-.busylabel{top:auto; bottom:22px; left:50%; border-radius:99px;}
 
 /* ---------- Móvil: el menú pasa abajo ---------- */
 @media (max-width:860px){
@@ -1203,7 +1211,7 @@ kbd{font-family:var(--f-ui); font-size:12px; font-weight:700; background:var(--p
 }
 @media (prefers-reduced-motion:reduce){ *{animation-duration:.001ms !important; animation-iteration-count:1 !important; transition:none !important;} }
 @media print{
-  .rail, .topbar, .toasts, .busybar, .busylabel{display:none !important;}
+  .rail, .topbar, .toasts, .busybar, .busycard{display:none !important;}
   #appRoot{display:block;} .main{padding:0;} body{background:#fff; color:#000;}
   .tablewrap.tall{max-height:none; overflow:visible;}
   .layout > .panel:first-child{display:none;}
@@ -1233,11 +1241,87 @@ kbd{font-family:var(--f-ui); font-size:12px; font-weight:700; background:var(--p
 .busybar.on{opacity:1;}
 .busybar i{position:absolute; top:0; bottom:0; left:-35%; width:35%; background:linear-gradient(90deg,transparent,var(--accent2),var(--accent-ink),transparent); animation:busy 1.1s linear infinite;}
 @keyframes busy{to{left:100%;}}
-.busylabel{position:fixed; top:8px; left:50%; transform:translateX(-50%); z-index:119; font-size:12px; color:var(--text); background:var(--panel3); border:1px solid var(--border); border-radius:99px; padding:3px 12px; box-shadow:var(--shadow); opacity:0; pointer-events:none; transition:opacity .15s;}
-body.is-busy .busylabel:not(:empty){opacity:1;}
 button.is-loading{position:relative; opacity:.75; cursor:progress;}
 button.is-loading::after{content:""; width:11px; height:11px; margin-left:8px; border-radius:50%; border:2px solid currentColor; border-right-color:transparent; display:inline-block; vertical-align:-1px; animation:spin .7s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg);}}
+
+/* ===== v1.7.9: cuadro de carga amable, listas plegables, mejor uso del ancho, pegar desde Excel ===== */
+
+/* ---- cuadro de «cargando»: tarjeta compacta abajo al centro (antes se estiraba a todo el alto) ---- */
+.busycard{position:fixed; left:50%; bottom:26px; top:auto; transform:translate(-50%,14px); z-index:119; display:flex; align-items:center; gap:13px; box-sizing:border-box; width:max-content; max-width:min(420px, calc(100vw - 32px)); padding:12px 20px 13px 16px; background:var(--panel); color:var(--text); border:1px solid var(--border); border-radius:16px; box-shadow:0 14px 34px rgba(10,20,14,.18), 0 2px 6px rgba(10,20,14,.08); overflow:hidden; opacity:0; visibility:hidden; pointer-events:none; transition:opacity .28s ease, transform .28s ease, visibility 0s linear .28s;}
+.busycard.show{opacity:1; visibility:visible; transform:translate(-50%,0); transition-delay:0s;}
+.busycard::after{content:""; position:absolute; left:0; right:0; bottom:0; height:3px; background:linear-gradient(90deg,transparent 0,var(--accent2) 50%,transparent 100%); background-size:45% 100%; background-repeat:no-repeat; animation:bcslide 1.7s ease-in-out infinite;}
+@keyframes bcslide{0%{background-position:-60% 0;} 100%{background-position:160% 0;}}
+.bc-dots{display:inline-flex; align-items:flex-end; gap:5px; height:20px; flex:none;}
+.bc-dots i{display:block; width:8px; height:8px; border-radius:50%; background:var(--accent2); animation:bcbounce 1.15s ease-in-out infinite;}
+.bc-dots i:nth-child(2){background:var(--accent-ink); animation-delay:.16s;}
+.bc-dots i:nth-child(3){animation-delay:.32s;}
+@keyframes bcbounce{0%,70%,100%{transform:translateY(0); opacity:.5;} 35%{transform:translateY(-8px); opacity:1;}}
+.bc-txt{display:flex; flex-direction:column; gap:1px; min-width:0; line-height:1.3;}
+.bc-txt b{font-size:13.5px; font-weight:700; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+.bc-txt small{font-size:12px; color:var(--muted); min-height:1.3em; transition:opacity .25s ease;}
+.bc-txt small.swap{opacity:0;}
+@media (max-width:860px){ .busycard{bottom:calc(88px + env(safe-area-inset-bottom));} }
+@media print{ .busycard{display:none !important;} }
+
+/* el mismo «cargando» dentro de las barras laterales (Leyendo archivo…): suave y redondeado */
+.status.is-loading{display:flex; align-items:center; gap:10px; padding:9px 12px; background:var(--accent-bg); border:1px solid var(--border); border-radius:12px; color:var(--text); font-size:12.5px; line-height:1.4;}
+.status.is-loading::before{content:""; flex:none; width:15px; height:15px; border-radius:50%; border:2.5px solid var(--accent-ink); border-right-color:transparent; animation:spin .8s linear infinite;}
+.status:empty{display:none;}
+.status.is-clamped{display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden;}
+.status-more{width:auto; margin:2px 0 0; padding:2px 4px; background:transparent; border:0; box-shadow:none; color:var(--accent-ink); font-size:12px; font-weight:700; cursor:pointer;}
+.status-more:hover{text-decoration:underline; background:transparent;}
+.status-more[hidden]{display:none;}
+
+/* ---- listas de archivos cargados: plegables, con su propio scroll si se abren ---- */
+details.fold{margin-top:10px; border:1px solid var(--border); border-radius:10px; background:var(--panel); flex:1 1 100%; min-width:0;}
+details.fold > summary{list-style:none; cursor:pointer; display:flex; align-items:center; gap:8px; padding:8px 11px; font-size:12.5px; font-weight:700; color:var(--text); user-select:none; min-width:0;}
+details.fold > summary::-webkit-details-marker{display:none;}
+details.fold > summary::before{content:""; flex:none; width:6px; height:6px; border-right:2px solid var(--muted); border-bottom:2px solid var(--muted); transform:rotate(-45deg); transition:transform .15s; margin:0 3px 0 1px;}
+details.fold[open] > summary::before{transform:rotate(45deg);}
+details.fold > summary:focus-visible{outline:2px solid var(--accent); outline-offset:-2px; border-radius:10px;}
+details.fold .fold-t{white-space:nowrap;}
+details.fold .fold-m{margin-left:auto; font-weight:500; font-size:11.5px; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-width:0;}
+details.fold .fold-bad{flex:none; font-size:11px; font-weight:700; padding:0 7px; border-radius:99px; background:var(--bad-bg); color:var(--bad);}
+details.fold .fold-warn{flex:none; font-size:11px; font-weight:700; padding:0 7px; border-radius:99px; background:var(--warn-bg); color:var(--warn);}
+details.fold > .fold-body{display:flex; flex-wrap:wrap; gap:6px; padding:2px 8px 9px; max-height:250px; overflow:auto; scrollbar-width:thin; scrollbar-color:var(--border) transparent;}
+details.fold > .fold-body.col{flex-direction:column; flex-wrap:nowrap;}
+.dia-files .dia-file{padding:6px 9px;}
+.dia-file .fn{overflow:hidden; text-overflow:ellipsis; white-space:nowrap; overflow-wrap:normal;}
+.dia-file .fm{display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; font-size:11.5px; margin-top:1px;}
+.filecards .fold{margin-top:0;}
+.filecards .fold > .fold-body{max-height:300px;}
+.filecards .filecard{flex:1 1 100%;}
+.fold-body .filecard{padding:8px 10px 8px 9px;}
+
+/* ---- pasos de las barras laterales: se pliegan tocando su título ---- */
+.layout > .panel:first-child .step-head{cursor:pointer; user-select:none; margin-bottom:8px;}
+.layout > .panel:first-child .step-head::after{content:""; flex:none; width:7px; height:7px; border-right:2px solid var(--muted); border-bottom:2px solid var(--muted); transform:rotate(45deg); margin:0 4px 3px 4px; transition:transform .15s;}
+.layout > .panel:first-child .step-card.is-folded > .step-head::after{transform:rotate(-45deg); margin-bottom:0;}
+.layout > .panel:first-child .step-head:focus-visible{outline:2px solid var(--accent); outline-offset:2px; border-radius:6px;}
+.step-card.is-folded > :not(.step-head){display:none !important;}
+.step-card.is-folded{padding-bottom:10px !important;}
+.step-card.is-folded .step-head{margin-bottom:0 !important;}
+.step-card.step-done .dropzone, .step-card.is-compact .dropzone{padding:11px 14px; font-size:12.5px;}
+
+/* ---- pegar desde Excel ---- */
+.grid-tip{display:flex; align-items:center; gap:8px; margin:0 0 8px; padding:6px 10px; font-size:12px; line-height:1.4; color:var(--muted); background:var(--panel2); border:1px dashed var(--border); border-radius:8px;}
+.grid-tip b{color:var(--text);}
+.grid-tip button{width:auto; margin:0 0 0 auto; padding:0 7px; background:transparent; border:0; box-shadow:none; color:var(--faint); font-size:15px; line-height:1.3; cursor:pointer;}
+.grid-tip button:hover{color:var(--bad); background:var(--bad-bg);}
+.grid-flash{animation:gridflash 1.1s ease-out;}
+@keyframes gridflash{0%{background:var(--accent-bg); box-shadow:inset 0 0 0 1.5px var(--accent-ink);} 100%{background:transparent; box-shadow:inset 0 0 0 0 transparent;}}
+
+/* ---- más ancho útil: menos margen alrededor y barra lateral más ancha en pantallas grandes ---- */
+@media (min-width:861px){
+  .main{padding-left:clamp(12px,1.4vw,20px); padding-right:clamp(12px,1.4vw,20px);}
+  .layout > .panel{padding:15px;}
+}
+@media (min-width:1101px){
+  .layout{grid-template-columns:clamp(312px,23vw,430px) minmax(0,1fr); gap:14px;}
+  .layout.src-hidden, .layout.view-anual{grid-template-columns:minmax(0,1fr);}
+}
+
 .svc-banner{position:sticky; top:0; z-index:90; background:var(--warn-bg); color:var(--warn); border:1px solid var(--warn); border-radius:9px; padding:8px 14px; margin:0 0 12px; font-size:13px;}
 .svc-banner[hidden]{display:none;}
 input.field-bad{border-color:var(--bad) !important; box-shadow:0 0 0 3px var(--bad-bg);}
@@ -1306,7 +1390,7 @@ body.gate-open{overflow:hidden;}
 </svg>
 
 <div class="busybar" id="busyBar" aria-hidden="true"><i></i></div>
-<div class="busylabel" id="busyLabel" role="status" aria-live="polite"></div>
+<div class="busycard" id="busyLabel" role="status" aria-live="polite"><span class="bc-dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="bc-txt"><b id="busyMain"></b><small id="busySub" aria-hidden="true"></small></span></div>
 <div class="svc-banner" id="svcBanner" role="status" hidden></div>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
   <symbol id="i-panel-left" viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="15" rx="2"/><path d="M9.5 4.5v15"/></symbol>
@@ -1324,6 +1408,8 @@ body.gate-open{overflow:hidden;}
     <dl class="kbd-list">
       <div><dt><kbd>Alt</kbd> <kbd>1</kbd> … <kbd>6</kbd></dt><dd>Ir a la pestaña 1, 2, 3, 4, 5 o 6</dd></div>
       <div><dt><kbd>/</kbd></dt><dd>Buscar en la tabla de la pestaña</dd></div>
+      <div><dt><kbd>Ctrl</kbd> <kbd>V</kbd></dt><dd>En una celda de la tabla: pega columnas o bloques copiados de Excel</dd></div>
+      <div><dt><kbd>Enter</kbd></dt><dd>En una celda: baja a la fila siguiente (con Mayús sube)</dd></div>
       <div><dt><kbd>Ctrl</kbd> <kbd>Z</kbd></dt><dd>Deshacer el último cambio masivo</dd></div>
       <div><dt><kbd>Alt</kbd> <kbd>B</kbd></dt><dd>Contraer o abrir el menú lateral</dd></div>
       <div><dt><kbd>Alt</kbd> <kbd>P</kbd></dt><dd>Ocultar o mostrar el panel de extractos</dd></div>
@@ -1427,7 +1513,7 @@ body.gate-open{overflow:hidden;}
       Arrastra tus PDF aquí<br>o haz clic para seleccionar
     </div>
     <input type="file" id="fileInput" accept="application/pdf" multiple>
-    <div class="filelist" id="fileList"></div>
+    <details class="fold" id="fileFold" data-fold="pdf-queue" hidden><summary><span class="fold-t">PDF en cola</span><span class="fold-m" id="fileFoldN"></span></summary><div class="filelist" id="fileList"></div></details>
 
     <button id="processBtn" disabled>Procesar PDFs</button>
     <button id="cancelProcBtn" class="secondary" type="button" hidden>Cancelar</button>
@@ -1634,7 +1720,7 @@ body.gate-open{overflow:hidden;}
           <span class="step-title">Documentos pendientes</span>
           <span class="step-check">✓ listo</span>
         </div>
-        <div class="step-sub">Sube lo que tengas: el reporte de pendientes de tu sistema contable (Excel o CSV), los ZIP del SIRE (compras y ventas) y los RH del año. Puedes elegir varios archivos a la vez; detectamos solos qué es cada uno.</div>
+        <div class="step-sub">Sube lo que tengas: el reporte de pendientes de tu sistema contable (Excel o CSV), los ZIP del SIRE (compras y ventas), los RH del año y el registro de ventas o de compras en asientos (la hoja de importación de tu contabilidad). Puedes elegir varios archivos a la vez; detectamos solos qué es cada uno.</div>
         <div class="dropzone" id="pdDropzone">Arrastra los archivos aquí<br>o haz clic para seleccionar<br><span style="font-size:11px; color:var(--muted);">Excel, CSV, TXT o ZIP del SIRE</span></div>
         <input type="file" id="pdFileInput" accept=".xlsx,.xls,.csv,.txt,.zip" multiple style="display:none;">
         <div class="status" id="pdFileStatus"></div>
@@ -1643,7 +1729,7 @@ body.gate-open{overflow:hidden;}
           <button type="button" class="secondary sm" id="pdTplBtn" title="Un Excel simple para llenar con cualquier sistema"><svg class="ico"><use href="#i-download"/></svg>Descargar plantilla</button>
           <label class="docs-chk" title="Se aplica a los archivos que subas desde ahora"><input type="checkbox" id="pdIncBol"> Incluir boletas y tickets (SIRE)</label>
         </div>
-        <details class="help"><summary>Qué archivos acepto y cómo se usan</summary><div><b>Reporte de tu sistema contable</b>: Excel o CSV de documentos pendientes. Si no trae la cuenta, elige abajo si es «por pagar» o «por cobrar»; si trae serie y número separados o una sola columna de saldo, también se arma. <br><b>SIRE compras y ventas</b>: el ZIP, el TXT o el Excel de la propuesta o del registro; puedes subir los de todos los meses a la vez. El SIRE no trae saldos: cada comprobante entra como pendiente por su importe total y se va cancelando con los movimientos del banco. Compras van a 421201/421202 y ventas a 121201/121202; las notas de crédito van con signo contrario. Las boletas y los tickets se omiten salvo que marques la casilla antes de subir. <br><b>RH del año</b> (TXT o Excel): entran a 424101 por el importe neto (renta neta, o bruta menos retención si el archivo la trae); los anulados se saltan. <br>Un comprobante que se repite (mismo tipo, número y RUC) no se agrega dos veces. Con la ✕ de cada fuente la quitas completa. <br>Si tu sistema no exporta bien, descarga la <b>plantilla</b>.</div></details>
+        <details class="help"><summary>Qué archivos acepto y cómo se usan</summary><div><b>Reporte de tu sistema contable</b>: Excel o CSV de documentos pendientes. Si no trae la cuenta, elige abajo si es «por pagar» o «por cobrar»; si trae serie y número separados o una sola columna de saldo, también se arma. <br><b>SIRE compras y ventas</b>: el ZIP, el TXT o el Excel de la propuesta o del registro; puedes subir los de todos los meses a la vez. El SIRE no trae saldos: cada comprobante entra como pendiente por su importe total y se va cancelando con los movimientos del banco. Compras van a 421201/421202 y ventas a 121201/121202; las notas de crédito van con signo contrario. Las boletas y los tickets se omiten salvo que marques la casilla antes de subir. <br><b>Registro de ventas o de compras en asientos</b>: la hoja de importación de tu contabilidad (con Sub Diario, Cuenta Contable, Debe / Haber, Tipo y Número de Documento). Los comprobantes salen de las líneas de las cuentas por cobrar y por pagar (debe − haber) y completan lo que el SIRE no trae; los que ya están no se repiten. <br><b>RH del año</b> (TXT o Excel): entran a 424101 por el importe neto (renta neta, o bruta menos retención si el archivo la trae); los anulados se saltan. <br>Un comprobante que se repite (mismo tipo, número y RUC) no se agrega dos veces. Con la ✕ de cada fuente la quitas completa. <br>Si tu sistema no exporta bien, descarga la <b>plantilla</b>.</div></details>
 
         <div id="pdMappingBox" style="display:none; margin-top:10px;">
           <label>Mapea las columnas de tu reporte:</label>
@@ -1817,6 +1903,13 @@ body.gate-open{overflow:hidden;}
       </div>
       <div class="hint" id="cgEditHint" hidden style="margin:0 0 10px;">Haz clic en una celda para corregirla (glosa, cuenta, D/H, importe, tipo, N° doc., anexo). <b>Enter</b> confirma y baja a la línea siguiente, <b>Esc</b> cancela. Cada cambio revalida el asiento (Debe = Haber) y sale tal cual en el Excel. <b>+</b> agrega otra línea (otro comprobante) y <b>✕</b> la quita.</div>
       <div class="hint trf-orphan" id="cgNotas" hidden style="display:block; margin:0 0 10px;"></div>
+      <details class="cg-prev" id="cgPrev" hidden open>
+        <summary>Vista previa de los movimientos cargados <span id="cgPrevSum"></span></summary>
+        <div class="cg-prev-chips" id="cgPrevChips"></div>
+        <div class="docs-tools"><input type="search" id="cgPrevFilter" placeholder="Buscar en la vista previa…" aria-label="Buscar en la vista previa" autocomplete="off"></div>
+        <div class="tablewrap"><table id="cgPrevTable"><thead><tr><th>Fecha</th><th>Descripción</th><th>N° Oper.</th><th class="num">Abono</th><th class="num">Cargo</th><th class="num">Saldo</th><th>Banco</th><th>Mon.</th><th>Cuenta</th><th>Anexo/RUC</th><th>Tipo Doc.</th><th>N° Doc.</th></tr></thead><tbody id="cgPrevBody"></tbody></table></div>
+        <div class="hint" id="cgPrevNote" style="margin:6px 0 0;"></div>
+      </details>
       <div class="tablewrap">
         <table id="cgTable">
           <thead>
@@ -2589,7 +2682,7 @@ window.EC_CONFIG = { API_URL: "PEGA_AQUI_LA_URL_DEL_SERVIDOR", GEO: true };
    Acceso: usuario + contraseña (se validan en cada pedido; la contraseña vive solo en memoria),
    equipo autorizado (id guardado en este navegador) y RUC habilitados.
    ============================================================ */
-const EC_CLIENT_VERSION = '1.7.5';
+const EC_CLIENT_VERSION = '1.7.9';
 const EC_USER_STORE = 'ec_usuario';
 const EC_DEVICE_STORE = 'ec_deviceId';
 const EC_URL_STORE = 'ec_api_url';
@@ -2661,13 +2754,38 @@ const EC = (() => {
   }
 
   /* ---------------- barra de progreso y botones ocupados ---------------- */
+  /* cuadro de «cargando»: tarjeta compacta que aparece si la espera pasa de ~0.35 s; el mensaje principal dice qué se hace y debajo van frases amables */
+  const BUSY_TIPS = ['Esto suele tardar solo unos segundos.', 'Estoy revisando cada fila con cuidado.', 'Ordenando todo para que quede listo.', 'Ya casi termino…'];
+  const BUSY_LONG = ['Es un archivo grande: sigo trabajando, no cierres la pestaña.', 'Sigo en ello; puedes mirar otras pestañas mientras tanto.'];
+  let busyT0 = 0, busyShow = null, busyTick = null, busyIdx = 0;
+  function busyNext(){
+    const sub = $('busySub'); if(!sub) return;
+    const lista = (Date.now() - busyT0 > 12000) ? BUSY_LONG : BUSY_TIPS;
+    busyIdx = (busyIdx + 1) % lista.length;
+    sub.classList.add('swap');
+    setTimeout(() => { sub.textContent = lista[busyIdx]; sub.classList.remove('swap'); }, 220);
+  }
   function syncBusy(){
     const bar = $('busyBar');
     const on = st.busy > 0;
     if(bar) bar.classList.toggle('on', on);
     document.body.classList.toggle('is-busy', on);
-    const lab = $('busyLabel');
-    if(lab) lab.textContent = on ? (EC._label || 'Procesando en el servidor…') : '';
+    const card = $('busyLabel');
+    if(!card) return;
+    const main = $('busyMain'), sub = $('busySub');
+    if(on){
+      if(main) main.textContent = EC._label || 'Procesando…';
+      if(!busyT0){
+        busyT0 = Date.now(); busyIdx = 0;
+        if(sub) sub.textContent = BUSY_TIPS[0];
+        busyShow = setTimeout(() => card.classList.add('show'), 350);
+        busyTick = setInterval(busyNext, 3300);
+      }
+    } else {
+      clearTimeout(busyShow); clearInterval(busyTick); busyT0 = 0;
+      card.classList.remove('show');
+      if(main) main.textContent = '';
+    }
   }
   function beginBusy(o){
     if(!o.silent){ st.busy++; EC._label = o.label || ''; syncBusy(); }
@@ -2968,6 +3086,7 @@ const EC = (() => {
 
 /* ---------------- avisos (toasts), con acción opcional ---------------- */
 function toast(msg, kind, opts){
+  if(window.GRID && GRID.toasts && kind !== 'ok'){ if(GRID.toasts.indexOf(msg) < 0) GRID.toasts.push(msg); return null; }   // pegando un bloque: se juntan y se avisan una vez
   const box = document.getElementById('toasts');
   if(!box || typeof document.createElement !== 'function') return null;
   opts = opts || {};
@@ -2993,6 +3112,32 @@ function toast(msg, kind, opts){
   if(typeof setTimeout === 'function') setTimeout(() => { if(el.remove) el.remove(); }, opts.ms || (kind === 'bad' || opts.action ? 9000 : 4500));
   return el;
 }
+
+/* ---------------- listas plegables y pegado por lotes (v1.7.9) ---------------- */
+/* GRID: contador de «lote» (mientras se pega un bloque de Excel no se recalcula nada por celda) y cola de avisos del lote */
+var GRID = { batch: 0, toasts: null };
+const FoldState = {};      // lo que la persona abrió o cerró a mano (por lista); lo demás se decide solo según cuántos archivos hay
+function foldOpenFor(key, n, limit){ return Object.prototype.hasOwnProperty.call(FoldState, key) ? !!FoldState[key] : n <= limit; }
+/* lista plegable: título, resumen corto (todo ya escapado), filas en HTML, cuántas hay y hasta cuántas se muestra abierta sola */
+function foldHtml(key, title, meta, rows, n, limit, o){
+  o = o || {};
+  const open = foldOpenFor(key, n, limit);
+  const ins = (o.bad ? `<span class="fold-bad" title="Con problemas">⚠ ${o.bad}</span>` : '') + (o.warn ? `<span class="fold-warn">${o.warn} aviso${o.warn === 1 ? '' : 's'}</span>` : '');
+  return `<details class="fold" data-fold="${key}" data-auto="${open ? '1' : '0'}"${open ? ' open' : ''}><summary><span class="fold-t">${title}</span>${ins}<span class="fold-m">${meta}</span></summary><div class="fold-body${o.col ? ' col' : ''}">${rows}</div></details>`;
+}
+function foldApply(d, key, n, limit){
+  if(!d) return;
+  const open = foldOpenFor(key, n, limit);
+  d.dataset.auto = open ? '1' : '0';
+  if(d.open !== open) d.open = open;
+}
+document.addEventListener('toggle', e => {
+  const d = e.target;
+  if(!d || !d.matches || !d.matches('details.fold[data-fold]')) return;
+  if(d.open === (d.dataset.auto === '1')) return;      // lo abrió o cerró el programa, no la persona
+  FoldState[d.dataset.fold] = d.open;
+  d.dataset.auto = d.open ? '1' : '0';
+}, true);
 
 /* ---------------- deshacer ---------------- */
 const Undo = {
@@ -3085,7 +3230,23 @@ async function serverProcessFile(file, selectedBank, onProgress){
 /* ---------------- Excel: la página lee el archivo; el servidor reconoce las columnas ---------------- */
 async function mapBankRemote(rows, headers){
   const d = await EC.call('mapBank', { rows, headers }, { heavy: true, label: 'Reconociendo las columnas del Excel…' });
-  return d.movements || [];
+  const mv = d.movements || [];
+  // v1.7.6: si el Excel trae las columnas que exporta el cruce (o un EECC ya cruzado), se conservan: sin ellas, un pago de varias facturas
+  // o en partes se repartiría solo por el saldo de cada comprobante.
+  try{
+    const col = re => headers.find(h => re.test(String(h).trim()));
+    const hI = col(/^importes? por comprobante$/i), hR = col(/^sin documento$/i), hC = col(/^comisi[oó]n 639101$/i), hN = col(/^nota del cruce$/i);
+    if((hI || hR || hC || hN) && mv.length === rows.length){
+      mv.forEach((m, i) => {
+        const r = rows[i] || {};
+        if(hI && String(r[hI] == null ? '' : r[hI]).trim()) m.docMontos = String(r[hI]).trim();
+        if(hR && String(r[hR] == null ? '' : r[hR]).trim() !== '') m.docResto = parseFloat(r[hR]) || 0;
+        if(hC && String(r[hC] == null ? '' : r[hC]).trim() !== '') m.docComision = parseFloat(r[hC]) || 0;
+        if(hN && String(r[hN] == null ? '' : r[hN]).trim()) m.sugNota = String(r[hN]).trim();
+      });
+    }
+  }catch(e){ /* sin esas columnas todo sigue como antes */ }
+  return mv;
 }
 async function mapTesRemote(rows, headers){
   const d = await EC.call('mapTes', { rows, headers }, { heavy: true, label: 'Reconociendo las columnas de Tesorería…' });
@@ -3146,6 +3307,7 @@ async function cgGenerar(){
     cgRows = d.rows || [];
     cgFilter = 'all';
     renderCgTable(d.flaggedCount || 0);
+    { const pv = document.getElementById('cgPrev'); if(pv) pv.open = false; }
   }catch(e){ ecFail(e); }
 }
 
@@ -3521,7 +3683,14 @@ const Shell = (function(){
     const blocks = text.split(/\n{2,}/).map(s => s.replace(/\s+$/, '')).filter(s => s.trim());
     const busy = state.processing;
     const cards = blocks.map((b, i) => parseBlock(b, i === blocks.length - 1, busy)).filter(Boolean);
-    box.innerHTML = cards.map(cardHtml).join('');
+    // lo que salió bien se guarda en una lista plegable; los avisos, errores y lo que se está leyendo se quedan a la vista
+    const calm = cards.filter(c => c.kind === 'ok' || c.kind === 'skip'), loud = cards.filter(c => c.kind !== 'ok' && c.kind !== 'skip');
+    let h = '';
+    if(calm.length > 1){
+      const mv = calm.reduce((s, c) => s + (c.stats ? c.stats.n : 0), 0);
+      h += foldHtml('cards', 'Archivos procesados', `${calm.length} archivos${mv ? ' · ' + mv.toLocaleString('en-US') + ' mov.' : ''}`, calm.map(cardHtml).join(''), calm.length, 2, { col: true });
+    } else h += calm.map(cardHtml).join('');
+    box.innerHTML = h + loud.map(cardHtml).join('');
     box.hidden = !cards.length;
   }
   function wireCards(){
@@ -3808,6 +3977,8 @@ function addFiles(newFiles){
 }
 
 function renderFileList(){
+  const ff = document.getElementById('fileFold');
+  if(ff){ ff.hidden = !files.length; const nn = document.getElementById('fileFoldN'); if(nn) nn.textContent = files.length === 1 ? '1 archivo' : files.length + ' archivos'; foldApply(ff, 'pdf-queue', files.length, 3); }
   fileList.innerHTML = '';
   files.forEach((f, i) => {
     const div = document.createElement('div');
@@ -4051,7 +4222,7 @@ function renderTable(){
         e.target.textContent = val;
       }
       if(field === 'docTipo' && val){
-        val = val.toUpperCase();
+        val = docTipoUp(val);
         const er = docTipoCheck(movements[idx].cuentaContable, val);
         if(er){ toast(er, 'warn'); e.target.textContent = movements[idx].docTipo || ''; return; }
         e.target.textContent = val;
@@ -4067,11 +4238,11 @@ function renderTable(){
         // Solo cambia la clasificacion: se actualizan los indicadores, pero NO se vuelve a
         // filtrar la tabla, para que la fila que acabas de editar no desaparezca bajo el
         // cursor si tienes activo el filtro "Sin cuenta".
-        updateTotalsBadges(); renderFreqList(); refreshAccountList();
+        if(!GRID.batch){ updateTotalsBadges(); renderFreqList(); refreshAccountList(); }
       } else {
-        refreshAnalytics();
+        if(!GRID.batch) refreshAnalytics();
       }
-      saveState();
+      if(!GRID.batch) saveState();
     });
   });
   movBody.querySelectorAll('.delRow').forEach(el => {
@@ -4789,7 +4960,7 @@ function renderPdTable(){
       let val = e.target.textContent.trim();
       const antes = pdResults[idx][field];
       if(field === 'docTipo' && val){
-        val = val.toUpperCase();
+        val = docTipoUp(val);
         const er = docTipoCheck(pdResults[idx].cuentaContable, val);
         if(er){ toast(er, 'warn'); e.target.textContent = antes || ''; return; }
         e.target.textContent = val;
@@ -4812,8 +4983,7 @@ function renderPdTable(){
          && (pdResults[idx].cuentaContable || pdResults[idx].docNroDoc)){
         pdResults[idx].estado = 'Manual';
       }
-      recomputePdDuplicates();
-      refreshPdRowDisplays();
+      if(!GRID.batch){ recomputePdDuplicates(); refreshPdRowDisplays(); }
     });
   });
 
@@ -4898,11 +5068,87 @@ cgBankFileInput.addEventListener('change', async (e) => {
     const headers = Object.keys(rows[0]);
     cgMovements = await mapBankRemote(rows, headers);
     cgSourceStatus.textContent = `${file.name}${sheetNote_(rows)}: ${cgMovements.length} movimientos cargados.`;
+    cgPreviewRender(true); scheduleExtSave();
   }catch(err){
     cgSourceStatus.textContent = 'Error leyendo el Excel: ' + err.message;
   }
   cgBankFileInput.value = '';
 });
+
+/* ---------- v1.7.6: vista previa de los movimientos cargados en la Pestaña 3 ---------- */
+const CG_PREV_MAX = 400;
+let cgPrevTxt = '';
+function cgPreviewRender(abrir){
+  const box = document.getElementById('cgPrev'); if(!box) return;
+  const mv = Array.isArray(cgMovements) ? cgMovements : [];
+  box.hidden = !mv.length;
+  if(!mv.length) return;
+  if(abrir === true) box.open = true;
+  const num = v => { let n = parseFloat(v); if(!isFinite(n)) n = parseFloat(String(v == null ? '' : v).replace(/[^0-9.\-]/g, '')); return isFinite(n) ? n : 0; };
+  const has = v => v !== '' && v != null && String(v).trim() !== '';
+  const kf = f => { const m = /^(\d{1,2})[\/.\-](\d{1,2})[\/.\-](\d{2,4})/.exec(String(f || '').trim()); if(!m) return 0; let y = +m[3]; if(y < 100) y += 2000; return y * 10000 + (+m[2]) * 100 + (+m[1]); };
+  const dtxt = k => String(k % 100).padStart(2, '0') + '/' + String(Math.floor(k / 100) % 100).padStart(2, '0') + '/' + Math.floor(k / 10000);
+  const f2 = n => n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  let ab = 0, ca = 0, nAb = 0, nCa = 0, conCta = 0, conDoc = 0, sinFecha = 0, dmin = 0, dmax = 0, malSaldo = 0, ejSaldo = '', prevS = null, nSaldo = 0, usd = 0;
+  mv.forEach((m, i) => {
+    const a = num(m.abono), c = num(m.cargo);
+    if(a){ ab += a; nAb++; }
+    if(c){ ca += c; nCa++; }
+    if(has(m.cuentaContable)) conCta++;
+    if(has(m.docNroDoc)) conDoc++;
+    const kk = kf(m.fecha);
+    if(!kk) sinFecha++; else { if(!dmin || kk < dmin) dmin = kk; if(kk > dmax) dmax = kk; }
+    if(String(m.moneda || '').toUpperCase() === 'USD') usd++;
+    if(has(m.saldo)){
+      const s = num(m.saldo); nSaldo++;
+      if(prevS !== null && Math.abs(prevS + a - c - s) > 0.011){ malSaldo++; if(!ejSaldo) ejSaldo = 'movimiento n.º ' + (i + 1) + ' (' + (m.fecha || 's/f') + ')'; }
+      prevS = s;
+    }
+  });
+  const chip = (t, cls, tip) => '<span class="badge' + (cls ? ' ' + cls : '') + '"' + (tip ? ' title="' + escapeHtml(tip) + '"' : '') + '>' + escapeHtml(t) + '</span>';
+  const mon = usd && usd === mv.length ? 'US$ ' : 'S/ ';
+  const chips = [
+    chip(mv.length.toLocaleString('en-US') + ' movimientos', ''),
+    dmin ? chip(dtxt(dmin) + ' al ' + dtxt(dmax), '') : '',
+    chip('Abonos ' + nAb.toLocaleString('en-US') + ' · ' + mon + f2(ab), 'pill-exacto'),
+    chip('Cargos ' + nCa.toLocaleString('en-US') + ' · ' + mon + f2(ca), 'pill-bad'),
+    chip('Con cuenta ' + conCta.toLocaleString('en-US') + ' · sin cuenta ' + (mv.length - conCta).toLocaleString('en-US'), 'pill-manual'),
+    conDoc ? chip('Con comprobante ' + conDoc.toLocaleString('en-US'), 'pill-yaasignado') : '',
+    nSaldo > 1 ? (malSaldo ? chip(malSaldo + ' fila(s) no cuadran con el saldo', 'pill-sugerencia', 'Saldo anterior + abono − cargo debería dar el saldo de la fila. Primera: ' + ejSaldo + '. Revisa que el orden del Excel sea el del extracto.') : chip('Saldos cuadrados fila a fila', 'pill-exacto', 'Saldo anterior + abono − cargo = saldo en las ' + nSaldo + ' filas con saldo.')) : '',
+    sinFecha ? chip(sinFecha + ' sin fecha válida', 'pill-bad') : '',
+    usd && usd !== mv.length ? chip(usd + ' en dólares', '') : ''
+  ].filter(Boolean).join('');
+  document.getElementById('cgPrevChips').innerHTML = chips;
+  document.getElementById('cgPrevSum').textContent = '· ' + mv.length.toLocaleString('en-US') + ' filas';
+  const q = cgPrevTxt.trim().toLowerCase();
+  const filt = [];
+  for(let i = 0; i < mv.length; i++){
+    const m = mv[i];
+    if(q){
+      const hay = [m.fecha, m.descripcion, m.operacion, m.abono, m.cargo, m.banco, m.cuentaContable, m.docAnexo, m.docTipo, m.docNroDoc].join(' ').toLowerCase();
+      if(hay.indexOf(q) < 0) continue;
+    }
+    filt.push(i);
+  }
+  const show = filt.slice(0, CG_PREV_MAX);
+  const money = v => { const n = num(v); return n ? f2(n) : ''; };
+  document.getElementById('cgPrevBody').innerHTML = show.map(i => {
+    const m = mv[i];
+    return '<tr><td>' + escapeHtml(m.fecha) + '</td><td>' + escapeHtml(m.descripcion) + '</td><td>' + escapeHtml(m.operacion) + '</td>' +
+      '<td class="num col-abono">' + money(m.abono) + '</td><td class="num col-cargo">' + money(m.cargo) + '</td><td class="num col-saldo">' + money(m.saldo) + '</td>' +
+      '<td>' + escapeHtml(m.banco) + '</td><td>' + escapeHtml(m.moneda) + '</td><td>' + escapeHtml(m.cuentaContable) + '</td><td>' + escapeHtml(m.docAnexo) + '</td>' +
+      '<td>' + escapeHtml(m.docTipo) + '</td><td>' + escapeHtml(m.docNroDoc) + '</td></tr>';
+  }).join('');
+  document.getElementById('cgPrevNote').textContent = filt.length > show.length
+    ? 'Mostrando los primeros ' + show.length.toLocaleString('en-US') + ' de ' + filt.length.toLocaleString('en-US') + (q ? ' que coinciden' : '') + '. Usa el buscador para ver otros.'
+    : (q ? filt.length.toLocaleString('en-US') + ' de ' + mv.length.toLocaleString('en-US') + ' filas coinciden.' : '');
+}
+(function wireCgPrev176(){
+  const inp = document.getElementById('cgPrevFilter');
+  if(inp) inp.addEventListener('input', () => { cgPrevTxt = inp.value; cgPreviewRender(); });
+  cgUseTab1Btn.addEventListener('click', () => cgPreviewRender(true));
+  cgUseTab2Btn.addEventListener('click', () => cgPreviewRender(true));
+})();
 
 const cgTemplateBtn = document.getElementById('cgTemplateBtn');
 cgTemplateBtn.addEventListener('click', () => {
@@ -5278,7 +5524,7 @@ function cgAplicarCelda(td){
     if(nuevo !== 'D' && nuevo !== 'H'){ toast('D/H solo acepta D (debe) o H (haber).', 'bad'); return false; }
     if(nuevo === r[campo]) return false;
   } else {
-    nuevo = f === 'anexo' ? cleanAnexo(txt) : (f === 'tipo' ? txt.toUpperCase() : txt);
+    nuevo = f === 'anexo' ? cleanAnexo(txt) : (f === 'tipo' ? docTipoUp(txt) : txt);
     if(nuevo === String(r[campo] == null ? '' : r[campo])) return false;
     if(f === 'tipo' && nuevo){ const er = docTipoCheck(r['Cuenta Contable'], nuevo); if(er){ toast(er, 'bad'); return false; } }
   }
@@ -5928,6 +6174,7 @@ function renderTab2(){
 function renderTab3(){
   cgSourceStatus.textContent = cgMovements.length ? `${cgMovements.length} movimientos cargados.` : 'Sin movimientos cargados aún.';
   renderCgTable();
+  cgPreviewRender();
 }
 function renderTab4(){
   document.getElementById('tesMiosStatus').textContent = tesMovimientos.length ? `${tesMovimientos.length} movimientos.` : 'Sin movimientos cargados aún.';
@@ -7912,7 +8159,7 @@ function diaFxSync(){
 /* Qué tipos de documento admite cada cuenta. Para agregar otra cuenta basta una línea más en esta tabla
    (el primer tipo de la lista es el que se llena solo). */
 const DOC_TIPO_REGLAS = {
-  '421201': ['FT', 'CN', 'BP', 'RL'], '421202': ['FT', 'CN', 'BP', 'RL'],
+  '421201': ['FT', 'NC', 'BP', 'RC'], '421202': ['FT', 'NC', 'BP', 'RC'],
   '424101': ['RH'],
   '411101': ['PL'], '141201': ['PL']
 };
@@ -7920,12 +8167,16 @@ const DOC_TIPO_REGLAS = {
 const docSplit = s => String(s == null ? '' : s).split('|').map(x => x.trim());
 const docTiposDe = cta => DOC_TIPO_REGLAS[String(cta || '').trim()] || null;
 const docListaTxt = a => a.length === 1 ? a[0] : a.slice(0, -1).join(', ') + ' o ' + a[a.length - 1];
+/* códigos que se usaron antes (v1.7.3–v1.7.6): CN → NC, RL → RC */
+const docTipoLegacy = t => ({ CN: 'NC', RL: 'RC' }[t] || t);
+/* lo escrito en «Tipo»: mayúsculas, con los códigos anteriores convertidos (se admite «|» entre varios) */
+const docTipoUp = s => String(s == null ? '' : s).toUpperCase().split('|').map(x => docTipoLegacy(x.trim())).join('|');
 /* '' si el tipo (o los tipos separados por «|») corresponde a la cuenta (o cuentas); si no, el motivo.
    Un solo tipo con varias cuentas vale para todas; con varios tipos cada uno va con la cuenta de su posición. */
 function docTipoCheck(cta, tipo){
   const tt = String(tipo == null ? '' : tipo).trim();
   if(!tt) return '';
-  const cs = docSplit(cta), ts = docSplit(tt).map(x => x.toUpperCase());
+  const cs = docSplit(cta), ts = docSplit(tt).map(x => docTipoLegacy(x.toUpperCase()));
   const uno = cs.length <= 1;
   for(let j = 0; j < ts.length; j++){
     if(!ts[j]) continue;
@@ -7942,7 +8193,7 @@ function docTipoCheck(cta, tipo){
 function docTipoAuto(cta, tipo){
   const tstr = String(tipo == null ? '' : tipo).trim(), cs = docSplit(cta);
   if(!cs.some(c => docTiposDe(c))) return tstr;
-  const ts = tstr === '' ? [] : docSplit(tstr).map(x => x.toUpperCase());
+  const ts = tstr === '' ? [] : docSplit(tstr).map(x => docTipoLegacy(x.toUpperCase()));
   if(cs.length === 1){
     const r = docTiposDe(cs[0]);
     return (ts.length ? ts : ['']).map(t => r.indexOf(t) >= 0 ? t : r[0]).join('|');
@@ -7994,7 +8245,7 @@ function diaTipoSync(tr, m){
 function diaTipoGuard(t){
   if(t.dataset.f !== 'tipo') return true;
   const m = diaEff().find(x => x.id === t.dataset.id); if(!m) return true;
-  const v = t.value.trim().toUpperCase(), e = docTipoCheck(m.cta, v);
+  const v = docTipoUp(t.value.trim()), e = docTipoCheck(m.cta, v);
   if(!e){ if(t.value !== v) t.value = v; return true; }
   toast(e, 'warn'); t.value = m.tipo; return false;
 }
@@ -8225,6 +8476,7 @@ function docsClassify(t){
     const h = (aoa[i] || []).map(dnorm);
     if(h.filter(Boolean).length < 4) continue;
     const has = re => h.some(x => re.test(x));
+    if(has(/^sub diario$/) && has(/^cuenta contable$/) && has(/^debe haber$/) && has(/^tipo de documento$/) && has(/^numero de documento$/)) return { kind: 'asientos', idx: i, headers: aoa[i] };
     if(has(/^tipo cp( doc)?$/) && has(/^serie del c/) && has(/total cp/)){
       const ven = has(/mto exonerado|bi gravada|valor facturado|dscto bi|bi grav ivap|mto inafecto|valor fob/);
       const com = has(/bi gravado dg|igv ipm dg|valor adq|clasif de bienes|car orig|otros trib/);
@@ -8236,11 +8488,98 @@ function docsClassify(t){
     const rhC = /(^|[^a-z])(rh|rhe)([^a-z]|$)|honorario/i.test(nom) && has(/fecha/) && has(/numero|nro|recibo|comprobante|serie/) && has(/bruto|neto|monto|importe|total|honorario/);
     if(rhA || rhB || rhC) return { kind: 'rh', idx: i, headers: aoa[i] };
   }
+  const hl = docsHeaderless(aoa);
+  if(hl) return hl;
   return { kind: 'generico' };
 }
 
+/* ---------- v1.7.6: TXT del SIRE sin fila de títulos (el «LE…» de compras que baja SUNAT) ---------- */
+const DOCS_HDR_COMPRAS = ['RUC', 'Apellidos y Nombres o Razón social', 'Periodo', 'CAR SUNAT', 'Fecha de emisión', 'Fecha Vcto/Pago', 'Tipo CP/Doc.', 'Serie del CDP', 'Año',
+  'Nro CP o Doc. Nro Inicial (Rango)', 'Nro Final (Rango)', 'Tipo Doc Identidad', 'Nro Doc Identidad', 'Apellidos Nombres/ Razón Social', 'BI Gravado DG', 'IGV / IPM DG',
+  'BI Gravado DGNG', 'IGV / IPM DGNG', 'BI Gravado DNG', 'IGV / IPM DNG', 'Valor Adq. NG', 'ISC', 'ICBPER', 'Otros Trib/ Cargos', 'Total CP', 'Moneda', 'Tipo de Cambio',
+  'Fecha Emisión Doc Modificado', 'Tipo CP Modificado', 'Serie CP Modificado', 'COD. DAM O DSI', 'Nro CP Modificado', 'Clasif de Bienes y Servicios', 'ID Proyecto Operadores',
+  'PORC Participación', 'IMB', 'CAR Orig', 'Detracción', 'Tipo de Nota', 'Est. Comp.', 'Incal'];
+const DOCS_HDR_VENTAS = ['Ruc', 'Razon Social', 'Periodo', 'CAR SUNAT', 'Fecha de emisión', 'Fecha Vcto/Pago', 'Tipo CP/Doc.', 'Serie del CDP', 'Nro CP o Doc. Nro Inicial (Rango)',
+  'Nro Final (Rango)', 'Tipo Doc Identidad', 'Nro Doc Identidad', 'Apellidos Nombres/ Razón Social', 'Valor Facturado Exportación', 'BI Gravada', 'Dscto BI', 'IGV / IPM',
+  'Dscto IGV / IPM', 'Mto Exonerado', 'Mto Inafecto', 'ISC', 'BI Grav IVAP', 'IVAP', 'ICBPER', 'Otros Tributos', 'Total CP', 'Moneda', 'Tipo Cambio',
+  'Fecha Emisión Doc Modificado', 'Tipo CP Modificado', 'Serie CP Modificado', 'Nro CP Modificado', 'ID Proyecto Operadores Atribución', 'Tipo de Nota', 'Est. Comp',
+  'Valor FOB Embarcado', 'Valor OP Gratuitas', 'Tipo Operación', 'DAM / CP', 'CLU'];
+/* Reconoce el archivo por la forma de las filas (RUC de 11 dígitos, periodo de 6, fecha, tipo de comprobante) y por dónde cae la moneda:
+   en la posición 26 (columna 25) es el de compras; en la 27 (columna 26) es el de ventas. */
+function docsHeaderless(aoa){
+  const rows = aoa.slice(0, 60).filter(r => r && r.length >= 24);
+  if(rows.length < 3) return null;
+  const isDate = s => /^\d{1,2}[\/.\-]\d{1,2}[\/.\-]\d{4}$/.test(docsStr(s)) || /^\d{4}-\d{2}-\d{2}/.test(docsStr(s));
+  const good = rows.filter(r => /^\d{11}$/.test(docsStr(r[0])) && /^\d{6}$/.test(docsStr(r[2])) && isDate(r[4]) && /^\d{1,2}$/.test(docsStr(r[6])));
+  if(good.length < 3 || good.length < rows.length * 0.7) return null;
+  const mon = (r, i) => /^(PEN|USD|S\/?|\$)$/i.test(docsStr(r[i]));
+  const nCom = good.filter(r => mon(r, 25)).length, nVen = good.filter(r => mon(r, 26)).length;
+  if(nCom >= good.length * 0.8 && nCom >= nVen) return { kind: 'compras', idx: -1, headers: DOCS_HDR_COMPRAS, headerless: true };
+  if(nVen >= good.length * 0.8) return { kind: 'ventas', idx: -1, headers: DOCS_HDR_VENTAS, headerless: true };
+  return null;
+}
+
+/* ---------- v1.7.8: registro de ventas o de compras en asientos (la hoja de importación de la contabilidad) ----------
+   Cada línea trae cuenta, debe/haber, tipo y número de documento: los comprobantes salen de las líneas de las cuentas por cobrar y por pagar
+   (debe − haber). Así se completan los comprobantes que el SIRE no trae (por ejemplo, ventas de agosto sin declarar en la propuesta). */
+const DOCS_ASIENTO_CTAS = /^(12|14|16|41|42|46)\d/;
+function docsAsientos(cl, aoa){
+  const h = cl.headers.map(dnorm), f = (re, not) => docsColIdx(h, re, 0, not);
+  const ix = {
+    cta: f(/^cuenta contable$/), anexo: f(/^codigo de anexo$/), dh: f(/^debe haber$/), imp: f(/^importe original$/), soles: f(/^importe en soles$/), usd: f(/^importe en dolares$/),
+    mon: f(/^codigo de moneda$/), tc: f(/^tipo de cambio$/), tipo: f(/^tipo de documento$/), nro: f(/^numero de documento$/), fecha: f(/^fecha de documento$/), venc: f(/^fecha de vencimiento$/),
+    glosa: f(/^glosa principal$/)
+  };
+  if(ix.cta < 0 || ix.dh < 0 || ix.nro < 0 || ix.tipo < 0 || ix.imp < 0) return [];
+  const sucia = g => /\s[A-Z]{2}\s*;\s*\S+\s*$/.test(g);
+  const limpia = g => g.replace(/\s+[A-Z]{2}\s*;\s*\S+\s*$/, '').trim();
+  const nombreDe = new Map();                       // anexo → nombre completo (de las líneas cuya glosa principal es solo el nombre)
+  const filas = [];
+  for(let r = cl.idx + 1; r < aoa.length; r++){
+    const row = aoa[r]; if(!row || !row.length) continue;
+    const dh = docsStr(row[ix.dh]).toUpperCase();
+    if(dh !== 'D' && dh !== 'H') continue;          // saltan «Restricciones» y «Tamaño/Formato»
+    const cta = docsStr(row[ix.cta]);
+    if(!DOCS_ASIENTO_CTAS.test(cta)) continue;
+    const nro = docsStr(row[ix.nro]), tipo = docsStr(row[ix.tipo]);
+    if(!nro || !tipo) continue;
+    const anexo = ix.anexo >= 0 ? docsStr(row[ix.anexo]) : '', g = ix.glosa >= 0 ? docsStr(row[ix.glosa]) : '';
+    if(anexo && g && !sucia(g) && !nombreDe.has(anexo)) nombreDe.set(anexo, g);
+    filas.push({ row, dh, cta, nro, tipo, anexo, g });
+  }
+  const acum = new Map();
+  filas.forEach(x => {
+    const row = x.row, sg = x.dh === 'D' ? 1 : -1, imp = docsNum(row[ix.imp]) * sg;
+    const usd = ix.mon >= 0 && /^(us|usd|d)/i.test(docsStr(row[ix.mon]));
+    const tc = ix.tc >= 0 ? docsNum(row[ix.tc]) : 0;
+    const k = x.cta + '|' + docsTipoNorm(x.tipo) + '|' + docsNroKey(x.nro) + '|' + x.anexo;
+    let a = acum.get(k);
+    if(!a){ a = { cta: x.cta, tipo: docsTipoNorm(x.tipo), nrodoc: x.nro.toUpperCase().replace(/\s+/g, ''), anexo: x.anexo, usd, pen: 0, dol: 0, g: x.g, fecha: ix.fecha >= 0 ? docsFecha(row[ix.fecha]) : '', venc: ix.venc >= 0 ? docsFecha(row[ix.venc]) : '' }; acum.set(k, a); }
+    if(usd){
+      a.dol += imp;
+      const s = ix.soles >= 0 && docsStr(row[ix.soles]) !== '' ? docsNum(row[ix.soles]) * sg : (tc > 0 ? imp * tc : 0);
+      a.pen += s;
+    } else a.pen += imp;
+  });
+  const porFuente = new Map();
+  acum.forEach(a => {
+    a.pen = Math.round(a.pen * 100) / 100; a.dol = Math.round(a.dol * 100) / 100;
+    if(!a.pen && !a.dol) return;
+    const fuente = /^12/.test(a.cta) ? 'Registro de ventas' : (/^42/.test(a.cta) ? 'Registro de compras' : 'Asientos contables');
+    let s = porFuente.get(fuente);
+    if(!s){ s = { docs: [], omit: 0, dmin: 0, dmax: 0, fuente }; porFuente.set(fuente, s); }
+    const nom = nombreDe.get(a.anexo) || '';
+    const d = { cuenta: a.cta, tipo: a.tipo, nrodoc: a.nrodoc, moneda: a.usd ? 'USD' : 'PEN', saldoUsd: a.usd ? a.dol : 0, saldoPen: a.pen, anexo: a.anexo, fecha: a.fecha, venc: a.venc,
+      nombre: nom || limpia(a.g), used: false, fuente };
+    if(!nom) d.nombreAprox = true;                  // la glosa está recortada: al unir con el SIRE se toma el nombre completo
+    s.docs.push(d);
+    if(a.fecha){ const k = +a.fecha.slice(6) * 10000 + +a.fecha.slice(3, 5) * 100 + +a.fecha.slice(0, 2); if(!s.dmin || k < s.dmin) s.dmin = k; if(k > s.dmax) s.dmax = k; }
+  });
+  return Array.from(porFuente.values());
+}
+
 /* ---------- SIRE: compras (RCE) y ventas (RVIE) ---------- */
-const DOCS_SIRE_TIPO = { '01': 'FT', '02': 'RH', '03': 'BV', '07': 'CN', '08': 'ND', '12': 'TK', '14': 'RL' };
+const DOCS_SIRE_TIPO = { '01': 'FT', '02': 'RH', '03': 'BV', '07': 'NC', '08': 'ND', '12': 'TK', '14': 'RC' };
 const DOCS_SIRE_CAJA = { '03': 1, '12': 1 };       // boletas y tickets: se pagan en caja, no quedan «pendientes»
 function docsSire(cl, aoa){
   const h = cl.headers.map(dnorm), kind = cl.kind;
@@ -8372,7 +8711,8 @@ function docsTipoNorm(v){
   if(/^(1|01|ft|factura.*)$/.test(s)) return 'FT';
   if(/^(3|03|bv|boleta.*)$/.test(s)) return 'BV';
   if(/^(2|02|rh|rhe|recibo (por )?honorarios.*)$/.test(s)) return 'RH';
-  if(/^(7|07|nc|cn|nota (de )?credito.*)$/.test(s)) return 'CN';
+  if(/^(7|07|nc|cn|nota (de )?credito.*)$/.test(s)) return 'NC';
+  if(/^(14|rc|rl|recibos? (de )?(servicios? )?publicos?.*|servicios? publicos?.*)$/.test(s)) return 'RC';
   if(/^(8|08|nd|nota (de )?debito.*)$/.test(s)) return 'ND';
   return raw.length <= 3 ? raw.toUpperCase() : raw;
 }
@@ -8438,6 +8778,7 @@ async function docsLoad(files){
       const cl = docsClassify(t);
       if(cl.kind === 'compras' || cl.kind === 'ventas') hechos.push(Object.assign({ file: t.file }, docsSire(cl, t.aoa)));
       else if(cl.kind === 'rh') hechos.push(Object.assign({ file: t.file }, docsRh(cl, t.aoa)));
+      else if(cl.kind === 'asientos') docsAsientos(cl, t.aoa).forEach(s => hechos.push(Object.assign({ file: t.file }, s)));
       else gen.push(t);
     }
     hechos.forEach(s => out.sources.push(s));
@@ -8453,34 +8794,53 @@ async function docsLoad(files){
 
 /* ---------- unir con lo ya cargado (sin repetir comprobantes) ---------- */
 function docsNroKey(s){
-  const t = String(s == null ? '' : s).toUpperCase().replace(/\s+/g, '');
+  const t = String(s == null ? '' : s).toUpperCase().replace(/\s*[-\/_]\s*/g, '-').replace(/[^A-Z0-9-]/g, '');
   const m = /^([A-Z0-9]+)-0*(\d+)$/.exec(t);
-  return m ? m[1] + '-' + m[2] : t;
+  if(m) return m[1] + '-' + m[2];
+  return /^\d+$/.test(t) ? t.replace(/^0+(?=\d)/, '') : t;
 }
-const docsKey = d => [String(d.cuenta || '').trim(), String(d.tipo || '').trim().toUpperCase(), docsNroKey(d.nrodoc), String(d.anexo || '').trim()].join('|');
+/* RUC de persona natural = 10 + DNI + dígito verificador: el mismo prestador sale como DNI en un archivo y como RUC en otro */
+const docsAnexoKey = a => {
+  let t = String(a == null ? '' : a).replace(/[\s.\-]/g, '').toUpperCase();
+  if(/^(10|15|16|17)\d{9}$/.test(t)) t = t.slice(2, 10);
+  else if(/^\d{6,7}$/.test(t)) t = t.padStart(8, '0');
+  return t;
+};
+const docsTipoKey = t => { const n = docsTipoNorm(t); return String(n == null ? '' : n).trim().toUpperCase(); };
+const docsKey = d => [String(d.cuenta || '').trim(), docsTipoKey(d.tipo), docsNroKey(d.nrodoc), docsAnexoKey(d.anexo)].join('|');
 /* el reporte del sistema contable trae el saldo real (con pagos parciales): gana sobre el SIRE y el RH si el comprobante está en los dos */
 const docsDeReporte = d => !d.fuente || d.fuente === 'Reporte' || d.fuente === 'Manual';
 function docsMerge(base, nuevos){
-  const pos = new Map(), list = base.slice();
-  list.forEach((d, i) => pos.set(docsKey(d), i));
-  let add = 0, dup = 0, repl = 0; const porFuente = {};
+  const pos = new Map(), list = base.slice(), nomDe = new Map();
+  list.forEach((d, i) => { pos.set(docsKey(d), i); if(d.anexo && d.nombre && !d.nombreAprox && !nomDe.has(d.anexo)) nomDe.set(d.anexo, d.nombre); });
+  nuevos.forEach(d => { if(d.anexo && d.nombre && !d.nombreAprox && !nomDe.has(d.anexo)) nomDe.set(d.anexo, d.nombre); });
+  let add = 0, dup = 0, repl = 0, sum = 0; const porFuente = {}, dupF = {}, delLote = new Set();
   nuevos.forEach(d => {
+    if(d.nombreAprox){ if(nomDe.has(d.anexo)) d.nombre = nomDe.get(d.anexo); delete d.nombreAprox; }
     const k = docsKey(d), f = d.fuente || 'Reporte';
     if(pos.has(k)){
       const i = pos.get(k);
-      if(docsDeReporte(d) && !docsDeReporte(list[i])){ list[i] = d; repl++; porFuente[f] = (porFuente[f] || 0) + 1; }
-      else dup++;
+      if(delLote.has(k) && docsDeReporte(d) && docsDeReporte(list[i])){
+        /* el mismo comprobante aparece en dos líneas del mismo reporte: son saldos distintos del mismo documento, se suman */
+        const r2 = x => Math.round(x * 100) / 100;
+        list[i] = Object.assign({}, list[i], { saldoUsd: r2((list[i].saldoUsd || 0) + (d.saldoUsd || 0)), saldoPen: r2((list[i].saldoPen || 0) + (d.saldoPen || 0)) }); sum++;
+      }
+      else if(docsDeReporte(d) && !docsDeReporte(list[i])){ list[i] = d; delLote.add(k); repl++; porFuente[f] = (porFuente[f] || 0) + 1; }
+      else { dup++; dupF[f] = (dupF[f] || 0) + 1; }
       return;
     }
     pos.set(k, list.length); list.push(d); add++; porFuente[f] = (porFuente[f] || 0) + 1;
+    if(docsDeReporte(d)) delLote.add(k);
   });
-  return { list, add, dup, repl, porFuente };
+  return { list, add, dup, repl, sum, porFuente, dupF };
 }
 function docsGroups(list){ const m = new Map(); list.forEach(d => { const k = d.fuente || 'Reporte'; m.set(k, (m.get(k) || 0) + 1); }); return m; }
 function docsChipsRender(id, list, attr){
   const el = document.getElementById(id); if(!el) return;
   const g = docsGroups(list);
-  el.innerHTML = Array.from(g.entries()).map(([k, n]) => `<span class="src-chip"><b>${escapeHtml(k)}</b> · ${n.toLocaleString('en-US')} doc.<button type="button" class="src-x" ${attr}="${escapeHtml(k)}" title="Quitar estos documentos" aria-label="Quitar ${escapeHtml(k)}">✕</button></span>`).join('');
+  const chips = Array.from(g.entries()).map(([k, n]) => `<span class="src-chip"><b>${escapeHtml(k)}</b> · ${n.toLocaleString('en-US')} doc.<button type="button" class="src-x" ${attr}="${escapeHtml(k)}" title="Quitar estos documentos" aria-label="Quitar ${escapeHtml(k)}">✕</button></span>`).join('');
+  const tot = Array.from(g.values()).reduce((a, b) => a + b, 0);
+  el.innerHTML = g.size ? foldHtml('src-' + id, 'Fuentes cargadas', `${g.size} · ${tot.toLocaleString('en-US')} doc.`, chips, g.size, 5) : '';
 }
 function docsPeriodoTxt(s){
   if(!s.dmin) return '';
@@ -8496,8 +8856,12 @@ function docsResumen(r, mg){
   Object.keys(porFuente).forEach(k => p.push(k + ': ' + porFuente[k].toLocaleString('en-US')));
   const omit = r.sources.reduce((a, s) => a + (s.omit || 0), 0);
   let t = p.length ? 'Cargado → ' + p.join(' · ') + '.' : '';
-  if(mg && mg.dup) t += ` ${mg.dup.toLocaleString('en-US')} repetido(s) no se volvieron a agregar.`;
+  if(mg && mg.dup){
+    t += ` ${mg.dup.toLocaleString('en-US')} repetido(s) no se volvieron a agregar` + (mg.dupF && Object.keys(mg.dupF).length > 1 ? ' (' + Object.keys(mg.dupF).map(k => k + ': ' + mg.dupF[k].toLocaleString('en-US')).join(' · ') + ')' : '') + '.';
+    if(!mg.add && !mg.repl) t = 'No hay nada nuevo: todo lo que subiste ya estaba cargado.' + t;
+  }
   if(mg && mg.repl) t += ` ${mg.repl.toLocaleString('en-US')} comprobante(s) del SIRE se reemplazaron por el reporte, que trae el saldo real.`;
+  if(mg && mg.sum) t += ` ${mg.sum.toLocaleString('en-US')} línea(s) repetida(s) dentro del reporte se sumaron al mismo comprobante.`;
   if(omit) t += ` Omití ${omit.toLocaleString('en-US')} boleta(s) y ticket(s) (marca «Incluir boletas y tickets» y vuelve a subir si los necesitas).`;
   if(r.skipped.length) t += ' Sin tabla reconocible: ' + r.skipped.join(', ') + '.';
   if(r.errors.length) t += ' ' + r.errors.join(' ');
@@ -8512,7 +8876,7 @@ function docsTemplate(){
     ['121201', 'FT', 'E001-45', 'PEN', 2360, '', '20987654321', 'CLIENTE EJEMPLO SAC', '10/11/2026', ''],
     ['424101', 'RH', 'E001-8', 'PEN', 920, '', '10456789012', 'JUAN PEREZ', '12/11/2026', ''],
     ['421202', 'FT', 'F002-9', 'USD', '', 500, '20111222333', 'PROVEEDOR USD SAC', '03/11/2026', ''],
-    ['421201', 'CN', 'F001-124', 'PEN', -118, '', '20123456789', 'PROVEEDOR EJEMPLO SAC', '06/11/2026', '']
+    ['421201', 'NC', 'F001-124', 'PEN', -118, '', '20123456789', 'PROVEEDOR EJEMPLO SAC', '06/11/2026', '']
   ];
   const ins = [
     ['Cómo llenar la hoja «Documentos pendientes»'],
@@ -8521,7 +8885,7 @@ function docsTemplate(){
     ['• Cuenta Contable: 4212xx / 4241xx si es por pagar; 1212xx si es por cobrar. Si tu reporte no la trae, déjala vacía y en el programa indicas si es por pagar o por cobrar.'],
     ['• Saldo: siempre en positivo. Una nota de crédito va en negativo. Usa «Saldo Soles» o «Saldo Dólares» según la moneda.'],
     ['• N° Documento: serie y número juntos (F001-123). Si los tienes separados, súbelos así y el programa los une.'],
-    ['• Tipo Doc.: FT, BV, RH, CN (nota de crédito), ND… Para las cuentas 421201/421202 solo FT, CN, BP y RL; 424101 solo RH.'],
+    ['• Tipo Doc.: FT, BV, RH, NC (nota de crédito), RC (recibo de servicios públicos: agua, luz, teléfono, internet), ND… Para las cuentas 421201/421202 solo FT, NC, BP y RC; 424101 solo RH.'],
     ['• Fechas: dd/mm/aaaa. La fecha de emisión ayuda a sugerir qué documento cancela cada pago.'],
     ['• No hace falta usar esta plantilla: también puedes subir el reporte de tu sistema, los ZIP del SIRE y los RH del año.']
   ];
@@ -8592,7 +8956,9 @@ pdConfirmMapBtn.addEventListener('click', async () => {
   docs.forEach(d => { d.fuente = 'Reporte'; });
   const mgR = docsMerge(pendingDocs.filter(d => d.fuente && d.fuente !== 'Reporte'), docs);
   pendingDocs = mgR.list;
-  pdFileStatus.textContent = `Columnas confirmadas: ${docs.length} documentos pendientes con saldo distinto de cero.` + (mgR.repl ? ` ${mgR.repl} comprobante(s) del SIRE se reemplazaron por el reporte, que trae el saldo real.` : '');
+  const ctasRep = new Set(docs.map(d => String(d.cuenta || '').trim()));
+  const sinRep = mgR.list.filter(d => !docsDeReporte(d) && ctasRep.has(String(d.cuenta || '').trim()) && !docs.some(x => docsKey(x) === docsKey(d))).length;
+  pdFileStatus.textContent = `Columnas confirmadas: ${docs.length} documentos pendientes con saldo distinto de cero.` + (mgR.repl ? ` ${mgR.repl} comprobante(s) del SIRE se reemplazaron por el reporte, que trae el saldo real.` : '') + (mgR.sum ? ` ${mgR.sum} línea(s) repetida(s) dentro del reporte se sumaron al mismo comprobante.` : '') + (sinRep ? ` ${sinRep} comprobante(s) del SIRE/RH no figuran en el reporte (pueden estar sin registrar o ya pagados): revísalos.` : '');
   document.getElementById('pdDocsBox').style.display = 'block';
   if(pdGenQueue.length){ pdOpenMapping(pdGenQueue.shift(), pdFileStatus.textContent); }
   else { pendingDocsRaw = []; pdMappingBox.style.display = 'none'; }
@@ -8856,15 +9222,22 @@ function renderDiaScope(){
 function renderDiaFiles(){
   const box = dEl('diaFileCards');
   const mf = new Map(((diaMerged && diaMerged.files) || []).map(f => [f.id, f]));
-  box.innerHTML = diaFiles.map(f => {
+  let bad = 0, warn = 0, movs = 0;
+  const rows = diaFiles.map(f => {
     const s = mf.get(f.id) || {};
     const cu = s.cuadre;
     const cls = cu ? (cu.ok ? 'ok' : 'bad') : ((f.avisos || []).length ? 'warn' : 'ok');
+    if(cls === 'bad') bad++; else if(cls === 'warn') warn++;
     const meta = [f.meta.banco || 'BCP', f.meta.fecha, f.meta.turno, f.meta.moneda].filter(Boolean).join(' · ');
-    const line2 = `${s.filas !== undefined ? s.filas : f.rows.length} movimientos` + (s.nuevos !== undefined ? ` · ${s.nuevos} nuevos · ${s.duplicados} repetidos` : '') + (typeof f.meta.saldo === 'number' ? ` · saldo ${diaNum(f.meta.saldo)}` : '');
+    const nf = s.filas !== undefined ? s.filas : f.rows.length; movs += nf;
+    const line2 = `${nf} movimientos` + (s.nuevos !== undefined ? ` · ${s.nuevos} nuevos · ${s.duplicados} repetidos` : '') + (typeof f.meta.saldo === 'number' ? ` · saldo ${diaNum(f.meta.saldo)}` : '');
     const cuTxt = cu ? (cu.ok ? ' · el saldo cuadra con la descarga anterior' : ` · NO cuadra con la anterior (dif. ${diaNum(cu.dif)})`) : '';
-    return `<div class="dia-file ${cls}"><span class="fn">${escapeHtml(f.name)}</span><button type="button" class="x" data-rm="${escapeHtml(f.id)}" title="Quitar esta descarga" aria-label="Quitar ${escapeHtml(f.name)}">×</button><span class="fm">${escapeHtml(meta)}<br>${escapeHtml(line2 + cuTxt)}</span></div>`;
+    const full = `${meta} · ${line2}${cuTxt}`;
+    return `<div class="dia-file ${cls}" title="${escapeHtml(f.name + ' — ' + full)}"><span class="fn">${escapeHtml(f.name)}</span><button type="button" class="x" data-rm="${escapeHtml(f.id)}" title="Quitar esta descarga" aria-label="Quitar ${escapeHtml(f.name)}">×</button><span class="fm">${escapeHtml(full)}</span></div>`;
   }).join('');
+  box.innerHTML = diaFiles.length
+    ? foldHtml('dia-files', 'Descargas cargadas', `${diaFiles.length} archivo${diaFiles.length === 1 ? '' : 's'} · ${movs.toLocaleString('en-US')} mov.`, rows, diaFiles.length, 3, { bad, warn, col: true })
+    : '';
 }
 function renderDiaFolder(){
   const sup = diaFSSupported();
@@ -10707,7 +11080,7 @@ function diaEditField(id, f, raw){
   diaCleanEdit(id);
   diaInvalidate();
   diaRevalidateSoon();
-  renderDiaKpis(); renderDiaLeft();
+  if(!GRID.batch){ renderDiaKpis(); renderDiaLeft(); }
   scheduleExtSave();
   if(tCambio) diaTipoAutoToast(1, tCambio);
 }
@@ -11948,6 +12321,220 @@ function onEcReady(){ try{ refreshAnalytics(); renderTransfers(); }catch(e){ con
   });
   Undo.sync();
 })();
+/* ============================================================
+   v1.7.9 · pegar desde Excel, pasos y avisos plegables
+   ============================================================ */
+
+/* ---------- pasos de las barras laterales: se pliegan tocando el título ---------- */
+function stepFoldInit(){
+  let saved = {};
+  try{ saved = JSON.parse(localStorage.getItem('ec_steps') || '{}') || {}; }catch(e){}
+  document.querySelectorAll('.layout > .panel:first-child .step-card[id]').forEach(card => {
+    const head = card.querySelector('.step-head'); if(!head) return;
+    head.setAttribute('role', 'button'); head.tabIndex = 0;
+    const set = f => { card.classList.toggle('is-folded', f); head.setAttribute('aria-expanded', f ? 'false' : 'true'); head.title = f ? 'Abrir este paso' : 'Plegar este paso'; };
+    set(!!saved[card.id]);
+    const toggle = () => {
+      const f = !card.classList.contains('is-folded'); set(f);
+      if(f) saved[card.id] = 1; else delete saved[card.id];
+      try{ localStorage.setItem('ec_steps', JSON.stringify(saved)); }catch(e){}
+    };
+    head.addEventListener('click', e => { if(e.target.closest('a, button, input, select, label')) return; toggle(); });
+    head.addEventListener('keydown', e => { if(e.target === head && (e.key === 'Enter' || e.key === ' ')){ e.preventDefault(); toggle(); } });
+  });
+}
+
+/* ---------- mensajes de estado: «Leyendo…» con cuadro suave; los largos se pliegan ---------- */
+function statusFoldInit(){
+  ['pdBankSourceStatus', 'pdFileStatus', 'cgSourceStatus', 'tesMiosStatus', 'tesFileStatus', 'fxFileStatus', 'diaFileStatus', 'diaDocsStatus', 'diaSendStatus'].forEach(id => {
+    const el = document.getElementById(id); if(!el || el.dataset.foldInit) return;
+    el.dataset.foldInit = '1';
+    const btn = document.createElement('button');
+    btn.type = 'button'; btn.className = 'status-more'; btn.hidden = true;
+    el.insertAdjacentElement('afterend', btn);
+    let open = false, last = '';
+    const sync = () => {
+      const txt = el.textContent || '';
+      if(txt !== last){ last = txt; open = false; }
+      const loading = /^(Leyendo|Procesando|Cargando|Buscando|Cruzando|Generando|Analizando|Uniendo)\b[^\n]{0,140}(…|\.\.\.)\s*$/.test(txt.trim());
+      const lines = txt.split('\n').filter(s => s.trim()).length;
+      const long = !loading && (lines > 3 || txt.length > 260);
+      el.classList.toggle('is-loading', loading);
+      el.classList.toggle('is-clamped', long && !open);
+      btn.hidden = !long;
+      btn.textContent = open ? 'Ver menos ▴' : 'Ver todo el detalle ▾';
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    };
+    btn.addEventListener('click', () => { open = !open; sync(); });
+    if(window.MutationObserver) new MutationObserver(sync).observe(el, { childList: true, characterData: true, subtree: true });
+    sync();
+  });
+}
+
+/* ---------- pegar desde Excel ---------- */
+/* Lee texto copiado de Excel (celdas con tabulador, filas con salto de línea; admite celdas entre comillas con saltos dentro). */
+function gridParseTsv(txt){
+  const s = String(txt == null ? '' : txt).replace(/\r\n?/g, '\n');
+  const rows = []; let row = [], cell = '', q = false;
+  for(let i = 0; i < s.length; i++){
+    const c = s[i];
+    if(q){ if(c === '"'){ if(s[i + 1] === '"'){ cell += '"'; i++; } else q = false; } else cell += c; }
+    else if(c === '"' && cell === '') q = true;
+    else if(c === '\t'){ row.push(cell); cell = ''; }
+    else if(c === '\n'){ row.push(cell); rows.push(row); row = []; cell = ''; }
+    else cell += c;
+  }
+  if(cell !== '' || row.length){ row.push(cell); rows.push(row); }     // Excel cierra con un salto de línea: eso no es una fila más
+  return rows;
+}
+const gridClean = t => String(t == null ? '' : t).replace(/ /g, ' ').replace(/[\r\n\t]+/g, ' ').trim();
+
+const GRID_DEFS = [
+  { id: 'movBody', cell: 'td[contenteditable]', row: 'tr[data-i]', attr: 'data-i', fld: c => c.dataset.field, ce: true, ev: 'blur' },
+  { id: 'pdBody', cell: 'td[contenteditable]', row: 'tr[data-i]', attr: 'data-i', fld: c => c.dataset.field, ce: true, ev: 'blur' },
+  { id: 'pdDocsBody', cell: 'td[contenteditable]', row: 'tr[data-i]', attr: 'data-i', fld: c => c.dataset.field, ce: true, ev: 'focusout' },
+  { id: 'cgBody', cell: 'td.cg-ed', row: 'tr[data-i]', attr: 'data-i', fld: c => c.dataset.f, ce: true, ev: 'focusout', propia: true },
+  { id: 'diaMovBody', cell: 'input.dia-in', row: 'tr[data-id]', attr: 'data-id', fld: c => c.dataset.f, ce: false, ev: 'change' }
+];
+const GRID_FIN = {
+  movBody(){ refreshAnalytics(); saveState(); },
+  pdBody(){ recomputePdDuplicates(); refreshPdRowDisplays(); scheduleExtSave(); },
+  pdDocsBody(){ scheduleExtSave(); },
+  cgBody(){},
+  diaMovBody(){ renderDiaKpis(); renderDiaLeft(); }
+};
+const gridRowKey = (d, tr) => tr.getAttribute(d.attr);
+const gridRead = (d, c) => d.ce ? (c.querySelector('.zero') ? '' : c.textContent.trim()) : c.value;
+function gridWrite(d, c, v){
+  if(d.ce) c.textContent = v; else c.value = v;
+  if(d.ev === 'blur') c.dispatchEvent(new Event('blur'));
+  else if(d.ev === 'focusout') c.dispatchEvent(new FocusEvent('focusout', { bubbles: true }));
+  else c.dispatchEvent(new Event('change', { bubbles: true }));
+}
+const gridVisibleRows = d => Array.from(document.getElementById(d.id).querySelectorAll(d.row)).filter(tr => tr.getClientRects().length > 0);
+function gridFor(el){
+  for(const d of GRID_DEFS){
+    const body = document.getElementById(d.id);
+    if(!body || !body.contains(el)) continue;
+    const cell = el.closest(d.cell);
+    if(cell && body.contains(cell)) return { d, cell };
+  }
+  return null;
+}
+function gridFlushToasts(q){
+  (q || []).slice(0, 2).forEach(m => toast(m, 'warn'));
+  if(q && q.length > 2) toast('Y ' + (q.length - 2) + ' aviso(s) más en las celdas que no se aceptaron.', 'warn');
+}
+/* Escribe una matriz de textos desde la celda inicial hacia abajo y hacia la derecha, celda por celda, con las mismas validaciones que al teclear. */
+function gridPasteMatrix(d, start, m){
+  const rows = gridVisibleRows(d);
+  const tr0 = start.closest(d.row), r0 = rows.indexOf(tr0); if(r0 < 0) return null;
+  const c0 = Array.from(tr0.querySelectorAll(d.cell)).indexOf(start);
+  const hechos = []; let fuera = 0, bloq = 0, iguales = 0;
+  GRID.batch++; GRID.toasts = [];
+  let q = [];
+  try{
+    m.forEach((fila, ri) => {
+      const tr = rows[r0 + ri], cs = tr ? Array.from(tr.querySelectorAll(d.cell)) : null;
+      fila.forEach((txt, ci) => {
+        const c = cs && cs[c0 + ci];
+        if(!c){ fuera++; return; }
+        if(c.disabled || c.readOnly){ bloq++; return; }
+        const antes = gridRead(d, c), nuevo = gridClean(txt);
+        if(antes === nuevo){ iguales++; return; }
+        gridWrite(d, c, nuevo);
+        hechos.push({ k: gridRowKey(d, tr), f: d.fld(c), antes, nuevo, c });
+      });
+    });
+  } finally {
+    GRID.batch--; q = GRID.toasts || []; GRID.toasts = null;
+  }
+  try{ GRID_FIN[d.id](); }catch(err){ console.error(err); }
+  hechos.forEach(h => { if(h.c && h.c.classList){ h.c.classList.add('grid-flash'); setTimeout(() => h.c.classList.remove('grid-flash'), 1200); } });
+  return { hechos, fuera, bloq, iguales, q };
+}
+function gridUndo(d, hechos){
+  const body = document.getElementById(d.id);
+  GRID.batch++; GRID.toasts = [];
+  try{
+    hechos.slice().reverse().forEach(h => {
+      const tr = body.querySelector(`${d.row.replace(/\[.*$/, '')}[${d.attr}="${CSS.escape(h.k)}"]`); if(!tr) return;
+      const c = Array.from(tr.querySelectorAll(d.cell)).find(x => d.fld(x) === h.f); if(!c || c.disabled) return;
+      gridWrite(d, c, h.antes);
+    });
+  } finally { GRID.batch--; GRID.toasts = null; }
+  try{ GRID_FIN[d.id](); }catch(err){ console.error(err); }
+}
+function gridTipsOff(){
+  document.querySelectorAll('.grid-tip').forEach(t => t.remove());
+  try{ localStorage.setItem('ec_tip_paste', '1'); }catch(e){}
+}
+document.addEventListener('paste', e => {
+  const t = e.target; if(!t || !t.closest) return;
+  const g = gridFor(t); if(!g) return;
+  const cd = e.clipboardData || window.clipboardData; if(!cd) return;
+  const txt = cd.getData('text/plain') || cd.getData('text') || '';
+  const m = gridParseTsv(txt);
+  const multi = m.length > 1 || (m[0] && m[0].length > 1);
+  if(!multi){
+    if(g.d.ce && !g.d.propia){     // una sola celda: texto plano (sin el formato de Excel)
+      e.preventDefault();
+      const s = gridClean(txt);
+      const sel = window.getSelection && window.getSelection();
+      if(sel && (sel.isCollapsed || !g.cell.contains(sel.anchorNode)) && document.createRange){     // como en Excel: pegar sobre una celda la reemplaza
+        const rg = document.createRange(); rg.selectNodeContents(g.cell); sel.removeAllRanges(); sel.addRange(rg);
+      }
+      if(!document.execCommand || !document.execCommand('insertText', false, s)) g.cell.textContent = s;
+    }
+    return;
+  }
+  e.preventDefault(); e.stopPropagation();
+  const r = gridPasteMatrix(g.d, g.cell, m);
+  if(!r) return;
+  const n = r.hechos.length;
+  if(!n){
+    toast(r.fuera || r.bloq ? 'No se pegó nada: las celdas de destino no existen o están bloqueadas.' : 'Lo que pegaste ya era igual a lo que había en esas celdas.', 'warn');
+    gridFlushToasts(r.q); return;
+  }
+  gridTipsOff();
+  const extra = (r.fuera ? ` ${r.fuera} dato(s) no cupieron en la tabla.` : '') + (r.bloq ? ` ${r.bloq} celda(s) bloqueadas se saltaron.` : '');
+  const entry = Undo.push(`Pegado desde Excel (${n} celda${n === 1 ? '' : 's'})`, () => gridUndo(g.d, r.hechos));
+  Undo.offer(`Se pegaron ${n} celda${n === 1 ? '' : 's'} desde Excel (${m.length} fila${m.length === 1 ? '' : 's'} × ${Math.max.apply(null, m.map(f => f.length))} columna${Math.max.apply(null, m.map(f => f.length)) === 1 ? '' : 's'}).${extra}`, extra ? 'warn' : 'ok', entry);
+  gridFlushToasts(r.q);
+}, true);
+
+/* Enter baja a la misma columna de la fila siguiente (Mayús+Enter sube), como en Excel */
+function gridEnterNav(){
+  ['movBody', 'pdBody', 'pdDocsBody'].forEach(id => {
+    const b = document.getElementById(id), d = GRID_DEFS.find(x => x.id === id); if(!b || !d) return;
+    b.addEventListener('keydown', e => {
+      const c = e.target;
+      if(e.key !== 'Enter' || e.altKey || e.ctrlKey || e.metaKey || !c || !c.isContentEditable || !c.matches(d.cell)) return;
+      e.preventDefault();
+      const rows = gridVisibleRows(d), i = rows.indexOf(c.closest(d.row)) + (e.shiftKey ? -1 : 1);
+      const nx = rows[i] && Array.from(rows[i].querySelectorAll(d.cell)).find(x => d.fld(x) === d.fld(c));
+      if(nx){
+        nx.focus();
+        const sel = window.getSelection && window.getSelection();
+        if(sel && document.createRange){ const rg = document.createRange(); rg.selectNodeContents(nx); sel.removeAllRanges(); sel.addRange(rg); }
+      } else c.blur();
+    });
+  });
+}
+function gridTipsInit(){
+  let off = false; try{ off = localStorage.getItem('ec_tip_paste') === '1'; }catch(e){}
+  if(off) return;
+  ['movBody', 'pdBody', 'cgBody', 'diaMovBody'].forEach(id => {
+    const b = document.getElementById(id); if(!b) return;
+    const w = b.closest('.tablewrap') || b.closest('table'); if(!w || !w.parentNode) return;
+    const tip = document.createElement('div'); tip.className = 'grid-tip';
+    tip.innerHTML = '<span><b>Pega desde Excel:</b> copia las columnas (o un bloque), haz clic en la primera celda donde irán y presiona <kbd>Ctrl</kbd> <kbd>V</kbd>. Sirve en vertical, en horizontal o en bloque.</span><button type="button" aria-label="Ocultar este consejo" title="Ocultar este consejo">×</button>';
+    tip.querySelector('button').addEventListener('click', gridTipsOff);
+    w.parentNode.insertBefore(tip, w);
+  });
+}
+stepFoldInit(); statusFoldInit(); gridEnterNav(); gridTipsInit();
+
 Shell.init();
 EC.boot();
 
