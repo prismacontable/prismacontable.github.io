@@ -2682,7 +2682,7 @@ window.EC_CONFIG = { API_URL: "PEGA_AQUI_LA_URL_DEL_SERVIDOR", GEO: true };
    Acceso: usuario + contraseña (se validan en cada pedido; la contraseña vive solo en memoria),
    equipo autorizado (id guardado en este navegador) y RUC habilitados.
    ============================================================ */
-const EC_CLIENT_VERSION = '1.7.9';
+const EC_CLIENT_VERSION = '1.7.10';
 const EC_USER_STORE = 'ec_usuario';
 const EC_DEVICE_STORE = 'ec_deviceId';
 const EC_URL_STORE = 'ec_api_url';
@@ -3210,8 +3210,18 @@ async function pdfPagesCompact(file){
 async function serverProcessFile(file, selectedBank, onProgress){
   const stopIfCancelled = () => { if(EC.isCancelled()){ const c = new ApiCallError('CANCELLED', 'Proceso cancelado.'); c.handled = true; c.shown = true; throw c; } };
   if(onProgress) onProgress('leyendo el PDF…');
-  const pages = await pdfPagesCompact(file);
+  let pages = await pdfPagesCompact(file);
   stopIfCancelled();
+  let ocrPos = false;
+  if(pdfTextoIlegible(pages)){
+    /* el PDF trae miles de símbolos en vez de letras (fuente sin tabla de caracteres): se lee como imagen, con la posición de cada palabra */
+    if(onProgress) onProgress('el texto de este PDF no se puede leer (fuente especial): lo leo como imagen con OCR, puede tardar un poco...');
+    pages = await ocrExtractItems(file, onProgress);
+    stopIfCancelled();
+    ocrPos = true;
+    if(selectedBank === 'auto' && pages.some(ocrEsBancoNacion)) selectedBank = 'nacion';
+    if(selectedBank === 'nacion'){ pages = pages.map(ocrRecortarTotales); pages.forEach(pg => pg.forEach(it => { if(/^N[o0O][tTrf]$/.test(it[2])) it[2] = 'NOT'; })); }
+  }
   const base = { fileName: file.name, pages, selectedBank, rules: (typeof classificationRules !== 'undefined' ? classificationRules : []) };
   const label = `Procesando ${file.name} en el servidor…`;
   if(onProgress) onProgress('procesando en el servidor…');
@@ -3223,6 +3233,10 @@ async function serverProcessFile(file, selectedBank, onProgress){
     if(onProgress) onProgress('procesando en el servidor…');
     d = await EC.call('parsePdf', Object.assign({}, base, { ocrLines }), { heavy: true, label, cancellable: true });
     if(d.needOcr) throw new Error('No se pudo leer el PDF escaneado.');
+  }
+  if(ocrPos){
+    d.ocr = true;
+    d.logLine = String(d.logLine || '') + '\n   ℹ️ El texto de este PDF no se podía copiar (fuente especial): lo leí como imagen con OCR. Revisa que el saldo cuadre y que los montos coincidan con el estado de cuenta.';
   }
   return d;
 }
@@ -4099,6 +4113,149 @@ async function ocrExtractLines(file, onProgress){
 }
 
 
+
+/* ============================================================
+   v1.7.10: PDF con texto ilegible (fuente propia sin tabla de caracteres, típico de «Imprimir como PDF» desde la web del banco)
+   Se lee con OCR pero guardando la POSICIÓN de cada palabra, para que el lector del banco separe cargos / abonos / saldos por columna.
+   ============================================================ */
+/* ¿El texto que trae el PDF se puede leer? Un PDF con fuente sin mapa de caracteres devuelve símbolos de control y letras sueltas sin sentido:
+   no hay fechas, montos ni palabras de un estado de cuenta, aunque haya miles de elementos de texto */
+function pdfTextoIlegible(pages){
+  let n = 0, raros = 0;
+  const partes = [];
+  pages.forEach(p => p.forEach(it => {
+    const s = String(it[2] == null ? '' : it[2]);
+    n++;
+    if(/[\u0000-\u0008\u000b-\u001f\u007f-\u009f\ufffd\ue000-\uf8ff]/.test(s)) raros++;
+    if(partes.length < 6000) partes.push(s);
+  }));
+  if(n < 40) return false;                 // casi sin texto: ya lo trata el OCR de PDF escaneado
+  if(raros / n >= 0.2) return true;        // símbolos de control en vez de letras
+  const unido = partes.join(' ') + ' ' + partes.join('');
+  const pruebas = (unido.match(/\b\d{1,2}[\/\-.]\d{1,2}[\/\-.]\d{2,4}\b|\d[\d,]*\.\d{2}\b|SALDO|CARGO|ABONO|TOTAL|CUENTA|FECHA|BANCO|MOVIMIENTO|DESCRIPCI|IMPORTE|DEBE|HABER|OPERACI|DEP[OÓ]SITO|RETIRO|COMISI/gi) || []).length;
+  return n >= 60 && pruebas === 0;         // bastante texto pero ni una fecha, ni un monto, ni una palabra de estado de cuenta
+}
+/* palabras del OCR (con su caja en píxeles) → elementos [x, y, texto] en puntos del PDF; las palabras de una misma línea comparten «y» */
+function ocrPalabrasAItems(words, altoPx, escala){
+  const ws = (words || []).map(w => ({ t: String(w.text == null ? '' : w.text).trim(), x0: +w.x0, y0: +w.y0, x1: +w.x1, y1: +w.y1, c: w.conf == null ? 100 : +w.conf }))
+    .filter(w => w.t && isFinite(w.x0) && isFinite(w.y1) && !/^[|_=\-—–~.,:;'"`´‘’\\\/]+$/.test(w.t) && w.c >= 15);
+  if(!ws.length) return [];
+  ws.forEach(w => { w.cy = (w.y0 + w.y1) / 2; w.h = Math.max(1, w.y1 - w.y0); });
+  const hs = ws.map(w => w.h).sort((a, b) => a - b), hMed = hs[Math.floor(hs.length / 2)] || 10;
+  ws.sort((a, b) => a.cy - b.cy);
+  const lines = [];
+  ws.forEach(w => {
+    const L = lines[lines.length - 1];
+    if(L && Math.abs(w.cy - L.cy) <= hMed * 0.55){ L.w.push(w); L.cy = L.w.reduce((s, x) => s + x.cy, 0) / L.w.length; }
+    else lines.push({ cy: w.cy, w: [w] });
+  });
+  const out = [];
+  lines.forEach(L => {
+    const y = Math.round((altoPx - L.cy) / escala);
+    const ord = L.w.sort((a, b) => a.x0 - b.x0), fin = [];
+    ord.forEach(w => {
+      const prev = fin[fin.length - 1];
+      /* «29,857.» + «00» (el OCR corta el monto en el punto) se vuelve a unir si están pegados */
+      if(prev && /^-?[\d,]*\d\.$/.test(prev.t) && /^[0-9oO]{2}-?$/.test(w.t) && w.x0 - prev.x1 < hMed * 1.2){ prev.t += w.t; prev.x1 = w.x1; return; }
+      fin.push({ t: w.t, x0: w.x0, x1: w.x1 });
+    });
+    fin.forEach(w => {
+      let t = w.t;
+      if(/^-?[\d,]*\d\.[0-9oO]{2}-?$/.test(t)) t = t.replace(/[oO]/g, '0');      // 12,345.oo → 12,345.00
+      out.push([Math.round(w.x0 / escala * 10) / 10, y, t]);
+    });
+  });
+  return out;
+}
+/* ¿es un estado de cuenta del Banco de la Nación? (su logo es una imagen: el nombre del banco no sale como texto) */
+function ocrEsBancoNacion(items){
+  const t = items.map(i => i[2]).join(' ').toUpperCase();
+  return /BANCO DE LA NACI/.test(t) || (/CODIFICACI/.test(t) && /CHEQUE/.test(t) && /CARGOS/.test(t) && /ABONOS/.test(t) && /SALDOS/.test(t));
+}
+/* borra las líneas largas de la tabla (reglas): pegadas al texto hacen que el OCR lea símbolos en vez de cifras */
+function ocrBorrarReglas(canvas){
+  const w = canvas.width, h = canvas.height, ctx = canvas.getContext('2d');
+  const img = ctx.getImageData(0, 0, w, h), d = img.data, N = w * h;
+  const osc = new Uint8Array(N);
+  let n = 0;
+  for(let i = 0, j = 0; j < N; i += 4, j++){ if(d[i] * 0.299 + d[i + 1] * 0.587 + d[i + 2] * 0.114 < 140){ osc[j] = 1; n++; } }
+  if(n > N * 0.25) return;                           // fondo oscuro o página casi llena: no se toca
+  const del = new Uint8Array(N), minRun = Math.round(w * 0.04), R = 2;
+  const marcar = (xa, xb, ya, yb) => {
+    xa = Math.max(0, xa); ya = Math.max(0, ya); xb = Math.min(w - 1, xb); yb = Math.min(h - 1, yb);
+    for(let y = ya; y <= yb; y++){ const o = y * w; for(let x = xa; x <= xb; x++) del[o + x] = 1; }
+  };
+  for(let y = 0; y < h; y++){
+    const o = y * w; let x = 0;
+    while(x < w){
+      if(osc[o + x]){ const s = x; while(x < w && osc[o + x]) x++; if(x - s >= minRun) marcar(s - R, x - 1 + R, y - R, y + R); }
+      else x++;
+    }
+  }
+  for(let x = 0; x < w; x++){
+    let y = 0;
+    while(y < h){
+      if(osc[y * w + x]){ const s = y; while(y < h && osc[y * w + x]) y++; if(y - s >= minRun) marcar(x - R, x + R, s - R, y - 1 + R); }
+      else y++;
+    }
+  }
+  for(let j = 0, i = 0; j < N; j++, i += 4){ if(del[j]){ d[i] = 255; d[i + 1] = 255; d[i + 2] = 255; d[i + 3] = 255; } }
+  ctx.putImageData(img, 0, 0);
+}
+/* palabras con su caja, venga el OCR como lista de palabras, como bloques o como TSV */
+function ocrPalabrasDe(data){
+  const mk = (t, x0, y0, x1, y1, c) => ({ text: t, x0, y0, x1, y1, conf: c });
+  if(data && Array.isArray(data.words) && data.words.length) return data.words.filter(w => w && w.bbox).map(w => mk(w.text, w.bbox.x0, w.bbox.y0, w.bbox.x1, w.bbox.y1, w.confidence));
+  const out = [];
+  if(data && Array.isArray(data.blocks)){
+    data.blocks.forEach(b => (b.paragraphs || []).forEach(p => (p.lines || []).forEach(l => (l.words || []).forEach(w => { if(w && w.bbox) out.push(mk(w.text, w.bbox.x0, w.bbox.y0, w.bbox.x1, w.bbox.y1, w.confidence)); }))));
+    if(out.length) return out;
+  }
+  if(data && typeof data.tsv === 'string'){
+    data.tsv.split('\n').forEach(l => { const c = l.split('\t'); if(c[0] === '5' && c.length >= 12) out.push(mk(c.slice(11).join('\t'), +c[6], +c[7], +c[6] + +c[8], +c[7] + +c[9], +c[10])); });
+  }
+  return out;
+}
+/* PDF de texto ilegible → páginas con [x, y, texto] leídas por OCR (una sola carga del motor para todas las páginas) */
+async function ocrExtractItems(file, onProgress){
+  const buf = await file.arrayBuffer();
+  const pdf = await pdfjsLib.getDocument({ data: buf }).promise;
+  let pag = 0;
+  const worker = await Tesseract.createWorker('spa', 1, { logger: m => { if(onProgress && m && m.status === 'recognizing text') onProgress(`OCR página ${pag}/${pdf.numPages}: ${Math.round((m.progress || 0) * 100)} %`); } });
+  const pages = [];
+  try{
+    await worker.setParameters({ tessedit_pageseg_mode: '6' });      // un solo bloque: es lo que separa bien las columnas de una tabla
+    for(let p = 1; p <= pdf.numPages; p++){
+      pag = p;
+      if(onProgress) onProgress(`OCR página ${p}/${pdf.numPages}...`);
+      const page = await pdf.getPage(p);
+      const escala = 2.2, viewport = page.getViewport({ scale: escala });
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.ceil(viewport.width); canvas.height = Math.ceil(viewport.height);
+      const ctx = canvas.getContext('2d', { willReadFrequently: true });
+      ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+      await page.render({ canvasContext: ctx, viewport }).promise;
+      ocrBorrarReglas(canvas);
+      const { data } = await worker.recognize(canvas);
+      pages.push(ocrPalabrasAItems(ocrPalabrasDe(data), canvas.height, escala));
+    }
+  } finally { try{ await worker.terminate(); }catch(e){} }
+  return pages;
+}
+/* Banco de la Nación: debajo de la tabla viene el cuadro de totales («TOTAL · TOTAL CARGOS · TOTAL ABONOS · SALDO ACTUAL») con cifras que el OCR lee a medias:
+   se corta desde esa fila hacia abajo para que no entre como un movimiento más */
+function ocrRecortarTotales(items){
+  const filas = new Map();
+  items.forEach(it => { if(!filas.has(it[1])) filas.set(it[1], []); filas.get(it[1]).push(it); });
+  const ys = Array.from(filas.keys()).sort((a, b) => b - a);
+  let vioTabla = false, corte = null;
+  for(const y of ys){
+    const t = filas.get(y).slice().sort((a, b) => a[0] - b[0]).map(i => i[2]).join(' ');
+    if(/CARGOS?/i.test(t) && /ABONOS?/i.test(t) && !/TOTAL/i.test(t)) vioTabla = true;
+    else if(vioTabla && /^TOTAL\b/i.test(t)){ corte = y; break; }
+  }
+  return corte === null ? items : items.filter(it => it[1] > corte);
+}
 
 /* ============================================================
    ORQUESTADOR
