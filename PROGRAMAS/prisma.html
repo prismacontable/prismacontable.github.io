@@ -1234,7 +1234,15 @@ window.addEventListener('unhandledrejection',function(ev){
     console.error('[PRISMA] promesa rechazada sin atrapar:',ev.reason);}catch(e){}});
 
 /* CONFIG */
-const CFG={RMV:1130,UIT:5500,DM:30,JOR:8,T_ONP:.13,PRIMA:.0137,
+/* RMV y UIT con vigencia propia, para que funcione igual SIN la hoja "Tasas" del
+   servidor (si la hoja las trae, las reemplaza: ver aplicarTasas). RMV 1,230
+   desde el 1-oct-2026 (DS 015-2026-TR; el 2do tramo a 1,300 se fijara por
+   decreto en el 1er semestre de 2027 -cargarlo en la hoja "Tasas" cuando salga).
+   UIT: 5,350 (2025) y 5,500 (2026, DS 301-2025-EF). */
+const TASAS_HIST_BASE={
+  RMV:[{desde:'',valor:1130},{desde:'2026-10-01',valor:1230}],
+  UIT:[{desde:'',valor:5350},{desde:'2026-01-01',valor:5500}]};
+const CFG={RMV:1230,UIT:5500,__hist:JSON.parse(JSON.stringify(TASAS_HIST_BASE)),DM:30,JOR:8,T_ONP:.13,PRIMA:.0137,
   T4:.08,MIN4:1500,MIN4D:0,HE25:.25,HE35:.35,TOPE:2,T_ES:.09,VL:5.8333,VAC_DIAS:15,FER:2,
   ES_MIN_PROPORCIONAL:false,REG_DEF:'MICRO',SIS:15,
   EMP:'EMPRESA DE EJEMPLO S.A.C.',RUC:'20100000001',
@@ -1345,6 +1353,7 @@ const tasas=(a,cfg)=>{
 // sin importar el sueldo ni el numero de hijos -es un monto unico si tiene
 // uno o mas-. Se calcula sobre la RMV vigente, asi que sigue correcto si la
 // RMV cambia (no se guarda como numero suelto en CFG).
+const asigDeMes_=(a,m,cfg)=>r2(tasaDe_(cfg||CFG,'RMV',a,m)*.10);
 const asigFamMonto=(cfg)=>{const c=cfg||CFG,pr=per();return r2(tasaDe_(c,'RMV',pr.a,pr.m)*.10);};
 /* REORGANIZACION (candidatos 4/5 de la auditoria "que mover al backend
    protegido", ver ARCHITECTURE.md): estas dos piezas de calc() -aportes de
@@ -1355,6 +1364,7 @@ const asigFamMonto=(cfg)=>{const c=cfg||CFG,pr=per();return r2(tasaDe_(c,'RMV',p
    copias-. */
 const aportesPlanilla_=(base,p,cfg)=>{
   cfg=cfg||CFG;
+  base=Math.max(+base||0,0);   // una base negativa (tardanza/falta mayor al pago) no genera aporte negativo
   const onp=p.afp==='ONP'?r2(base*cfg.T_ONP):0;
   const t=tasas(p.afp,cfg);
   const ap=r2(base*t.ap),pr=r2(base*t.pr);
@@ -1418,7 +1428,7 @@ function calcQuincena_(p,m,topeDias,cfg){
     const im=(+p.sue>0)?r2((+p.sue||0)/cfg.DM*dPagoRh):r2(+m.hon||0);
     const vh=(+p.sue||0)/cfg.DM/cfg.JOR;
     const {he25,he35}=he2535_(m,vh,cfg);
-    const com=+m.com||0,bon=+m.bon||0,tar=+m.tar||0,ade=+m.ade||0,pre=+m.pre||0;
+    const com=r2(+m.com||0),bon=r2(+m.bon||0),tar=r2(+m.tar||0),ade=r2(+m.ade||0),pre=r2(+m.pre||0);
     // Dominical (trabajo en dia de descanso semanal sin descanso sustitutorio,
     // D.Leg. 713 art. 6): misma sobretasa que el feriado (cfg.FER). "fer" es el
     // total (feriado+dominical, lo que va a PLAME 0107); "dom" es el desglose.
@@ -1450,7 +1460,7 @@ function calcQuincena_(p,m,topeDias,cfg){
   // sue = jornales + dominical + BUC; com incluye "otras bonif. afectas" (ext);
   // bon incluye movilidad; gra/cts/liq llevan gratificacion/CTS/vacaciones 10%.
   if(p.reg==='CONSTRUCCION'&&m.ob){
-    const o=m.ob,tar=+m.tar||0,ade=+m.ade||0,pre=+m.pre||0,r5=+m.r5||0;
+    const o=m.ob,tar=r2(+m.tar||0),ade=r2(+m.ade||0),pre=r2(+m.pre||0),r5=r2(+m.r5||0);
     const sue=r2((+o.jb||0)+(+o.domD||0)+(+o.buc||0)),dom=r2(+o.dom||0),fer=dom;
     const com=r2((+m.com||0)+(+o.ext||0)),bon=r2((+m.bon||0)+(+o.mov||0));
     const gra=r2(+o.gra||0),cts=r2(+o.cts||0),liq=r2(+o.vac||0),noAfecto=r2(gra+cts+liq);
@@ -1514,14 +1524,14 @@ function calcQuincena_(p,m,topeDias,cfg){
   const dom=r2(jornal*domd*cfg.FER);
   const fer=r2(r2(jornal*fd*cfg.FER)+dom);
   const {he25,he35}=he2535_(m,vh,cfg);
-  const com=+m.com||0,bon=+m.bon||0,tar=+m.tar||0,ade=+m.ade||0,pre=+m.pre||0,r5=+m.r5||0;
+  const com=r2(+m.com||0),bon=r2(+m.bon||0),tar=r2(+m.tar||0),ade=r2(+m.ade||0),pre=r2(+m.pre||0),r5=r2(+m.r5||0);
   // Pagos que no afectan aportes: gratificacion (Ley 30334, con su bonificacion
   // del 9%), CTS y liquidacion. Se pagan con la planilla pero no entran a la
   // base de AFP, ONP ni EsSalud.
   // Gratificacion y su bonificacion del 9%, CTS y otros pagos de liquidacion
   // no afectan aportes (Ley 30334). Las vacaciones truncas SI son remuneracion
   // y entran a la base de AFP, ONP y EsSalud.
-  const gra=+m.gra||0,bge=+m.bge||0,cts=+m.cts||0,liq=+m.liq||0,vtr=+m.vtr||0;
+  const gra=r2(+m.gra||0),bge=r2(+m.bge||0),cts=r2(+m.cts||0),liq=r2(+m.liq||0),vtr=r2(+m.vtr||0);
   const noAfecto=r2(gra+bge+cts+liq);
   // La inasistencia descuenta el equivalente de un dia tanto del sueldo como
   // de la asignacion familiar -esta ultima se ve afectada por la asistencia
@@ -1618,19 +1628,32 @@ function tramosRenta5ta(rentaImponible,uit){
     impuesto=r2(impuesto+imp);restante=r2(restante-anchoMonto);limInfUIT=t.limSupUIT;});
   return{impuesto,detalle};}
 // afectoPorMes/retenidoPorMes: arreglos de 12 posiciones (0=enero..11=diciembre).
-function proyeccionRenta5ta(afectoPorMes,retenidoPorMes,mesActual,uit){
+function proyeccionRenta5ta(afectoPorMes,retenidoPorMes,mesActual,uit,retOtroPorMes){
   const totalAnual=r2((afectoPorMes||[]).reduce((a,b)=>a+(+b||0),0));
   const rentaImponible=Math.max(r2(totalAnual-7*uit),0);
   const t=tramosRenta5ta(rentaImponible,uit);
   // Solo lo retenido en meses ANTERIORES al actual (el actual es el que se
   // esta por recalcular/sugerir, ver el comentario identico en
   // core/calculations.js).
-  const retenidoAcum=r2((retenidoPorMes||[]).slice(0,mesActual-1).reduce((a,b)=>a+(+b||0),0));
-  const mesesRestantes=Math.max(1,12-mesActual+1);
-  const saldo=r2(t.impuesto-retenidoAcum);
-  const sugerido=rentaImponible<=0?0:Math.max(0,r2(saldo/mesesRestantes));
+  // retOtroPorMes (opcional): retenciones que YA hizo otro empleador en meses
+  // anteriores al actual (se descuentan del saldo, igual que las propias).
+  const retOtroAcum=r2((retOtroPorMes||[]).slice(0,mesActual-1).reduce((a,b)=>a+(+b||0),0));
+  const retenidoAcum=r2((retenidoPorMes||[]).slice(0,mesActual-1).reduce((a,b)=>a+(+b||0),0)+retOtroAcum);
+  // METODO OFICIAL DE SUNAT (Reglamento LIR art. 40; "Paso 4" de orientacion.sunat.gob.pe):
+  //   ene-mar: impuesto/12 | abr: (imp - ret ene-mar)/9 | may-jul: (imp - ret ene-abr)/8 |
+  //   ago: (imp - ret ene-jul)/5 | set-nov: (imp - ret ene-ago)/4 | dic: imp - ret ene-nov.
+  // (antes: saldo/meses restantes con TODO lo retenido a la fecha; daba lo mismo
+  // con sueldo constante, pero se separa del metodo oficial cuando el ingreso cambia).
+  const ventana=mesActual<=3?0:mesActual===4?3:mesActual<=7?4:mesActual===8?7:mesActual<=11?8:11;
+  const divisor=mesActual<=3?12:mesActual===4?9:mesActual<=7?8:mesActual===8?5:mesActual<=11?4:1;
+  const retPropio=r2((retenidoPorMes||[]).slice(0,ventana).reduce((a,b)=>a+(+b||0),0));
+  const retOtroVent=r2((retOtroPorMes||[]).slice(0,ventana).reduce((a,b)=>a+(+b||0),0));
+  const retenidoBase=r2(retPropio+retOtroVent);
+  const mesesRestantes=divisor;
+  const saldo=r2(t.impuesto-retenidoBase);
+  const sugerido=rentaImponible<=0?0:Math.max(0,r2(saldo/divisor));
   return{totalAnual,deduccion7UIT:r2(7*uit),rentaImponible,impuestoAnual:t.impuesto,detalleTramos:t.detalle,
-    retenidoAcum,mesesRestantes,saldo,sugerido,aplica:rentaImponible>0};}
+    retenidoAcum,retOtroAcum,retenidoBase,divisor,mesesRestantes,saldo,sugerido,aplica:rentaImponible>0};}
 /* Desglose afecto a renta de 5ta de UNA quincena, a partir del sueldo mensual
    de la ficha (de ese momento) y el movimiento crudo de esa quincena
    -pensada para leer datos de un archivo YA GUARDADO (historial), sin tocar
@@ -1644,28 +1667,39 @@ function proyeccionRenta5ta(afectoPorMes,retenidoPorMes,mesActual,uit){
      -mismo criterio que "base" en calc(), sin comisiones ni gratificacion,
      y sin el subsidio de descanso medico ni el "Bono" no remunerativo de
      PRISMA (ninguno de los dos es renta de 5ta). */
-function afectoR5taDeMov_(sueMensual,asigFam,mov,topeDias){
+function afectoR5taDeMov_(sueMensual,asigFam,mov,topeDias,asigM){
   const jornal=(+sueMensual||0)/CFG.DM;
   const d=+mov.d||0,vd=+mov.v||0,vvd=+mov.vv||0,fd=+mov.fer||0,domd=+mov.dom||0,fFalt=+mov.f||0,faltaHoras=+mov.faltaHoras||0;
   const dPago=Math.min(d+fFalt,topeDias);
-  const jornalAf=asigFam?asigFamMonto()/CFG.DM:0;
+  // asigM: asignacion familiar DE ESE MES (la RMV cambia en el año: 113 hasta
+  // set-2026, 123 desde oct-2026); sin ese dato usa la del periodo abierto.
+  const AF=(asigM!=null?+asigM:asigFamMonto())||0;
+  const jornalAf=asigFam?AF/CFG.DM:0;
   const sue=r2(jornal*dPago),vac=r2((jornal+jornalAf)*vd),vh=jornal/CFG.JOR;
   const vv=r2((jornal+jornalAf)*vvd);
-  const af=asigFam?r2(asigFamMonto()/CFG.DM*dPago):0;
+  const af=asigFam?r2(AF/CFG.DM*dPago):0;
   const fer=r2(r2(jornal*fd*CFG.FER)+r2(jornal*domd*CFG.FER));
   const{he25,he35}=he2535_(mov,vh);
   const com=+mov.com||0,tar=+mov.tar||0,vtr=+mov.vtr||0,gra=+mov.gra||0,bge=+mov.bge||0;
-  const faltaImp=r2(jornal*fFalt+(asigFam?asigFamMonto()/CFG.DM*fFalt:0)+
-    (jornal/CFG.JOR)*faltaHoras+(asigFam?(asigFamMonto()/CFG.DM/CFG.JOR)*faltaHoras:0));
+  const faltaImp=r2(jornal*fFalt+(asigFam?AF/CFG.DM*fFalt:0)+
+    (jornal/CFG.JOR)*faltaHoras+(asigFam?(AF/CFG.DM/CFG.JOR)*faltaHoras:0));
   const otros=r2(sue+af+vac+vv+vtr+he25+he35+fer-tar-faltaImp);
   return{otros,com:r2(com),grat:r2(gra+bge)};}
 
 /* Historial ANUAL (enero al mes anterior al abierto) para la proyeccion de
    renta de 5ta -mismo mecanismo que cargarHistorial (6 meses trailing, para
    gratificacion/CTS), pero desde enero del año abierto y sin limite de 6. */
-let R5_ANUAL={},R5_INFO={meses:[],leidos:0,fallidos:[]};
+let R5_ANUAL={},R5_INFO={meses:[],leidos:0,fallidos:[],clave:''},R5_CARGANDO=false;
+// El historial se relee SOLO al abrir Renta 5ta una vez por periodo/RUC (antes
+// habia que pulsar "Actualizar historial del año" cada vez, y al pasar de
+// periodo lo ya retenido en meses anteriores no aparecia).
+const histClaveR5_=()=>CFG.RUC+'|'+per().a+'|'+per().m;
+function autoHistorialR5_(){
+  if(!ROOT||R5_CARGANDO||R5_INFO.clave===histClaveR5_())return;
+  R5_CARGANDO=true;
+  actualizarHistorialAnualR5().then(()=>{R5_CARGANDO=false;R();}).catch(()=>{R5_CARGANDO=false;});}
 async function actualizarHistorialAnualR5(){
-  R5_ANUAL={};R5_INFO={meses:[],leidos:0,fallidos:[]};
+  R5_ANUAL={};R5_INFO={meses:[],leidos:0,fallidos:[],clave:histClaveR5_()};
   if(!ROOT)return 0;
   const{a,m}=per();
   for(let mesN=1;mesN<m;mesN++){
@@ -1697,9 +1731,57 @@ async function actualizarHistorialAnualR5(){
    solo, sin necesidad de proyeccion-. TODAS las casillas quedan editables en
    pantalla (pedido explicito del usuario): un ajuste guardado en
    p.r5Manual[mes] pisa, campo por campo, el valor calculado. */
+/* Datos de 5ta que viajan CON LA FICHA del trabajador (se guardan en el archivo
+   del periodo y se arrastran al mes siguiente):
+   - p.r5Manual[mes]: ajustes manuales por campo (con sello de año p.r5ManualAnio).
+   - p.r5Otro[año][mes]: remuneracion/retencion de otro empleador.
+   - p.r5Reg[año][mes]: REGISTRO de lo ya retenido y de lo afecto de cada mes
+     (se escribe al aplicar la retencion y al guardar el periodo).
+   Si la ficha del periodo abierto no los tiene (p.ej. el mes ya existia antes
+   de cargarlos), se completan con los de los archivos de meses anteriores. */
+function fichasHist_(p){
+  const out=[];
+  Object.keys(R5_ANUAL).map(Number).sort((a,b)=>b-a).forEach(mesN=>{
+    const f=R5_ANUAL[mesN]&&R5_ANUAL[mesN].porDni&&R5_ANUAL[mesN].porDni[p.dni];if(f)out.push(f);});
+  return out;}
+function manualR5_(p){
+  const a=per().a,ok=x=>x&&!(x.r5ManualAnio&&x.r5ManualAnio!==a);
+  if(p.r5Manual!==undefined)return ok(p)?p.r5Manual:{};
+  const f=fichasHist_(p).find(x=>x.r5Manual!==undefined&&ok(x));
+  return f?f.r5Manual:{};}
+function otroR5_(p){
+  const a=per().a;
+  if(p.r5Otro&&p.r5Otro[a]!==undefined)return p.r5Otro[a];
+  const f=fichasHist_(p).find(x=>x.r5Otro&&x.r5Otro[a]!==undefined);
+  return f?f.r5Otro[a]:{};}
+function regR5_(p,mesN){
+  const a=per().a;
+  if(p.r5Reg&&p.r5Reg[a]&&p.r5Reg[a][mesN])return p.r5Reg[a][mesN];
+  const f=fichasHist_(p).find(x=>x.r5Reg&&x.r5Reg[a]&&x.r5Reg[a][mesN]);
+  return f?f.r5Reg[a][mesN]:null;}
+// Lo afecto y lo retenido del periodo ABIERTO, en vivo.
+function liveR5Mes_(p){
+  const mm=mes(p);
+  const com=r2((+mm.q1.com||0)+(+mm.q2.com||0));
+  const grat=r2((+mm.q1.gra||0)+(+mm.q2.gra||0)+(+mm.q1.bge||0)+(+mm.q2.bge||0));
+  const ret=r2((+mv(p.dni,1).r5||0)+(+mv(p.dni,2).r5||0));
+  return{otros:r2(mm.baseSal-com),com,grat,ret};}
+// Escribe en la ficha el registro del mes abierto (retencion aplicada y
+// afecto). Se llama al aplicar la retencion y al guardar/exportar el periodo.
+function r5RegSync_(){
+  if(!P||!P.length)return;
+  let per_;try{per_=per();}catch(e){return;}
+  if(!per_.a||!per_.m)return;
+  pla().forEach(p=>{
+    const v=liveR5Mes_(p);
+    if(!p.r5Reg)p.r5Reg={};
+    if(!p.r5Reg[per_.a])p.r5Reg[per_.a]={};
+    const prev=p.r5Reg[per_.a][per_.m];
+    if(prev&&prev.otros===v.otros&&prev.com===v.com&&prev.grat===v.grat&&prev.ret===v.ret)return;
+    p.r5Reg[per_.a][per_.m]=v;});}
 function datosAnualesR5ta_(p){
   const per_=per(),anio=per_.a,mesActual=per_.m;
-  const manual=p.r5Manual||{};
+  const manual=manualR5_(p);
   const otros=new Array(12).fill(0),comision=new Array(12).fill(0),gratBonif=new Array(12).fill(0),
     retenido=new Array(12).fill(0),estado=new Array(12).fill('');
   for(let mesN=1;mesN<=12;mesN++){
@@ -1712,12 +1794,16 @@ function datosAnualesR5ta_(p){
       if(h&&h.porDni&&h.porDni[p.dni]&&h.M[p.dni]){
         const ficha=h.porDni[p.dni],mv_=h.M[p.dni],topeDias=h.modo==='MENSUAL'?CFG.DM:15;
         const q1=mv_.q1||{},q2=mv_.q2||{};
-        const c1=afectoR5taDeMov_(ficha.sue,ficha.asigFam,q1,topeDias),
-              c2=afectoR5taDeMov_(ficha.sue,ficha.asigFam,q2,topeDias);
+        const aM=asigDeMes_(anio,mesN);
+        const c1=afectoR5taDeMov_(ficha.sue,ficha.asigFam,q1,topeDias,aM),
+              c2=afectoR5taDeMov_(ficha.sue,ficha.asigFam,q2,topeDias,aM);
         vOtros=r2(c1.otros+c2.otros);vCom=r2(c1.com+c2.com);vGrat=r2(c1.grat+c2.grat);
         vRet=r2((+q1.r5||0)+(+q2.r5||0));
         est='real';
-      }else est='faltante';
+      }else{
+        const rg=regR5_(p,mesN);
+        if(rg){vOtros=+rg.otros||0;vCom=+rg.com||0;vGrat=+rg.grat||0;vRet=+rg.ret||0;est='registro';}
+        else est='faltante';}
     }else if(mesN===mesActual){
       const mm=mes(p);
       vCom=r2((+mm.q1.com||0)+(+mm.q2.com||0));
@@ -1726,7 +1812,7 @@ function datosAnualesR5ta_(p){
       vRet=0;// el mes actual nunca cuenta como "ya retenido": es el que se esta recalculando
       est='actual';
     }else{
-      const af=p.asigFam?asigFamMonto():0;
+      const af=p.asigFam?asigDeMes_(anio,mesN):0;
       vOtros=r2((+p.sue||0)+af);
       if(mesN===7||mesN===12){
         const S=semestreDe(mesN);let grati=0,bonif=0;
@@ -1743,7 +1829,23 @@ function datosAnualesR5ta_(p){
     otros[i]=vOtros;comision[i]=vCom;gratBonif[i]=vGrat;retenido[i]=vRet;estado[i]=est;
   }
   const afecto=otros.map((v,i)=>r2(v+comision[i]+gratBonif[i]));
-  return{otros,comision,gratBonif,afecto,retenido,estado,anio,mesActual};}
+  // OTRO EMPLEADOR (carga manual, p.r5Otro[año][mes]={rem,ret}): remuneracion
+  // y retencion de un segundo empleador. Entra SOLO en la proyeccion anual de
+  // 5ta (afectoTot / retOtro) -nunca en calc()/mes()/neto/AFP/EsSalud/boleta/
+  // asientos/PLAME-, por eso "afecto" (lo propio) queda intacto, y es lo que
+  // se compara contra el servidor.
+  const ot=otroR5_(p);
+  const otroEmp=new Array(12).fill(0),otroRet=new Array(12).fill(0);
+  for(let i=0;i<12;i++){const o=ot[i+1]||{};otroEmp[i]=r2(+o.rem||0);otroRet[i]=r2(+o.ret||0);}
+  const afectoTot=afecto.map((v,i)=>r2(v+otroEmp[i]));
+  return{otros,comision,gratBonif,afecto,afectoTot,otroEmp,otroRet,retenido,estado,anio,mesActual};}
+// Proyeccion completa de un trabajador (con otro empleador) y la "base"
+// (solo lo propio, comparable con el servidor).
+const uitR5_=()=>{const q=per();return tasaDe_(CFG,'UIT',q.a,q.m);};
+function proyR5_(p,d){return proyeccionRenta5ta(d.afectoTot,d.retenido,d.mesActual,uitR5_(),d.otroRet);}
+function tieneOtroR5_(p){
+  const ot=otroR5_(p);
+  return Object.keys(ot).some(k=>(+ot[k].rem||0)>0||(+ot[k].ret||0)>0);}
 const f=v=>(!v||isNaN(v))?'':(+v).toLocaleString('es-PE',{minimumFractionDigits:2,maximumFractionDigits:2});
 const f0=v=>(+v||0).toLocaleString('es-PE',{minimumFractionDigits:2,maximumFractionDigits:2});
 /* Monto en letras para el pie de la liquidacion ("SON: MIL SEISCIENTOS
@@ -1852,10 +1954,25 @@ function decAHorasMin_(d){
    periodos ya guardados en disco que no tienen heD todavia) siguen leyendo
    ese campo. Si un periodo viejo no tiene heD, se sigue usando la formula
    anterior (total + umbral) para no cambiarle el importe a lo ya cerrado. */
+/* HISTORICAS: una incidencia u hora extra con fecha de OTRO MES (ej. 1-sep estando
+   en el periodo de noviembre) se guarda como registro pero NO afecta el pago ni los
+   descuentos del periodo abierto (x.hist=true). Sirve para llevar al dia el
+   historial de un cliente nuevo sin rehacer planillas anteriores. La marca se
+   graba en la fila (no se recalcula al abrir): los periodos ya guardados sin
+   marca se calculan igual que antes. Las vacaciones ya funcionan por su fecha
+   (historial de vacaciones), asi que aqui no se tocan. */
+function fechaHistorica_(f){
+  const fd=fecha(f);if(!fd)return false;
+  const{a,m}=per();
+  return fd.getFullYear()!==a||fd.getMonth()+1!==m;}
+function marcarHist_(x){
+  if(!x||x.tipo==='VACACION')return;
+  if(fechaHistorica_(x.f))x.hist=true;else delete x.hist;}
 function heDTotales(heD,cfg){
   cfg=cfg||CFG;
   const t={h25:0,h35:0};
   (heD||[]).forEach(x=>{
+    if(x.hist)return;
     if(x.h!=null){
       const h=Math.max(0,+x.h||0);
       t.h25+=Math.min(h,cfg.TOPE);t.h35+=Math.max(0,h-cfg.TOPE);
@@ -1920,6 +2037,7 @@ function incDTotales(incD,cfg){
   const t={faltas:0,faltasDias:0,faltaHoras:0,tardMonto:0,diasVac:0,diasVendidas:0,diasDom:0};
   let faltasDias=0;
   (incD||[]).forEach(x=>{
+    if(x.hist&&x.tipo!=='VACACION')return;   // historica: no afecta este periodo
     if(x.tipo==='TARDANZA')t.tardMonto+=(+x.monto||0);
     // DOMINICAL: dia de descanso semanal TRABAJADO (no es falta ni descuento): solo
     // suma dias para el pago adicional, ver mov.dom / calcQuincena_.
@@ -2201,6 +2319,9 @@ function rKpis(){
    {l:'Sin netos negativos',ok:act().every(p=>mes(p).neto>=0)},
    {l:'EsSalud nunca bajo el mínimo RMV',ok:pla().every(p=>{const m=mes(p),pr_=per();return m.dias===0||m.baseES>=tasaDe_(CFG,'RMV',pr_.a,pr_.m)-.01||CFG.ES_MIN_PROPORCIONAL})},
    {l:'Asientos cuadrados',ok:asientoCuadra()},
+   {l:(()=>{const n=pla().filter(p=>p.reg==='CONSTRUCCION').length;
+      return n&&!esSemanal()?(n+' trabajador(es) de construcción civil fuera de la modalidad Semanal (Empresa): sus gratificaciones/CTS no se calculan y el asiento puede no cuadrar'):'Construcción civil solo en modalidad Semanal';})(),
+    ok:!pla().some(p=>p.reg==='CONSTRUCCION')||esSemanal()},
    {l:'Centros de costo del personal existen en el plan',ok:ccHuerfanos().length===0},
    {l:'Sin documentos duplicados ni vacios',ok:dniOK()},
    {l:(()=>{const n=pla().filter(sinCuspp).length;
@@ -2975,6 +3096,7 @@ function aplicarR5(dni,valor){
   if(actual>0&&Math.abs(actual-valor)>0.005&&
      !confirm('Ya hay S/ '+f(actual)+' cargado en la retención de 5ta de '+p.nom+'.\n\n¿Reemplazarlo por el sugerido, S/ '+f(valor)+'?'))return;
   b.r5=r2(valor);
+  r5RegSync_();
   R();
   toast('Retención de 5ta de '+p.nom+' actualizada a S/ '+f(valor),'ok');}
 // setR5Manual/limpiarR5Manual: modelo de ajuste POR CAMPO (no por mes entero)
@@ -2986,19 +3108,51 @@ function aplicarR5(dni,valor){
 // especial. campo: 'otros'|'comision'|'gratBonif'|'retenido'.
 function setR5Manual(dni,mesN,campo,valor){
   const p=P.find(x=>x.dni===dni);if(!p)return;
-  if(!p.r5Manual)p.r5Manual={};
+  p.r5Manual=JSON.parse(JSON.stringify(manualR5_(p)));p.r5ManualAnio=per().a;
   if(!p.r5Manual[mesN])p.r5Manual[mesN]={};
   p.r5Manual[mesN][campo]=+valor||0;
   R();}
 function limpiarR5Manual(dni,mesN,campo){
-  const p=P.find(x=>x.dni===dni);if(!p||!p.r5Manual||!p.r5Manual[mesN])return;
+  const p=P.find(x=>x.dni===dni);if(!p)return;
+  p.r5Manual=JSON.parse(JSON.stringify(manualR5_(p)));p.r5ManualAnio=per().a;
+  if(!p.r5Manual[mesN])return;
   if(campo){
     delete p.r5Manual[mesN][campo];
     if(!Object.keys(p.r5Manual[mesN]).length)delete p.r5Manual[mesN];
   } else delete p.r5Manual[mesN];
   R();}
+// Otro empleador: campo 'rem' (remuneracion del mes) o 'ret' (retencion que
+// hizo ese empleador). Solo afecta la proyeccion de 5ta (ver datosAnualesR5ta_).
+function setR5Otro(dni,mesN,campo,valor){
+  const p=P.find(x=>x.dni===dni);if(!p)return;
+  const a=per().a,sem=JSON.parse(JSON.stringify(otroR5_(p)));
+  if(!p.r5Otro)p.r5Otro={};
+  p.r5Otro[a]=sem;
+  if(!sem[mesN])sem[mesN]={};
+  const v=Math.max(0,+valor||0);
+  if(v>0)sem[mesN][campo]=v;else delete sem[mesN][campo];
+  if(!Object.keys(sem[mesN]).length)delete sem[mesN];
+  R();}
+// Copia la remuneracion/retencion de ese mes a los meses siguientes del año.
+function copiarR5Otro(dni,mesN){
+  const p=P.find(x=>x.dni===dni);if(!p)return;
+  const a=per().a,sem=JSON.parse(JSON.stringify(otroR5_(p))),o=sem[mesN]||{};
+  if(!(+o.rem>0||+o.ret>0)){toast('Primero escribe un monto en ese mes','warn');return;}
+  for(let m=mesN+1;m<=12;m++){
+    if(!sem[m])sem[m]={};
+    if(o.rem>0)sem[m].rem=o.rem;
+    if(o.ret>0)sem[m].ret=o.ret;}
+  if(!p.r5Otro)p.r5Otro={};
+  p.r5Otro[a]=sem;
+  R();
+  toast('Copiado a los meses siguientes','ok');}
+function limpiarR5Otro(dni){
+  const p=P.find(x=>x.dni===dni);if(!p)return;if(!p.r5Otro)p.r5Otro={};
+  if(!confirm('¿Quitar toda la información de otro empleador de '+p.nom+' ('+per().a+')?'))return;
+  p.r5Otro[per().a]={};   // vacio pero definido: no se vuelve a completar desde meses anteriores
+  R();}
 const NOMBRE_MES=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Set','Oct','Nov','Dic'];
-const ETIQ_R5={real:'leído del periodo',actual:'periodo abierto (en vivo)',proyectado:'proyectado',
+const ETIQ_R5={registro:'guardado en la ficha',real:'leído del periodo',actual:'periodo abierto (en vivo)',proyectado:'proyectado',
   manual:'ajuste manual',previo:'previo al ingreso',faltante:'sin leer -completar a mano'};
 
 /* ================== VERIFICACION DE RENTA 5ta CONTRA EL BACKEND ==================
@@ -3071,7 +3225,10 @@ async function pedirRenta5ta(forzar){
 // true si ALGUN mes de este trabajador tiene algun campo ajustado a mano
 // -esos trabajadores no se comparan contra el servidor (ver nota arriba).
 function tieneAjustesR5_(p){
-  return !!(p.r5Manual&&Object.keys(p.r5Manual).some(mesN=>Object.keys(p.r5Manual[mesN]||{}).length));}
+  const m=manualR5_(p);
+  if(Object.keys(m).some(mesN=>Object.keys(m[mesN]||{}).length))return true;
+  // meses completados desde el registro de la ficha: el servidor no los conoce
+  return datosAnualesR5ta_(p).estado.indexOf('registro')>=0;}
 // Chip de verificacion para el resumen: compara el "sugerido" local contra
 // el que devolvio el servidor (calculado desde cero, con sus propios datos
 // crudos) -no compara el detalle mes a mes en pantalla, solo el numero
@@ -3079,13 +3236,15 @@ function tieneAjustesR5_(p){
 function chipVerifR5_(p,sugeridoLocal){
   if(tieneAjustesR5_(p))
     return '<span class="chip inf" title="Este trabajador tiene ajustes manuales: el servidor no los conoce, asi que no se compara.">Con ajuste manual</span>';
+  // Con "otro empleador" se compara la parte PROPIA (sugeridoLocal ya viene
+  // calculado sin el otro empleador); lo del otro empleador es solo una suma.
   if(!haySesionSegura())return '';
   const sv=R5B.porDni[p.dni];
   if(!sv)
     return '<span class="chip" style="color:var(--ink3)" title="Esperando confirmacion del servidor...">'+(R5B.cargando?'Verificando…':'Sin verificar')+'</span>';
   const coincide=Math.abs((sv.pr&&sv.pr.sugerido||0)-sugeridoLocal)<=0.01;
   return coincide
-    ?'<span class="chip ok" title="El servidor recalculo este importe desde cero (datos crudos) y coincide.">✓ Verificado</span>'
+    ?'<span class="chip ok" title="El servidor recalculo este importe desde cero (datos crudos) y coincide'+(tieneOtroR5_(p)?' (se verificó la parte de esta empresa; lo de otro empleador es carga manual)':'')+'.">✓ Verificado</span>'
     :'<span class="chip warn" title="El servidor calculo S/ '+f(sv.pr.sugerido)+' de forma independiente, distinto al local -revisa si hay un dato desincronizado.">⚠ No coincide (servidor: '+f(sv.pr.sugerido)+')</span>';}
 
 /* ================== VERIFICACION DE LA PLANILLA CONTRA EL BACKEND (candidato 3) ==================
@@ -3118,7 +3277,7 @@ async function pedirPlanilla(forzar){
   if(PLB.cargando)return PLB;
   if(!haySesionSegura()){PLB.clave='';return PLB;}
   PLB.cargando=true;
-  const r=await callBackend_('calcular_planilla',{ruc:CFG.RUC,modo:MODO,fer:CFG.FER,min4d:CFG.MIN4D,
+  const r=await callBackend_('calcular_planilla',{ruc:CFG.RUC,anio:per().a,mes:per().m,modo:MODO,fer:CFG.FER,min4d:CFG.MIN4D,
     trabajadores:act().map(p=>({dni:p.dni,sue:p.sue,reg:p.reg,afp:p.afp,comAfp:p.comAfp,asigFam:!!p.asigFam,tipo:p.tipo,
       m1:movPlanillaPayload_(mv(p.dni,1)),m2:movPlanillaPayload_(mv(p.dni,2))}))});
   PLB.cargando=false;
@@ -3141,6 +3300,7 @@ function chipVerifPlanilla_(p,netoLocal){
     :'<span class="chip warn" title="El servidor calculo un neto mensual de S/ '+f(sv.neto)+' de forma independiente, distinto al local -revisa si hay un dato desincronizado.">⚠ No coincide (servidor: '+f(sv.neto)+')</span>';}
 
 function rRenta5(){
+  autoHistorialR5_();
   // Verificacion automatica contra el backend protegido, al entrar a la
   // pestaña (decision confirmada con el usuario) -no bloquea el render, que
   // sigue siendo instantaneo con el calculo local; cuando responda, el chip
@@ -3155,17 +3315,20 @@ function rRenta5(){
     if((!actualDni||!trabs.find(p=>p.dni===actualDni))&&trabs.length)sel.value=trabs[0].dni;}
   let filas='';
   trabs.forEach(p=>{
-    const d=datosAnualesR5ta_(p),pr=proyeccionRenta5ta(d.afecto,d.retenido,d.mesActual,CFG.UIT);
+    const d=datosAnualesR5ta_(p),pr=proyR5_(p,d);
+    const prBase=tieneOtroR5_(p)?proyeccionRenta5ta(d.afecto,d.retenido,d.mesActual,uitR5_()):pr;
+    const otroAnual=r2(d.otroEmp.reduce((a,b)=>a+b,0));
     const actual=r5Actual(p),difiere=Math.abs(actual-pr.sugerido)>0.005;
     filas+='<tr><td>'+escAttr_(p.nom)+'</td>'+
       '<td class="num">'+f(pr.totalAnual)+'</td>'+
+      '<td class="num">'+(otroAnual>0?'<span class="chip inf" title="Incluido en el total afecto (solo para esta proyección)">'+f(otroAnual)+'</span>':'<span style="color:var(--ink3)">-</span>')+'</td>'+
       '<td class="num">'+f(pr.rentaImponible)+'</td>'+
       '<td class="num">'+f(pr.impuestoAnual)+'</td>'+
       '<td class="num">'+f(pr.retenidoAcum)+'</td>'+
       '<td class="num">'+f(pr.saldo)+'</td>'+
       '<td class="ctr">'+pr.mesesRestantes+'</td>'+
       '<td class="num"><b>'+(pr.aplica?f(pr.sugerido):'<span style="color:var(--ink3)">no aplica</span>')+'</b></td>'+
-      '<td class="ctr">'+chipVerifR5_(p,pr.sugerido)+'</td>'+
+      '<td class="ctr">'+chipVerifR5_(p,prBase.sugerido)+'</td>'+
       '<td class="num">'+f(actual)+'</td>'+
       '<td class="ctr"><button class="bp" style="padding:2px 8px;font-size:11px" '+
         (difiere?'':'disabled title="Ya coincide con lo sugerido"')+
@@ -3173,10 +3336,10 @@ function rRenta5(){
       '<td class="ctr"><button class="bo2" style="padding:2px 8px;font-size:11px" onclick="document.getElementById(\'r5Sel\').value=\''+p.dni+'\';R();">Ver año</button></td>'+
       '</tr>';});
   document.getElementById('wRenta5Resumen').innerHTML='<table><thead><tr>'+
-    '<th class="left">Trabajador</th><th>Total afecto (año)</th><th>Renta imponible</th>'+
-    '<th>Impuesto anual</th><th>Retenido a la fecha</th><th>Saldo</th><th>Meses rest.</th>'+
+    '<th class="left">Trabajador</th><th>Total afecto (año)</th><th title="Remuneración de otro empleador (carga manual), ya incluida en el total">De otro empleador</th><th>Renta imponible</th>'+
+    '<th>Impuesto anual</th><th>Retenido a la fecha</th><th title="Impuesto anual menos retenciones del tramo SUNAT">Saldo</th><th title="Divisor oficial SUNAT para este mes">Divisor</th>'+
     '<th>Sugerido</th><th>Verificación</th><th>Actual (5ta/4ta)</th><th></th><th></th></tr></thead><tbody>'+
-    (filas||'<tr><td colspan="12" style="text-align:center;padding:20px;color:var(--ink3)">Sin trabajadores en planilla.</td></tr>')+
+    (filas||'<tr><td colspan="13" style="text-align:center;padding:20px;color:var(--ink3)">Sin trabajadores en planilla.</td></tr>')+
     '</tbody></table>'+
     '<div style="padding:8px 14px;font-size:10.5px;color:var(--ink2)">'+
     (R5_INFO.leidos>0?'Historial del año leído: '+R5_INFO.leidos+' mes(es).':
@@ -3186,7 +3349,7 @@ function rRenta5(){
     '</div>';
   const dni=sel&&sel.value,p=trabs.find(x=>x.dni===dni),w=document.getElementById('wRenta5Detalle');
   if(!p){w.innerHTML='<div style="padding:20px;text-align:center;color:var(--ink3)">Sin trabajador seleccionado.</div>';return;}
-  const d=datosAnualesR5ta_(p),pr=proyeccionRenta5ta(d.afecto,d.retenido,d.mesActual,CFG.UIT);
+  const d=datosAnualesR5ta_(p),pr=proyR5_(p,d);
   // Detalle mes a mes: TODAS las casillas quedan siempre editables (pedido
   // explicito del usuario: "de todas maneras dejar que pueda editar las
   // casillas"), sin importar el origen del dato (real/actual/proyectado/
@@ -3197,20 +3360,24 @@ function rRenta5(){
   // "Total afecto" de la ultima columna es solo la suma, de solo lectura.
   let filasMes='';
   for(let mesN=1;mesN<=12;mesN++){
-    const i=mesN-1,est=d.estado[i],man=(p.r5Manual&&p.r5Manual[mesN])||{};
+    const i=mesN-1,est=d.estado[i],man=manualR5_(p)[mesN]||{};
     const vOtros=man.otros!=null?man.otros:d.otros[i];
     const vCom=man.comision!=null?man.comision:d.comision[i];
     const vGrat=man.gratBonif!=null?man.gratBonif:d.gratBonif[i];
     const vRet=man.retenido!=null?man.retenido:d.retenido[i];
-    const totalAfecto=r2(vOtros+vCom+vGrat);
+    const vOtroEmp=d.otroEmp[i],vOtroRet=d.otroRet[i];
+    const totalAfecto=r2(vOtros+vCom+vGrat+vOtroEmp);
     const tieneAjuste=Object.keys(man).length>0;
     filasMes+='<tr'+(est==='faltante'?' class="row-excluido"':'')+'><td>'+NOMBRE_MES[i]+'</td>'+
       '<td class="ctr" style="font-size:10px">'+(ETIQ_R5[est]||est)+'</td>'+
       '<td class="num"><input type="number" step=".01" value="'+(+vOtros||0).toFixed(2)+'" style="width:90px" onchange="setR5Manual(\''+p.dni+'\','+mesN+',\'otros\',this.value)"></td>'+
       '<td class="num"><input type="number" step=".01" value="'+(+vCom||0).toFixed(2)+'" style="width:80px" onchange="setR5Manual(\''+p.dni+'\','+mesN+',\'comision\',this.value)"></td>'+
       '<td class="num"><input type="number" step=".01" value="'+(+vGrat||0).toFixed(2)+'" style="width:85px" onchange="setR5Manual(\''+p.dni+'\','+mesN+',\'gratBonif\',this.value)"></td>'+
+      '<td class="num" style="background:var(--bg2,transparent)"><input type="number" min="0" step=".01" value="'+(+vOtroEmp||0).toFixed(2)+'" style="width:90px" title="Remuneración que recibe de OTRO empleador este mes (solo para el cálculo de 5ta)" onchange="setR5Otro(\''+p.dni+'\','+mesN+',\'rem\',this.value)"></td>'+
       '<td class="num">'+f(totalAfecto)+'</td>'+
       '<td class="num"><input type="number" step=".01" value="'+(+vRet||0).toFixed(2)+'" style="width:80px" onchange="setR5Manual(\''+p.dni+'\','+mesN+',\'retenido\',this.value)"></td>'+
+      '<td class="num" style="background:var(--bg2,transparent)"><input type="number" min="0" step=".01" value="'+(+vOtroRet||0).toFixed(2)+'" style="width:80px" title="Retención de 5ta que ya hizo el OTRO empleador este mes (se descuenta del saldo)" onchange="setR5Otro(\''+p.dni+'\','+mesN+',\'ret\',this.value)"></td>'+
+      '<td class="ctr">'+(mesN<12?'<button class="bo2" style="padding:1px 6px;font-size:10px" title="Copiar la remuneración y retención del otro empleador a los meses siguientes" onclick="copiarR5Otro(\''+p.dni+'\','+mesN+')">⇣ repetir</button>':'')+'</td>'+
       '<td class="ctr">'+(tieneAjuste?
         '<button class="bo2" style="padding:1px 6px;font-size:10px" onclick="limpiarR5Manual(\''+p.dni+'\','+mesN+')">Quitar ajustes</button>':'')+
       '</td></tr>';}
@@ -3219,10 +3386,11 @@ function rRenta5(){
     const nom=t.limSupUIT===Infinity?('Más de '+desde+' UIT'):('De '+desde+' a '+t.limSupUIT+' UIT');
     return '<tr><td>'+nom+'</td><td class="ctr">'+r2(t.tasa*100)+'%</td><td class="num">'+f(t.base)+'</td><td class="num">'+f(t.imp)+'</td></tr>';}).join('');
   w.innerHTML='<div style="display:flex;gap:20px;flex-wrap:wrap;padding:14px">'+
-    '<div style="flex:2;min-width:520px"><table><thead><tr><th>Mes</th><th>Origen</th><th>Otros conceptos afectos</th><th>Comisión</th><th>Gratificación+9%</th><th>Total afecto</th><th>Retenido</th><th></th></tr></thead><tbody>'+
+    '<div style="flex:2;min-width:520px"><table><thead><tr><th>Mes</th><th>Origen</th><th>Otros conceptos afectos</th><th>Comisión</th><th>Gratificación+9%</th><th title="Remuneración de OTRO empleador: carga manual, solo para calcular la 5ta (no entra a planilla, boleta, asientos ni PLAME)">Otro empleador</th><th>Total afecto</th><th>Retenido</th><th title="Retención que ya hizo el otro empleador">Ret. otro empl.</th><th></th><th></th></tr></thead><tbody>'+
     filasMes+'</tbody></table></div>'+
     '<div style="flex:1;min-width:280px">'+
     '<table style="margin-bottom:10px"><tbody>'+
+    (tieneOtroR5_(p)?'<tr><td>Incluye de otro empleador</td><td class="num">'+f(r2(d.otroEmp.reduce((a,b)=>a+b,0)))+'</td></tr>':'')+
     '<tr><td>Total anual afecto</td><td class="num"><b>'+f(pr.totalAnual)+'</b></td></tr>'+
     '<tr><td>(-) 7 UIT</td><td class="num">-'+f(pr.deduccion7UIT)+'</td></tr>'+
     '<tr><td>Renta imponible</td><td class="num"><b>'+f(pr.rentaImponible)+'</b></td></tr>'+
@@ -3230,11 +3398,12 @@ function rRenta5(){
     '<table style="margin-bottom:10px"><thead><tr><th>Tramo</th><th>Tasa</th><th>Base</th><th>Impuesto</th></tr></thead><tbody>'+tramosHTML+'</tbody>'+
     '<tfoot><tr class="total"><td colspan="3"><b>Impuesto anual</b></td><td class="num"><b>'+f(pr.impuestoAnual)+'</b></td></tr></tfoot></table>'+
     '<table><tbody>'+
-    '<tr><td>Retenido a la fecha</td><td class="num">'+f(pr.retenidoAcum)+'</td></tr>'+
-    '<tr><td>Saldo por retener</td><td class="num">'+f(pr.saldo)+'</td></tr>'+
-    '<tr><td>Meses restantes</td><td class="ctr">'+pr.mesesRestantes+'</td></tr>'+
+    '<tr><td>Retenido a la fecha'+(pr.retOtroAcum>0?' <span style="font-size:10px;color:var(--ink3)">(incl. '+f(pr.retOtroAcum)+' del otro empl.)</span>':'')+'</td><td class="num">'+f(pr.retenidoAcum)+'</td></tr>'+
+    '<tr><td title="Impuesto anual menos lo retenido en los meses que fija SUNAT para este mes">Saldo a dividir (método SUNAT)</td><td class="num">'+f(pr.saldo)+'</td></tr>'+
+    '<tr><td title="Ene-mar: 12 · abr: 9 · may-jul: 8 · ago: 5 · set-nov: 4 · dic: 1">Divisor SUNAT del mes</td><td class="ctr">'+pr.divisor+'</td></tr>'+
     '<tr><td><b>Retención mensual sugerida</b></td><td class="num"><b>'+(pr.aplica?f(pr.sugerido):'no aplica')+'</b></td></tr>'+
     '</tbody></table>'+
+    (tieneOtroR5_(p)?'<div style="font-size:10.5px;color:var(--ink2);margin:0 0 8px">Las remuneraciones de otro empleador se suman <b>solo</b> para esta proyección de 5ta. No cambian el sueldo, neto, aportes, boleta, asientos ni PLAME de esta empresa. <button class="bo2" style="padding:1px 6px;font-size:10px" onclick="limpiarR5Otro(\''+p.dni+'\')">Quitar otro empleador</button></div>':'')+
     '<div style="padding:10px 0"><button class="bp" '+(pr.aplica?'':'disabled')+' onclick="aplicarR5(\''+p.dni+'\','+pr.sugerido+')">Aplicar esta retención al periodo actual</button>'+
     '<div style="font-size:10.5px;color:var(--ink2);margin-top:6px">Escribe '+f(pr.sugerido)+' en la columna 5ta/4ta de la '+
     (esMensual()?'planilla mensual':'2da quincena')+' -queda editable igual que antes.</div></div>'+
@@ -4091,7 +4260,7 @@ function boletaHTML(p,q,tag,cls){
   const tituloBol=p.tipo==='DIETA'?' — DIETA':(rh?' — RECIBO POR HONORARIOS':'');
   return '<div class="boleta '+(cls||'')+'"><div class="bol-h">'+et+'BOLETA DE PAGO'+tituloBol+'</div>'+
    '<div class="bol-emp">'+(LOGO_EMP?'<img class="bol-logo" src="'+LOGO_EMP+'" alt="">':'')+
-   '<b>'+CFG.EMP+'</b> · RUC '+CFG.RUC+'<br>'+CFG.DOM+'<br>'+
+   '<b>'+escAttr_(CFG.EMP)+'</b> · RUC '+CFG.RUC+'<br>'+escAttr_(CFG.DOM)+'<br>'+
    '<b>Periodo:</b> '+MES[mm]+' '+a+' — '+lab+' &nbsp;|&nbsp; <b>Régimen:</b> '+regBoleta(p)+'</div>'+
    '<table class="bol-t"><tr><th style="width:88px">DNI / RUC</th><th>APELLIDOS Y NOMBRES</th>'+
    '<th style="width:110px">CARGO</th><th style="width:88px">F. INGRESO</th><th style="width:88px">F. CESE</th>'+
@@ -4115,7 +4284,7 @@ function boletaHTML(p,q,tag,cls){
    '<tr class="bol-total" style="background:#1F3864;color:#fff;font-weight:700"><td colspan="2">NETO A PAGAR S/</td>'+
    '<td class="n">'+f(r2(tI-tD))+'</td><td colspan="4"></td></tr></table>'+
    '<div class="bol-sig">'+
-     '<div>LA EMPRESA<br><span style="font-size:8.5px;color:#64748B">'+CFG.EMP+'</span></div>'+
+     '<div>LA EMPRESA<br><span style="font-size:8.5px;color:#64748B">'+escAttr_(CFG.EMP)+'</span></div>'+
      '<div>EL TRABAJADOR<br><span style="font-size:9px">'+escAttr_(p.nom)+'</span>'+
      '<br><span style="font-size:8.5px;color:#64748B">DNI '+p.dni+'</span></div>'+
    '</div>'+
@@ -4204,7 +4373,7 @@ function liqHTML(p,tag,cls){
    (tag?'<div class="bol-tag">'+tag+'</div>':'')+
    '<div class="bol-h">LIQUIDACION DE BENEFICIOS SOCIALES</div>'+
    '<div class="bol-emp">'+(LOGO_EMP?'<img class="bol-logo" src="'+LOGO_EMP+'" alt="">':'')+
-   '<b>'+CFG.EMP+'</b> · RUC '+CFG.RUC+'<br>'+CFG.DOM+'<br>'+
+   '<b>'+escAttr_(CFG.EMP)+'</b> · RUC '+CFG.RUC+'<br>'+escAttr_(CFG.DOM)+'<br>'+
    '<b>Periodo de liquidación:</b> ingreso '+L.ing+' — cese '+L.ces+
    ' &nbsp;|&nbsp; <b>Régimen:</b> '+L.reg+
    ' &nbsp;|&nbsp; <b>Motivo del cese:</b> '+L.ind.motivo+
@@ -4307,7 +4476,7 @@ function liqHTML(p,tag,cls){
      (L.ind.aplica?'La indemnización por despido arbitrario no esta afecta a aportes ni a renta de 5ta categoria.'
                   :'Esta causal de cese no genera indemnización.')+'</div>'+
    '<div class="bol-sig">'+
-     '<div>LA EMPRESA<br><span style="font-size:8.5px;color:#64748B">'+CFG.EMP+'</span></div>'+
+     '<div>LA EMPRESA<br><span style="font-size:8.5px;color:#64748B">'+escAttr_(CFG.EMP)+'</span></div>'+
      '<div>EL TRABAJADOR<br><span style="font-size:9px">'+escAttr_(p.nom)+'</span>'+
      '<br><span style="font-size:8.5px;color:#64748B">DNI '+p.dni+'</span></div>'+
    '</div>'+
@@ -4333,9 +4502,9 @@ function constanciaHTML(p){
   return '<div class="boleta">'+
    '<div class="bol-h">CONSTANCIA DE TRABAJO</div>'+
    '<div class="bol-emp">'+(LOGO_EMP?'<img class="bol-logo" src="'+LOGO_EMP+'" alt="">':'')+
-   '<b>'+CFG.EMP+'</b> · RUC '+CFG.RUC+'<br>'+CFG.DOM+'</div>'+
+   '<b>'+escAttr_(CFG.EMP)+'</b> · RUC '+CFG.RUC+'<br>'+escAttr_(CFG.DOM)+'</div>'+
    '<div style="margin-top:18px;font-size:11.5px;line-height:1.75;text-align:justify">'+
-     'El que suscribe, en representación de <b>'+CFG.EMP+'</b>, identificada con RUC N° '+CFG.RUC+', '+
+     'El que suscribe, en representación de <b>'+escAttr_(CFG.EMP)+'</b>, identificada con RUC N° '+CFG.RUC+', '+
      'hace constar que el(la) señor(a) <b>'+escAttr_(p.nom)+'</b>, identificado(a) con DNI N° '+p.dni+', '+
      (ces?'trabajó':'labora')+' en esta empresa desde el '+larga_(ing)+
      (ces?' hasta el '+larga_(ces):' hasta la fecha')+', desempeñando el cargo de '+
@@ -4347,7 +4516,7 @@ function constanciaHTML(p){
      'Emitido el '+larga_(hoy)+'.</div>'+
    '<div style="margin-top:70px;display:flex;justify-content:center;font-size:10.5px;text-align:center;padding-bottom:24px">'+
      '<div style="border-top:1px solid var(--ink);padding-top:6px;width:240px;line-height:1.55">LA EMPRESA'+
-       '<br><span style="font-size:8.5px;color:#64748B">'+CFG.EMP+'</span></div>'+
+       '<br><span style="font-size:8.5px;color:#64748B">'+escAttr_(CFG.EMP)+'</span></div>'+
    '</div></div>';}
 function constanciaHoja(p){
   const c=constanciaHTML(p);
@@ -5143,7 +5312,8 @@ function rHEModal(){
     // como punto de partida; si se toca, pasa a reparto automatico (ver
     // heDTotales).
     const horasVal=x.h!=null?x.h:((+x.h25||0)+(+x.h35||0));
-    return '<tr><td><input type="date" value="'+(x.f||'')+'" onchange="setHEFila(\''+dni+'\','+q+','+i+',\'f\',this.value)"'+(BLOQ?' disabled':'')+'></td>'+
+    const chipHistHe=x.hist?'<div><span class="chip inf" style="font-size:10px" title="Fecha de otro mes: queda registrada pero NO se paga en este periodo.">histórica · no afecta este periodo</span></div>':'';
+    return '<tr><td><input type="date" value="'+(x.f||'')+'" onchange="setHEFila(\''+dni+'\','+q+','+i+',\'f\',this.value)"'+(BLOQ?' disabled':'')+'>'+chipHistHe+'</td>'+
     '<td class="num"><input type="text" inputmode="numeric" class="w45" placeholder="0:00" value="'+dec2hm(horasVal)+'" title="Formato hh:mm — total de horas extra trabajadas ese dia (el reparto 25%/35% sale solo)" onchange="setHEFila(\''+dni+'\','+q+','+i+',\'h\',this.value)"'+(BLOQ?' disabled':'')+'></td>'+
     '<td class="ctr"><button type="button" class="bd" style="padding:2px 7px" onclick="delHEFila(\''+dni+'\','+q+','+i+')"'+(BLOQ?' disabled':'')+'>X</button></td></tr>';}).join('');
   const t=heDTotales(mov.heD);
@@ -5164,11 +5334,12 @@ function rHEModal(){
 function addHEFila(dni,q){
   if(BLOQ)return;
   const mov=mv(dni,q);mov.heD=Array.isArray(mov.heD)?mov.heD:[];
-  mov.heD.push({f:new Date().toISOString().slice(0,10),h:0});
+  const nuevaHe={f:new Date().toISOString().slice(0,10),h:0};marcarHist_(nuevaHe);
+  mov.heD.push(nuevaHe);
   heDSync(mov);rHEModal();R();}
 function setHEFila(dni,q,i,campo,v){
   const mov=mv(dni,q);if(!mov.heD||!mov.heD[i])return;
-  if(campo==='f')mov.heD[i].f=String(v||'').trim();
+  if(campo==='f'){mov.heD[i].f=String(v||'').trim();marcarHist_(mov.heD[i]);}
   else mov.heD[i].h=Math.max(0,hm2dec(String(v).replace('-','')));
   heDSync(mov);rHEModal();R();}
 function delHEFila(dni,q,i){
@@ -5307,7 +5478,7 @@ function reubicarIncFila_(dni,q,i){
   const destino=periodoDeFecha_(x.f);
   if(destino===null){
     const{a,m}=per();
-    toast('Esa fecha es de otro mes: la incidencia se queda en este periodo, pero revisala -este archivo solo guarda '+MES[m]+' '+a+'.','err');
+    toast('Fecha de otro mes: queda como incidencia HISTORICA y no afecta el pago de '+MES[m]+' '+a+'.','ok');
     return q;}
   if(destino===q)return q;
   mov.incD.splice(i,1);incDSync(mov);diasAutoDelPeriodo_(dni,q);
@@ -5332,7 +5503,9 @@ function rIncModal(){
   const filas=mov.incD.map((x,i)=>{
     const esTard=x.tipo==='TARDANZA',esVac=x.tipo==='VACACION',
       esVacAdel=esVac&&x.vsub==='ADELANTADA',esVacVend=esVac&&x.vsub==='VENDIDA',esDom=x.tipo==='DOMINICAL';
-    return '<tr><td><input type="date" value="'+(x.f||'')+'" onchange="setIncFila(\''+dni+'\','+q+','+i+',\'f\',this.value)"'+(BLOQ?' disabled':'')+'></td>'+
+    const histInc=x.tipo==='VACACION'?fechaHistorica_(x.f):!!x.hist;
+    const chipHist=histInc?'<div><span class="chip inf" style="font-size:10px" title="'+(x.tipo==='VACACION'?'Fecha de otro mes: no se paga ni descuenta en este periodo; solo actualiza el saldo de vacaciones.':'Fecha de otro mes: queda registrada pero NO afecta el pago ni los descuentos de este periodo.')+'">histórica · no afecta este periodo</span></div>':'';
+    return '<tr><td><input type="date" value="'+(x.f||'')+'" onchange="setIncFila(\''+dni+'\','+q+','+i+',\'f\',this.value)"'+(BLOQ?' disabled':'')+'>'+chipHist+'</td>'+
     '<td class="ctr"><select onchange="setIncFila(\''+dni+'\','+q+','+i+',\'tipo\',this.value)"'+(BLOQ?' disabled':'')+'>'+
       '<option value="FALTA"'+(!esTard&&!esVac&&!esDom?' selected':'')+'>Falta</option>'+
       '<option value="TARDANZA"'+(esTard?' selected':'')+'>Tardanza</option>'+
@@ -5370,7 +5543,8 @@ function rIncModal(){
 function addIncFila(dni,q){
   if(BLOQ)return;
   const mov=mv(dni,q);mov.incD=Array.isArray(mov.incD)?mov.incD:[];
-  mov.incD.push({f:new Date().toISOString().slice(0,10),tipo:'FALTA',justificada:false,monto:0,nota:''});
+  const nuevaInc={f:new Date().toISOString().slice(0,10),tipo:'FALTA',justificada:false,monto:0,nota:''};marcarHist_(nuevaInc);
+  mov.incD.push(nuevaInc);
   incDSync(mov);diasAutoDelPeriodo_(dni,q);
   const i=mov.incD.length-1;
   const qFinal=reubicarIncFila_(dni,q,i);
@@ -5397,7 +5571,7 @@ function setIncFila(dni,q,i,campo,v){
     // igual que vacMirrorSync_/vacQuickSet_ mas abajo.
     x.dias=x.tipo==='FALTA'?Math.max(.5,Math.round((+v||0)*2)/2):(x.tipo==='DOMINICAL'?Math.max(1,Math.round(+v||1)):Math.max(0,r2(+v||0)));}
   else if(campo==='nota')x.nota=String(v||'').trim();
-  if(x.tipo==='VACACION')vacMirrorSync_(dni,x);
+  if(x.tipo==='VACACION'){delete x.hist;vacMirrorSync_(dni,x);}else marcarHist_(x);
   incDSync(mov);diasAutoDelPeriodo_(dni,q);
   const qFinal=(campo==='f')?reubicarIncFila_(dni,q,i):q;
   const bk=document.getElementById('modalBk');if(bk)bk.dataset.incQ=String(qFinal);
@@ -5846,7 +6020,7 @@ function pintarEmpresa(){
   const L=document.getElementById('logoEmp');
   if(L){if(LOGO_EMP){L.src=LOGO_EMP;L.style.display='';}else{L.removeAttribute('src');L.style.display='none';}}
   const h=document.getElementById('hdrEmpresa');
-  if(h)h.innerHTML=CFG.EMP+' &middot; RUC '+CFG.RUC;
+  if(h)h.innerHTML=escAttr_(CFG.EMP)+' &middot; RUC '+CFG.RUC;
   const b=document.getElementById('p5-cfgRuc');if(b&&!b.value)b.value=CFG.RUC;}
 
 /* Traslada a la planilla del periodo lo calculado en la liquidacion. Queda en
@@ -6022,9 +6196,9 @@ function rCuentas(){
     '<div><label style="display:block;font-size:10.5px;font-weight:700;color:var(--tit);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px">RUC del empleador</label>'+
       selRuc()+'</div>'+
     '<div style="flex:1;min-width:240px"><label style="display:block;font-size:10.5px;font-weight:700;color:var(--tit);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px">Razon social</label>'+
-      '<input value="'+CFG.EMP+'" onchange="setEmpresa(\'nom\',this.value)" style="width:100%;text-align:left"></div>'+
+      '<input value="'+escAttr_(CFG.EMP)+'" onchange="setEmpresa(\'nom\',this.value)" style="width:100%;text-align:left"></div>'+
     '<div style="flex:2;min-width:280px"><label style="display:block;font-size:10.5px;font-weight:700;color:var(--tit);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px">Domicilio fiscal (sale en las boletas)</label>'+
-      '<input value="'+CFG.DOM+'" onchange="setEmpresa(\'dom\',this.value)" style="width:100%;text-align:left"></div>'+
+      '<input value="'+escAttr_(CFG.DOM)+'" onchange="setEmpresa(\'dom\',this.value)" style="width:100%;text-align:left"></div>'+
     '<div style="flex-basis:100%;font-size:10.5px;color:var(--ink2)">'+notaRuc()+'</div>'+
     '<div style="flex-basis:100%;display:flex;gap:8px;align-items:center;font-size:10.5px;color:var(--ink2)">'+
       '<button class="bo2" onclick="cargarPlanServidor()" title="Trae el perfil guardado de esta empresa (razón social, domicilio, modalidad, plan de cuentas)">Traer perfil guardado</button></div>'+
@@ -6843,6 +7017,7 @@ async function dirPeriodo(crear,a,m,legado){
 /* --- paquete de datos --- */
 function paquete(a,m){
   const{a:aa,m:mm}=per(),A=a||aa,Mn=m||mm;
+  if(A===aa&&Mn===mm)r5RegSync_();   // deja en la ficha lo retenido/afecto del mes que se guarda
   let n1=0,n2=0,nt=0;
   act().forEach(p=>{const x=mes(p);n1+=x.q1.neto;n2+=x.q2.neto;nt+=x.neto;});
   return{app:APP_TAG,formato:FMT,periodo:periodoStr(A,Mn),anio:A,mes:Mn,
@@ -7075,6 +7250,7 @@ async function cambioPeriodo(){
     if(ROOT&&hayCambios()&&confirm('Hay cambios sin guardar en el periodo '+ant+'.\nGuardarlos antes de pasar a '+nuevo+'?'))
       await guardar(+ant.slice(0,4),+ant.slice(4));
     EST.perActual=nuevo;EST.huella=null;EST.guardado=null;EST.archivo=null;EST.backups=0;BLOQ=false;LOG=[];
+    R5_ANUAL={};R5_INFO={meses:[],leidos:0,fallidos:[],clave:''};
     if(ROOT){
       const ok=await sincronizar(true);
       if(!ok){
@@ -7662,7 +7838,23 @@ function aplicarTasas(t,origen){
   if(!n)return false;
   SESION.tasas=t;SESION.tasasOrigen=origen||'servidor';
   try{localStorage.setItem('planilla_tasas',JSON.stringify({t:t,f:new Date().toISOString()}));}catch(e){}
+  avisoRmv_();
   return true;}
+// La hoja "Tasas" manda sobre los valores incorporados. Si todavia tiene la RMV
+// vieja (1,130) para fechas posteriores al 1-oct-2026, se avisa una sola vez:
+// la RMV vigente es S/ 1,230 (DS 015-2026-TR) y sin esa fila el EsSalud minimo,
+// la asignacion familiar, la CTS/gratificacion minimas salen con el valor viejo.
+let RMV_AVISADA=false;
+function avisoRmv_(){
+  if(RMV_AVISADA)return;
+  try{
+    const hoy=new Date().toISOString().slice(0,10);
+    if(hoy<'2026-10-01')return;
+    const v=tasaDe_(CFG,'RMV',2026,10);
+    if(v>=1230)return;
+    RMV_AVISADA=true;
+    setTimeout(()=>{try{toast('La hoja Tasas tiene RMV S/ '+f0(v)+' desde octubre 2026. La RMV vigente es S/ 1,230 (DS 015-2026-TR): agrega la fila RMV | 1230 | vigente desde 2026-10-01.','err');}catch(e){}},1500);
+  }catch(e){}}
 function tasasEnCache(){
   try{const c=JSON.parse(localStorage.getItem('planilla_tasas'));
     if(c&&c.t&&aplicarTasas(c.t,'cache '+fFecha(c.f)))return true;}catch(e){}
