@@ -674,6 +674,75 @@
   .docs-chk input{width:auto; margin:0;}
   #pdDocsFilter{flex:1 1 180px; max-width:280px; margin:0; padding:6px 9px; font-size:13px;}
   /* ---------- v1.7.6: vista previa de movimientos (Pestaña 3) ---------- */
+  /* ---------- v1.7.11: asiento del registro de ventas (SIRE) ---------- */
+  .rv-card{margin:0 0 14px; border:1px solid var(--border); border-radius:10px; background:var(--panel2); padding:9px 12px;}
+  .rv-card > summary{cursor:pointer; font-weight:600; font-size:13px; display:flex; align-items:center; gap:8px; list-style:none;}
+  .rv-card > summary::-webkit-details-marker{display:none;}
+  .rv-card > summary::after{content:"\25BE"; margin-left:auto; color:var(--muted);}
+  .rv-card[open] > summary::after{content:"\25B4";}
+  .rv-card > summary .ico{width:16px; height:16px; flex:none;}
+  .rv-card .rv-body{margin-top:10px;}
+  .rv-card .rv-body > .step-sub{margin:0 0 8px;}
+  .rv-card details.help{margin-left:0;}
+  .rv-card .dlg-check{display:flex; gap:8px; align-items:flex-start; margin:8px 0 4px; font-size:12px; color:var(--muted);}
+  .rv-card .dlg-check input{margin-top:2px;}
+  .rv-card select{width:100%; margin-bottom:8px;}
+  .rv-result{margin:0 0 14px; border:1px solid var(--border); border-radius:10px; background:var(--panel2); padding:10px 12px 12px;}
+  .rv-result[hidden]{display:none;}
+  .rv-result .rv-head{display:flex; flex-wrap:wrap; align-items:center; gap:8px 10px; margin-bottom:8px;}
+  .rv-result .rv-head b{font-size:14px;}
+  .rv-result .rv-head .ghost{margin-left:auto;}
+  .rv-result .tablewrap{max-height:none; margin-top:8px;}
+  .rv-result table td, .rv-result table th{white-space:nowrap;}
+  .rv-result tfoot td{font-weight:700; border-top:2px solid var(--border);}
+  .rv-result .rv-lineas{margin-top:10px; border:1px solid var(--border); border-radius:8px; padding:6px 10px 8px; background:var(--panel);}
+  .rv-result .rv-lineas > summary{cursor:pointer; font-weight:600; font-size:12.5px;}
+  .rv-result .rv-lineas > summary span{font-weight:400; color:var(--muted);}
+  .rv-result .rv-lineas .tablewrap{max-height:320px;}
+  .rv-result ul.rv-avisos{margin:0 0 4px 18px; padding:0;}
+  .rv-result ul.rv-avisos li{margin:2px 0;}
+  /* v1.7.12 · planteamiento financiero */
+  .py-viewbar{margin:4px 0 12px;}
+  .py-viewbar .dia-seg button{padding:6px 13px;}
+  .py-view h3.dia-h small{font-weight:400; color:var(--muted); margin-left:6px; font-size:12.5px;}
+  .py-sub{margin:12px 0 6px; font-size:12.5px; font-weight:700; color:var(--muted);}
+  table.py-t{min-width:340px;}
+  table.py-t th, table.py-t td{padding:5px 9px;}
+  table.py-t td.num, table.py-t th.num{text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap;}
+  table.py-t td.neg{color:var(--bad); font-weight:700;}
+  table.py-t td.mute{color:var(--faint);}
+  table.py-t td small{color:var(--faint); font-size:11.5px;}
+  table.py-t tr.venc td:first-child{font-weight:700;}
+  table.py-t tr.tot td{font-weight:700; border-top:1px solid var(--border); background:var(--panel2);}
+  table.py-t tr.memo td{color:var(--muted); font-style:italic;}
+  table.py-t td.bar{width:26%; min-width:70px; padding-right:12px;}
+  table.py-t th.grp{text-align:center; border-left:1px solid var(--border); background:var(--panel2);}
+  table.py-t th.grp.p{color:var(--dia-out);}
+  .py-bar{display:block; height:8px; border-radius:2px 4px 4px 2px; background:var(--dia-in);}
+  .py-bar.out{background:var(--dia-out);} .py-bar.venc{background:var(--bad);}
+  .py-plan-form{display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:10px 12px; align-items:start; margin-bottom:10px;}
+  #pcAns{margin:2px 0 10px;}
+  .py-card > p.note{font-size:12px; color:var(--muted); line-height:1.5; margin:8px 0 0; max-width:80ch;}
+  #pmLegend .ln{display:inline-block; width:18px; height:0; border-top:3px solid var(--dia-in); margin-right:6px; vertical-align:3px; border-radius:2px;}
+  #pmLegend .ln.p{border-top:3px dashed var(--dia-out);}
+  #pmLegend .dsh{display:inline-block; width:18px; height:0; border-top:2px dashed var(--warn); margin-right:6px; vertical-align:3px;}
+  #pmChart{min-height:280px;}
+  #pmChart svg{outline:none;}
+  #pmChart svg:focus-visible{outline:2px solid var(--accent-ink); outline-offset:2px; border-radius:6px;}
+  #pmChart .line-n{fill:none; stroke:var(--dia-in); stroke-width:2.25; stroke-linejoin:round; stroke-linecap:round;}
+  #pmChart .line-p{fill:none; stroke:var(--dia-out); stroke-width:2.25; stroke-dasharray:7 5; stroke-linejoin:round; stroke-linecap:round;}
+  #pmChart .mk-n{fill:var(--dia-in); stroke:var(--panel); stroke-width:2;}
+  #pmChart .mk-p{fill:var(--panel); stroke:var(--dia-out); stroke-width:2.25;}
+  #pmChart .py-zero{stroke:var(--text); stroke-width:1; opacity:.55;}
+  #pmChart .py-ref-min{stroke:var(--warn); stroke-width:1.5; stroke-dasharray:5 4;}
+  #pmChart .py-cross{stroke:var(--muted); stroke-width:1; pointer-events:none;}
+  #pmChart .py-hit{fill:transparent; cursor:crosshair;}
+  .py-view .py-two{grid-template-columns:repeat(auto-fit,minmax(min(100%,560px),1fr));}
+  #pdKpis, #pcKpis, #pmKpis{grid-template-columns:repeat(auto-fit,minmax(190px,1fr));}
+  #pyVwDeudas table.py-t, #pmT{min-width:0;}
+  #pyVwDeudas table.py-t th, #pyVwDeudas table.py-t td, #pmT th, #pmT td{padding:5px 7px; font-size:12.5px;}
+  #pyVwDeudas table.py-t th.num, #pmT th.num{white-space:normal; line-height:1.25; vertical-align:bottom;}
+  @media (max-width:640px){ #pdKpis, #pcKpis, #pmKpis{grid-template-columns:repeat(2,minmax(0,1fr));} }
   .cg-prev{margin:0 0 12px; border:1px solid var(--border); border-radius:10px; background:var(--panel2); padding:8px 12px 10px;}
   .cg-prev[hidden]{display:none;}
   .cg-prev > summary{cursor:pointer; font-weight:600; font-size:13px;}
@@ -1830,6 +1899,45 @@ body.gate-open{overflow:hidden;}
 <div id="tab-concar" class="tabpanel">
   <div class="layout">
     <div class="panel">
+      <details class="rv-card" id="rvCard">
+        <summary><svg class="ico"><use href="#i-file-plus"/></svg>Asiento del registro de ventas (SIRE)</summary>
+        <div class="rv-body">
+          <div class="step-sub">Sube el registro de ventas que baja el SIRE (el ZIP o el TXT/Excel de ventas). Se arma un asiento por comprobante: cuenta por cobrar, IGV e ingreso. Puedes subir varios meses; lo repetido no se duplica.</div>
+          <div class="dropzone" id="rvDropzone">Arrastra el ZIP del SIRE de ventas aquí<br>o haz clic para seleccionar</div>
+          <input type="file" id="rvFileInput" accept=".zip,.txt,.csv,.tsv,.xlsx,.xls,.xlsm" multiple style="display:none;">
+          <div class="status" id="rvStatus"></div>
+          <details class="help flat" style="margin-top:8px;"><summary>Cuentas y datos del asiento</summary><div>
+            <div class="cfg-grid" style="margin-top:6px;">
+              <div><label>Sub Diario</label><input type="text" id="rvSubdiario" value="05"></div>
+              <div><label>Correlativo inicial de cada mes</label><input type="text" id="rvCorrelativo" value="1"></div>
+              <div><label>Cuenta por cobrar (soles)</label><input type="text" id="rvCtaCobrarPen" value="121201"></div>
+              <div><label>Cuenta por cobrar (dólares)</label><input type="text" id="rvCtaCobrarUsd" value="121202"></div>
+              <div><label>Cuenta del IGV</label><input type="text" id="rvCtaIgv" value="401111"></div>
+              <div><label>Ingreso: operación gravada</label><input type="text" id="rvCtaGravado" value="703211"></div>
+              <div><label>Ingreso: operación exonerada</label><input type="text" id="rvCtaExonerado" value="703212"></div>
+              <div><label>Ingreso: operación inafecta</label><input type="text" id="rvCtaInafecto" value="703213"></div>
+              <div><label>Ingreso: exportación</label><input type="text" id="rvCtaExportacion" value="703213"></div>
+              <div><label>Otros importes (ISC, ICBPER…)</label><input type="text" id="rvCtaOtros" value="" placeholder="solo si el SIRE los trae"></div>
+              <div><label>Código de Área</label><input type="text" id="rvArea" value="010"></div>
+              <div><label>Medio de Pago</label><input type="text" id="rvMedioPago" value="0002"></div>
+              <div><label>Anexo para clientes sin documento</label><input type="text" id="rvAnexoVarios" value="" placeholder="vacío = sin anexo"></div>
+            </div>
+            <label class="dlg-check"><input type="checkbox" id="rvBoletas" checked><span>Incluir boletas y tickets. Si no los quieres en este asiento (por ejemplo, porque los registras por resumen diario), desmárcalo.</span></label>
+            <div class="step-sub" style="margin-top:6px;">Las glosas, el tipo de conversión y el flag de conversión de moneda usan los valores de «Configuración contable» de más abajo.</div>
+          </div></details>
+          <label style="margin-top:8px;">Mes a descargar</label>
+          <select id="rvMes" aria-label="Mes a descargar" disabled><option value="">Todos los meses</option></select>
+          <button id="rvGenerarBtn" disabled><svg class="ico"><use href="#i-wand"/></svg>Volver a generar</button>
+          <button id="rvExportBtn" class="green" style="margin-top:8px;" disabled><svg class="ico"><use href="#i-download"/></svg>Descargar Excel del asiento de ventas</button>
+          <details class="help" style="margin-top:8px;"><summary>Cómo se arma el asiento</summary><div>
+            Cada comprobante es <b>un asiento</b>: la cuenta por cobrar al <b>Debe</b> por el total, el IGV al <b>Haber</b> y el ingreso al <b>Haber</b> en la cuenta que corresponde (gravada, exonerada, inafecta o exportación). El número es el mes más un correlativo de 4 dígitos que vuelve a empezar cada mes, en el orden del archivo (por ejemplo, 090150).
+            <br><br>El ingreso gravado sale de <b>total − IGV</b>, así el asiento siempre cuadra aunque la base del SIRE difiera un centavo por redondeo.
+            <br><br><b>Notas de crédito:</b> todo va al revés (cuenta por cobrar al Haber, IGV e ingreso al Debe) y llevan el comprobante que modifican en las columnas de documento de referencia. Las notas de débito van como una factura, también con su referencia.
+            <br><br>El vencimiento es el del SIRE (o la fecha de emisión si viene vacío). La glosa es <i>razón social + tipo ; serie-número</i>. Los comprobantes en dólares salen en moneda US con el importe en dólares y en soles (los soles son exactamente los declarados al SIRE).
+          </div></details>
+        </div>
+      </details>
+
       <label>Origen de movimientos</label>
       <div class="source-toggle">
         <button id="cgUseTab1Btn">Pestaña 1</button>
@@ -1893,6 +2001,20 @@ body.gate-open{overflow:hidden;}
     </div>
 
     <div class="panel">
+      <div class="rv-result" id="rvResult" hidden>
+        <div class="rv-head">
+          <b>Asiento del registro de ventas</b>
+          <span class="badge" id="rvCount"></span>
+          <button class="ghost sm" id="rvQuitarBtn" title="Quita el registro de ventas cargado (no toca los asientos del banco)"><svg class="ico"><use href="#i-trash"/></svg>Quitar</button>
+        </div>
+        <div class="hint trf-orphan" id="rvAvisos" hidden style="display:block; margin:0 0 8px;"></div>
+        <div class="tablewrap"><table id="rvTable"><thead id="rvHead"></thead><tbody id="rvBody"></tbody><tfoot id="rvFoot"></tfoot></table></div>
+        <details class="rv-lineas" id="rvLineas">
+          <summary>Ver las líneas del asiento <span id="rvLineasSum"></span></summary>
+          <div class="tablewrap"><table id="rvLineasTable"><thead><tr><th>Comprob.</th><th>Fecha</th><th>Documento</th><th>Cuenta</th><th>D/H</th><th class="num">Importe</th><th>Anexo</th><th>Glosa</th></tr></thead><tbody id="rvLineasBody"></tbody></table></div>
+          <div class="hint" id="rvLineasNota" style="margin:6px 0 0;"></div>
+        </details>
+      </div>
       <div class="toolbar">
         <span class="badge cg-filter-badge" id="cgRowCount" data-f="all" role="button" tabindex="0" title="Clic para ver todas las líneas">0 líneas generadas</span>
         <span class="badge pill-sugerencia cg-filter-badge" id="cgFlaggedCount" data-f="revisar" role="button" tabindex="0" title="Clic para ver solo los asientos por revisar, completos (con su D y H)">0 por revisar</span>
@@ -2399,6 +2521,14 @@ body.gate-open{overflow:hidden;}
             <div class="dropzone" id="pyDropzone" tabindex="0" role="button" aria-label="Subir el formato lleno">Arrastra aquí el Excel lleno<br>o haz clic para seleccionarlo</div>
           </div>
 
+          <div class="py-viewbar" id="pyViewBar" hidden>
+            <div class="dia-seg" id="pyViewSeg" role="group" aria-label="Qué quieres ver">
+              <button type="button" data-pv="caja" class="on">Caja día a día</button>
+              <button type="button" data-pv="deudas">Deudas y por cobrar</button>
+              <button type="button" data-pv="compras">Planificar compras</button>
+              <button type="button" data-pv="meses">Mes a mes y escenarios</button>
+            </div>
+          </div>
           <div class="py-res" id="pyRes" hidden>
             <div class="py-banner" id="pyStatus" role="status"></div>
             <div class="dia-kpis" id="pyKpis"></div>
@@ -2417,6 +2547,59 @@ body.gate-open{overflow:hidden;}
             <div id="pyTableBox" hidden>
               <div class="tablewrap tall"><table id="pyDayTable"><thead><tr><th>Día</th><th class="num">Entradas</th><th class="num">Salidas</th><th class="num">Saldo</th><th>Estado</th></tr></thead><tbody id="pyDayBody"></tbody></table></div>
             </div>
+          </div>
+
+          <div class="py-banner warn" id="pyVwOld" hidden></div>
+          <div class="py-res py-view" id="pyVwDeudas" hidden>
+            <div class="dia-kpis" id="pdKpis"></div>
+            <div id="pdNet"></div>
+            <div class="py-two">
+              <div><h3 class="dia-h">Lo que te deben <small id="pdCobTot"></small></h3><div id="pdCob"></div></div>
+              <div><h3 class="dia-h">Lo que debes a proveedores <small id="pdPagTot"></small></h3><div id="pdPag"></div></div>
+            </div>
+            <h3 class="dia-h">Préstamos y leasing <small id="pdPreTot"></small></h3>
+            <div id="pdPre"></div>
+            <div class="py-two" style="margin-top:16px;">
+              <div><h3 class="dia-h">La caja en los próximos días</h3><div id="pdVen"></div></div>
+              <div><h3 class="dia-h">A dónde se va la caja <small id="pdGrpTot"></small></h3><div id="pdGrp"></div></div>
+            </div>
+            <ul class="py-list" id="pdNotas"></ul>
+          </div>
+
+          <div class="py-res py-view" id="pyVwCompras" hidden>
+            <div class="dia-kpis" id="pcKpis"></div>
+            <div class="py-card">
+              <h3 class="dia-h">¿Cuándo puedo comprar?</h3>
+              <div class="py-plan-form">
+                <div class="py-field"><label for="pcMonto">Cuánto quieres comprar</label><input type="text" id="pcMonto" placeholder="0.00" inputmode="decimal" autocomplete="off"><span class="h">Importe total, con IGV.</span></div>
+                <div class="py-field"><label for="pcPlazo">Cómo lo pagas</label><select id="pcPlazo"></select><span class="h">Si es a crédito, cuenta el día en que lo pagas.</span></div>
+                <div class="py-field"><label for="pcFecha">Fecha de compra (opcional)</label><input type="text" id="pcFecha" placeholder="dd/mm/aaaa" autocomplete="off"><span class="h">En blanco: te digo la primera fecha en que alcanza.</span></div>
+              </div>
+              <div class="py-banner" id="pcAns" hidden></div>
+              <div class="dia-btns"><button id="pcAddBtn" style="flex:0 0 auto;"><svg class="ico"><use href="#i-plus"/></svg>Agregar a la proyección</button></div>
+            </div>
+            <div id="pcPlanned"></div>
+            <h3 class="dia-h">Cuánto puedes pagar, semana a semana</h3>
+            <div class="dia-note" id="pcNote"></div>
+            <div class="tablewrap tall"><table class="py-t" id="pcT"><thead id="pcHead"></thead><tbody id="pcBody"></tbody></table></div>
+          </div>
+
+          <div class="py-res py-view" id="pyVwMeses" hidden>
+            <div class="dia-kpis" id="pmKpis"></div>
+            <div class="py-card">
+              <h3 class="dia-h">Escenario pesimista</h3>
+              <div class="py-params">
+                <div class="py-field"><label for="pmPct">% de lo por cobrar que se cobra</label><input type="text" id="pmPct" inputmode="decimal" autocomplete="off"><span class="h">100 = cobras todo lo previsto.</span></div>
+                <div class="py-field"><label for="pmAtraso">Días extra de atraso en los cobros</label><input type="text" id="pmAtraso" inputmode="numeric" autocomplete="off"><span class="h">Se suman a la fecha prevista de cada cobro.</span></div>
+              </div>
+              <p class="note" id="pmH"></p>
+            </div>
+            <div class="dia-note" id="pmHor"></div>
+            <div class="dia-bar2" style="margin-bottom:4px;"><h3 class="dia-h" style="margin:0;">Saldo al cierre de cada mes</h3></div>
+            <div class="dia-legend" id="pmLegend"></div>
+            <div class="dia-chart" id="pmChart"></div>
+            <div class="tablewrap tall"><table class="py-t" id="pmT"><thead id="pmHead"></thead><tbody id="pmBody"></tbody></table></div>
+            <div class="dia-note" id="pmFoot"></div>
           </div>
 
           <div class="py-card" id="pyParamsCard">
@@ -2446,6 +2629,8 @@ body.gate-open{overflow:hidden;}
                   <div class="py-field"><label for="pyIgvFavor">Crédito fiscal a favor (saldo)</label><input type="text" id="pyIgvFavor" placeholder="0.00" inputmode="decimal" autocomplete="off"><span class="h">Se descuenta primero del IGV por pagar.</span></div>
                 </div>
                 <p class="note" id="pyIgvEstH"></p>
+                <div class="dia-btns" style="margin-top:6px;"><button class="secondary sm" id="pyIgvSireBtn" style="flex:0 0 auto;" title="Promedio mensual de los últimos meses del registro de ventas y de compras del SIRE ya cargados">Calcular con mi SIRE</button></div>
+                <p class="note" id="pyIgvSireH"></p>
               </div>
               <div class="dia-btns" style="margin-top:8px;"><button class="ghost sm" id="pyIgvReset" style="flex:0 0 auto;">Quitar el IGV</button></div>
             </details>
@@ -2682,7 +2867,7 @@ window.EC_CONFIG = { API_URL: "PEGA_AQUI_LA_URL_DEL_SERVIDOR", GEO: true };
    Acceso: usuario + contraseña (se validan en cada pedido; la contraseña vive solo en memoria),
    equipo autorizado (id guardado en este navegador) y RUC habilitados.
    ============================================================ */
-const EC_CLIENT_VERSION = '1.7.10';
+const EC_CLIENT_VERSION = '1.7.12';
 const EC_USER_STORE = 'ec_usuario';
 const EC_DEVICE_STORE = 'ec_deviceId';
 const EC_URL_STORE = 'ec_api_url';
@@ -3838,6 +4023,7 @@ function extState(){
       tolerancia: (document.getElementById('tesTolerancia') || {}).value
     },
     fx: fxState(),
+    rv: rvCfgValues(),
     dia: diaState()
   };
 }
@@ -3941,6 +4127,7 @@ function applyExtState(ext){
     if(tolEl && ext.tes.tolerancia !== undefined && ext.tes.tolerancia !== '') tolEl.value = ext.tes.tolerancia;
   }
   if(ext.fx) fxApplyState(ext.fx);
+  if(ext.rv) rvApplyState(ext.rv);
   if(ext.dia) diaApplyState(ext.dia);
 }
 
@@ -6603,6 +6790,223 @@ function fxExportar(){
 })();
 
 /* ============================================================
+   ASIENTO DEL REGISTRO DE VENTAS (SIRE) — Pestaña 3
+   La página solo lee el archivo del SIRE (una fila por comprobante, con sus importes en columnas) y dibuja el resultado.
+   Las reglas del asiento (cuentas, debe/haber, notas de crédito, numeración, glosas) viven en el servidor: acción «ventasAsiento».
+   ============================================================ */
+let rvRows = new Map();        // clave del comprobante → fila compacta del SIRE
+let rvRes = null;              // respuesta del servidor {fijos, asientos, meses, avisos, ...}
+let rvBusy = false, rvTimer = null;
+const RV_CFG_IDS = ['rvSubdiario', 'rvCorrelativo', 'rvCtaCobrarPen', 'rvCtaCobrarUsd', 'rvCtaIgv', 'rvCtaGravado', 'rvCtaExonerado', 'rvCtaInafecto', 'rvCtaExportacion', 'rvCtaOtros', 'rvArea', 'rvMedioPago', 'rvAnexoVarios'];
+const RV_HEADERS = CONCAR_HEADERS.concat(['Tipo de Documento de Referencia', 'Número de Documento Referencia', 'Fecha Documento Referencia', 'Nro Máq. Registradora Tipo Doc. Ref.', 'Base Imponible Documento Referencia',
+  'IGV Documento Provisión', 'Tipo Referencia en estado MQ', 'Número Serie Caja Registradora', 'Fecha de Operación', 'Tipo de Tasa', 'Tasa Detracción/Percepción',
+  'Importe Base Detracción/Percepción Dólares', 'Importe Base Detracción/Percepción Soles', "Tipo Cambio para 'F'", 'Importe de IGV sin derecho crédito fiscal', 'Tasa IGV']);
+const rvEl = id => document.getElementById(id);
+const rvNum = x => (Number(x) || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+function rvCfgValues(){ const o = {}; RV_CFG_IDS.forEach(id => { const e = rvEl(id); if(e) o[id] = e.value; }); o.rvBoletas = !!(rvEl('rvBoletas') || {}).checked; return o; }
+function rvApplyState(s){
+  if(!s || typeof s !== 'object') return;
+  RV_CFG_IDS.forEach(id => { const e = rvEl(id); if(e && typeof s[id] === 'string') e.value = s[id]; });
+  const b = rvEl('rvBoletas'); if(b && typeof s.rvBoletas === 'boolean') b.checked = s.rvBoletas;
+}
+function rvCfgPayload(){
+  const v = id => ((rvEl(id) || {}).value || '').trim(), g = id => ((document.getElementById(id) || {}).value || '').trim();
+  return { subdiario: v('rvSubdiario'), correlativo: v('rvCorrelativo'), ctaCobrarPen: v('rvCtaCobrarPen'), ctaCobrarUsd: v('rvCtaCobrarUsd'), ctaIgv: v('rvCtaIgv'),
+    ctaGravado: v('rvCtaGravado'), ctaExonerado: v('rvCtaExonerado'), ctaInafecto: v('rvCtaInafecto'), ctaExportacion: v('rvCtaExportacion'), ctaOtros: v('rvCtaOtros'),
+    area: v('rvArea'), medioPago: v('rvMedioPago'), anexoVarios: v('rvAnexoVarios'), boletas: !!rvEl('rvBoletas').checked,
+    glosaMax: g('cfgGlosaMax'), glosaDetMax: g('cfgGlosaDetMax'), tipoConversion: g('cfgTipoConversion'), flagConversion: g('cfgFlagConversion') };
+}
+
+/* ---------- lectura del archivo del SIRE ---------- */
+function rvExtraer(cl, aoa){
+  const h = cl.headers.map(dnorm), f = (re, not) => docsColIdx(h, re, 0, not);
+  const ix = {
+    f: f(/^fecha (de )?emision/, /modific/), v: f(/^fecha (de )?(vcto|vencimiento)|^fecha vcto/), t: f(/^tipo cp( doc)?$/), s: f(/^serie del c/, /modific/),
+    n: f(/^nro cp o doc|^nro (inicial|cp)|^numero/, /modific|final/), nf: f(/^nro final/), id: f(/identidad/, /tipo/),
+    ex: f(/^valor facturado exportacion/), bi: f(/^bi gravada$/), dbi: f(/^dscto bi$/), igv: f(/^igv ipm$/), digv: f(/^dscto igv ipm$/), exo: f(/^mto exonerado/), ina: f(/^mto inafecto/),
+    isc: f(/^isc$/), ivap: f(/^ivap$/), icb: f(/^icbper$/), otr: f(/^otros tributos/), tot: f(/^total cp/), mon: f(/^moneda/), tc: f(/^tipo (de )?cambio/),
+    fm: f(/^fecha emision doc modificado/), tm: f(/^tipo cp modificado/), sm: f(/^serie cp modificado/), nm: f(/^nro cp modificado/), est: f(/^est comp/), grat: f(/^valor op gratuitas/)
+  };
+  ix.rs = -1; h.forEach((x, i) => { if(/^apellidos|^razon social/.test(x)) ix.rs = i; });
+  const out = [];
+  for(let r = cl.idx + 1; r < aoa.length; r++){
+    const row = aoa[r]; if(!row || !row.length) continue;
+    const t = docsStr(row[ix.t]); if(!/^\d{1,2}$/.test(t)) continue;
+    const o = {};
+    const txt = (k, v) => { v = docsStr(v); if(v && v !== '-') o[k] = v; };
+    const num = (k, v) => { const n = docsNum(v); if(n) o[k] = n; };
+    const at = k => ix[k] >= 0 ? row[ix[k]] : '';
+    txt('t', t.padStart(2, '0'));
+    o.f = docsFecha(at('f')); const v = docsFecha(at('v')); if(v) o.v = v;
+    txt('s', at('s')); txt('n', at('n')); txt('nf', at('nf')); txt('id', at('id')); txt('rs', at('rs'));
+    ['ex', 'bi', 'dbi', 'igv', 'digv', 'exo', 'ina', 'isc', 'ivap', 'icb', 'otr', 'tot', 'grat'].forEach(k => num(k, at(k)));
+    txt('mon', at('mon')); num('tc', at('tc'));
+    const fm = docsFecha(at('fm')); if(fm) o.fm = fm;
+    txt('tm', at('tm')); txt('sm', at('sm')); txt('nm', at('nm')); txt('est', at('est'));
+    out.push(o);
+  }
+  return out;
+}
+const rvClave = o => (o.t || '') + '|' + docsNroKey((o.s || '') + '-' + (o.n || ''));
+
+async function rvLeer(files){
+  const res = { filas: [], compras: [], otros: [], errores: [] };
+  for(const file of files){
+    let tables;
+    try{ tables = await docsTables(file.name, new Uint8Array(await file.arrayBuffer()), 0); }
+    catch(e){ res.errores.push(file.name + ': ' + (e && e.message || e)); continue; }
+    let hubo = false;
+    for(const t of tables){
+      const cl = docsClassify(t);
+      if(cl.kind === 'ventas'){ rvExtraer(cl, t.aoa).forEach(o => res.filas.push(o)); hubo = true; }
+      else if(cl.kind === 'compras'){ res.compras.push(file.name); hubo = true; }
+    }
+    if(!hubo) res.otros.push(file.name);
+  }
+  return res;
+}
+
+async function rvCargar(files){
+  const st = rvEl('rvStatus');
+  files = Array.from(files || []);
+  if(!files.length) return;
+  rvEl('rvCard').open = true;
+  st.textContent = 'Leyendo ' + (files.length === 1 ? files[0].name : files.length + ' archivos') + '…';
+  let r;
+  try{ r = await rvLeer(files); }catch(e){ st.textContent = 'No se pudo leer el archivo: ' + ((e && e.message) || e); return; }
+  const notas = [];
+  if(r.compras.length) notas.push((r.compras.length === 1 ? 'El archivo ' + r.compras[0] : r.compras.length + ' archivos') + ' es del registro de COMPRAS: aquí va el de ventas (RVIE).');
+  if(r.otros.length) notas.push('No reconocí como registro de ventas: ' + r.otros.join(', ') + '.');
+  if(r.errores.length) notas.push(r.errores.join(' · '));
+  if(!r.filas.length){ st.textContent = notas.join(' ') || 'No encontré comprobantes de ventas en el archivo.'; return; }
+  let nuevos = 0, repetidos = 0;
+  r.filas.forEach(o => { const k = rvClave(o); if(rvRows.has(k)) repetidos++; else nuevos++; rvRows.set(k, o); });
+  st.textContent = [nuevos + ' comprobante' + (nuevos === 1 ? '' : 's') + ' de ventas leído' + (nuevos === 1 ? '' : 's') + (repetidos ? ' (' + repetidos + ' ya estaban: se actualizaron, no se duplicaron)' : '') + '.'].concat(notas).join(' ');
+  await rvGenerar();
+}
+
+/* ---------- servidor: arma el asiento ---------- */
+async function rvGenerar(){
+  if(!rvRows.size || rvBusy) return;
+  rvBusy = true;
+  const st = rvEl('rvStatus');
+  try{
+    const d = await EC.call('ventasAsiento', { cfg: rvCfgPayload(), ventas: Array.from(rvRows.values()) }, { heavy: true, label: 'Armando el asiento de ventas…', btn: rvEl('rvGenerarBtn'), quiet: true });
+    rvRes = d;
+    rvRender();
+  }catch(e){
+    if(e && e.code === 'BAD_ACTION'){
+      st.textContent = 'El servidor todavía no tiene esta función: copia el Code.gs nuevo (versión 1.6.0) en tu proyecto de Apps Script y vuelve a implementar la versión.';
+      toast(st.textContent, 'bad');
+    } else if(e && !e.shown) { st.textContent = (e && e.message) || 'No se pudo armar el asiento.'; toast(st.textContent, 'bad'); }
+  }finally{ rvBusy = false; }
+}
+
+/* ---------- del resultado compacto a las 41 columnas ---------- */
+function rvExpandir(res, mes){
+  const rows = [];
+  ((res && res.asientos) || []).forEach(a => {
+    if(mes && a.k !== mes) return;
+    a.l.forEach(l => {
+      const o = Object.assign({}, res.fijos, {
+        'Número de Comprobante': a.n, 'Fecha de Comprobante': a.f, 'Código de Moneda': a.mo, 'Glosa Principal': a.g, 'Flag de Conversión de Moneda': a.fl,
+        'Cuenta Contable': l[0], 'Código de Anexo': a.a, 'Debe / Haber': l[1], 'Tipo de Documento': a.t, 'Número de Documento': a.d,
+        'Fecha de Documento': a.f, 'Fecha de Vencimiento': a.v, 'Glosa Detalle': a.gd
+      });
+      if(a.mo === 'US'){ o['Importe en Dólares'] = l[3]; o['Importe en Soles'] = l[2]; } else o['Importe Original'] = l[2];
+      if(a.r){ o['Tipo de Documento de Referencia'] = a.r[0]; o['Número de Documento Referencia'] = a.r[1]; if(a.r[2]) o['Fecha Documento Referencia'] = a.r[2]; }
+      if(a.rev) o.__rev = 1;
+      rows.push(o);
+    });
+  });
+  return rows;
+}
+
+/* ---------- pantalla ---------- */
+function rvRender(){
+  const box = rvEl('rvResult'), sel = rvEl('rvMes');
+  const ok = rvRes && rvRes.asientos && rvRes.asientos.length;
+  box.hidden = !(rvRes);
+  rvEl('rvGenerarBtn').disabled = !rvRows.size;
+  rvEl('rvExportBtn').disabled = !ok;
+  if(!rvRes){ sel.disabled = true; return; }
+  const prev = sel.value;
+  sel.innerHTML = '<option value="">Todos los meses (' + rvRes.comprobantes + ')</option>' + rvRes.meses.map(m => `<option value="${m.mes}">${m.mes} (${m.comprobantes})</option>`).join('');
+  sel.value = rvRes.meses.some(m => m.mes === prev) ? prev : '';
+  sel.disabled = !ok;
+  rvEl('rvCount').textContent = `${rvRes.comprobantes.toLocaleString('en-US')} comprobantes · ${rvRes.lineas.toLocaleString('en-US')} líneas`;
+  const av = rvEl('rvAvisos');
+  av.hidden = !rvRes.avisos.length;
+  av.innerHTML = rvRes.avisos.length ? '<ul class="rv-avisos">' + rvRes.avisos.map(a => '<li>' + escapeHtml(a) + '</li>').join('') + '</ul>' : '';
+  const M = rvRes.meses, sum = c => M.reduce((s, m) => s + (m[c] || 0), 0);
+  const cols = [['gravada', 'Base gravada'], ['exonerada', 'Exonerada'], ['inafecta', 'Inafecta'], ['exportacion', 'Exportación'], ['igv', 'IGV'], ['otros', 'Otros'], ['total', 'Total']]
+    .filter(c => c[0] === 'gravada' || c[0] === 'igv' || c[0] === 'total' || Math.abs(sum(c[0])) > 0.004);
+  rvEl('rvHead').innerHTML = '<tr><th>Mes</th><th class="num">Comprob.</th>' + cols.map(c => `<th class="num">${c[1]}</th>`).join('') + '</tr>';
+  rvEl('rvBody').innerHTML = M.map(m => `<tr><td>${escapeHtml(m.mes)}</td><td class="num">${m.comprobantes}${m.notas ? ' <small title="notas de crédito incluidas">(' + m.notas + ' NC)</small>' : ''}</td>${cols.map(c => `<td class="num">${rvNum(m[c[0]])}</td>`).join('')}</tr>`).join('');
+  rvEl('rvFoot').innerHTML = `<tr><td>Total</td><td class="num">${rvRes.comprobantes}</td>${cols.map(c => `<td class="num">${rvNum(sum(c[0]))}</td>`).join('')}</tr>`;
+  rvRenderLineas();
+}
+function rvRenderLineas(){
+  if(!rvRes) return;
+  const mes = rvEl('rvMes').value, rows = rvExpandir(rvRes, mes), LIM = 400;
+  rvEl('rvLineasSum').textContent = `(${rows.length.toLocaleString('en-US')} líneas${mes ? ' de ' + mes : ''})`;
+  rvEl('rvLineasBody').innerHTML = rows.slice(0, LIM).map(r => {
+    const usd = r['Código de Moneda'] === 'US';
+    const imp = usd ? rvNum(r['Importe en Soles']) + ' <small>(US$ ' + rvNum(r['Importe en Dólares']) + ')</small>' : rvNum(r['Importe Original']);
+    return `<tr${r.__rev ? ' class="bad"' : ''}><td>${escapeHtml(r['Número de Comprobante'])}</td><td>${escapeHtml(r['Fecha de Comprobante'])}</td><td>${escapeHtml(r['Tipo de Documento'] + ' ' + r['Número de Documento'])}</td><td>${escapeHtml(r['Cuenta Contable'] || '— falta —')}</td><td>${r['Debe / Haber']}</td><td class="num">${imp}</td><td>${escapeHtml(r['Código de Anexo'] || '')}</td><td>${escapeHtml(r['Glosa Principal'])}</td></tr>`;
+  }).join('');
+  rvEl('rvLineasNota').textContent = rows.length > LIM ? `Se muestran las primeras ${LIM} líneas; el Excel trae todas.` : '';
+}
+
+/* ---------- Excel ---------- */
+function rvExportar(){
+  if(!rvRes || !rvRes.asientos || !rvRes.asientos.length){ toast('Primero carga el registro de ventas.', 'warn'); return; }
+  const mes = rvEl('rvMes').value, rows = rvExpandir(rvRes, mes);
+  if(!rows.length){ toast('No hay líneas para ese mes.', 'warn'); return; }
+  const hayRev = rows.some(r => r.__rev), head = RV_HEADERS.concat(hayRev ? ['Revisar'] : []);
+  const data = rows.map(r => {
+    const o = {};
+    RV_HEADERS.forEach(h => { if(r[h] !== undefined && r[h] !== '') o[h] = r[h]; });
+    if(hayRev && r.__rev) o['Revisar'] = 'SI';
+    return o;
+  });
+  const ws = XLSX.utils.json_to_sheet(data, { header: head });
+  ['Importe Original', 'Importe en Dólares', 'Importe en Soles'].forEach(h => {
+    const c = head.indexOf(h);
+    for(let i = 1; i <= data.length; i++){ const a = XLSX.utils.encode_cell({ r: i, c }); if(ws[a] && typeof ws[a].v === 'number') ws[a].z = '0.00'; }
+  });
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'RV');
+  const ms = rvRes.meses.map(m => m.mes.replace('-', '')), tag = mes ? mes.replace('-', '') : (ms.length > 1 ? ms[0] + '-' + ms[ms.length - 1] : ms[0] || '');
+  XLSX.writeFile(wb, `asiento_ventas_${tag}.xlsx`, { compression: true });   // sin comprimir, un año de ventas pesaría más de 10 MB
+}
+
+function rvLimpiar(){
+  rvRows = new Map(); rvRes = null;
+  if(rvEl('rvStatus')) rvEl('rvStatus').textContent = '';
+  if(rvEl('rvResult')) rvRender();
+}
+
+(function wireRv(){
+  const dz = rvEl('rvDropzone'), inp = rvEl('rvFileInput');
+  if(!dz) return;
+  dz.addEventListener('click', () => inp.click());
+  dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('drag'); });
+  dz.addEventListener('dragleave', () => dz.classList.remove('drag'));
+  dz.addEventListener('drop', e => { e.preventDefault(); dz.classList.remove('drag'); rvCargar(e.dataTransfer.files); });
+  inp.addEventListener('change', e => { const fs = Array.from(e.target.files || []); inp.value = ''; rvCargar(fs); });
+  rvEl('rvGenerarBtn').addEventListener('click', rvGenerar);
+  rvEl('rvExportBtn').addEventListener('click', rvExportar);
+  rvEl('rvMes').addEventListener('change', rvRenderLineas);
+  rvEl('rvQuitarBtn').addEventListener('click', () => { rvLimpiar(); toast('Registro de ventas quitado.', 'ok'); });
+  RV_CFG_IDS.concat(['rvBoletas']).forEach(id => {
+    const e = rvEl(id); if(!e) return;
+    e.addEventListener('change', () => { scheduleExtSave(); if(rvRows.size){ clearTimeout(rvTimer); rvTimer = setTimeout(rvGenerar, 350); } });
+  });
+})();
+
+/* ============================================================
    TAB 6: TRABAJO DIARIO
    Junta las descargas del banco que se hacen durante el día (mañana, tarde), las cuenta una sola vez,
    avisa si algo no cuadra, clasifica cada movimiento y valida los comprobantes que se anotan.
@@ -6644,7 +7048,7 @@ const PY_MONEY = ['saldo', 'minimo', 'linea'];   // montos: uno por moneda (cada
 const proyDefParams = () => ({ desde: '', dias: 90, saldo: { PEN: '', USD: '' }, minimo: { PEN: '', USD: '' }, linea: { PEN: '', USD: '' }, cobroPct: 100, cobroAtraso: 0, atrasoBase: 0, esperaCobro: 7, esperaPago: 7, igv: { deuda: '', fecha: '', cuotas: '1', auto: false, ventas: '', compras: '', favor: '', dia: '15', detrac: '' } });
 const PY_PARAMS_DEF = proyDefParams();
 let proyFlowMode = 'real';  // real | proy
-let proy = { items: [], sources: [], params: proyDefParams(), mode: 'sem', chart: 'graf', res: null, sig: '', err: '' };
+let proy = { items: [], sources: [], params: proyDefParams(), mode: 'sem', chart: 'graf', view: 'caja', plan: { monto: '', plazo: '0', fecha: '' }, cmp: { pct: '80', atraso: '15' }, autoOff: false, autoSig: '', res: null, sig: '', err: '' };
 let proyBusy = 0, proySeq = 0, proyTimer = null, proyCur = -1, proyLim = 100;
 let proyFilt = { fuente: 'all', q: '' };
 const DIA_BANCOS = ['BCP', 'BBVA', 'INTERBANK', 'SCOTIABANK', 'NACION'];
@@ -8636,7 +9040,7 @@ function docsClassify(t){
     if(has(/^sub diario$/) && has(/^cuenta contable$/) && has(/^debe haber$/) && has(/^tipo de documento$/) && has(/^numero de documento$/)) return { kind: 'asientos', idx: i, headers: aoa[i] };
     if(has(/^tipo cp( doc)?$/) && has(/^serie del c/) && has(/total cp/)){
       const ven = has(/mto exonerado|bi gravada|valor facturado|dscto bi|bi grav ivap|mto inafecto|valor fob/);
-      const com = has(/bi gravado dg|igv ipm dg|valor adq|clasif de bienes|car orig|otros trib/);
+      const com = has(/bi gravado dg|igv ipm dg|valor adq|clasif de bienes|car orig|otros trib cargos/);
       const kind = ven && !com ? 'ventas' : (com && !ven ? 'compras' : (/venta|rvie|(^|[^a-z])rv([^a-z]|$)/i.test(nom) ? 'ventas' : 'compras'));
       return { kind, idx: i, headers: aoa[i] };
     }
@@ -10246,7 +10650,7 @@ function proyEff(){
   };
 }
 function proyLeanItem(it){
-  return { id: it.id, fuente: it.fuente, tipo: it.tipo, cat: it.cat, desc: it.desc, tercero: it.tercero, ruc: it.ruc, doc: it.doc, moneda: it.moneda, monto: it.monto, det: it.det, fecha: it.fecha, emision: it.emision, venc: it.venc, plazo: it.plazo, prev: it.prev, rep: it.rep, hasta: it.hasta, incluir: it.incluir !== false };
+  return { id: it.id, fuente: it.fuente, tipo: it.tipo, cat: it.cat, desc: it.desc, tercero: it.tercero, ruc: it.ruc, doc: it.doc, moneda: it.moneda, monto: it.monto, det: it.det, fecha: it.fecha, emision: it.emision, venc: it.venc, plazo: it.plazo, prev: it.prev, rep: it.rep, hasta: it.hasta, incluir: it.incluir !== false, cap: it.cap, inte: it.inte };
 }
 function proyHistAll(){
   const hs = proy.sources.map(s => s.hist).filter(Boolean);
@@ -10277,10 +10681,11 @@ function proyIgvEff(){
 function proyPayload(){
   const e = proyEff(), ig = proyIgvEff();
   return {
-    desde: e.desde, dias: e.dias, moneda: diaMon, saldo: e.saldo, minimo: e.minimo, linea: e.linea,
+    v: 2, desde: e.desde, dias: e.dias, moneda: diaMon, saldo: e.saldo, minimo: e.minimo, linea: e.linea,
     cobroPct: e.cobroPct, cobroAtraso: e.cobroAtraso, atrasoBase: e.atrasoBase, esperaCobro: e.esperaCobro, esperaPago: e.esperaPago,
     items: proy.items.map(proyLeanItem), historial: proyHistAll(),
-    igv: ig.on ? { deuda: ig.deuda, fecha: ig.fecha || e.desde, cuotas: ig.cuotas, auto: ig.auto, ventas: ig.ventas, compras: ig.compras, favor: ig.favor, dia: ig.dia, detrac: ig.detrac } : null
+    igv: ig.on ? { deuda: ig.deuda, fecha: ig.fecha || e.desde, cuotas: ig.cuotas, auto: ig.auto, ventas: ig.ventas, compras: ig.compras, favor: ig.favor, dia: ig.dia, detrac: ig.detrac } : null,
+    comparar: proyCmpEff()
   };
 }
 
@@ -10336,6 +10741,7 @@ function renderProy(){
   const nd = proyDocs().length;
   dEl('pyTab2Btn').title = nd ? `Usa los ${nd.toLocaleString('en-US')} documentos pendientes ya cargados: cuentas 12 como por cobrar, 42 y 46 como por pagar` : 'Aún no hay documentos pendientes cargados: usa «Subir reporte de pendientes»';
   renderProyBadge(); renderProyIntro(); renderProySources(); renderProyParams(); renderProyItems(); renderProyResults();
+  proyAutoTab2();
   if(has){
     const sig = diaHash(JSON.stringify(proyPayload()));
     if(sig !== proy.sig && !proyBusy) proyRecalcSoon();
@@ -10362,6 +10768,8 @@ function renderProySources(){
   });
   const nm = proy.items.filter(i => i.src === 'manual').length;
   if(nm) chips.push(`<span class="py-chip"><b>Agregados a mano</b><span class="m">${nm} movimiento${nm === 1 ? '' : 's'}</span><button type="button" data-rm-src="manual" title="Quitar lo agregado a mano" aria-label="Quitar lo agregado a mano">×</button></span>`);
+  const np = proy.items.filter(i => i.src === 'plan').length;
+  if(np) chips.push(`<span class="py-chip"><b>Compras planificadas</b><span class="m">${np} compra${np === 1 ? '' : 's'}</span><button type="button" data-rm-src="plan" title="Quitar las compras planificadas" aria-label="Quitar las compras planificadas">×</button></span>`);
   dEl('pySources').innerHTML = chips.join('');
   // avisos de lectura
   const errs = [], avs = [];
@@ -10420,6 +10828,7 @@ function renderProyIgv(){
   if(ig.auto) partes.push('meses siguientes');
   sm.textContent = 'IGV: deuda existente y meses siguientes' + (partes.length ? ' · ' + partes.join(' + ') : '');
   dEl('pyIgvMon').hidden = diaMon === 'PEN';
+  renderProyIgvSire();
 }
 function proyOpenIgv(){
   const d = dEl('pyIgv'); d.open = true;
@@ -10442,15 +10851,32 @@ function proyIndex(){
 function renderProyResults(){
   const res = proy.res;
   const has = proy.items.length > 0 && !!res;
-  dEl('pyRes').hidden = !has; dEl('pyRes2').hidden = !has;
+  const v = PY_VIEWS.includes(proy.view) ? proy.view : 'caja';
+  dEl('pyViewBar').hidden = !has;
+  // las vistas nuevas necesitan lo que calcula el Code.gs 1.6.1; con un servidor anterior (o mientras llega el cálculo) se avisa en vez de mostrar cifras vacías
+  const nuevo = !!(res && res.posicion && res.mensual && res.dias && res.dias[0] && res.dias[0].margen !== undefined);
+  const falta = has && v !== 'caja' && !nuevo;
+  dEl('pyRes').hidden = !has || v !== 'caja'; dEl('pyRes2').hidden = !has || v !== 'caja';
+  dEl('pyVwDeudas').hidden = !has || v !== 'deudas' || falta; dEl('pyVwCompras').hidden = !has || v !== 'compras' || falta; dEl('pyVwMeses').hidden = !has || v !== 'meses' || falta;
+  const old = dEl('pyVwOld'); old.hidden = !falta;
+  if(falta) old.innerHTML = proyBusy > 0
+    ? `${pyIco('i-info', 'ic')}<h3>Calculando…</h3><p>En un momento aparece esta vista.</p>`
+    : `${pyIco('i-alert', 'ic')}<h3>Esta vista necesita el Code.gs nuevo</h3><p>El servidor todavía no entrega estas cifras: copia el Code.gs nuevo (versión 1.6.1) en tu proyecto de Apps Script y vuelve a implementar la versión. Mientras tanto, «Caja día a día» sigue funcionando.</p>`;
   dEl('pyXlsxBtn').disabled = !has; dEl('pyShareBtn').disabled = !has;
   renderProyIntro(); proyBusyClass();
   if(!has){ renderProyItemsPatch(); return; }
-  renderProyBanner(res); renderProyKpis(res);
-  document.querySelectorAll('#pyChartSeg button').forEach(b => b.classList.toggle('on', b.dataset.pc === proy.chart));
-  dEl('pyChartBox').hidden = proy.chart !== 'graf'; dEl('pyTableBox').hidden = proy.chart !== 'tabla';
-  if(proy.chart === 'graf'){ renderProyLegend(res); proyRenderChart(); } else renderProyDayTable(res);
-  renderProyMatrix(res); renderProyTops(res); renderProyNotes(res);
+  document.querySelectorAll('#pyViewSeg button').forEach(b => { const on = b.dataset.pv === v; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on ? 'true' : 'false'); });
+  if(v === 'caja'){
+    renderProyBanner(res); renderProyKpis(res);
+    document.querySelectorAll('#pyChartSeg button').forEach(b => b.classList.toggle('on', b.dataset.pc === proy.chart));
+    dEl('pyChartBox').hidden = proy.chart !== 'graf'; dEl('pyTableBox').hidden = proy.chart !== 'tabla';
+    if(proy.chart === 'graf'){ renderProyLegend(res); proyRenderChart(); } else renderProyDayTable(res);
+    renderProyMatrix(res); renderProyTops(res); renderProyNotes(res);
+  }
+  else if(falta){ /* aviso arriba */ }
+  else if(v === 'deudas') renderProyDeudas(res);
+  else if(v === 'compras') renderProyCompras(res);
+  else renderProyMeses(res);
   renderProyItemsPatch();
 }
 function proyBannerInfo(res){
@@ -10868,22 +11294,37 @@ async function proyIngest(list){
   if(any) proyChanged(true);
 }
 const proyDocs = () => { const d = diaDocs(); return d.length ? d : pendingDocs; };
-async function proyFromTab2(){
-  const docs = proyDocs();
-  if(!docs.length){ toast('Todavía no hay documentos pendientes. Sube el reporte con «Subir reporte de pendientes» (o cárgalos en la Pestaña 2).', 'warn'); return; }
+async function proyFromTab2(mode){
+  const auto = mode === 'auto';
+  const todos = proyDocs(), sig = proyDocsSig();
+  // los comprobantes del SIRE no traen saldos reales (listan todo lo emitido, esté cobrado o no): no viajan al servidor ni entran como por cobrar o por pagar
+  const docs = todos.filter(d => !/^SIRE/i.test(String(d.fuente || ''))), sire = todos.length - docs.length;
+  if(!auto) proy.autoOff = false;
+  if(!todos.length){ if(!auto) toast('Todavía no hay documentos pendientes. Sube el reporte con «Subir reporte de pendientes» (o cárgalos en la Pestaña 2).', 'warn'); return; }
+  proy.autoSig = sig;
+  if(!docs.length){
+    if(!auto) toast(`${todos.length === 1 ? 'El documento cargado es' : `Los ${todos.length} documentos cargados son`} del SIRE, que no trae saldos reales (lista todo lo emitido, esté cobrado o no). Sube el reporte de documentos pendientes de tu sistema contable.`, 'warn');
+    return;
+  }
   try{
-    const d = await EC.call('proyParse', { hojas: {}, docs: docs.map(diaLeanDoc) }, { heavy: true, label: 'Tomando los documentos pendientes…', btn: dEl('pyTab2Btn'), quiet: true });
-    if(!(d.items || []).length){ toast(`Ninguno de los ${docs.length} documentos tiene saldo por cobrar (cuenta 12) o por pagar (42 y 46).`, 'warn'); return; }
+    const d = await EC.call('proyParse', { hojas: {}, docs: docs.map(diaLeanDoc) },
+      auto ? { silent: true, quiet: true } : { heavy: true, label: 'Tomando los documentos pendientes…', btn: dEl('pyTab2Btn'), quiet: true });
+    if(!(d.items || []).length){
+      if(!auto) toast(`Ninguno de los ${docs.length} documentos tiene saldo por cobrar (cuenta 12) o por pagar (42 y 46).`, 'warn');
+      return;
+    }
     const own = diaDocsSrc === 'own' && diaDocs().length > 0;
     const r = proyMerge(d, { id: 'tab2', name: own ? 'Documentos pendientes · ' + (diaDocsName || 'reporte') : 'Pestaña 2 · documentos pendientes', kind: 'tab2' });
     const rs = d.resumen || {};
-    toast(`Documentos pendientes: ${rs.cobro || 0} por cobrar y ${rs.compra || 0} por pagar${d.ignorados && d.ignorados.otrasCuentas ? `; ${d.ignorados.otrasCuentas} documento(s) de otras cuentas no entran` : ''}.`, 'ok');
+    toast(`${auto ? 'Se cargaron solos los documentos pendientes' : 'Documentos pendientes'}: ${rs.cobro || 0} por cobrar y ${rs.compra || 0} por pagar${d.ignorados && d.ignorados.otrasCuentas ? `; ${d.ignorados.otrasCuentas} documento(s) de otras cuentas no entran` : ''}${sire ? `; ${sire} del SIRE no entran (no traen saldos reales)` : ''}.`, 'ok');
     proyChanged(true);
-  }catch(e){ ecFail(e); }
+  }catch(e){ if(auto) console.warn('No se pudieron traer solos los documentos pendientes:', e); else ecFail(e); }
 }
 async function proyUploadDocs(files){
   await diaLoadDocsFiles(Array.isArray(files) ? files : [files]);
-  if(proyDocs().length) await proyFromTab2();
+  // si la carga automática ya tomó estos mismos documentos no se repite; si la quitaste a mano, hay otras cargas o solo hay comprobantes del SIRE (para explicar por qué no entran), se trae/avisa ahora
+  const sg = proyDocsSig();
+  if(proyDocs().length && (!sg || proy.autoOff || proy.autoSig !== sg)) await proyFromTab2();
 }
 function proyDownloadTpl(){
   try{
@@ -10931,13 +11372,14 @@ function proyAddManual(){
 async function proyRemoveSource(id){
   const n = proy.items.filter(i => i.src === id).length;
   const s = proy.sources.find(x => x.id === id);
-  const name = id === 'manual' ? 'lo agregado a mano' : (s ? s.name : id);
+  const name = id === 'manual' ? 'lo agregado a mano' : (id === 'plan' ? 'las compras planificadas' : (s ? s.name : id));
   if(n){
     const r = await askConfirm({ title: 'Quitar lo cargado', text: `Se quitan ${n} movimiento${n === 1 ? '' : 's'} de «${name}», con las correcciones que hiciste en ellos.`, okLabel: 'Quitar', danger: true });
     if(!r.ok) return;
   }
   proy.items = proy.items.filter(i => i.src !== id);
   proy.sources = proy.sources.filter(x => x.id !== id);
+  if(id === 'tab2') proy.autoOff = true;
   if(!proy.items.length){ proy.res = null; proy.sig = ''; proy.err = ''; }
   proyChanged(true);
 }
@@ -10971,6 +11413,7 @@ function proyExportXlsx(){
   sheet([['Fecha', 'Día', 'Entradas', 'Salidas', 'Saldo', 'Estado']].concat(res.dias.map(d => [d.f, diaWeekday(d.f), d.in, d.out, d.saldo, proyEstado(d.saldo, r).t])), [12, 7, 14, 14, 15, 20], 'Saldo diario');
   const wk = proyMatrixAoa(res, 'sem'); sheet(wk, [44].concat(wk[0].slice(1).map(() => 16)), 'Flujo semanal');
   const ms = proyMatrixAoa(res, 'mes'); sheet(ms, [44].concat(ms[0].slice(1).map(() => 16)), 'Flujo mensual');
+  proyAddSheets(sheet, res);
   sheet([['Fecha', 'Tipo', 'Rubro', 'Grupo', 'Origen', 'Descripción', 'Tercero', 'Documento', 'Importe', 'Cómo se calculó']].concat((res.lineas || []).map(l => [l.f, l.tipo === 'in' ? 'Entrada' : 'Salida', pyCatT(l.cat), pyGrupoT(l.cat), PY_FUENTES[l.fuente] || l.fuente, l.desc, l.tercero, l.doc, l.monto, l.nota])), [12, 9, 30, 26, 17, 44, 30, 18, 14, 50], 'Detalle');
   sheet([['Origen', 'Tipo', 'Rubro', 'Descripción', 'Tercero', 'RUC', 'Documento', 'Moneda', 'Importe', 'Detracción %', 'Fecha emisión', 'Fecha vencimiento / pago', 'Plazo', 'Fecha esperada (tuya)', 'Repetir', 'Hasta', 'Se cuenta', 'Cargado desde']].concat(proy.items.map(i => [PY_FUENTES[i.fuente] || i.fuente, i.tipo === 'in' ? 'Entrada' : 'Salida', pyCatT(i.cat), i.desc, i.tercero, i.ruc, i.doc, i.moneda, i.monto, i.det || '', i.emision, i.venc || i.fecha, i.plazo || '', i.prev, PY_REP_T[i.rep] || '', i.hasta, i.incluir === false ? 'No' : 'Sí', i.src === 'manual' ? 'A mano' : ((proy.sources.find(s => s.id === i.src) || {}).name || '')])), [16, 9, 24, 44, 30, 14, 18, 8, 14, 12, 13, 18, 8, 18, 14, 12, 10, 34], 'Datos cargados');
   XLSX.writeFile(wb, `proyeccion_caja_${res.desde.replace(/\//g, '-')}.xlsx`);
@@ -10979,14 +11422,14 @@ function proyExportXlsx(){
 /* ---------------- guardar / abrir / limpiar ---------------- */
 function proyState(){
   return {
-    grp: flowGrp, det: flowDet, items: proy.items, sources: proy.sources, params: proy.params, mode: proy.mode, chart: proy.chart, flow: proyFlowMode, sig: proy.sig,
+    grp: flowGrp, det: flowDet, items: proy.items, sources: proy.sources, params: proy.params, mode: proy.mode, chart: proy.chart, flow: proyFlowMode, sig: proy.sig, view: proy.view, plan: proy.plan, cmp: proy.cmp, autoOff: proy.autoOff, autoSig: proy.autoSig,
     res: proy.res ? Object.assign({}, proy.res, { lineas: (proy.res.lineas || []).slice(0, 1500) }) : null
   };
 }
 function proyReset(){
   clearTimeout(proyTimer); proySeq++; proyBusy = 0; proyCur = -1; proyLim = 100;
   proyFlowMode = 'real'; proyFilt = { fuente: 'all', q: '' }; flowGrp = 'dia'; flowDet = 'det';
-  proy = { items: [], sources: [], params: proyDefParams(), mode: 'sem', chart: 'graf', res: null, sig: '', err: '' };
+  proy = { items: [], sources: [], params: proyDefParams(), mode: 'sem', chart: 'graf', view: 'caja', plan: { monto: '', plazo: '0', fecha: '' }, cmp: { pct: '80', atraso: '15' }, autoOff: false, autoSig: '', res: null, sig: '', err: '' };
   const b = dEl('pyAddBox'); if(b) b.hidden = true;
   const s = dEl('pyItemSearch'); if(s) s.value = '';
   const f = dEl('pyItemFuente'); if(f) f.value = 'all';
@@ -11005,10 +11448,415 @@ function proyApply(s){
   });
   proy.mode = ['sem', 'mes', 'dia'].includes(s.mode) ? s.mode : 'sem';
   proy.chart = s.chart === 'tabla' ? 'tabla' : 'graf';
+  proy.view = PY_VIEWS.includes(s.view) ? s.view : 'caja';
+  if(s.plan && typeof s.plan === 'object') proy.plan = { monto: String(s.plan.monto || ''), plazo: String(s.plan.plazo || '0'), fecha: String(s.plan.fecha || '') };
+  if(s.cmp && typeof s.cmp === 'object') proy.cmp = { pct: String(s.cmp.pct === undefined ? '80' : s.cmp.pct), atraso: String(s.cmp.atraso === undefined ? '15' : s.cmp.atraso) };
+  proy.autoOff = !!s.autoOff; proy.autoSig = String(s.autoSig || '');
   flowGrp = ['dia', 'sem', 'mes'].includes(s.grp) ? s.grp : 'dia'; flowDet = s.det === 'grp' ? 'grp' : 'det';
   proyFlowMode = s.flow === 'proy' ? 'proy' : 'real';
   if(s.res && Array.isArray(s.res.dias) && s.res.resumen){ proy.res = s.res; proy.sig = String(s.sig || ''); }
 }
+
+/* ============================================================
+   v1.7.12 · PLANTEAMIENTO FINANCIERO (Pestaña 6 › Proyección a futuro)
+   Deudas y por cobrar · planificador de compras · mes a mes con escenario pesimista · carga automática.
+   Todas las cifras las calcula el servidor (proyCalc: posicion, dias[].margen, mensual, alterno); aquí solo se dibujan.
+   ============================================================ */
+const PY_VIEWS = ['caja', 'deudas', 'compras', 'meses'];
+const PY_PLAZOS = [[0, 'Al contado'], [15, 'A 15 días'], [30, 'A 30 días'], [45, 'A 45 días'], [60, 'A 60 días'], [90, 'A 90 días']];
+const pyKp = (cls, l, v, s) => `<div class="dia-kpi ${cls}"><span class="l">${l}</span><span class="v" title="${escapeHtml(v)}">${escapeHtml(v)}</span><span class="s">${s}</span></div>`;
+const pyMes3 = n => { const t = DIA_MESES[n - 1].slice(0, 3); return t.charAt(0).toUpperCase() + t.slice(1); };
+const pyMesT = m => pyMes3(m.mes) + ' ' + m.anio;
+const pyCli = kind => kind === 'in' ? 'cliente' : 'proveedor';
+
+function proyCmpEff(){
+  const c = proy.cmp || {}, n = (v, d, lo, hi) => { const x = proyNumIn(v); return isNaN(x) ? d : Math.max(lo, Math.min(hi, x)); };
+  return { cobroPct: n(c.pct, 80, 0, 100), cobroAtraso: Math.round(n(c.atraso, 15, 0, 365)) };
+}
+
+/* ---------------- Deudas y por cobrar ---------------- */
+function proyAgingHtml(L, mon, kind){
+  const que = kind === 'in' ? 'cuentas por cobrar' : 'compras por pagar';
+  if(!L.n) return `<div class="dia-note">No hay ${que} cargadas en ${mon === 'USD' ? 'dólares' : 'soles'}.</div>`;
+  const max = Math.max.apply(null, [1].concat(L.buckets.map(b => b.monto)));
+  const rows = L.buckets.filter(b => b.n).map(b => {
+    const ven = b.k.charAt(0) === 'v';
+    return `<tr class="${ven ? 'venc' : ''}"><td>${escapeHtml(b.t)}</td><td class="num">${b.n}</td><td class="num">${diaNum(b.monto)}</td><td class="bar"><span class="py-bar ${ven ? 'venc' : kind}" style="width:${Math.max(3, Math.round(b.monto / max * 100))}%"></span></td></tr>`;
+  }).join('');
+  const trows = L.terceros.map(x => `<tr><td title="${escapeHtml(x.nombre + (x.ruc ? ' · ' + x.ruc : ''))}">${escapeHtml(x.nombre)}</td><td class="num">${x.n}</td><td class="num">${diaNum(x.total)}</td><td class="num ${x.vencido ? 'neg' : 'mute'}">${x.vencido ? diaNum(x.vencido) : '—'}</td><td class="num ${x.vencido ? '' : 'mute'}">${x.vencido ? x.atraso + ' d' : '—'}</td><td>${x.proximo ? escapeHtml(x.proximo) : '—'}</td></tr>`).join('')
+    + (L.otros.n ? `<tr class="memo"><td>Otros ${L.otros.n} ${kind === 'in' ? 'clientes' : 'proveedores'}</td><td class="num"></td><td class="num">${diaNum(L.otros.total)}</td><td></td><td></td><td></td></tr>` : '');
+  return `<div class="tablewrap"><table class="py-t"><thead><tr><th>Cuándo vence</th><th class="num">Docs.</th><th class="num">Importe</th><th></th></tr></thead><tbody>${rows}<tr class="tot"><td>Total</td><td class="num">${L.n}</td><td class="num">${diaNum(L.total)}</td><td></td></tr></tbody></table></div>`
+    + `<h4 class="py-sub">Por ${pyCli(kind)}${L.nTerceros > L.terceros.length ? ` (los ${L.terceros.length} mayores de ${L.nTerceros})` : ''}</h4>`
+    + `<div class="tablewrap"><table class="py-t"><thead><tr><th>${kind === 'in' ? 'Cliente' : 'Proveedor'}</th><th class="num">Docs.</th><th class="num">Total</th><th class="num">Vencido</th><th class="num">Atraso máx.</th><th>Próximo vence</th></tr></thead><tbody>${trows}</tbody></table></div>`;
+}
+function proyPreHtml(pre){
+  if(!pre.n) return '<div class="dia-note">No hay cuotas de préstamos o leasing cargadas. Súbelas con «Subir formato lleno» (también sirve el cronograma tal como lo entrega el banco).</div>';
+  const cap = v => v === null ? '<td class="num mute">—</td>' : `<td class="num">${diaNum(v)}</td>`;
+  const rows = pre.entidades.map(e => `<tr><td title="${escapeHtml(e.nombre)}">${escapeHtml(e.nombre)}</td><td class="num">${e.n}</td><td class="num">${diaNum(e.total)}</td>${cap(e.capital)}${cap(e.interes)}<td>${escapeHtml(e.proxima)} · ${diaNum(e.proximaMonto)}</td><td>${escapeHtml(e.ultima)}</td><td class="num ${e.prox30 ? '' : 'mute'}">${e.prox30 ? diaNum(e.prox30) : '—'}</td><td class="num ${e.prox90 ? '' : 'mute'}">${e.prox90 ? diaNum(e.prox90) : '—'}</td></tr>`).join('');
+  const sinCap = pre.capital === null;
+  return `<div class="tablewrap"><table class="py-t"><thead><tr><th>Entidad</th><th class="num">Cuotas</th><th class="num">Por pagar</th><th class="num">Capital</th><th class="num">Interés</th><th>Próxima cuota</th><th>Última cuota</th><th class="num">En 30 días</th><th class="num">En 90 días</th></tr></thead><tbody>${rows}<tr class="tot"><td>Total</td><td class="num">${pre.n}</td><td class="num">${diaNum(pre.total)}</td>${cap(pre.capital)}${cap(pre.interes)}<td></td><td></td><td class="num">${diaNum(pre.prox30)}</td><td class="num">${diaNum(pre.prox90)}</td></tr></tbody></table></div>`
+    + (sinCap ? '<div class="dia-note">Algunas cuotas no traen el desglose de capital e interés (se cargaron antes de esta versión): vuelve a subir el cronograma para verlo. «Por pagar» incluye capital, interés, comisiones y seguros.</div>' : '<div class="dia-note">«Por pagar» incluye capital, interés, comisiones y seguros de cada cuota; capital e interés se muestran aparte.</div>');
+}
+function renderProyDeudas(res){
+  const P = res.posicion, kp = dEl('pdKpis');
+  if(!P){
+    kp.innerHTML = ''; dEl('pdNet').innerHTML = '<div class="dia-note">Calculando la posición…</div>';
+    ['pdCob', 'pdPag', 'pdPre', 'pdVen', 'pdGrp', 'pdNotas'].forEach(id => { dEl(id).innerHTML = ''; });
+    ['pdCobTot', 'pdPagTot', 'pdPreTot', 'pdGrpTot'].forEach(id => { dEl(id).textContent = ''; });
+    return;
+  }
+  const mon = res.moneda, M = n => diaMoney(n, mon), N = P.neto, pre = P.prestamos, tr = P.tributos;
+  const ven = v => v > 0 ? 'vencido ' + M(v) : 'nada vencido';
+  const k = [
+    pyKp('k-in', 'Por cobrar', M(P.cobrar.total), P.cobrar.n ? escapeHtml(`${P.cobrar.n} doc. · ${ven(P.cobrar.vencido)}`) : 'nada cargado'),
+    pyKp('k-out', 'Por pagar a proveedores', M(P.pagar.total), P.pagar.n ? escapeHtml(`${P.pagar.n} doc. · ${ven(P.pagar.vencido)}`) : 'nada cargado'),
+    pyKp('k-out', 'Préstamos por pagar', M(pre.total), pre.n ? escapeHtml(`${pre.n} cuota${pre.n === 1 ? '' : 's'}` + (pre.capital !== null ? ` · capital ${M(pre.capital)}` : '')) : 'nada cargado')
+  ];
+  if(tr.igvDeuda > 0) k.push(pyKp('k-out', 'IGV ya determinado', M(tr.igvDeuda), escapeHtml(tr.cuotas > 1 ? `en ${tr.cuotas} cuotas desde el ${tr.fecha}` : `se paga el ${tr.fecha}`)));
+  k.push(pyKp(N.total < 0 ? 'k-bad' : 'k-ok', 'Posición neta', M(N.total), 'caja + por cobrar − deudas'));
+  kp.innerHTML = k.join('');
+
+  const lines = [['Saldo en bancos al inicio', N.caja], ['Por cobrar' + (P.cobrar.detraccion ? ` (sin los ${M(P.cobrar.detraccion)} de detracción o retención)` : ''), N.cobrar]];
+  if(N.detraccion) lines.push(['Cuenta de detracciones', N.detraccion]);
+  lines.push(['Por pagar a proveedores', N.pagar], ['Cuotas de préstamos pendientes', N.prestamos]);
+  if(N.igv) lines.push(['IGV ya determinado', N.igv]);
+  dEl('pdNet').innerHTML = `<h3 class="dia-h">Cómo sale la posición neta <small>al ${escapeHtml(P.desde)}</small></h3><div class="tablewrap" style="margin-bottom:6px;"><table class="py-t"><tbody>${lines.map(l => `<tr><td>${escapeHtml(l[0])}</td><td class="num ${l[1] < 0 ? 'neg' : ''}">${diaNum(l[1])}</td></tr>`).join('')}<tr class="tot"><td>Posición neta</td><td class="num ${N.total < 0 ? 'neg' : ''}">${diaNum(N.total)}</td></tr></tbody></table></div><div class="dia-note" style="margin-bottom:16px;">Es lo que quedaría si cobraras todo lo cargado y pagaras todas las deudas hoy. No incluye gastos que aún no ocurren (planilla, alquiler, impuestos del mes) ni ventas por facturar: eso lo ve la proyección día a día.</div>`;
+
+  dEl('pdCobTot').textContent = P.cobrar.n ? M(P.cobrar.total) : '';
+  dEl('pdPagTot').textContent = P.pagar.n ? M(P.pagar.total) : '';
+  dEl('pdPreTot').textContent = pre.n ? M(pre.total) : '';
+  dEl('pdCob').innerHTML = proyAgingHtml(P.cobrar, mon, 'in');
+  dEl('pdPag').innerHTML = proyAgingHtml(P.pagar, mon, 'out');
+  dEl('pdPre').innerHTML = proyPreHtml(pre);
+
+  dEl('pdVen').innerHTML = `<div class="tablewrap"><table class="py-t"><thead><tr><th>Período</th><th class="num">Entra</th><th class="num">Sale</th><th class="num">Neto</th><th class="num">Saldo al cierre</th><th class="num">Más bajo</th></tr></thead><tbody>${(res.ventanas || []).map(v => `<tr><td>Próximos ${v.dias} días <small>(hasta el ${escapeHtml(v.hasta)})</small></td><td class="num">${diaNum(v.entra)}</td><td class="num">${diaNum(v.sale)}</td><td class="num ${v.neto < 0 ? 'neg' : ''}">${diaNum(v.neto)}</td><td class="num ${v.saldo < 0 ? 'neg' : ''}">${diaNum(v.saldo)}</td><td class="num ${v.min < 0 ? 'neg' : ''}">${diaNum(v.min)}</td></tr>`).join('')}</tbody></table></div>`;
+  const G = (res.porGrupo || []).filter(g => g.out > 0).sort((a, b) => b.out - a.out), gt = G.reduce((s, g) => s + g.out, 0), gm = Math.max.apply(null, [1].concat(G.map(g => g.out)));
+  dEl('pdGrpTot').textContent = gt ? M(pyR2(gt)) : '';
+  dEl('pdGrp').innerHTML = G.length ? `<div class="tablewrap"><table class="py-t"><thead><tr><th>Grupo</th><th class="num">Sale</th><th class="num">%</th><th></th></tr></thead><tbody>${G.map(g => `<tr><td>${escapeHtml(g.t)}</td><td class="num">${diaNum(g.out)}</td><td class="num">${Math.round(g.out / gt * 100)}%</td><td class="bar"><span class="py-bar out" style="width:${Math.max(3, Math.round(g.out / gm * 100))}%"></span></td></tr>`).join('')}</tbody></table></div>` : '<div class="dia-note">No hay salidas dentro del período proyectado.</div>';
+
+  const nt = [], otra = mon === 'USD' ? 'soles' : 'dólares';
+  if(P.fuera.otraMoneda) nt.push(`${P.fuera.otraMoneda} movimiento${P.fuera.otraMoneda === 1 ? '' : 's'} en ${otra} no entra${P.fuera.otraMoneda === 1 ? '' : 'n'}: esta vista es en ${mon === 'USD' ? 'dólares' : 'soles'}. Cambia la moneda arriba para ver la otra.`);
+  if(P.fuera.excluidos) nt.push(`${P.fuera.excluidos} movimiento${P.fuera.excluidos === 1 ? '' : 's'} desmarcado${P.fuera.excluidos === 1 ? '' : 's'} en «Lo cargado» no se cuenta${P.fuera.excluidos === 1 ? '' : 'n'}.`);
+  const sf = P.cobrar.sinFecha + P.pagar.sinFecha;
+  if(sf) nt.push(`${sf} documento${sf === 1 ? '' : 's'} sin fecha de emisión ni de vencimiento aparece${sf === 1 ? '' : 'n'} en «Sin fecha de vencimiento».`);
+  const as = P.cobrar.asumidos + P.pagar.asumidos;
+  if(as) nt.push(`${as} documento${as === 1 ? '' : 's'} sin vencimiento ni plazo: se asumieron 30 días desde la emisión.`);
+  if(pre.pasadas) nt.push(`${pre.pasadas} cuota${pre.pasadas === 1 ? '' : 's'} de préstamo con fecha anterior al ${P.desde} no se cuenta${pre.pasadas === 1 ? '' : 'n'} (se asume que ya se pagaron).`);
+  dEl('pdNotas').innerHTML = nt.map(t => `<li class="info">${pyIco('i-info')}<span>${escapeHtml(t)}</span><span></span></li>`).join('');
+}
+
+/* ---------------- Planificar compras ---------------- */
+function proyPlanEval(res){
+  const pl = proy.plan || {}, monto = proyNumIn(pl.monto), plazo = Math.max(0, Math.round(Number(pl.plazo) || 0));
+  if(!(monto > 0)) return null;
+  const D = res.dias, n = D.length, r = res.resumen, mon = res.moneda, M = x => diaMoney(x, mon);
+  const dn0 = proyDn(res.desde), lim = r.minimo > 0 ? `tu mínimo de ${M(r.minimo)}` : 'cero';
+  const first = key => { for(let i = 0; i + plazo < n; i++) if(D[i + plazo][key] >= monto - 0.005) return i; return -1; };
+  const iSin = first('margen'), iCon = r.linea > 0 ? first('margenLinea') : -1;
+  const pago = i => plazo ? ` y pagarlo el ${pyWd(D[i + plazo].f)}` : '';
+  const out = { monto, plazo, iSin, iCon, iSel: -1, cls: 'ok', ic: 'i-check', title: '', body: '' };
+  const fRaw = String(pl.fecha || '').trim(), f = fRaw ? proyDate(fRaw) : '';
+  if(plazo >= n){ out.cls = 'warn'; out.ic = 'i-alert'; out.title = 'El plazo de pago cae fuera del período proyectado'; out.body = `Proyectas ${n} días y el pago sería a los ${plazo}: amplía «Proyectar» en «Con qué números se proyecta».`; return out; }
+  if(fRaw && !f){ out.cls = 'warn'; out.ic = 'i-alert'; out.title = 'Escribe la fecha como dd/mm/aaaa'; out.body = 'O déjala en blanco para que te diga la primera fecha en que alcanza.'; return out; }
+  const conLinea = (i0) => iCon >= 0 && (i0 < 0 || iCon < i0) ? ` Usando tu línea de crédito sí podrías comprarlo desde el ${pyWd(D[iCon].f)} (${proyEnDias(D[iCon].f)}).` : '';
+  if(f){
+    const i = proyDn(f) - dn0;
+    if(i < 0){ out.cls = 'warn'; out.ic = 'i-alert'; out.title = 'Esa fecha ya pasó'; out.body = `La proyección empieza el ${res.desde}.`; return out; }
+    if(i + plazo >= n){ out.cls = 'warn'; out.ic = 'i-alert'; out.title = 'Esa compra se paga fuera del período proyectado'; out.body = `Se pagaría el ${proyFs(dn0 + i + plazo)} y la proyección llega hasta el ${res.hasta}: amplía «Proyectar» arriba.`; return out; }
+    out.iSel = i;
+    const m = D[i + plazo].margen;
+    if(m >= monto - 0.005){
+      out.title = `Sí alcanza comprándolo el ${pyWd(D[i].f)}`;
+      out.body = `${plazo ? `Lo pagas el ${pyWd(D[i + plazo].f)}: ese día` : 'Ese día'} puedes pagar hasta <b>${M(m)}</b> sin bajar de ${lim}; después de pagar ${M(monto)} te sobran <b>${M(m - monto)}</b> de margen.`;
+    } else {
+      out.cls = iSin >= 0 ? 'warn' : 'bad'; out.ic = 'i-alert';
+      out.title = `No alcanza comprándolo el ${pyWd(D[i].f)}`;
+      out.body = `${plazo ? `Lo pagarías el ${pyWd(D[i + plazo].f)}: ese día` : 'Ese día'} el margen es ${M(Math.max(0, m))} y te <b>faltarían ${M(monto - m)}</b> para no bajar de ${lim}.`
+        + (iSin >= 0 ? ` La primera fecha en que sí alcanza es el <b>${pyWd(D[iSin].f)}</b> (${proyEnDias(D[iSin].f)}).` : ' Con lo cargado no hay una fecha dentro del período en que alcance.') + conLinea(iSin);
+    }
+    return out;
+  }
+  if(iSin === 0){
+    out.title = plazo ? `Puedes comprarlo ya, con pago a ${plazo} días` : 'Puedes comprarlo ya';
+    out.body = `Desde el ${pyWd(D[0].f)}${pago(0)} alcanza: ese día puedes pagar hasta <b>${M(D[plazo].margen)}</b> sin bajar de ${lim} y te sobran ${M(D[plazo].margen - monto)} después de pagar ${M(monto)}.`;
+  } else if(iSin > 0){
+    out.cls = 'warn'; out.ic = 'i-alert';
+    out.title = `La primera fecha en que alcanza es el ${pyWd(D[iSin].f)} (${proyEnDias(D[iSin].f)})`;
+    out.body = `Antes de esa fecha${plazo ? ' (contando el día de pago)' : ''}, pagar ${M(monto)} dejaría la caja por debajo de ${lim}. Comprándolo ese día${pago(iSin)} te sobran ${M(D[iSin + plazo].margen - monto)}.` + conLinea(iSin);
+  } else {
+    const best = D[n - 1].margen;
+    out.cls = 'bad'; out.ic = 'i-alert';
+    out.title = `Con lo cargado no alcanza en los próximos ${n} días`;
+    out.body = `Aun esperando hasta el final del período, pagar ${M(monto)} te dejaría <b>${M(monto - best)}</b> por debajo de ${lim}.` + (iCon >= 0 ? conLinea(-1) : (r.linea > 0 ? ' Ni usando tu línea de crédito alcanza.' : ''));
+  }
+  return out;
+}
+function renderProyPlanAns(res){
+  const box = dEl('pcAns'), e = proyPlanEval(res);
+  if(!e){ box.hidden = true; box.innerHTML = ''; return; }
+  box.hidden = false; box.className = 'py-banner ' + e.cls;
+  box.innerHTML = `${pyIco(e.ic, 'ic')}<h3>${escapeHtml(e.title)}</h3><p>${e.body}</p>`;
+}
+function renderProyCompras(res){
+  const D = res.dias, n = D.length, r = res.resumen, mon = res.moneda, M = x => diaMoney(x, mon);
+  const lim = r.minimo > 0 ? `sin bajar de tu mínimo de ${M(r.minimo)}` : 'sin quedar en negativo';
+  const hoy = Math.max(0, D[0].margen), iPrim = D.findIndex(d => d.margen > 0.004);
+  const k = [pyKp(hoy > 0 ? 'k-ok' : 'k-bad', 'Puedes pagar al inicio', M(hoy), escapeHtml(hoy > 0 ? `el ${res.desde}, ${lim}` : `el ${res.desde} la caja ya no tiene margen`))];
+  if(r.linea > 0) k.push(pyKp('', 'Usando tu línea de crédito', M(Math.max(0, D[0].margenLinea)), escapeHtml(`hasta ${M(r.linea)} más sobre ese margen`)));
+  k.push(hoy > 0 ? pyKp('k-ok', 'Primera fecha con margen', 'Desde el inicio', escapeHtml(`margen ${M(hoy)}`))
+    : (iPrim >= 0 ? pyKp('k-warn', 'Primera fecha con margen', D[iPrim].f, escapeHtml(`${proyEnDias(D[iPrim].f)} · hasta ${M(D[iPrim].margen)}`)) : pyKp('k-bad', 'Primera fecha con margen', 'No hay', escapeHtml(`en los próximos ${n} días`))));
+  k.push(pyKp(D[n - 1].margen > 0.004 ? '' : 'k-bad', 'Margen al final del período', M(Math.max(0, D[n - 1].margen)), escapeHtml(`al ${res.hasta}: lo máximo que podrías pagar`)));
+  k.push(pyKp(r.saldoMin.saldo < Math.max(0, r.minimo) ? 'k-warn' : '', 'Lo que más aprieta', M(r.saldoMin.saldo), escapeHtml(`el saldo más bajo, el ${r.saldoMin.f}`)));
+  dEl('pcKpis').innerHTML = k.join('');
+
+  const sel = dEl('pcPlazo');
+  if(!sel.options.length) sel.innerHTML = PY_PLAZOS.map(p => `<option value="${p[0]}">${p[1]}</option>`).join('');
+  const setv = (el, v) => { if(el !== document.activeElement && el.value !== v) el.value = v; };
+  setv(dEl('pcMonto'), proy.plan.monto); setv(sel, String(proy.plan.plazo)); setv(dEl('pcFecha'), proy.plan.fecha);
+  dEl('pcFecha').placeholder = 'dd/mm/aaaa';
+  renderProyPlanAns(res);
+
+  const mx = Math.max.apply(null, [1].concat(D.map(d => d.margen)));
+  dEl('pcNote').textContent = `El margen de un día es lo máximo que puedes pagar ese día sin que ningún saldo posterior baje de ${r.minimo > 0 ? 'tu mínimo' : 'cero'}, con lo cargado hasta el ${res.hasta}. Si cargas más compras o gastos, el margen baja.`;
+  dEl('pcHead').innerHTML = `<tr><th>Desde el</th><th class="num">Saldo ese día</th><th class="num">Puedes pagar hasta</th><th></th>${r.linea > 0 ? '<th class="num">Usando la línea</th>' : ''}</tr>`;
+  let rows = '';
+  for(let i = 0; i < n; i += 7){
+    const d = D[i], ok = d.margen > 0.004;
+    rows += `<tr><td>${escapeHtml(pyWd(d.f))}</td><td class="num ${d.saldo < 0 ? 'neg' : ''}">${diaNum(d.saldo)}</td><td class="num ${ok ? '' : 'mute'}">${ok ? diaNum(d.margen) : 'Sin margen'}</td><td class="bar">${ok ? `<span class="py-bar" style="width:${Math.max(3, Math.round(d.margen / mx * 100))}%"></span>` : ''}</td>${r.linea > 0 ? `<td class="num ${d.margenLinea > 0.004 ? '' : 'mute'}">${d.margenLinea > 0.004 ? diaNum(d.margenLinea) : 'Sin margen'}</td>` : ''}</tr>`;
+  }
+  dEl('pcBody').innerHTML = rows;
+
+  const pl = proy.items.filter(i => i.src === 'plan');
+  dEl('pcPlanned').innerHTML = pl.length ? `<h3 class="dia-h">Compras que agregaste a la proyección</h3><div class="tablewrap" style="margin-bottom:14px;"><table class="py-t"><thead><tr><th>Se paga</th><th>Detalle</th><th class="num">Importe</th><th></th></tr></thead><tbody>${pl.map(i => `<tr><td>${escapeHtml(i.fecha)}</td><td>${escapeHtml(i.desc)}${i.obs ? ` <small>${escapeHtml(i.obs)}</small>` : ''}</td><td class="num">${diaNum(i.monto)}</td><td><button type="button" class="ghost sm" data-act="rmplan" data-id="${escapeHtml(i.id)}" title="Quitar esta compra" aria-label="Quitar la compra del ${escapeHtml(i.fecha)}">✕</button></td></tr>`).join('')}</tbody></table></div>` : '';
+}
+function proyPlanAdd(){
+  const res = proy.res;
+  if(!res){ toast('Primero carga movimientos para proyectar.', 'warn'); return; }
+  const e = proyPlanEval(res);
+  if(!e){ toast('Escribe cuánto quieres comprar.', 'warn'); dEl('pcMonto').focus(); return; }
+  const D = res.dias, dn0 = proyDn(res.desde);
+  let i = e.iSel;
+  if(i < 0 && !String(proy.plan.fecha || '').trim()) i = e.iSin;
+  if(i < 0){ toast(String(proy.plan.fecha || '').trim() ? 'Revisa la fecha de compra.' : 'Con lo cargado no hay una fecha en que alcance: escribe la fecha de compra que quieras probar.', 'warn'); dEl('pcFecha').focus(); return; }
+  const fCompra = D[i].f, fPago = proyFs(dn0 + i + e.plazo);
+  const it = { id: 'pl' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5), fuente: 'otro', tipo: 'out', cat: 'compra_mercaderia', desc: 'Compra planificada · ' + (e.plazo ? `pago a ${e.plazo} días` : 'al contado'), tercero: '', ruc: '', doc: '', moneda: diaMon, monto: pyR2(e.monto), det: 0, fecha: fPago, emision: '', venc: '', plazo: null, prev: '', rep: '', hasta: '', detalle: '', obs: 'compra el ' + fCompra, incluir: true, src: 'plan' };
+  proy.items.push(it);
+  proy.plan = { monto: '', plazo: proy.plan.plazo, fecha: '' };
+  toast(`Compra de ${diaMoney(e.monto, diaMon)} agregada: se paga el ${fPago}. La proyección ya la cuenta.`, 'ok');
+  proyChanged(true);
+}
+
+/* ---------------- Mes a mes y escenarios ---------------- */
+function proyNeed(rs){
+  const f = rs.minimo > 0 ? (rs.primerBajoMinimo && rs.primerBajoMinimo.f) : (rs.primerNegativo && rs.primerNegativo.f);
+  return { falta: rs.faltaMinimo, f: f || '', saldoMin: rs.saldoMin, saldoFinal: rs.saldoFinal };
+}
+function renderProyMeses(res){
+  const A = res.alterno, mm = res.mensual || [], mon = res.moneda, r = res.resumen, M = x => diaMoney(x, mon), c = proyCmpEff();
+  const setv = (el, v) => { if(el !== document.activeElement && el.value !== v) el.value = v; };
+  setv(dEl('pmPct'), String(proy.cmp.pct)); setv(dEl('pmAtraso'), String(proy.cmp.atraso));
+  dEl('pmH').textContent = `Escenario pesimista: se cobra el ${c.cobroPct}% de lo por cobrar y con ${c.cobroAtraso} días de atraso sobre la fecha prevista. Los pagos (proveedores, préstamos, planilla, impuestos) se mantienen igual.`
+    + (proyEff().cobroPct !== 100 || proyEff().cobroAtraso ? ' El escenario normal ya incluye lo que pusiste en «¿Y si los clientes pagan peor?».' : '');
+  const lens = res.dias.length;
+  dEl('pmHor').innerHTML = lens < 330 ? `Estás proyectando <b>${lens} días</b> (${mm.length} mes${mm.length === 1 ? '' : 'es'}). Para planear el año completo usa 1 año. <button type="button" class="secondary sm" data-act="un-ano" style="width:auto;margin:0 0 0 6px;">Proyectar 1 año</button>` : '';
+  const nn = proyNeed(r), sin = A ? proyNeed(A.resumen) : null;
+  const needK = (t, q, extra) => q.falta > 0
+    ? pyKp(q.falta > 0 && (extra === 'bad' || r.nivel === 'bad') ? 'k-bad' : 'k-warn', t, M(q.falta), escapeHtml(`antes del ${q.f}${q.f ? ' (' + proyEnDias(q.f) + ')' : ''}`))
+    : pyKp('k-ok', t, 'Ninguna', escapeHtml(`el saldo más bajo es ${M(q.saldoMin.saldo)}`));
+  const k = [needK('Caja a conseguir · normal', nn)];
+  if(sin){
+    k.push(needK('Caja a conseguir · pesimista', sin, 'bad'));
+    const dif = pyR2(sin.falta - nn.falta);
+    k.push(pyKp(dif > 0 ? 'k-bad' : 'k-ok', 'Si cobras peor', dif > 0 ? '+' + M(dif) : 'Sin diferencia', escapeHtml(dif > 0 ? `necesitarías ${M(dif)} más` : 'la caja aguanta igual')));
+    k.push(pyKp(sin.saldoFinal < 0 ? 'k-bad' : '', 'Saldo final · pesimista', M(sin.saldoFinal), escapeHtml(`al ${res.hasta} (normal: ${M(nn.saldoFinal)})`)));
+  } else k.push(pyKp('', 'Saldo final', M(nn.saldoFinal), escapeHtml(`al ${res.hasta}`)));
+  dEl('pmKpis').innerHTML = k.join('');
+
+  const leg = ['<span><i class="ln"></i>Normal</span>'];
+  if(A) leg.push('<span><i class="ln p"></i>Pesimista</span>');
+  if(r.minimo > 0) leg.push(`<span><i class="dsh"></i>Mínimo que quieres mantener (${escapeHtml(M(r.minimo))})</span>`);
+  dEl('pmLegend').innerHTML = leg.join('');
+  proyRenderMesChart(res);
+
+  const mv = A ? A.mensual : [];
+  dEl('pmHead').innerHTML = `<tr><th rowspan="2">Mes</th><th colspan="5" class="grp">Normal</th>${A ? '<th colspan="4" class="grp p">Pesimista</th>' : ''}</tr><tr><th class="num">Entra</th><th class="num">Sale</th><th class="num">Saldo al cierre</th><th class="num">Más bajo</th><th class="num">Caja a conseguir</th>${A ? '<th class="num">Entra</th><th class="num">Saldo al cierre</th><th class="num">Más bajo</th><th class="num">Caja a conseguir</th>' : ''}</tr>`;
+  const need = v => v > 0.004 ? `<td class="num neg">${diaNum(v)}</td>` : '<td class="num mute">—</td>';
+  const neg = v => `<td class="num ${v < 0 ? 'neg' : ''}">${diaNum(v)}</td>`;
+  dEl('pmBody').innerHTML = mm.map((m, i) => {
+    const p = mv[i];
+    return `<tr><td>${escapeHtml(pyMesT(m))}${m.completo ? '' : ` <small>(${m.dias} días)</small>`}</td><td class="num">${diaNum(m.ent)}</td><td class="num">${diaNum(m.sal)}</td>${neg(m.fin)}${neg(m.min)}${need(m.necesidad)}`
+      + (A && p ? `<td class="num">${diaNum(p.ent)}</td>${neg(p.fin)}${neg(p.min)}${need(p.necesidad)}` : '') + '</tr>';
+  }).join('');
+  dEl('pmFoot').textContent = '«Caja a conseguir» es acumulada: lo que tendrías que haber conseguido, a más tardar al cierre de ese mes, para que ningún día hasta entonces baje de ' + (r.minimo > 0 ? 'tu mínimo' : 'cero') + '. «Más bajo» es el saldo más bajo que toca la caja dentro del mes.';
+}
+function proyRenderMesChart(res){
+  const host = dEl('pmChart'); host.innerHTML = '';
+  const mm = res.mensual || []; if(!mm.length) return;
+  const A = res.alterno, r = res.resumen, mon = res.moneda, n = mm.length;
+  const W = Math.max(300, host.clientWidth || 680), H = 280, m = { l: 58, r: 20, t: 20, b: 34 };
+  const iw = W - m.l - m.r, ih = H - m.t - m.b;
+  const sN = mm.map(x => x.fin), sP = A && A.mensual.length === n ? A.mensual.map(x => x.fin) : null;
+  const all = sN.concat(sP || [], [0], r.minimo > 0 ? [r.minimo] : []);
+  const lo = Math.min.apply(null, all), hi = Math.max.apply(null, all), pad = (hi - lo) * 0.06;
+  const tk = proyTicks(lo < 0 ? lo - pad : lo, hi + pad);
+  const x = i => m.l + (n > 1 ? iw * i / (n - 1) : iw / 2), y = v => m.t + ih - (v - tk.min) / (tk.max - tk.min) * ih, f1 = v => v.toFixed(1);
+  let g = '';
+  for(let v = tk.min; v <= tk.max + tk.step / 1000; v += tk.step){
+    const yy = f1(y(v));
+    g += `<line class="grid" x1="${m.l}" x2="${W - m.r}" y1="${yy}" y2="${yy}"/><text x="${m.l - 6}" y="${(y(v) + 4).toFixed(1)}" text-anchor="end">${diaShort(v)}</text>`;
+  }
+  g += `<line class="py-zero" x1="${m.l}" x2="${W - m.r}" y1="${f1(y(0))}" y2="${f1(y(0))}"/>`;
+  if(r.minimo > 0) g += `<line class="py-ref-min" x1="${m.l}" x2="${W - m.r}" y1="${f1(y(r.minimo))}" y2="${f1(y(r.minimo))}"/>`;
+  mm.forEach((q, i) => { g += `<text x="${f1(x(i))}" y="${H - 12}" text-anchor="middle">${escapeHtml(pyMes3(q.mes) + (q.mes === 1 || i === 0 ? ' ' + String(q.anio).slice(2) : ''))}</text><line class="axis" x1="${f1(x(i))}" x2="${f1(x(i))}" y1="${m.t + ih}" y2="${m.t + ih + 4}"/>`; });
+  const path = s => 'M' + s.map((v, i) => f1(x(i)) + ',' + f1(y(v))).join('L');
+  if(sP) g += `<path class="line-p" d="${path(sP)}"/>`;
+  g += `<path class="line-n" d="${path(sN)}"/>`;
+  if(sP) sP.forEach((v, i) => { g += `<circle class="mk-p" cx="${f1(x(i))}" cy="${f1(y(v))}" r="4.5"/>`; });
+  sN.forEach((v, i) => { g += `<circle class="mk-n" cx="${f1(x(i))}" cy="${f1(y(v))}" r="4.5"/>`; });
+  g += `<g id="pmHover" style="display:none;"><line class="py-cross" x1="0" x2="0" y1="${m.t}" y2="${m.t + ih}"/></g><rect class="py-hit" x="${m.l}" y="${m.t}" width="${iw}" height="${ih}"/>`;
+  const aria = `Saldo al cierre de cada mes, de ${mm[0].desde} a ${mm[n - 1].hasta}: escenario normal${sP ? ' y pesimista' : ''}. Termina en ${diaMoney(sN[n - 1], mon)}${sP ? ' (pesimista ' + diaMoney(sP[n - 1], mon) + ')' : ''}. Usa las flechas para recorrer los meses.`;
+  host.innerHTML = `<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" tabindex="0" role="img" aria-label="${escapeHtml(aria)}">${g}</svg>`;
+  const svg = host.querySelector('svg'), hov = svg.querySelector('#pmHover'), cross = hov.querySelector('.py-cross'), hit = svg.querySelector('.py-hit');
+  let cur = -1;
+  const show = i => {
+    i = Math.max(0, Math.min(n - 1, i)); cur = i;
+    const q = mm[i], p = sP ? A.mensual[i] : null, cx = x(i);
+    hov.style.display = ''; cross.setAttribute('x1', f1(cx)); cross.setAttribute('x2', f1(cx));
+    diaTip(host, `<b>${escapeHtml(pyMesT(q))}</b>${q.completo ? '' : `<div class="r"><span>Período</span><span>${q.dias} días</span></div>`}<div class="r"><span><i style="background:var(--dia-in)"></i>Normal · cierra en</span><span>${escapeHtml(diaMoney(q.fin, mon))}</span></div><div class="r"><span>Más bajo</span><span>${escapeHtml(diaMoney(q.min, mon))}</span></div>`
+      + (p ? `<div class="sep"></div><div class="r"><span><i style="background:var(--dia-out)"></i>Pesimista · cierra en</span><span>${escapeHtml(diaMoney(p.fin, mon))}</span></div><div class="r"><span>Más bajo</span><span>${escapeHtml(diaMoney(p.min, mon))}</span></div>` : ''), cx, m.t + 4);
+  };
+  const hide = () => { hov.style.display = 'none'; diaTipHide(host); };
+  const fromEvent = e => { const rc = svg.getBoundingClientRect(); const px = (e.clientX - rc.left) * (W / (rc.width || W)); return n > 1 ? Math.round((px - m.l) / iw * (n - 1)) : 0; };
+  hit.addEventListener('pointermove', e => show(fromEvent(e)));
+  hit.addEventListener('pointerdown', e => show(fromEvent(e)));
+  hit.addEventListener('pointerleave', hide);
+  svg.addEventListener('focus', () => show(cur >= 0 ? cur : 0));
+  svg.addEventListener('blur', hide);
+  svg.addEventListener('keydown', e => {
+    let i = cur >= 0 ? cur : 0;
+    if(e.key === 'ArrowRight') i++; else if(e.key === 'ArrowLeft') i--; else if(e.key === 'Home') i = 0; else if(e.key === 'End') i = n - 1; else return;
+    e.preventDefault(); show(i);
+  });
+}
+
+/* ---------------- Carga automática ---------------- */
+let proyAutoBusy = false;
+function proyDocsSig(){
+  const d = proyDocs().filter(x => !/^SIRE/i.test(String(x.fuente || '')));
+  if(!d.length) return '';
+  let s = d.length + '|';
+  d.forEach(x => { s += (x.cuenta || '') + ',' + (x.nrodoc || '') + ',' + (x.saldoPen || 0) + ',' + (x.saldoUsd || 0) + ',' + (x.venc || '') + ';'; });
+  return diaHash(s);
+}
+/* Si hay documentos pendientes cargados y la proyección está vacía (o ya se alimenta de ellos), se traen solos y se mantienen al día. */
+function proyAutoTab2(){
+  if(proyAutoBusy || proy.autoOff) return;
+  const sig = proyDocsSig(); if(!sig) return;
+  const tiene = proy.sources.some(s => s.id === 'tab2');
+  if(!tiene && proy.items.length) return;
+  if(proy.autoSig === sig) return;
+  proyAutoBusy = true;
+  proyFromTab2('auto').then(() => { proyAutoBusy = false; }, () => { proyAutoBusy = false; });
+}
+
+/* IGV: promedio mensual del SIRE cargado (ventas de la Pestaña 3 o de la 2; compras de la Pestaña 2) */
+function proySireMensual(){
+  const ven = new Map(), com = new Map();
+  const key = f => /^\d{2}\/\d{2}\/\d{4}$/.test(f || '') ? f.slice(6) + f.slice(3, 5) : '';
+  const add = (mp, k, v) => { if(k) mp.set(k, (mp.get(k) || 0) + v); };
+  let origenV = '';
+  if(rvRows.size){ rvRows.forEach(o => add(ven, key(o.f), Math.abs(Number(o.tot) || 0) * (o.t === '07' ? -1 : 1))); origenV = 'registro de ventas de la Pestaña 3'; }
+  pendingDocs.forEach(d => {
+    if(d.fuente === 'SIRE ventas' && !rvRows.size){ add(ven, key(d.fecha), Number(d.saldoPen) || 0); origenV = 'SIRE ventas de la Pestaña 2'; }
+    else if(d.fuente === 'SIRE compras') add(com, key(d.fecha), -(Number(d.saldoPen) || 0));
+  });
+  const avg = mp => { const ks = Array.from(mp.keys()).sort().slice(-3); return ks.length ? { v: pyR2(ks.reduce((s, k) => s + mp.get(k), 0) / ks.length), ks } : null; };
+  return { ventas: avg(ven), compras: avg(com), origenV };
+}
+const pyKeysT = ks => ks.map(k => pyMes3(+k.slice(4)) + ' ' + k.slice(0, 4)).join(', ');
+function proySireIgvFill(manual){
+  const S = proySireMensual(), g = proy.params.igv;
+  if(!S.ventas && !S.compras){ if(manual) toast('No hay registros del SIRE cargados: sube el registro de ventas en la Pestaña 3 y el de compras en la Pestaña 2.', 'warn'); return false; }
+  const hechos = [];
+  if(S.ventas && (manual || !String(g.ventas).trim())){ g.ventas = String(S.ventas.v); hechos.push('ventas ' + diaMoney(S.ventas.v, 'PEN') + ' (' + pyKeysT(S.ventas.ks) + ')'); }
+  if(S.compras && (manual || !String(g.compras).trim())){ g.compras = String(S.compras.v); hechos.push('compras ' + diaMoney(S.compras.v, 'PEN') + ' (' + pyKeysT(S.compras.ks) + ')'); }
+  if(!hechos.length) return false;
+  g.auto = true;
+  renderProyIgv(); proyRecalcSoon(); scheduleExtSave(); renderDiaLeft();
+  toast('IGV estimado con el promedio mensual del SIRE: ' + hechos.join(' · ') + '. Puedes corregir los montos.' + (!S.ventas || !S.compras ? ' Falta el registro de ' + (!S.ventas ? 'ventas' : 'compras') + ': sin él el IGV sale distorsionado; escribe el monto a mano.' : ''), S.ventas && S.compras ? 'ok' : 'warn');
+  return true;
+}
+function renderProyIgvSire(){
+  const h = dEl('pyIgvSireH'), b = dEl('pyIgvSireBtn'); if(!h || !b) return;
+  const S = proySireMensual();
+  b.disabled = !S.ventas && !S.compras;
+  h.textContent = S.ventas || S.compras
+    ? 'SIRE cargado: ' + [S.ventas ? `ventas ${diaMoney(S.ventas.v, 'PEN')} al mes (${pyKeysT(S.ventas.ks)})` : 'sin registro de ventas', S.compras ? `compras ${diaMoney(S.compras.v, 'PEN')} al mes (${pyKeysT(S.compras.ks)})` : 'sin registro de compras'].join(' · ') + '. Es el promedio de hasta los últimos 3 meses con datos.'
+    : 'Si cargas el registro de ventas (Pestaña 3) y el de compras (Pestaña 2) del SIRE, aquí se calcula el promedio mensual solo.';
+}
+
+/* ---------------- Excel: hojas nuevas ---------------- */
+function proyAddSheets(sheet, res){
+  const P = res.posicion, mon = res.moneda;
+  if(P){
+    const aoa = [['Posición al ' + P.desde + ' (' + (mon === 'USD' ? 'dólares' : 'soles') + ')', '', '', ''], ['', '', '', ''], ['Saldo en bancos al inicio', P.neto.caja], ['Por cobrar (neto de detracción)', P.neto.cobrar], ['Cuenta de detracciones', P.neto.detraccion], ['Por pagar a proveedores', P.neto.pagar], ['Cuotas de préstamos pendientes', P.neto.prestamos], ['IGV ya determinado', P.neto.igv], ['Posición neta', P.neto.total], ['', '']];
+    [['Por cobrar', P.cobrar], ['Por pagar a proveedores', P.pagar]].forEach(x => {
+      aoa.push([x[0], 'Docs.', 'Importe', '']);
+      x[1].buckets.filter(b => b.n).forEach(b => aoa.push([b[0] || b.t, b.n, b.monto, '']));
+      aoa.push(['Total', x[1].n, x[1].total, ''], ['', '', '', ''], [x[0] === 'Por cobrar' ? 'Cliente' : 'Proveedor', 'Docs.', 'Total', 'Vencido', 'Atraso máx. (días)', 'Próximo vence']);
+      x[1].terceros.forEach(t => aoa.push([t.nombre, t.n, t.total, t.vencido, t.atraso || '', t.proximo]));
+      if(x[1].otros.n) aoa.push(['Otros ' + x[1].otros.n, '', x[1].otros.total, '', '', '']);
+      aoa.push(['', '', '', '']);
+    });
+    aoa.push(['Préstamos y leasing', 'Cuotas', 'Por pagar', 'Capital', 'Interés', 'Próxima cuota', 'Monto próxima', 'Última cuota']);
+    P.prestamos.entidades.forEach(e => aoa.push([e.nombre, e.n, e.total, e.capital === null ? '' : e.capital, e.interes === null ? '' : e.interes, e.proxima, e.proximaMonto, e.ultima]));
+    aoa.push(['Total', P.prestamos.n, P.prestamos.total, P.prestamos.capital === null ? '' : P.prestamos.capital, P.prestamos.interes === null ? '' : P.prestamos.interes, '', '', '']);
+    sheet(aoa, [44, 12, 16, 16, 18, 16, 16, 14], 'Deudas y por cobrar');
+  }
+  if(res.mensual && res.mensual.length){
+    const A = res.alterno, h = ['Mes', 'Días', 'Entra', 'Sale', 'Saldo al cierre', 'Más bajo', 'Caja a conseguir'].concat(A ? ['Pesimista · entra', 'Pesimista · saldo al cierre', 'Pesimista · más bajo', 'Pesimista · caja a conseguir'] : []);
+    const rows = res.mensual.map((m, i) => [pyMesT(m), m.dias, m.ent, m.sal, m.fin, m.min, m.necesidad].concat(A && A.mensual[i] ? [A.mensual[i].ent, A.mensual[i].fin, A.mensual[i].min, A.mensual[i].necesidad] : []));
+    const nota = A ? [['', ''], ['Escenario pesimista', 'Se cobra el ' + A.cobroPct + '% de lo por cobrar, con ' + A.cobroAtraso + ' días de atraso.']] : [];
+    sheet([h].concat(rows, nota), [14, 7, 14, 14, 16, 14, 16, 16, 18, 16, 18], 'Mes a mes');
+  }
+  if(res.dias && res.dias[0] && res.dias[0].margen !== undefined){
+    const L = res.resumen.linea > 0;
+    sheet([['Desde el', 'Saldo ese día', 'Puedes pagar hasta'].concat(L ? ['Usando la línea'] : [])].concat(res.dias.filter((d, i) => i % 7 === 0).map(d => [d.f, d.saldo, Math.max(0, d.margen)].concat(L ? [Math.max(0, d.margenLinea)] : []))), [14, 16, 20, 18], 'Margen para comprar');
+  }
+}
+
+/* ---------------- conexión ---------------- */
+(function wireProyV12(){
+  dEl('pyViewSeg').addEventListener('click', e => {
+    const b = e.target.closest('button[data-pv]'); if(!b || !PY_VIEWS.includes(b.dataset.pv)) return;
+    proy.view = b.dataset.pv; renderProyResults(); scheduleExtSave();
+  });
+  const plan = (k, v) => { proy.plan[k] = v; if(proy.res) renderProyPlanAns(proy.res); scheduleExtSave(); };
+  dEl('pcMonto').addEventListener('input', e => plan('monto', e.target.value));
+  dEl('pcFecha').addEventListener('input', e => plan('fecha', e.target.value));
+  dEl('pcPlazo').addEventListener('change', e => plan('plazo', e.target.value));
+  dEl('pcAddBtn').addEventListener('click', proyPlanAdd);
+  dEl('pyVwCompras').addEventListener('keydown', e => { if(e.key === 'Enter' && e.target.matches('#pcMonto, #pcFecha')){ e.preventDefault(); proyPlanAdd(); } });
+  dEl('pcPlanned').addEventListener('click', e => {
+    const b = e.target.closest('button[data-act="rmplan"]'); if(!b) return;
+    proy.items = proy.items.filter(i => i.id !== b.dataset.id);
+    if(!proy.items.length){ proy.res = null; proy.sig = ''; proy.err = ''; }
+    proyChanged(true);
+  });
+  const cmp = (k, v) => { proy.cmp[k] = v; proyRecalcSoon(); scheduleExtSave(); };
+  dEl('pmPct').addEventListener('input', e => cmp('pct', e.target.value));
+  dEl('pmAtraso').addEventListener('input', e => cmp('atraso', e.target.value));
+  dEl('pyVwMeses').addEventListener('click', e => {
+    if(!e.target.closest('[data-act="un-ano"]')) return;
+    proy.params.dias = 365; renderProyParams(); renderDiaLeft(); proyRecalcSoon(); scheduleExtSave();
+  });
+  dEl('pyIgvSireBtn').addEventListener('click', () => proySireIgvFill(true));
+  dEl('pyIgvAuto').addEventListener('change', e => { if(e.target.checked) proySireIgvFill(false); });
+  if(window.ResizeObserver){
+    let t = null;
+    new ResizeObserver(() => { clearTimeout(t); t = setTimeout(() => { if(pyOn() && proy.view === 'meses' && proy.res && !dEl('pyVwMeses').hidden) proyRenderMesChart(proy.res); }, 120); }).observe(dEl('pmChart'));
+  }
+})();
 
 /* ---------------- conexión de la interfaz ---------------- */
 (function wireProy(){
@@ -11720,8 +12568,8 @@ const TAB_CLEAR = {
        text: 'Se borran los PDF cargados, los movimientos, la verificación mensual y las cuentas que asignaste en esta pestaña. Las otras pestañas y tus reglas no se tocan.' },
   2: { name: 'Pestaña 2 (Documentos pendientes)', has: () => pdMovements.length > 0 || pendingDocs.length > 0 || pdResults.length > 0,
        text: 'Se borran los movimientos, los documentos pendientes y el resultado del cruce de esta pestaña. La Pestaña 1 no se toca.' },
-  3: { name: 'Pestaña 3 (Asientos contables)', has: () => cgMovements.length > 0 || cgRows.length > 0,
-       text: 'Se borran los movimientos y los asientos generados en esta pestaña. La configuración contable se conserva.' },
+  3: { name: 'Pestaña 3 (Asientos contables)', has: () => cgMovements.length > 0 || cgRows.length > 0 || rvRows.size > 0,
+       text: 'Se borran los movimientos, los asientos generados y el registro de ventas cargado en esta pestaña. La configuración contable se conserva.' },
   4: { name: 'Pestaña 4 (Cruce con Tesorería)', has: () => tesMovimientos.length > 0 || tesoreriaMovimientos.length > 0 || tesResults.length > 0,
        text: 'Se borran tus movimientos, el archivo de Tesorería y el cruce de esta pestaña. La Pestaña 1 no se toca.' },
   5: { name: 'Pestaña 5 (Diferencia de cambio)', has: () => fxDocs.length > 0 || fxRows.length > 0,
@@ -11750,7 +12598,7 @@ function wipeTab(n){
     const si = document.getElementById('pdSearchInput'); if(si) si.value = '';
     renderTab2();
   }
-  if(n === 3){ cgMovements = []; cgRows = []; cgFilter = 'all'; renderTab3(); }
+  if(n === 3){ cgMovements = []; cgRows = []; cgFilter = 'all'; rvLimpiar(); renderTab3(); }
   if(n === 4){
     tesMovimientos = []; tesoreriaMovimientos = []; tesResults = []; misResultados = [];
     const si = document.getElementById('tesSearchInput'); if(si) si.value = '';
