@@ -2867,7 +2867,7 @@ window.EC_CONFIG = { API_URL: "PEGA_AQUI_LA_URL_DEL_SERVIDOR", GEO: true };
    Acceso: usuario + contraseña (se validan en cada pedido; la contraseña vive solo en memoria),
    equipo autorizado (id guardado en este navegador) y RUC habilitados.
    ============================================================ */
-const EC_CLIENT_VERSION = '1.7.12';
+const EC_CLIENT_VERSION = '1.7.13';
 const EC_USER_STORE = 'ec_usuario';
 const EC_DEVICE_STORE = 'ec_deviceId';
 const EC_URL_STORE = 'ec_api_url';
@@ -4512,11 +4512,16 @@ processBtn.addEventListener('click', async () => {
   // Reglas de clasificacion: se aplican solo a los movimientos NUEVOS y nunca pisan una
   // cuenta que ya venga asignada (ITF, comisiones, AFP u otra).
   const clasificadosPorRegla = reglasTotal;
-  movements = movements.concat(allNew);
+  const ord = sortMovementsChrono(movements.concat(allNew));
+  movements = ord.list;
+  if(ord.moved){
+    movFilter.rows = null;   // los indices guardados de un control quedarian desfasados
+    log.push('\u2195 Orden: los movimientos quedaron de enero a diciembre dentro de cada banco y moneda (los archivos no estaban en ese orden).');
+  }
   trfProposals = null;
   renderTable();
   statusEl.textContent = log.join('\n\n');
-  if(allNew.length) toast(`${allNew.length} movimientos agregados` + (clasificadosPorRegla ? ` \u00b7 ${clasificadosPorRegla} clasificados por tus reglas` : ''), 'ok');
+  if(allNew.length) toast(`${allNew.length} movimientos agregados` + (ord.moved ? ' \u00b7 ordenados de enero a diciembre' : '') + (clasificadosPorRegla ? ` \u00b7 ${clasificadosPorRegla} clasificados por tus reglas` : ''), 'ok');
   processBtn.disabled = false;
   Shell.processing(false);
   saveState();
@@ -4800,6 +4805,26 @@ function computePeriodKeyFromFecha(fechaStr){
   const mm = m[2].padStart(2,'0');
   const yyyy = m[3].length === 2 ? '20' + m[3] : m[3];
   return `${yyyy}-${mm}`;
+}
+
+/* v1.7.13 · Los PDF pueden subirse en cualquier orden: la tabla queda de enero a diciembre dentro de cada cuenta (banco + moneda).
+   - Las cuentas conservan el orden en que aparecieron por primera vez (no se mezclan los bancos).
+   - Dentro de una cuenta se ordena por mes (_periodKey, el mismo que usa el cuadre mensual); el orden dentro del mes no se toca
+     (el del PDF, y entre dos archivos del mismo mes, el de carga), así la secuencia de saldos y los correlativos siguen igual.
+   - Un movimiento sin fecha se queda pegado al anterior de su cuenta. */
+function sortMovementsChrono(list){
+  const accOrd = new Map(), last = new Map();
+  const tag = list.map((m, i) => {
+    const a = acctKeyOf(m);
+    if(!accOrd.has(a)) accOrd.set(a, accOrd.size);
+    const own = String(m._periodKey || computePeriodKeyFromFecha(m.fecha) || '');
+    const k = own || last.get(a) || '';
+    last.set(a, k);
+    return { m, i, a: accOrd.get(a), k };
+  });
+  const sorted = tag.slice().sort((x, y) => (x.a - y.a) || (x.k < y.k ? -1 : (x.k > y.k ? 1 : 0)) || (x.i - y.i));
+  const moved = sorted.some((t, j) => t.i !== j);
+  return { list: moved ? sorted.map(t => t.m) : list, moved };
 }
 
 const MESES_NOMBRES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
